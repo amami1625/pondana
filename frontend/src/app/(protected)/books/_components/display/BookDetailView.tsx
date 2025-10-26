@@ -5,20 +5,24 @@ import { List } from '@/app/(protected)/lists/_types';
 import { Author } from '@/app/(protected)/authors/_types';
 import { Category } from '@/app/(protected)/categories/_types';
 import UpdateBookFormModal from '@/app/(protected)/books/_components/modal';
-import { STATUS_LABEL } from '../../_constants';
-import { formatRating } from '@/lib/utils/formatRating';
-import { formatVisibility } from '@/lib/utils/formatVisibility';
-import ErrorMessage from '@/components/ErrorMessage';
-import { useUpdateForm } from '../../_hooks/useUpdateForm';
-import { useDeleteBook } from '../../_hooks/useDeleteBook';
-import { useAddListModal } from '@/app/(protected)/listBooks/_hooks/useAddListModal';
+import { STATUS_LABEL } from '@/app/(protected)/books/_constants';
+import { formatRating, formatVisibility } from '@/lib/utils';
+import { useDeleteBook } from '@/app/(protected)/books/_hooks';
 import { UpdateButton, DeleteButton, AddButton, CreateCardButton } from '@/components/Buttons';
 import AddListModal from '@/app/(protected)/listBooks/_components/modal/AddListModal';
 import AddedListsView from '@/app/(protected)/books/_components/display/AddedListsView';
-import { useCardModal } from '@/app/(protected)/cards/_hooks/useCardModal';
 import CardModal from '@/app/(protected)/cards/_components/modal';
 import CreatedCardsView from '@/app/(protected)/books/_components/display/CreatedCardsView';
 import { createCard } from '@/app/(protected)/cards/_lib/actions';
+import {
+  DetailContainer,
+  DetailHeader,
+  DetailSection,
+  DetailMetadata,
+  DetailMetadataItem,
+  DetailActions,
+} from '@/components/details';
+import { useModal } from '@/hooks/useModal';
 
 interface BookDetailProps {
   book: BookDetail;
@@ -28,98 +32,73 @@ interface BookDetailProps {
 }
 
 export default function BookDetailView({ book, lists, authors, categories }: BookDetailProps) {
-  const { isUpdateFormOpen, openUpdateForm, closeUpdateForm } = useUpdateForm();
-  const { isAddListModalOpen, openAddListModal, closeAddListModal } = useAddListModal();
-  const { isCardModalOpen, openCardModal, closeCardModal } = useCardModal();
+  const updateModal = useModal();
+  const addListModal = useModal();
+  const cardModal = useModal();
   const { error, handleDelete } = useDeleteBook(book.id);
 
   return (
-    <section className="mx-auto max-w-4xl px-4 py-10">
-      {error && <ErrorMessage message={error} />}
-      <article className="flex flex-col gap-6 rounded-2xl border border-gray-200 bg-white p-8 shadow-sm">
-        <header className="flex flex-col gap-3">
-          <div className="flex flex-wrap items-center gap-3">
-            <span className="rounded-full border border-blue-200 bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-700">
-              {STATUS_LABEL[book.reading_status]}
-            </span>
-            {book.category && (
-              <span className="rounded-full bg-gray-100 px-3 py-1 text-xs font-semibold text-gray-600">
-                {book.category.name}
-              </span>
-            )}
-          </div>
-          <h1 className="text-2xl font-bold text-gray-900 md:text-3xl">{book.title}</h1>
-          {book.authors && (
-            <p className="text-sm font-medium text-gray-500">
-              著者名:{' '}
-              {book.authors.map((author) => (
-                <span key={author.id}>{author.name}</span>
-              ))}
-            </p>
-          )}
-        </header>
+    <>
+      <DetailContainer error={error}>
+        <DetailHeader
+          title={book.title}
+          badges={[
+            { label: STATUS_LABEL[book.reading_status], variant: 'status' },
+            ...(book.category ? [{ label: book.category.name, variant: 'category' as const }] : []),
+          ]}
+        />
 
-        <section className="space-y-3">
-          <h2 className="text-sm font-semibold uppercase tracking-wide text-gray-400">概要</h2>
+        <DetailSection title="概要">
           <p className="whitespace-pre-line text-base leading-relaxed text-gray-700">
             {book.description || '説明が登録されていません。'}
           </p>
-        </section>
+        </DetailSection>
 
-        <section className="grid gap-4 rounded-lg bg-gray-50 p-4 text-sm text-gray-600 md:grid-cols-2">
-          <div className="flex flex-col gap-1">
-            <span className="font-semibold text-gray-500">評価</span>
-            <span>{formatRating(book.rating)}</span>
-          </div>
-          <div className="flex flex-col gap-1">
-            <span className="font-semibold text-gray-500">更新日</span>
-            <span>{book.updated_at}</span>
-          </div>
-          <div className="flex flex-col gap-1">
-            <span className="font-semibold text-gray-500">登録日</span>
-            <span>{book.created_at}</span>
-          </div>
-          <div className="flex flex-col gap-1">
-            <span className="font-semibold text-gray-500">公開/非公開</span>
-            <span>{formatVisibility(book.public)}</span>
-          </div>
-          <div className="flex flex-col gap-1">
-            <span className="font-semibold text-gray-500">ID</span>
-            <span>#{book.id}</span>
-          </div>
-        </section>
+        <DetailMetadata>
+          {book.authors && book.authors.length > 0 && (
+            <DetailMetadataItem
+              label="著者名"
+              value={book.authors.map((author) => author.name).join(', ')}
+            />
+          )}
+          <DetailMetadataItem label="評価" value={formatRating(book.rating)} />
+          <DetailMetadataItem label="更新日" value={book.updated_at} />
+          <DetailMetadataItem label="登録日" value={book.created_at} />
+          <DetailMetadataItem label="公開/非公開" value={formatVisibility(book.public)} />
+          <DetailMetadataItem label="ID" value={`#${book.id}`} />
+        </DetailMetadata>
 
-        <div className="flex gap-3">
-          <UpdateButton onClick={openUpdateForm} />
+        <DetailActions>
+          <UpdateButton onClick={updateModal.open} />
           <DeleteButton onClick={handleDelete} />
-          <AddButton onClick={openAddListModal} />
-          <CreateCardButton onClick={openCardModal} />
-        </div>
+          <AddButton onClick={addListModal.open} />
+          <CreateCardButton onClick={cardModal.open} />
+        </DetailActions>
 
         <AddedListsView lists={book.lists} listBooks={book.list_books} />
         <CreatedCardsView cards={book.cards} />
-      </article>
+      </DetailContainer>
 
       <UpdateBookFormModal
         book={book}
         authors={authors}
         categories={categories}
-        isOpen={isUpdateFormOpen}
-        onClose={closeUpdateForm}
+        isOpen={updateModal.isOpen}
+        onClose={updateModal.close}
       />
       <AddListModal
         bookId={book.id}
         lists={lists}
-        isOpen={isAddListModalOpen}
-        onClose={closeAddListModal}
+        isOpen={addListModal.isOpen}
+        onClose={addListModal.close}
       />
       <CardModal
         action={createCard}
         bookId={book.id}
         bookTitle={book.title}
-        isOpen={isCardModalOpen}
-        onClose={closeCardModal}
+        isOpen={cardModal.isOpen}
+        onClose={cardModal.close}
       />
-    </section>
+    </>
   );
 }

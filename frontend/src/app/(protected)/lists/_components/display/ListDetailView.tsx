@@ -2,15 +2,21 @@
 
 import { ListDetail } from '@/app/(protected)/lists/_types';
 import { Book } from '@/app/(protected)/books/_types';
-import { useUpdateList } from '@/app/(protected)/lists/_hooks/useUpdateList';
+import { useModal } from '@/hooks/useModal';
 import { useDeleteList } from '@/app/(protected)/lists/_hooks/useDeleteList';
-import { useAddBookModal } from '@/app/(protected)/listBooks/_hooks/useAddBookModal';
 import { formatVisibility } from '@/lib/utils/formatVisibility';
 import UpdateListFormModal from '@/app/(protected)/lists/_components/modal';
 import AddBookModal from '@/app/(protected)/listBooks/_components/modal/AddBookModal';
 import AddedBooksView from '@/app/(protected)/lists/_components/display/AddedBooksView';
 import { UpdateButton, DeleteButton, AddButton } from '@/components/Buttons';
-import ErrorMessage from '@/components/ErrorMessage';
+import {
+  DetailContainer,
+  DetailHeader,
+  DetailSection,
+  DetailMetadata,
+  DetailMetadataItem,
+  DetailActions,
+} from '@/components/details';
 
 interface ListDetailProps {
   list: ListDetail;
@@ -18,60 +24,44 @@ interface ListDetailProps {
 }
 
 export default function ListDetailView({ list, books }: ListDetailProps) {
-  const { isUpdateFormOpen, openUpdateForm, closeUpdateForm } = useUpdateList();
-  const { isAddBookModalOpen, openAddBookModal, closeAddBookModal } = useAddBookModal();
+  const updateModal = useModal();
+  const addBookModal = useModal();
   const { error, handleDelete } = useDeleteList(list.id);
 
   return (
-    <section className="mx-auto max-w-4xl px-4 py-10">
-      {error && <ErrorMessage message={error} />}
-      <article className="flex flex-col gap-6 rounded-2xl border border-gray-200 bg-white p-8 shadow-sm">
-        <header className="flex flex-col gap-3">
-          <h1 className="text-2xl font-bold text-gray-900 md:text-3xl">{list.name}</h1>
-        </header>
+    <>
+      <DetailContainer error={error}>
+        <DetailHeader title={list.name} />
 
-        <section className="space-y-3">
-          <h2 className="text-sm font-semibold uppercase tracking-wide text-gray-400">概要</h2>
+        <DetailSection title="概要">
           <p className="whitespace-pre-line text-base leading-relaxed text-gray-700">
             {list.description || '説明が登録されていません。'}
           </p>
-        </section>
+        </DetailSection>
 
-        <section className="grid gap-4 rounded-lg bg-gray-50 p-4 text-sm text-gray-600 md:grid-cols-2">
-          <div className="flex flex-col gap-1">
-            <span className="font-semibold text-gray-500">更新日</span>
-            <span>{list.updated_at}</span>
-          </div>
-          <div className="flex flex-col gap-1">
-            <span className="font-semibold text-gray-500">登録日</span>
-            <span>{list.created_at}</span>
-          </div>
-          <div className="flex flex-col gap-1">
-            <span className="font-semibold text-gray-500">公開/非公開</span>
-            <span>{formatVisibility(list.public)}</span>
-          </div>
-          <div className="flex flex-col gap-1">
-            <span className="font-semibold text-gray-500">ID</span>
-            <span>#{list.id}</span>
-          </div>
-        </section>
+        <DetailMetadata>
+          <DetailMetadataItem label="更新日" value={list.updated_at} />
+          <DetailMetadataItem label="登録日" value={list.created_at} />
+          <DetailMetadataItem label="公開/非公開" value={formatVisibility(list.public)} />
+          <DetailMetadataItem label="ID" value={`#${list.id}`} />
+        </DetailMetadata>
 
-        <div className="flex gap-3">
-          <UpdateButton onClick={openUpdateForm} />
+        <DetailActions>
+          <UpdateButton onClick={updateModal.open} />
           <DeleteButton onClick={handleDelete} />
-          <AddButton onClick={openAddBookModal} />
-        </div>
+          <AddButton onClick={addBookModal.open} />
+        </DetailActions>
 
         <AddedBooksView books={list.books} listBooks={list.list_books} />
-      </article>
+      </DetailContainer>
 
-      <UpdateListFormModal list={list} isOpen={isUpdateFormOpen} onClose={closeUpdateForm} />
+      <UpdateListFormModal list={list} isOpen={updateModal.isOpen} onClose={updateModal.close} />
       <AddBookModal
         listId={list.id}
         books={books}
-        isOpen={isAddBookModalOpen}
-        onClose={closeAddBookModal}
+        isOpen={addBookModal.isOpen}
+        onClose={addBookModal.close}
       />
-    </section>
+    </>
   );
 }

@@ -4,7 +4,7 @@ import { Card } from '@/app/(protected)/cards/_types';
 import CardItem from '@/app/(protected)/cards/_components/display/CardItem';
 import CardModal from '@/app/(protected)/cards/_components/modal';
 import { CreateCardButton } from '@/components/Buttons';
-import { useCardModal } from '@/app/(protected)/cards/_hooks/useCardModal';
+import { useModal } from '@/hooks/useModal';
 import { createCard } from '@/app/(protected)/cards/_lib/actions';
 
 interface BookCardGroupProps {
@@ -16,14 +16,14 @@ interface BookCardGroupProps {
 }
 
 export default function BookCardGroup({ book, cards }: BookCardGroupProps) {
-  const { isCardModalOpen, openCardModal, closeCardModal } = useCardModal();
+  const cardModal = useModal();
 
   return (
     <section className="space-y-4">
       {/* 本のタイトルと作成ボタン */}
       <div className="flex items-center justify-between">
         <h2 className="text-xl font-bold text-gray-900">{book.title}</h2>
-        <CreateCardButton onClick={openCardModal} />
+        <CreateCardButton onClick={cardModal.open} />
       </div>
 
       {/* カードのリスト */}
@@ -44,8 +44,8 @@ export default function BookCardGroup({ book, cards }: BookCardGroupProps) {
         action={createCard}
         bookId={book.id}
         bookTitle={book.title}
-        isOpen={isCardModalOpen}
-        onClose={closeCardModal}
+        isOpen={cardModal.isOpen}
+        onClose={cardModal.close}
       />
     </section>
   );

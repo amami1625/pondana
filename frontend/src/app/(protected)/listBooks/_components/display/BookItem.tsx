@@ -1,5 +1,5 @@
 import { Book } from '@/app/(protected)/books/_types';
-import { useAddBookModal } from '../../_hooks/useAddBookModal';
+import { useAddListBook } from '@/app/(protected)/listBooks/_hooks/useAddListBook';
 import ErrorMessage from '@/components/ErrorMessage';
 import { AddButton } from '@/components/Buttons';
 
@@ -9,7 +9,7 @@ interface BookItemProps {
 }
 
 export default function BookItem({ listId, book }: BookItemProps) {
-  const { error, handleAdd } = useAddBookModal();
+  const { error, handleAdd } = useAddListBook();
   const isAdded = book.list_ids.includes(listId);
 
   return (
