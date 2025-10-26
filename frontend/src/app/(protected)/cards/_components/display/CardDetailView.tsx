@@ -3,7 +3,7 @@
 import { CardDetail } from '@/app/(protected)/cards/_types';
 import CardModal from '@/app/(protected)/cards/_components/modal';
 import { DeleteButton, UpdateButton } from '@/components/Buttons';
-import { useCardModal } from '@/app/(protected)/cards/_hooks/useCardModal';
+import { useModal } from '@/hooks/useModal';
 import { useDeleteCard } from '@/app/(protected)/cards/_hooks/useDeleteCard';
 import { updateCard } from '@/app/(protected)/cards/_lib/actions';
 import {
@@ -26,7 +26,7 @@ export default function CardDetailView({ card }: CardDetailViewProps) {
     redirectTo: '/cards',
   });
 
-  const { isCardModalOpen, openCardModal, closeCardModal } = useCardModal();
+  const cardModal = useModal();
 
   return (
     <>
@@ -47,7 +47,7 @@ export default function CardDetailView({ card }: CardDetailViewProps) {
         </DetailMetadata>
 
         <DetailActions>
-          <UpdateButton onClick={openCardModal} />
+          <UpdateButton onClick={cardModal.open} />
           <DeleteButton onClick={handleDelete} />
         </DetailActions>
       </DetailContainer>
@@ -57,8 +57,8 @@ export default function CardDetailView({ card }: CardDetailViewProps) {
         action={updateCard}
         bookId={card.book_id}
         bookTitle={card.book.title}
-        isOpen={isCardModalOpen}
-        onClose={closeCardModal}
+        isOpen={cardModal.isOpen}
+        onClose={cardModal.close}
       />
     </>
   );

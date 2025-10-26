@@ -2,9 +2,8 @@
 
 import { ListDetail } from '@/app/(protected)/lists/_types';
 import { Book } from '@/app/(protected)/books/_types';
-import { useUpdateList } from '@/app/(protected)/lists/_hooks/useUpdateList';
+import { useModal } from '@/hooks/useModal';
 import { useDeleteList } from '@/app/(protected)/lists/_hooks/useDeleteList';
-import { useAddBookModal } from '@/app/(protected)/listBooks/_hooks/useAddBookModal';
 import { formatVisibility } from '@/lib/utils/formatVisibility';
 import UpdateListFormModal from '@/app/(protected)/lists/_components/modal';
 import AddBookModal from '@/app/(protected)/listBooks/_components/modal/AddBookModal';
@@ -25,8 +24,8 @@ interface ListDetailProps {
 }
 
 export default function ListDetailView({ list, books }: ListDetailProps) {
-  const { isUpdateFormOpen, openUpdateForm, closeUpdateForm } = useUpdateList();
-  const { isAddBookModalOpen, openAddBookModal, closeAddBookModal } = useAddBookModal();
+  const updateModal = useModal();
+  const addBookModal = useModal();
   const { error, handleDelete } = useDeleteList(list.id);
 
   return (
@@ -48,20 +47,20 @@ export default function ListDetailView({ list, books }: ListDetailProps) {
         </DetailMetadata>
 
         <DetailActions>
-          <UpdateButton onClick={openUpdateForm} />
+          <UpdateButton onClick={updateModal.open} />
           <DeleteButton onClick={handleDelete} />
-          <AddButton onClick={openAddBookModal} />
+          <AddButton onClick={addBookModal.open} />
         </DetailActions>
 
         <AddedBooksView books={list.books} listBooks={list.list_books} />
       </DetailContainer>
 
-      <UpdateListFormModal list={list} isOpen={isUpdateFormOpen} onClose={closeUpdateForm} />
+      <UpdateListFormModal list={list} isOpen={updateModal.isOpen} onClose={updateModal.close} />
       <AddBookModal
         listId={list.id}
         books={books}
-        isOpen={isAddBookModalOpen}
-        onClose={closeAddBookModal}
+        isOpen={addBookModal.isOpen}
+        onClose={addBookModal.close}
       />
     </>
   );

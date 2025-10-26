@@ -7,12 +7,10 @@ import { Category } from '@/app/(protected)/categories/_types';
 import UpdateBookFormModal from '@/app/(protected)/books/_components/modal';
 import { STATUS_LABEL } from '@/app/(protected)/books/_constants';
 import { formatRating, formatVisibility } from '@/lib/utils';
-import { useUpdateForm, useDeleteBook } from '@/app/(protected)/books/_hooks';
-import { useAddListModal } from '@/app/(protected)/listBooks/_hooks/useAddListModal';
+import { useDeleteBook } from '@/app/(protected)/books/_hooks';
 import { UpdateButton, DeleteButton, AddButton, CreateCardButton } from '@/components/Buttons';
 import AddListModal from '@/app/(protected)/listBooks/_components/modal/AddListModal';
 import AddedListsView from '@/app/(protected)/books/_components/display/AddedListsView';
-import { useCardModal } from '@/app/(protected)/cards/_hooks/useCardModal';
 import CardModal from '@/app/(protected)/cards/_components/modal';
 import CreatedCardsView from '@/app/(protected)/books/_components/display/CreatedCardsView';
 import { createCard } from '@/app/(protected)/cards/_lib/actions';
@@ -24,6 +22,7 @@ import {
   DetailMetadataItem,
   DetailActions,
 } from '@/components/details';
+import { useModal } from '@/hooks/useModal';
 
 interface BookDetailProps {
   book: BookDetail;
@@ -33,9 +32,9 @@ interface BookDetailProps {
 }
 
 export default function BookDetailView({ book, lists, authors, categories }: BookDetailProps) {
-  const { isUpdateFormOpen, openUpdateForm, closeUpdateForm } = useUpdateForm();
-  const { isAddListModalOpen, openAddListModal, closeAddListModal } = useAddListModal();
-  const { isCardModalOpen, openCardModal, closeCardModal } = useCardModal();
+  const updateModal = useModal();
+  const addListModal = useModal();
+  const cardModal = useModal();
   const { error, handleDelete } = useDeleteBook(book.id);
 
   return (
@@ -70,10 +69,10 @@ export default function BookDetailView({ book, lists, authors, categories }: Boo
         </DetailMetadata>
 
         <DetailActions>
-          <UpdateButton onClick={openUpdateForm} />
+          <UpdateButton onClick={updateModal.open} />
           <DeleteButton onClick={handleDelete} />
-          <AddButton onClick={openAddListModal} />
-          <CreateCardButton onClick={openCardModal} />
+          <AddButton onClick={addListModal.open} />
+          <CreateCardButton onClick={cardModal.open} />
         </DetailActions>
 
         <AddedListsView lists={book.lists} listBooks={book.list_books} />
@@ -84,21 +83,21 @@ export default function BookDetailView({ book, lists, authors, categories }: Boo
         book={book}
         authors={authors}
         categories={categories}
-        isOpen={isUpdateFormOpen}
-        onClose={closeUpdateForm}
+        isOpen={updateModal.isOpen}
+        onClose={updateModal.close}
       />
       <AddListModal
         bookId={book.id}
         lists={lists}
-        isOpen={isAddListModalOpen}
-        onClose={closeAddListModal}
+        isOpen={addListModal.isOpen}
+        onClose={addListModal.close}
       />
       <CardModal
         action={createCard}
         bookId={book.id}
         bookTitle={book.title}
-        isOpen={isCardModalOpen}
-        onClose={closeCardModal}
+        isOpen={cardModal.isOpen}
+        onClose={cardModal.close}
       />
     </>
   );

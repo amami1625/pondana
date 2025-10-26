@@ -1,7 +1,7 @@
 'use client';
 
 import { List } from '@/app/(protected)/lists/_types';
-import { useCreateList } from '@/app/(protected)/lists/_hooks/useCreateList';
+import { useModal } from '@/hooks/useModal';
 import { CreateButton } from '@/components/Buttons';
 import CreateListFormModal from '@/app/(protected)/lists/_components/modal/';
 import ListCard from '@/app/(protected)/lists/_components/display/ListCard';
@@ -12,12 +12,12 @@ interface ListProps {
 }
 
 export default function Lists({ lists }: ListProps) {
-  const { isCreateFormOpen, openCreateForm, closeCreateForm } = useCreateList();
+  const createModal = useModal();
 
   return (
     <>
       <div className="mb-6 flex justify-end">
-        <CreateButton onClick={openCreateForm} />
+        <CreateButton onClick={createModal.open} />
       </div>
       {lists.length === 0 ? (
         <EmptyState element="リスト" />
@@ -28,7 +28,7 @@ export default function Lists({ lists }: ListProps) {
           ))}
         </div>
       )}
-      <CreateListFormModal isOpen={isCreateFormOpen} onClose={closeCreateForm} />
+      <CreateListFormModal isOpen={createModal.isOpen} onClose={createModal.close} />
     </>
   );
 }

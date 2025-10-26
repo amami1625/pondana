@@ -1,7 +1,7 @@
 import { AddButton } from '@/components/Buttons';
 import ErrorMessage from '@/components/ErrorMessage';
 import { List } from '@/app/(protected)/lists/_types';
-import { useAddListModal } from '../../_hooks/useAddListModal';
+import { useAddListBook } from '@/app/(protected)/listBooks/_hooks/useAddListBook';
 
 interface ListItemProps {
   list: List;
@@ -9,7 +9,7 @@ interface ListItemProps {
 }
 
 export default function Listitem({ list, bookId }: ListItemProps) {
-  const { error, handleAdd } = useAddListModal();
+  const { error, handleAdd } = useAddListBook();
   const isAdded = list.book_ids.includes(bookId);
 
   return (

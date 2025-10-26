@@ -5,7 +5,7 @@ import { Author } from '@/app/(protected)/authors/_types';
 import { Category } from '@/app/(protected)/categories/_types';
 
 import BookCard from './BookCard';
-import { useCreateBook } from '../../_hooks/useCreateBook';
+import { useModal } from '@/hooks/useModal';
 import CreateBookFormModal from '@/app/(protected)/books/_components/modal';
 import { CreateButton } from '@/components/Buttons';
 import EmptyState from '@/components/EmptyState';
@@ -17,12 +17,12 @@ interface BookListProps {
 }
 
 export default function BookList({ books, authors, categories }: BookListProps) {
-  const { isCreateFormOpen, openCreateForm, closeCreateForm } = useCreateBook();
+  const createModal = useModal();
 
   return (
     <>
       <div className="mb-6 flex justify-end">
-        <CreateButton onClick={openCreateForm} />
+        <CreateButton onClick={createModal.open} />
       </div>
       {books.length === 0 ? (
         // 本が登録されていない場合の表示
@@ -38,8 +38,8 @@ export default function BookList({ books, authors, categories }: BookListProps) 
       <CreateBookFormModal
         authors={authors}
         categories={categories}
-        isOpen={isCreateFormOpen}
-        onClose={closeCreateForm}
+        isOpen={createModal.isOpen}
+        onClose={createModal.close}
       />
     </>
   );
