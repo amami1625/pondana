@@ -1,4 +1,5 @@
 import { User } from '@/schemas/profile';
+import SettingsItem from '@/app/(protected)/settings/_components/display/SettingsItem';
 
 interface SettingsViewProps {
   user: User;
@@ -10,25 +11,10 @@ export default function SettingsView({ user }: SettingsViewProps) {
       <h2 className="mb-6 text-xl font-semibold text-gray-900">プロフィール情報</h2>
 
       <div className="space-y-6">
-        <div className="border-b border-gray-100 pb-4">
-          <dt className="mb-1 text-sm font-medium text-gray-500">名前</dt>
-          <dd className="text-base text-gray-900">{user.name}</dd>
-        </div>
-
-        <div className="border-b border-gray-100 pb-4">
-          <dt className="mb-1 text-sm font-medium text-gray-500">ユーザーID</dt>
-          <dd className="text-base text-gray-900">#{user.id}</dd>
-        </div>
-
-        <div className="border-b border-gray-100 pb-4">
-          <dt className="mb-1 text-sm font-medium text-gray-500">登録日</dt>
-          <dd className="text-base text-gray-900">{user.created_at}</dd>
-        </div>
-
-        <div>
-          <dt className="mb-1 text-sm font-medium text-gray-500">更新日</dt>
-          <dd className="text-base text-gray-900">{user.updated_at}</dd>
-        </div>
+        <SettingsItem label="名前" value={user.name} />
+        <SettingsItem label="ユーザーID" value={`#${user.id}`} />
+        <SettingsItem label="登録日" value={user.created_at} />
+        <SettingsItem label="更新日" value={user.updated_at} isLast />
       </div>
     </div>
   );
