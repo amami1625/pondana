@@ -35,6 +35,9 @@ export default function Header({ isAuthenticated }: HeaderProps) {
                   <Link href="/cards">Cards</Link>
                 </li>
                 <li className="transition-colors hover:text-gray-900">
+                  <Link href="/settings">Settings</Link>
+                </li>
+                <li className="transition-colors hover:text-gray-900">
                   <LogoutButton />
                 </li>
               </>
