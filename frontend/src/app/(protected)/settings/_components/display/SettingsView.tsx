@@ -1,15 +1,19 @@
+'use client';
+
 import Image from 'next/image';
 import { User as UserIcon } from 'lucide-react';
 import { User } from '@/schemas/profile';
-import { verifySession } from '@/supabase/dal';
 import SettingsItem from '@/app/(protected)/settings/_components/display/SettingsItem';
+import { useModal } from '@/hooks/useModal';
+import UserFormModal from '../modal/UserFormModal';
 
 interface SettingsViewProps {
   user: User;
+  email: string;
 }
 
-export default async function SettingsView({ user }: SettingsViewProps) {
-  const { user: authInfo } = await verifySession();
+export default function SettingsView({ user, email }: SettingsViewProps) {
+  const updateNameModal = useModal();
 
   return (
     <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
@@ -34,11 +38,13 @@ export default async function SettingsView({ user }: SettingsViewProps) {
       </div>
 
       <div className="space-y-6">
-        <SettingsItem label="名前" value={user.name} />
-        <SettingsItem label="メールアドレス" value={authInfo.email ?? 'メールアドレスが設定されていません'} />
+        <SettingsItem label="名前" value={user.name} onEdit={updateNameModal.open} />
+        <SettingsItem label="メールアドレス" value={email} />
         <SettingsItem label="登録日" value={user.created_at} />
         <SettingsItem label="更新日" value={user.updated_at} isLast />
       </div>
+
+      <UserFormModal user={user} isOpen={updateNameModal.isOpen} onClose={updateNameModal.close} />
     </div>
   );
 }
