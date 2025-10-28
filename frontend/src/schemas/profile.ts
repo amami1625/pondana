@@ -17,4 +17,11 @@ export const profileSchema = z.object({
   }),
 });
 
+// Userのバリデーションスキーマ(フォーム用)
+export const profileFormSchema = z.object({
+  name: z.string().min(1, { message: 'ユーザー名を入力してください' }),
+  avatar_url: z.string().optional(),
+});
+
 export type User = z.infer<typeof profileSchema>;
+export type UserFormData = z.infer<typeof profileFormSchema>;
