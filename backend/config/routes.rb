@@ -16,7 +16,7 @@ Rails.application.routes.draw do
     resources :list_books, only: %i[create destroy]
     resources :authors, only: %i[index create]
     resources :categories, only: %i[index create]
-    resource :profile, only: %i[show]
+    resource :profile, only: %i[show update]
   end
 
   # Defines the root path route ("/")

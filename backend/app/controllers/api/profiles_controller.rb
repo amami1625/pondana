@@ -7,10 +7,20 @@ class Api::ProfilesController < Api::ApplicationController
     render json: user
   end
 
+  def update
+    user = current_user
+
+    if user.update(profile_params)
+      render json: user, status: :ok
+    else
+      render json: { errors: user.errors }, status: :unprocessable_entity
+    end
+  end
+
   private
 
   def profile_params
-    params.require(:profile).permit(:name, :image)
+    params.require(:profile).permit(:name, :avatar_url)
   end
 
   def record_not_found
