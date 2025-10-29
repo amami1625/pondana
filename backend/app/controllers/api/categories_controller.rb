@@ -13,6 +13,15 @@ class Api::CategoriesController < Api::ApplicationController
     end
   end
 
+  def update
+    category = current_user.categories.find(params[:id])
+    if category.update(category_params)
+      render json: category, status: :ok
+    else
+      render json: { errors: category.errors }, status: :unprocessable_entity
+    end
+  end
+
   private
   
   def category_params

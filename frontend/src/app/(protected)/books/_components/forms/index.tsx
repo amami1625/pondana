@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import { Book, BookFormData } from '@/app/(protected)/books/_types';
 import { Category } from '@/app/(protected)/categories/_types';
 import { Author } from '@/schemas/author';
@@ -9,7 +10,7 @@ import AuthorModal from '@/app/(protected)/authors/_components/modal';
 import CategoryModal from '@/app/(protected)/categories/_components/modal';
 import { useBookFormState } from '../../_hooks/useBookFormState';
 import { useAuthorModal } from '@/app/(protected)/authors/_hooks/useAuthorModal';
-import { useCategoryModal } from '@/app/(protected)/categories/_hooks/useCategoryModal';
+import { useModal } from '@/hooks/useModal';
 import { STATUS_OPTIONS, RATING_OPTIONS } from '../../_constants';
 import FormInput from '@/components/forms/FormInput';
 import FormCheckbox from '@/components/forms/FormCheckbox';
@@ -38,10 +39,12 @@ export default function BookForm({
   submitLabel,
   onClose,
 }: BookFormProps) {
-  // カスタムフックを使用
+  // フォーム処理
   const { register, control, handleSubmit, errors, error, onSubmit, isSubmitting } =
     useBookFormState({ book, action, onSuccess: onClose });
 
+  // TODO カスタムフック(useAuthorModal)を削除し、useModalでモーダルの開閉を管理するように修正する
+  // 著者管理
   const {
     createdAuthors,
     setCreatedAuthors,
@@ -50,13 +53,9 @@ export default function BookForm({
     closeAuthorModal,
   } = useAuthorModal({ initialAuthors: authors });
 
-  const {
-    createdCategories,
-    setCreatedCategories,
-    isCategoryModalOpen,
-    openCategoryModal,
-    closeCategoryModal,
-  } = useCategoryModal({ initialCategories: categories });
+  // カテゴリ管理
+  const [createdCategories, setCreatedCategories] = useState<Category[]>(categories);
+  const categoryModal = useModal();
 
   return (
     <>
@@ -170,7 +169,7 @@ export default function BookForm({
           button={
             <button
               type="button"
-              onClick={openCategoryModal}
+              onClick={categoryModal.open}
               className="text-sm text-blue-600 hover:text-blue-700"
             >
               + カテゴリを追加
@@ -201,8 +200,8 @@ export default function BookForm({
         setCreatedAuthors={setCreatedAuthors}
       />
       <CategoryModal
-        isOpen={isCategoryModalOpen}
-        onClose={closeCategoryModal}
+        isOpen={categoryModal.isOpen}
+        onClose={categoryModal.close}
         setCreatedCategories={setCreatedCategories}
       />
     </>

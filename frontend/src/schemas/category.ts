@@ -19,6 +19,7 @@ export const categorySchema = z.object({
 
 // categoryのバリデーションスキーマ(フォーム用)
 export const categoryFormSchema = z.object({
+  id: z.number().optional(),
   name: z
     .string()
     .min(1, 'カテゴリ名を入力してください')

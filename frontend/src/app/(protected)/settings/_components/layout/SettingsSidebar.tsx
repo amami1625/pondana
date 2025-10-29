@@ -5,9 +5,9 @@ import { usePathname } from 'next/navigation';
 
 const NAV_ITEMS = [
   { href: '/settings', label: 'プロフィール' },
-  { href: '/settings/author', label: '著者' },
-  { href: '/settings/category', label: 'カテゴリー' },
-  { href: '/settings/tag', label: 'タグ' },
+  { href: '/settings/authors', label: '著者' },
+  { href: '/settings/categories', label: 'カテゴリー' },
+  { href: '/settings/tags', label: 'タグ' },
 ] as const;
 
 export default function SettingsSidebar() {

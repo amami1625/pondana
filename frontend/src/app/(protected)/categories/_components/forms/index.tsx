@@ -5,9 +5,10 @@ import FormInput from '@/components/forms/FormInput';
 import CancelButton from '@/components/Buttons/CancelButton';
 import ErrorMessage from '@/components/ErrorMessage';
 import SubmitButton from '@/components/Buttons/SubmitButton';
-import { useCreateCategory } from '@/app/(protected)/categories/_hooks/useCreateCategory';
+import { useCategoryForm } from '@/app/(protected)/categories/_hooks/useCategoryForm';
 
 interface CategoryFormProps {
+  category?: Category;
   submitLabel: string;
   action: (formData: CategoryFormData) => Promise<Category | { error: string }>;
   cancel: () => void;
@@ -15,12 +16,14 @@ interface CategoryFormProps {
 }
 
 export default function CategoryForm({
+  category,
   submitLabel,
   action,
   cancel,
   setCreatedCategories,
 }: CategoryFormProps) {
-  const { error, register, handleSubmit, onSubmit, errors, isSubmitting } = useCreateCategory({
+  const { error, register, handleSubmit, onSubmit, errors, isSubmitting } = useCategoryForm({
+    category,
     action,
     cancel,
     setCreatedCategories,
@@ -31,7 +34,7 @@ export default function CategoryForm({
       className="flex flex-col gap-6 rounded-2xl border border-gray-200 bg-white p-6 shadow-sm"
       onSubmit={handleSubmit(onSubmit)}
     >
-      <div className="grid gap-4 md:grid-cols-2">
+      <div className="space-y-4">
         <FormInput
           name="name"
           label="カテゴリ名"
