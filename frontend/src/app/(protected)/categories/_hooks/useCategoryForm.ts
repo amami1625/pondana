@@ -7,19 +7,19 @@ import {
   categoryFormSchema,
 } from '@/app/(protected)/categories/_types';
 
-interface UseCreateCategoryProps {
+interface UseCategoryFormProps {
   category?: Category;
   action: (formData: CategoryFormData) => Promise<Category | { error: string }>;
   cancel: () => void;
   setCreatedCategories: React.Dispatch<React.SetStateAction<Category[]>>;
 }
 
-export const useCreateCategory = ({
+export const useCategoryForm = ({
   category,
   action,
   cancel,
   setCreatedCategories,
-}: UseCreateCategoryProps) => {
+}: UseCategoryFormProps) => {
   const [error, setError] = useState('');
 
   const defaultValues: CategoryFormData = {

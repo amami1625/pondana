@@ -5,7 +5,7 @@ import FormInput from '@/components/forms/FormInput';
 import CancelButton from '@/components/Buttons/CancelButton';
 import ErrorMessage from '@/components/ErrorMessage';
 import SubmitButton from '@/components/Buttons/SubmitButton';
-import { useCreateCategory } from '@/app/(protected)/categories/_hooks/useCreateCategory';
+import { useCategoryForm } from '@/app/(protected)/categories/_hooks/useCategoryForm';
 
 interface CategoryFormProps {
   category?: Category;
@@ -22,7 +22,7 @@ export default function CategoryForm({
   cancel,
   setCreatedCategories,
 }: CategoryFormProps) {
-  const { error, register, handleSubmit, onSubmit, errors, isSubmitting } = useCreateCategory({
+  const { error, register, handleSubmit, onSubmit, errors, isSubmitting } = useCategoryForm({
     category,
     action,
     cancel,
