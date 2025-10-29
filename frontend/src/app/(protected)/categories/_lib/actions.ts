@@ -2,7 +2,6 @@
 
 import { authenticatedRequest } from '@/supabase/dal';
 import { Category, CategoryFormData, categorySchema } from '@/app/(protected)/categories/_types';
-import { revalidatePath } from 'next/cache';
 
 export async function createCategory(
   formData: CategoryFormData,
@@ -34,7 +33,6 @@ export async function updateCategory(
       method: 'PUT',
       body: JSON.stringify({ category: formData }),
     });
-    revalidatePath('/settings/categories');
     return categorySchema.parse(category);
   } catch (error) {
     if (error instanceof Error) {
