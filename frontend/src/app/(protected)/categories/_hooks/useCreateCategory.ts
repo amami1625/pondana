@@ -8,12 +8,14 @@ import {
 } from '@/app/(protected)/categories/_types';
 
 interface UseCreateCategoryProps {
+  category?: Category;
   action: (formData: CategoryFormData) => Promise<Category | { error: string }>;
   cancel: () => void;
   setCreatedCategories: React.Dispatch<React.SetStateAction<Category[]>>;
 }
 
 export const useCreateCategory = ({
+  category,
   action,
   cancel,
   setCreatedCategories,
@@ -21,7 +23,8 @@ export const useCreateCategory = ({
   const [error, setError] = useState('');
 
   const defaultValues: CategoryFormData = {
-    name: '',
+    id: category?.id,
+    name: category?.name ?? '',
   };
 
   const {
@@ -34,12 +37,19 @@ export const useCreateCategory = ({
   });
 
   const onSubmit = async (data: CategoryFormData) => {
-    const newCategory = await action(data);
-    if ('error' in newCategory) {
-      setError(newCategory.error);
+    const result = await action(data);
+    if ('error' in result) {
+      setError(result.error);
       return;
     }
-    setCreatedCategories((prev) => [...prev, newCategory]);
+
+    // 作成モードの場合は追加、編集モードの場合は更新
+    if (!category) {
+      setCreatedCategories((prev) => [...prev, result]);
+    } else {
+      setCreatedCategories((prev) => prev.map((cat) => (cat.id === result.id ? result : cat)));
+    }
+
     cancel();
   };
 
