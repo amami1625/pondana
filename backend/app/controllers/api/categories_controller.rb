@@ -22,6 +22,15 @@ class Api::CategoriesController < Api::ApplicationController
     end
   end
 
+  def destroy
+    category = current_user.categories.find(params[:id])
+    if category.destroy
+      head :no_content
+    else
+      render json: { errors: category.errors }, status: :unprocessable_entity
+    end
+  end
+
   private
   
   def category_params

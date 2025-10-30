@@ -15,7 +15,7 @@ Rails.application.routes.draw do
     resources :lists, only: %i[index create update show destroy]
     resources :list_books, only: %i[create destroy]
     resources :authors, only: %i[index create]
-    resources :categories, only: %i[index create update]
+    resources :categories, only: %i[index create update destroy]
     resource :profile, only: %i[show update]
   end
 

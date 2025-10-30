@@ -42,3 +42,18 @@ export async function updateCategory(
     }
   }
 }
+
+export async function deleteCategory(id: number): Promise<{ success: true } | { error: string }> {
+  try {
+    await authenticatedRequest(`/categories/${id}`, {
+      method: 'DELETE',
+    });
+    return { success: true };
+  } catch (error) {
+    if (error instanceof Error) {
+      return { error: error.message };
+    } else {
+      return { error: '不明なエラーが発生しました' };
+    }
+  }
+}
