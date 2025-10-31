@@ -9,7 +9,6 @@ import { Controller } from 'react-hook-form';
 import AuthorModal from '@/app/(protected)/authors/_components/modal';
 import CategoryModal from '@/app/(protected)/categories/_components/modal';
 import { useBookFormState } from '../../_hooks/useBookFormState';
-import { useAuthorModal } from '@/app/(protected)/authors/_hooks/useAuthorModal';
 import { useModal } from '@/hooks/useModal';
 import { STATUS_OPTIONS, RATING_OPTIONS } from '../../_constants';
 import FormInput from '@/components/forms/FormInput';
@@ -43,15 +42,9 @@ export default function BookForm({
   const { register, control, handleSubmit, errors, error, onSubmit, isSubmitting } =
     useBookFormState({ book, action, onSuccess: onClose });
 
-  // TODO カスタムフック(useAuthorModal)を削除し、useModalでモーダルの開閉を管理するように修正する
   // 著者管理
-  const {
-    createdAuthors,
-    setCreatedAuthors,
-    isAuthorModalOpen,
-    openAuthorModal,
-    closeAuthorModal,
-  } = useAuthorModal({ initialAuthors: authors });
+  const [createdAuthors, setCreatedAuthors] = useState<Author[]>(authors);
+  const authorModal = useModal();
 
   // カテゴリ管理
   const [createdCategories, setCreatedCategories] = useState<Category[]>(categories);
@@ -90,10 +83,7 @@ export default function BookForm({
               </label>
               <button
                 type="button"
-                onClick={(e) => {
-                  e.preventDefault();
-                  openAuthorModal();
-                }}
+                onClick={authorModal.open}
                 className="text-sm text-blue-600 hover:text-blue-700"
               >
                 + 著者を追加
@@ -195,8 +185,8 @@ export default function BookForm({
       </form>
       {/* モーダル */}
       <AuthorModal
-        isOpen={isAuthorModalOpen}
-        onClose={closeAuthorModal}
+        isOpen={authorModal.isOpen}
+        onClose={authorModal.close}
         setCreatedAuthors={setCreatedAuthors}
       />
       <CategoryModal

@@ -13,6 +13,15 @@ class Api::AuthorsController < Api::ApplicationController
     end
   end
 
+  def update
+    author = current_user.authors.find(params[:id])
+    if author.update(author_params)
+      render json: author, status: :ok
+    else
+      render json: { errors: author.errors }, status: :unprocessable_entity
+    end
+  end
+
   private
   
   def author_params
