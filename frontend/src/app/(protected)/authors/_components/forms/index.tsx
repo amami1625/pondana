@@ -2,13 +2,14 @@
 
 import { AuthorFormData } from '@/schemas/author';
 import { Author } from '@/app/(protected)/authors/_types';
-import { useCreateAuthor } from '@/app/(protected)/authors/_hooks/useCreateAuthor';
+import { useAuthorForm } from '@/app/(protected)/authors/_hooks/useAuthorForm';
 import FormInput from '@/components/forms/FormInput';
 import CancelButton from '@/components/Buttons/CancelButton';
 import ErrorMessage from '@/components/ErrorMessage';
 import SubmitButton from '@/components/Buttons/SubmitButton';
 
 interface AuthorFormProps {
+  author?: Author;
   submitLabel: string;
   action: (formData: AuthorFormData) => Promise<Author | { error: string }>;
   cancel: () => void;
@@ -16,12 +17,14 @@ interface AuthorFormProps {
 }
 
 export default function AuthorForm({
+  author,
   submitLabel,
   action,
   cancel,
   setCreatedAuthors,
 }: AuthorFormProps) {
-  const { error, register, handleSubmit, onSubmit, errors, isSubmitting } = useCreateAuthor({
+  const { error, register, handleSubmit, onSubmit, errors, isSubmitting } = useAuthorForm({
+    author,
     action,
     cancel,
     setCreatedAuthors,
@@ -32,7 +35,7 @@ export default function AuthorForm({
       className="flex flex-col gap-6 rounded-2xl border border-gray-200 bg-white p-6 shadow-sm"
       onSubmit={handleSubmit(onSubmit)}
     >
-      <div className="grid gap-4 md:grid-cols-2">
+      <div className="space-y-4">
         <FormInput
           name="name"
           label="著者名"
