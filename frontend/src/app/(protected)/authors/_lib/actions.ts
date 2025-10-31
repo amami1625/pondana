@@ -38,3 +38,18 @@ export async function updateAuthor(formData: AuthorFormData): Promise<Author | {
     }
   }
 }
+
+export async function deleteAuthor(id: number): Promise<{ success: true } | { error: string }> {
+  try {
+    await authenticatedRequest(`/authors/${id}`, {
+      method: 'DELETE',
+    });
+    return { success: true };
+  } catch (error) {
+    if (error instanceof Error) {
+      return { error: error.message };
+    } else {
+      return { error: '不明なエラーが発生しました' };
+    }
+  }
+}
