@@ -18,3 +18,23 @@ export async function createAuthor(formData: AuthorFormData): Promise<Author | {
     }
   }
 }
+
+export async function updateAuthor(formData: AuthorFormData): Promise<Author | { error: string }> {
+  if (!formData.id) {
+    return { error: '著者IDが指定されていません' };
+  }
+
+  try {
+    const author = await authenticatedRequest(`/authors/${formData.id}`, {
+      method: 'PUT',
+      body: JSON.stringify({ author: formData }),
+    });
+    return authorSchema.parse(author);
+  } catch (error) {
+    if (error instanceof Error) {
+      return { error: error.message };
+    } else {
+      return { error: '不明なエラーが発生しました' };
+    }
+  }
+}

@@ -3,17 +3,24 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Author, AuthorFormData, authorFormSchema } from '@/app/(protected)/authors/_types';
 
-interface UseCreateAuthorProps {
+interface UseAuthorFormProps {
+  author?: Author;
   action: (formData: AuthorFormData) => Promise<Author | { error: string }>;
   cancel: () => void;
   setCreatedAuthors: React.Dispatch<React.SetStateAction<Author[]>>;
 }
 
-export const useCreateAuthor = ({ action, cancel, setCreatedAuthors }: UseCreateAuthorProps) => {
+export const useAuthorForm = ({
+  author,
+  action,
+  cancel,
+  setCreatedAuthors,
+}: UseAuthorFormProps) => {
   const [error, setError] = useState('');
 
   const defaultValues: AuthorFormData = {
-    name: '',
+    id: author?.id,
+    name: author?.name ?? '',
   };
 
   const {
@@ -26,12 +33,19 @@ export const useCreateAuthor = ({ action, cancel, setCreatedAuthors }: UseCreate
   });
 
   const onSubmit = async (data: AuthorFormData) => {
-    const newAuthor = await action(data);
-    if ('error' in newAuthor) {
-      setError(newAuthor.error);
+    const result = await action(data);
+    if ('error' in result) {
+      setError(result.error);
       return;
     }
-    setCreatedAuthors((prev) => [...prev, newAuthor]);
+
+    if (!author) {
+      setCreatedAuthors((prev) => [...prev, result]);
+    } else {
+      setCreatedAuthors((prev) =>
+        prev.map((author) => (author.id === result.id ? result : author)),
+      );
+    }
     cancel();
   };
 
