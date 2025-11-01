@@ -8,6 +8,7 @@ import { useCategories } from '@/app/(protected)/categories/_hooks/useCategories
 import { useCategoryMutations } from '@/app/(protected)/categories/_hooks/useCategoryMutations';
 import { useModal } from '@/hooks/useModal';
 import ErrorMessage from '@/components/ErrorMessage';
+import LoadingState from '@/components/LoadingState';
 
 export default function SettingsCategoriesPage() {
   const { data: categories, isLoading, error } = useCategories();
@@ -37,11 +38,7 @@ export default function SettingsCategoriesPage() {
 
   // ローディング状態
   if (isLoading) {
-    return (
-      <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
-        <p className="text-center text-gray-500">読み込み中...</p>
-      </div>
-    );
+    return <LoadingState message="カテゴリを読み込んでいます..." />;
   }
 
   // エラー状態
