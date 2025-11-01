@@ -6,21 +6,16 @@ import {
   CategoryFormData,
   categoryFormSchema,
 } from '@/app/(protected)/categories/_types';
+import { useCategoryMutations } from './useCategoryMutations';
 
 interface UseCategoryFormProps {
   category?: Category;
-  action: (formData: CategoryFormData) => Promise<Category | { error: string }>;
   cancel: () => void;
-  setCreatedCategories: React.Dispatch<React.SetStateAction<Category[]>>;
 }
 
-export const useCategoryForm = ({
-  category,
-  action,
-  cancel,
-  setCreatedCategories,
-}: UseCategoryFormProps) => {
+export const useCategoryForm = ({ category, cancel }: UseCategoryFormProps) => {
   const [error, setError] = useState('');
+  const { createCategory, updateCategory, createError, updateError } = useCategoryMutations();
 
   const defaultValues: CategoryFormData = {
     id: category?.id,
@@ -37,24 +32,41 @@ export const useCategoryForm = ({
   });
 
   const onSubmit = async (data: CategoryFormData) => {
-    const result = await action(data);
-    if ('error' in result) {
-      setError(result.error);
-      return;
+    try {
+      if (category) {
+        // 更新
+        updateCategory(
+          { id: category.id, name: data.name },
+          {
+            onSuccess: () => {
+              cancel();
+            },
+            onError: (error) => {
+              setError(error.message);
+            },
+          },
+        );
+      } else {
+        // 作成
+        createCategory(
+          { name: data.name },
+          {
+            onSuccess: () => {
+              cancel();
+            },
+            onError: (error) => {
+              setError(error.message);
+            },
+          },
+        );
+      }
+    } catch (err) {
+      setError('予期しないエラーが発生しました');
     }
-
-    // 作成モードの場合は追加、編集モードの場合は更新
-    if (!category) {
-      setCreatedCategories((prev) => [...prev, result]);
-    } else {
-      setCreatedCategories((prev) => prev.map((cat) => (cat.id === result.id ? result : cat)));
-    }
-
-    cancel();
   };
 
   return {
-    error,
+    error: error || createError?.message || updateError?.message,
     register,
     handleSubmit,
     onSubmit,
