@@ -3,6 +3,7 @@ import './globals.css';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { createServerSupabaseClient } from '@/supabase/clients/server';
+import { Providers } from './providers';
 
 export const metadata: Metadata = {
   title: 'ぽんダナ',
@@ -23,9 +24,11 @@ export default async function RootLayout({
   return (
     <html lang="ja">
       <body className="flex flex-col min-h-screen">
-        <Header isAuthenticated={!!session} />
-        <main className="flex-1">{children}</main>
-        <Footer />
+        <Providers>
+          <Header isAuthenticated={!!session} />
+          <main className="flex-1">{children}</main>
+          <Footer />
+        </Providers>
       </body>
     </html>
   );

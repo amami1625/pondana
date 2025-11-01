@@ -1,0 +1,92 @@
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { queryKeys } from '@/constants/queryKeys';
+import { Category } from '@/schemas/category';
+
+// 作成用の型
+type CreateCategoryData = {
+  name: string;
+};
+
+// 更新用の型
+type UpdateCategoryData = {
+  id: number;
+  name: string;
+};
+
+export function useCategoryMutations() {
+  const queryClient = useQueryClient();
+
+  // 作成
+  const createMutation = useMutation({
+    mutationFn: async (data: CreateCategoryData) => {
+      const response = await fetch('/api/categories', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || 'カテゴリの作成に失敗しました');
+      }
+
+      return response.json() as Promise<Category>;
+    },
+    onSuccess: () => {
+      // カテゴリ一覧を再取得
+      queryClient.invalidateQueries({ queryKey: queryKeys.categories.all });
+    },
+  });
+
+  // 更新
+  const updateMutation = useMutation({
+    mutationFn: async (data: UpdateCategoryData) => {
+      const response = await fetch('/api/categories', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || 'カテゴリの更新に失敗しました');
+      }
+
+      return response.json() as Promise<Category>;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.categories.all });
+    },
+  });
+
+  // 削除
+  const deleteMutation = useMutation({
+    mutationFn: async (id: number) => {
+      const response = await fetch(`/api/categories?id=${id}`, {
+        method: 'DELETE',
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || 'カテゴリの削除に失敗しました');
+      }
+
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.categories.all });
+    },
+  });
+
+  return {
+    createCategory: createMutation.mutate,
+    updateCategory: updateMutation.mutate,
+    deleteCategory: deleteMutation.mutate,
+    isCreating: createMutation.isPending,
+    isUpdating: updateMutation.isPending,
+    isDeleting: deleteMutation.isPending,
+    createError: createMutation.error,
+    updateError: updateMutation.error,
+    deleteError: deleteMutation.error,
+  };
+}
