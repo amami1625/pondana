@@ -1,6 +1,6 @@
 'use client';
 
-import { Category, CategoryFormData } from '@/app/(protected)/categories/_types';
+import { Category } from '@/app/(protected)/categories/_types';
 import FormInput from '@/components/forms/FormInput';
 import CancelButton from '@/components/Buttons/CancelButton';
 import ErrorMessage from '@/components/ErrorMessage';
@@ -10,23 +10,13 @@ import { useCategoryForm } from '@/app/(protected)/categories/_hooks/useCategory
 interface CategoryFormProps {
   category?: Category;
   submitLabel: string;
-  action: (formData: CategoryFormData) => Promise<Category | { error: string }>;
   cancel: () => void;
-  setCreatedCategories: React.Dispatch<React.SetStateAction<Category[]>>;
 }
 
-export default function CategoryForm({
-  category,
-  submitLabel,
-  action,
-  cancel,
-  setCreatedCategories,
-}: CategoryFormProps) {
+export default function CategoryForm({ category, submitLabel, cancel }: CategoryFormProps) {
   const { error, register, handleSubmit, onSubmit, errors, isSubmitting } = useCategoryForm({
     category,
-    action,
     cancel,
-    setCreatedCategories,
   });
 
   return (
