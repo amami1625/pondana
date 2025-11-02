@@ -11,23 +11,17 @@ import SubmitButton from '@/components/Buttons/SubmitButton';
 interface AuthorFormProps {
   author?: Author;
   submitLabel: string;
-  action: (formData: AuthorFormData) => Promise<Author | { error: string }>;
   cancel: () => void;
-  setCreatedAuthors: React.Dispatch<React.SetStateAction<Author[]>>;
 }
 
 export default function AuthorForm({
   author,
   submitLabel,
-  action,
   cancel,
-  setCreatedAuthors,
 }: AuthorFormProps) {
   const { error, register, handleSubmit, onSubmit, errors, isSubmitting } = useAuthorForm({
     author,
-    action,
     cancel,
-    setCreatedAuthors,
   });
 
   return (
