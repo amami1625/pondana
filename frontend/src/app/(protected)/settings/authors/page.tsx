@@ -80,17 +80,10 @@ export default function SettingsAuthorsPage() {
       </div>
 
       {/* 作成モーダル */}
-      <AuthorModal
-        isOpen={createModal.isOpen}
-        onClose={createModal.close}
-      />
+      <AuthorModal isOpen={createModal.isOpen} onClose={createModal.close} />
 
       {/* 編集モーダル */}
-      <AuthorModal
-        author={editingAuthor}
-        isOpen={editModal.isOpen}
-        onClose={editModal.close}
-      />
+      <AuthorModal author={editingAuthor} isOpen={editModal.isOpen} onClose={editModal.close} />
     </>
   );
 }

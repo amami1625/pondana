@@ -8,21 +8,13 @@ interface AuthorModalProps {
   onClose: () => void;
 }
 
-export default function AuthorModal({
-  author,
-  isOpen,
-  onClose,
-}: AuthorModalProps) {
+export default function AuthorModal({ author, isOpen, onClose }: AuthorModalProps) {
   const title = author ? '著者を編集' : '著者を追加';
   const submitLabel = author ? '更新' : '追加';
 
   return (
     <BaseModal title={title} isOpen={isOpen} onClose={onClose}>
-      <AuthorForm
-        author={author}
-        submitLabel={submitLabel}
-        cancel={onClose}
-      />
+      <AuthorForm author={author} submitLabel={submitLabel} cancel={onClose} />
     </BaseModal>
   );
 }

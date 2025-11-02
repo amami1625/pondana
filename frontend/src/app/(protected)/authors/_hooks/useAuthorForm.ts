@@ -9,10 +9,7 @@ interface UseAuthorFormProps {
   cancel: () => void;
 }
 
-export const useAuthorForm = ({
-  author,
-  cancel,
-}: UseAuthorFormProps) => {
+export const useAuthorForm = ({ author, cancel }: UseAuthorFormProps) => {
   const [error, setError] = useState('');
   const { createAuthor, updateAuthor, createError, updateError } = useAuthorMutations();
 

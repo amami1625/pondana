@@ -1,6 +1,5 @@
 'use client';
 
-import { AuthorFormData } from '@/schemas/author';
 import { Author } from '@/app/(protected)/authors/_types';
 import { useAuthorForm } from '@/app/(protected)/authors/_hooks/useAuthorForm';
 import FormInput from '@/components/forms/FormInput';
@@ -14,11 +13,7 @@ interface AuthorFormProps {
   cancel: () => void;
 }
 
-export default function AuthorForm({
-  author,
-  submitLabel,
-  cancel,
-}: AuthorFormProps) {
+export default function AuthorForm({ author, submitLabel, cancel }: AuthorFormProps) {
   const { error, register, handleSubmit, onSubmit, errors, isSubmitting } = useAuthorForm({
     author,
     cancel,

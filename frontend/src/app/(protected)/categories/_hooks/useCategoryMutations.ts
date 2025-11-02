@@ -1,17 +1,12 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { queryKeys } from '@/constants/queryKeys';
-import { Category } from '@/schemas/category';
+import { Category, CategoryFormData } from '@/app/(protected)/categories/_types';
 
 // 作成用の型
-type CreateCategoryData = {
-  name: string;
-};
+type CreateCategoryData = Pick<CategoryFormData, 'name'>;
 
 // 更新用の型
-type UpdateCategoryData = {
-  id: number;
-  name: string;
-};
+type UpdateCategoryData = Required<Pick<CategoryFormData, 'id' | 'name'>>;
 
 export function useCategoryMutations() {
   const queryClient = useQueryClient();

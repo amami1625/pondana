@@ -1,17 +1,12 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { queryKeys } from '@/constants/queryKeys';
-import { Author } from '@/app/(protected)/authors/_types';
+import { Author, AuthorFormData } from '@/app/(protected)/authors/_types';
 
 // 作成用の型
-type CreateAuthorData = {
-  name: string;
-};
+type CreateAuthorData = Pick<AuthorFormData, 'name'>;
 
 // 更新用の型
-type UpdateAuthorData = {
-  id: number;
-  name: string;
-};
+type UpdateAuthorData = Required<Pick<AuthorFormData, 'id' | 'name'>>;
 
 export function useAuthorMutations() {
   const queryClient = useQueryClient();
