@@ -2,21 +2,16 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Author, AuthorFormData, authorFormSchema } from '@/app/(protected)/authors/_types';
+import { useAuthorMutations } from './useAuthorMutations';
 
 interface UseAuthorFormProps {
   author?: Author;
-  action: (formData: AuthorFormData) => Promise<Author | { error: string }>;
   cancel: () => void;
-  setCreatedAuthors: React.Dispatch<React.SetStateAction<Author[]>>;
 }
 
-export const useAuthorForm = ({
-  author,
-  action,
-  cancel,
-  setCreatedAuthors,
-}: UseAuthorFormProps) => {
+export const useAuthorForm = ({ author, cancel }: UseAuthorFormProps) => {
   const [error, setError] = useState('');
+  const { createAuthor, updateAuthor, createError, updateError } = useAuthorMutations();
 
   const defaultValues: AuthorFormData = {
     id: author?.id,
@@ -33,24 +28,41 @@ export const useAuthorForm = ({
   });
 
   const onSubmit = async (data: AuthorFormData) => {
-    const result = await action(data);
-    if ('error' in result) {
-      setError(result.error);
-      return;
+    try {
+      if (author) {
+        // 更新
+        updateAuthor(
+          { id: author.id, name: data.name },
+          {
+            onSuccess: () => {
+              cancel();
+            },
+            onError: (error) => {
+              setError(error.message);
+            },
+          },
+        );
+      } else {
+        // 作成
+        createAuthor(
+          { name: data.name },
+          {
+            onSuccess: () => {
+              cancel();
+            },
+            onError: (error) => {
+              setError(error.message);
+            },
+          },
+        );
+      }
+    } catch (err) {
+      setError('予期しないエラーが発生しました');
     }
-
-    if (!author) {
-      setCreatedAuthors((prev) => [...prev, result]);
-    } else {
-      setCreatedAuthors((prev) =>
-        prev.map((author) => (author.id === result.id ? result : author)),
-      );
-    }
-    cancel();
   };
 
   return {
-    error,
+    error: error || createError?.message || updateError?.message,
     register,
     handleSubmit,
     onSubmit,
