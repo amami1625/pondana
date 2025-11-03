@@ -1,5 +1,5 @@
-import { List, ListFormData } from '@/app/(protected)/lists/_types';
-import { useListFormState } from '../../_hooks/useListFormState';
+import { List } from '@/app/(protected)/lists/_types';
+import { useListFormState } from '@/app/(protected)/lists/_hooks/useListFormState';
 import FormInput from '@/components/forms/FormInput';
 import FormTextarea from '@/components/forms/FormTextarea';
 import FormCheckbox from '@/components/forms/FormCheckbox';
@@ -9,16 +9,14 @@ import SubmitButton from '@/components/Buttons/SubmitButton';
 
 interface ListFormProps {
   list?: List;
-  action: (formData: ListFormData) => Promise<{ success: true } | { error: string } | void>;
   submitLabel: string;
-  onClose: () => void;
+  cancel: () => void;
 }
 
-export default function ListForm({ list, action, submitLabel, onClose }: ListFormProps) {
+export default function ListForm({ list, submitLabel, cancel }: ListFormProps) {
   const { register, handleSubmit, errors, error, onSubmit, isSubmitting } = useListFormState({
     list,
-    action,
-    onSuccess: onClose,
+    cancel,
   });
 
   return (
@@ -70,7 +68,7 @@ export default function ListForm({ list, action, submitLabel, onClose }: ListFor
       {error && <ErrorMessage message={error} />}
 
       <div className="flex justify-end gap-3">
-        <CancelButton onClick={onClose} />
+        <CancelButton onClick={cancel} />
         <SubmitButton label={submitLabel} disabled={isSubmitting} />
       </div>
     </form>
