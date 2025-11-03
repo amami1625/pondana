@@ -3,9 +3,10 @@ import { listBaseSchema, listDetailSchema } from '@/app/(protected)/lists/_types
 import { NextRequest, NextResponse } from 'next/server';
 
 // GET - 詳細取得
-export async function GET(_request: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(_request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const data = await authenticatedRequest(`/lists/${params.id}`);
+    const { id } = await params;
+    const data = await authenticatedRequest(`/lists/${id}`);
     const list = listDetailSchema.parse(data);
     return NextResponse.json(list);
   } catch (error) {
@@ -17,10 +18,11 @@ export async function GET(_request: NextRequest, { params }: { params: { id: str
 }
 
 // PUT - 更新
-export async function PUT(request: NextRequest, { params }: { params: { id: string } }) {
+export async function PUT(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
+    const { id } = await params;
     const body = await request.json();
-    const data = await authenticatedRequest(`/lists/${params.id}`, {
+    const data = await authenticatedRequest(`/lists/${id}`, {
       method: 'PUT',
       body: JSON.stringify({ list: body }),
     });
@@ -35,9 +37,13 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
 }
 
 // DELETE - 削除
-export async function DELETE(_request: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(
+  _request: NextRequest,
+  { params }: { params: Promise<{ id: string }> },
+) {
   try {
-    await authenticatedRequest(`/lists/${params.id}`, {
+    const { id } = await params;
+    await authenticatedRequest(`/lists/${id}`, {
       method: 'DELETE',
     });
 
