@@ -22,7 +22,7 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const data = await authenticatedRequest('/categories', {
       method: 'POST',
-      body: JSON.stringify(body),
+      body: JSON.stringify({ category: body }),
     });
     const category = categorySchema.parse(data);
     return NextResponse.json(category);
@@ -42,7 +42,7 @@ export async function PUT(request: NextRequest) {
 
     const data = await authenticatedRequest(`/categories/${id}`, {
       method: 'PUT',
-      body: JSON.stringify(updateData),
+      body: JSON.stringify({ category: updateData }),
     });
     const category = categorySchema.parse(data);
     return NextResponse.json(category);
