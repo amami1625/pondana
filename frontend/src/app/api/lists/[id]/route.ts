@@ -1,5 +1,5 @@
 import { authenticatedRequest } from '@/supabase/dal';
-import { listSchema, listDetailSchema } from '@/app/(protected)/lists/_types';
+import { listBaseSchema, listDetailSchema } from '@/app/(protected)/lists/_types';
 import { NextRequest, NextResponse } from 'next/server';
 
 // GET - 詳細取得
@@ -24,7 +24,7 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
       method: 'PUT',
       body: JSON.stringify({ list: body }),
     });
-    const list = listSchema.parse(data);
+    const list = listBaseSchema.parse(data);
     return NextResponse.json(list);
   } catch (error) {
     if (error instanceof Error) {

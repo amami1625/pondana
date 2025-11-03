@@ -1,5 +1,5 @@
 import { authenticatedRequest } from '@/supabase/dal';
-import { listSchema } from '@/app/(protected)/lists/_types';
+import { listBaseSchema, listSchema } from '@/app/(protected)/lists/_types';
 import { NextRequest, NextResponse } from 'next/server';
 
 // GET - 一覧取得
@@ -24,7 +24,7 @@ export async function POST(request: NextRequest) {
       method: 'POST',
       body: JSON.stringify({ list: body }),
     });
-    const list = listSchema.parse(data);
+    const list = listBaseSchema.parse(data);
     return NextResponse.json(list);
   } catch (error) {
     if (error instanceof Error) {
