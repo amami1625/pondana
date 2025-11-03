@@ -9,4 +9,7 @@ export const queryKeys = {
     all: ['lists'] as const, // 一覧取得用
     detail: (id: number) => ['lists', 'detail', id] as const, // 詳細取得用
   },
+  books: {
+    all: ['books'] as const, // 一覧取得用
+  },
 } as const;
