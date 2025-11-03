@@ -1,9 +1,6 @@
 'use client';
 
-import { ListDetail } from '@/app/(protected)/lists/_types';
-import { Book } from '@/app/(protected)/books/_types';
 import { useModal } from '@/hooks/useModal';
-import { useDeleteList } from '@/app/(protected)/lists/_hooks/useDeleteList';
 import { formatVisibility } from '@/lib/utils/formatVisibility';
 import UpdateListFormModal from '@/app/(protected)/lists/_components/modal';
 import AddBookModal from '@/app/(protected)/listBooks/_components/modal/AddBookModal';
@@ -17,20 +14,51 @@ import {
   DetailMetadataItem,
   DetailActions,
 } from '@/components/details';
+import { useList } from '@/app/(protected)/lists/_hooks/useList';
+import { useBooks } from '@/app/(protected)/books/_hooks/useBooks';
+import LoadingState from '@/components/LoadingState';
+import ErrorMessage from '@/components/ErrorMessage';
+import { useListMutations } from '@/app/(protected)/lists/_hooks/useListMutations';
 
 interface ListDetailProps {
-  list: ListDetail;
-  books: Book[];
+  id: number;
 }
 
-export default function ListDetailView({ list, books }: ListDetailProps) {
+export default function ListDetailView({ id }: ListDetailProps) {
+  const { data: list, error: listError, isLoading: listLoading } = useList(id);
+  const { data: books, error: bookError, isLoading: booksLoading } = useBooks();
+  const { deleteList, deleteError } = useListMutations();
   const updateModal = useModal();
   const addBookModal = useModal();
-  const { error, handleDelete } = useDeleteList(list.id);
+
+  const handleDelete = (id: number) => {
+    if (!confirm('本当に削除しますか？')) {
+      return;
+    }
+
+    deleteList(id);
+  };
+
+  // ローディング状態
+  if (listLoading || booksLoading) {
+    return <LoadingState message="リストを読み込んでいます..." />;
+  }
+
+  // エラー状態
+  if (listError || bookError) {
+    return (
+      <ErrorMessage message={listError?.message || bookError?.message || 'エラーが発生しました'} />
+    );
+  }
+
+  // データが取得できていない場合
+  if (!list || !books) {
+    return <ErrorMessage message="データの取得に失敗しました" />;
+  }
 
   return (
     <>
-      <DetailContainer error={error}>
+      <DetailContainer error={deleteError?.message}>
         <DetailHeader title={list.name} />
 
         <DetailSection title="概要">
@@ -48,7 +76,7 @@ export default function ListDetailView({ list, books }: ListDetailProps) {
 
         <DetailActions>
           <UpdateButton onClick={updateModal.open} />
-          <DeleteButton onClick={handleDelete} />
+          <DeleteButton onClick={() => handleDelete(list.id)} />
           <AddButton onClick={addBookModal.open} />
         </DetailActions>
 

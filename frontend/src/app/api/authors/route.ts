@@ -22,7 +22,7 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const data = await authenticatedRequest('/authors', {
       method: 'POST',
-      body: JSON.stringify(body),
+      body: JSON.stringify({ author: body }),
     });
     const author = authorSchema.parse(data);
     return NextResponse.json(author);
@@ -42,7 +42,7 @@ export async function PUT(request: NextRequest) {
 
     const data = await authenticatedRequest(`/authors/${id}`, {
       method: 'PUT',
-      body: JSON.stringify(updateData),
+      body: JSON.stringify({ author: updateData }),
     });
     const author = authorSchema.parse(data);
     return NextResponse.json(author);
