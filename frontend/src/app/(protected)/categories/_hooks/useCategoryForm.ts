@@ -60,7 +60,7 @@ export const useCategoryForm = ({ category, cancel }: UseCategoryFormProps) => {
           },
         );
       }
-    } catch (err) {
+    } catch (_err) {
       setError('予期しないエラーが発生しました');
     }
   };

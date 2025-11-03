@@ -53,7 +53,7 @@ export function useListFormState({ list, cancel }: UseListFormStateProps) {
           },
         );
       }
-    } catch (err) {
+    } catch (_err) {
       setError('予期しないエラーが発生しました');
     }
   };

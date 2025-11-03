@@ -56,7 +56,7 @@ export const useAuthorForm = ({ author, cancel }: UseAuthorFormProps) => {
           },
         );
       }
-    } catch (err) {
+    } catch (_err) {
       setError('予期しないエラーが発生しました');
     }
   };
