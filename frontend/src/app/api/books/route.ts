@@ -1,6 +1,6 @@
 import { authenticatedRequest } from '@/supabase/dal';
-import { bookSchema } from '@/app/(protected)/books/_types';
-import { NextResponse } from 'next/server';
+import { bookBaseSchema, bookSchema } from '@/app/(protected)/books/_types';
+import { NextRequest, NextResponse } from 'next/server';
 
 // GET - 一覧取得
 export async function GET() {
@@ -8,6 +8,32 @@ export async function GET() {
     const data = await authenticatedRequest('/books');
     const books = bookSchema.array().parse(data);
     return NextResponse.json(books);
+  } catch (error) {
+    if (error instanceof Error) {
+      return NextResponse.json({ error: error.message }, { status: 500 });
+    }
+    return NextResponse.json({ error: '不明なエラーが発生しました' }, { status: 500 });
+  }
+}
+
+// POST - 作成
+export async function POST(request: NextRequest) {
+  try {
+    const body = await request.json();
+
+    // category_idとratingの0をnullに変換
+    const bookData = {
+      ...body,
+      category_id: body.category_id === 0 ? null : body.category_id,
+      rating: body.rating === 0 ? null : body.rating,
+    };
+
+    const data = await authenticatedRequest('/books', {
+      method: 'POST',
+      body: JSON.stringify({ book: bookData }),
+    });
+    const book = bookBaseSchema.parse(data);
+    return NextResponse.json(book);
   } catch (error) {
     if (error instanceof Error) {
       return NextResponse.json({ error: error.message }, { status: 500 });
