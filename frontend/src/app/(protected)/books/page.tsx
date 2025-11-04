@@ -1,33 +1,70 @@
+'use client';
+
 import PageTitle from '@/components/PageTitle';
-import { getAuthors } from '../authors/_lib/queries';
-import { getCategories } from '../categories/_lib/queries';
-import BookList from './_components/display/BookList';
-import { getBooks } from './_lib/queries';
 import ErrorMessage from '@/components/ErrorMessage';
+import { useBooks } from './_hooks/useBooks';
+import { useAuthors } from '../authors/_hooks/useAuthors';
+import { useCategories } from '../categories/_hooks/useCategories';
+import { CreateButton } from '@/components/Buttons';
+import { useModal } from '@/hooks/useModal';
+import EmptyState from '@/components/EmptyState';
+import BookCard from './_components/display/BookCard';
+import CreateBookFormModal from '@/app/(protected)/books/_components/modal';
+import LoadingState from '@/components/LoadingState';
 
-export default async function BooksPage() {
-  const [books, authors, categories] = await Promise.all([
-    getBooks(),
-    getAuthors(),
-    getCategories(),
-  ]);
+export default function BooksPage() {
+  const { data: books, error: bookError, isLoading: bookLoading } = useBooks();
+  const { data: authors, error: authorError, isLoading: authorLoading } = useAuthors();
+  const { data: categories, error: categoryError, isLoading: categoryLoading } = useCategories();
+  const createModal = useModal();
 
-  if ('error' in books) {
-    return <ErrorMessage message={books.error} />;
+  // ローディング状態
+  if (bookLoading || authorLoading || categoryLoading) {
+    return <LoadingState message="本一覧を読み込んでいます..." />;
   }
 
-  if ('error' in authors) {
-    return <ErrorMessage message={authors.error} />;
+  // エラー状態
+  if (bookError || authorError || categoryError) {
+    return (
+      <ErrorMessage
+        message={
+          bookError?.message ||
+          authorError?.message ||
+          categoryError?.message ||
+          'エラーが発生しました'
+        }
+      />
+    );
   }
 
-  if ('error' in categories) {
-    return <ErrorMessage message={categories.error} />;
+  // データが取得できていない場合
+  if (!books || !authors || !categories) {
+    return <ErrorMessage message="データの取得に失敗しました" />;
   }
 
   return (
     <>
       <PageTitle title="本一覧" />
-      <BookList books={books} authors={authors} categories={categories} />
+      <div className="mb-6 flex justify-end">
+        <CreateButton onClick={createModal.open} />
+      </div>
+      {books.length === 0 ? (
+        // 本が登録されていない場合の表示
+        <EmptyState element="本" />
+      ) : (
+        // 本のリスト表示
+        <div className="space-y-3">
+          {books.map((book) => (
+            <BookCard key={book.id} book={book} />
+          ))}
+        </div>
+      )}
+      <CreateBookFormModal
+        authors={authors}
+        categories={categories}
+        isOpen={createModal.isOpen}
+        onClose={createModal.close}
+      />
     </>
   );
 }

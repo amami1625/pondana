@@ -1,13 +1,8 @@
 'use client';
 
-import { BookDetail } from '@/app/(protected)/books/_types';
-import { List } from '@/app/(protected)/lists/_types';
-import { Author } from '@/app/(protected)/authors/_types';
-import { Category } from '@/app/(protected)/categories/_types';
 import UpdateBookFormModal from '@/app/(protected)/books/_components/modal';
 import { STATUS_LABEL } from '@/app/(protected)/books/_constants';
 import { formatRating, formatVisibility } from '@/lib/utils';
-import { useDeleteBook } from '@/app/(protected)/books/_hooks';
 import { UpdateButton, DeleteButton, AddButton, CreateCardButton } from '@/components/Buttons';
 import AddListModal from '@/app/(protected)/listBooks/_components/modal/AddListModal';
 import AddedListsView from '@/app/(protected)/books/_components/display/AddedListsView';
@@ -23,23 +18,63 @@ import {
   DetailActions,
 } from '@/components/details';
 import { useModal } from '@/hooks/useModal';
+import { useBook } from '@/app/(protected)/books/_hooks/useBook';
+import { useLists } from '@/app/(protected)/lists/_hooks/useLists';
+import { useAuthors } from '@/app/(protected)/authors/_hooks/useAuthors';
+import { useCategories } from '@/app/(protected)/categories/_hooks/useCategories';
+import LoadingState from '@/components/LoadingState';
+import ErrorMessage from '@/components/ErrorMessage';
+import { useBookMutations } from '@/app/(protected)/books/_hooks/useBookMutations';
 
 interface BookDetailProps {
-  book: BookDetail;
-  lists: List[];
-  authors: Author[];
-  categories: Category[];
+  id: number;
 }
 
-export default function BookDetailView({ book, lists, authors, categories }: BookDetailProps) {
+export default function BookDetailView({ id }: BookDetailProps) {
+  const { data: book, error: bookError, isLoading: bookLoading } = useBook(id);
+  const { data: lists, error: listError, isLoading: listLoading } = useLists();
+  const { data: authors, error: authorError, isLoading: authorLoading } = useAuthors();
+  const { data: categories, error: categoryError, isLoading: categoryLoading } = useCategories();
+  const { deleteBook, deleteError } = useBookMutations();
   const updateModal = useModal();
   const addListModal = useModal();
   const cardModal = useModal();
-  const { error, handleDelete } = useDeleteBook(book.id);
+
+  const handleDelete = (id: number) => {
+    if (!confirm('本当に削除しますか？')) {
+      return;
+    }
+
+    deleteBook(id);
+  };
+
+  // ローディング状態
+  if (bookLoading || authorLoading || categoryLoading || listLoading) {
+    return <LoadingState message="本情報を読み込んでいます..." />;
+  }
+
+  // エラー状態
+  if (bookError || listError || authorError || categoryError) {
+    return (
+      <ErrorMessage
+        message={
+          bookError?.message ||
+          authorError?.message ||
+          categoryError?.message ||
+          'エラーが発生しました'
+        }
+      />
+    );
+  }
+
+  // データが取得できていない場合
+  if (!book || !lists || !authors || !categories) {
+    return <ErrorMessage message="データの取得に失敗しました" />;
+  }
 
   return (
     <>
-      <DetailContainer error={error}>
+      <DetailContainer error={deleteError?.message}>
         <DetailHeader
           title={book.title}
           badges={[
@@ -70,7 +105,7 @@ export default function BookDetailView({ book, lists, authors, categories }: Boo
 
         <DetailActions>
           <UpdateButton onClick={updateModal.open} />
-          <DeleteButton onClick={handleDelete} />
+          <DeleteButton onClick={() => handleDelete(id)} />
           <AddButton onClick={addListModal.open} />
           <CreateCardButton onClick={cardModal.open} />
         </DetailActions>
