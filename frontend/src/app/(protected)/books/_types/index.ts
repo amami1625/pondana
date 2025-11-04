@@ -1,7 +1,9 @@
 export {
+  type BookBase,
   type Book,
   type BookDetail,
   type BookFormData,
+  bookBaseSchema,
   bookSchema,
   bookDetailSchema,
   bookFormSchema,

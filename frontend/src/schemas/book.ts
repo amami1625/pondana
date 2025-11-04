@@ -11,7 +11,6 @@ export const bookBaseSchema = z.object({
   title: z.string(),
   description: z.string().nullable(),
   user_id: z.number(),
-  authors: authorSchema.array(),
   category_id: z.number().nullable(),
   category: categorySchema.optional(),
   rating: z.number().int().min(0).max(5).nullable(),
@@ -31,6 +30,7 @@ export const bookBaseSchema = z.object({
 
 // Book一覧データのバリデーションスキーマ(APIレスポンス用)
 export const bookSchema = bookBaseSchema.extend({
+  authors: authorSchema.array(),
   author_ids: z.number().array(),
   list_ids: z.number().array(),
   lists: z.array(
@@ -64,6 +64,7 @@ export const bookFormSchema = z.object({
   public: z.boolean(),
 });
 
+export type BookBase = z.infer<typeof bookBaseSchema>;
 export type Book = z.infer<typeof bookSchema>;
 export type BookDetail = z.infer<typeof bookDetailSchema>;
 export type BookFormData = z.infer<typeof bookFormSchema>;

@@ -1,9 +1,9 @@
 import { z } from 'zod';
-import { bookBaseSchema } from './book';
+import { bookSchema } from './book';
 import { listBaseSchema } from './list';
 
 // リストに追加された本（GET /lists/:id の books）
-export const addedBookSchema = bookBaseSchema;
+export const addedBookSchema = bookSchema;
 
 // 本に追加されたリスト（GET /books/:id の lists）
 export const addedListSchema = listBaseSchema.pick({

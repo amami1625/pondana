@@ -3,7 +3,6 @@ import { Author } from '@/app/(protected)/authors/_types';
 import { Category } from '@/app/(protected)/categories/_types';
 import BookForm from '@/app/(protected)/books/_components/forms';
 import BaseModal from '@/components/BaseModal';
-import { createBook, updateBook } from '@/app/(protected)/books/_lib/actions';
 
 interface BookFormModalProps {
   book?: Book;
@@ -21,7 +20,6 @@ export default function BookFormModal({
   onClose,
 }: BookFormModalProps) {
   const title = book ? '本を編集' : '本を作成';
-  const action = book ? updateBook : createBook;
   const submitLabel = book ? '更新' : '作成';
 
   return (
@@ -30,9 +28,8 @@ export default function BookFormModal({
         book={book}
         authors={authors}
         categories={categories}
-        action={action}
         submitLabel={submitLabel}
-        onClose={onClose}
+        cancel={onClose}
       />
     </BaseModal>
   );

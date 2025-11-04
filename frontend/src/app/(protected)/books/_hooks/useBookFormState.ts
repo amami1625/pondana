@@ -1,16 +1,18 @@
+import { useState, useCallback } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useState, useCallback } from 'react';
-import { Book, BookFormData, bookFormSchema } from '../_types';
+import { Book, BookFormData, bookFormSchema } from '@/app/(protected)/books/_types';
+import { useBookMutations } from '@/app/(protected)/books/_hooks/useBookMutations';
 
 interface UseBookFormStateProps {
   book?: Book;
-  action: (formData: BookFormData) => Promise<{ success: true } | { error: string } | void>;
-  onSuccess: () => void; // フォーム送信成功時に呼ばれるコールバック
+  cancel: () => void;
 }
 
-export function useBookFormState({ book, action, onSuccess }: UseBookFormStateProps) {
+export function useBookFormState({ book, cancel }: UseBookFormStateProps) {
   const [error, setError] = useState('');
+  const { createBook, updateBook, createError, updateError, isCreating, isUpdating } =
+    useBookMutations();
 
   const defaultValues: BookFormData = {
     id: book?.id,
@@ -28,26 +30,56 @@ export function useBookFormState({ book, action, onSuccess }: UseBookFormStatePr
     control,
     setValue,
     handleSubmit,
-    formState: { errors, isSubmitting },
+    formState: { errors },
   } = useForm<BookFormData>({
     resolver: zodResolver(bookFormSchema),
     defaultValues,
   });
 
-  const onSubmit = useCallback(
-    async (data: BookFormData) => {
-      const res = await action(data);
-      if (res && 'error' in res) {
-        setError(res.error);
-        return;
+  const onSubmit = (data: BookFormData) => {
+    try {
+      setError(''); // 前回のエラーをクリア
+
+      if (book) {
+        // 更新
+        updateBook(
+          {
+            id: book.id,
+            title: data.title,
+            description: data.description,
+            author_ids: data.author_ids,
+            category_id: data.category_id,
+            rating: data.rating,
+            reading_status: data.reading_status,
+            public: data.public,
+          },
+          {
+            onSuccess: () => cancel(),
+            onError: (error) => setError(error.message),
+          },
+        );
+      } else {
+        // 作成
+        createBook(
+          {
+            title: data.title,
+            description: data.description,
+            author_ids: data.author_ids,
+            category_id: data.category_id,
+            rating: data.rating,
+            reading_status: data.reading_status,
+            public: data.public,
+          },
+          {
+            onSuccess: () => cancel(),
+            onError: (error) => setError(error.message),
+          },
+        );
       }
-      // 成功時のコールバックを実行
-      if (res && 'success' in res) {
-        onSuccess();
-      }
-    },
-    [action, onSuccess],
-  );
+    } catch (_err) {
+      setError('予期しないエラーが発生しました');
+    }
+  };
 
   return {
     register,
@@ -55,8 +87,8 @@ export function useBookFormState({ book, action, onSuccess }: UseBookFormStatePr
     setValue,
     handleSubmit,
     errors,
-    error,
+    error: error || createError?.message || updateError?.message,
     onSubmit,
-    isSubmitting,
+    isSubmitting: isCreating || isUpdating,
   };
 }

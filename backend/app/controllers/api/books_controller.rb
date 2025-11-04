@@ -16,7 +16,7 @@ class Api::BooksController < Api::ApplicationController
   def update
     book = current_user.books.find(params[:id])
     if book.update(book_params)
-      render json: book, include: [:category, :authors], methods: [:author_ids]
+      render json: book, include: :category
     else
       render json: { errors: book.errors }, status: :unprocessable_entity
     end

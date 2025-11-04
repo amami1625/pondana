@@ -1,16 +1,15 @@
 'use client';
 
-import { useState } from 'react';
-import { Book, BookFormData } from '@/app/(protected)/books/_types';
+import { Book } from '@/app/(protected)/books/_types';
 import { Category } from '@/app/(protected)/categories/_types';
 import { Author } from '@/schemas/author';
 import Select from 'react-select';
 import { Controller } from 'react-hook-form';
 import AuthorModal from '@/app/(protected)/authors/_components/modal';
 import CategoryModal from '@/app/(protected)/categories/_components/modal';
-import { useBookFormState } from '../../_hooks/useBookFormState';
+import { useBookFormState } from '@/app/(protected)/books/_hooks/useBookFormState';
 import { useModal } from '@/hooks/useModal';
-import { STATUS_OPTIONS, RATING_OPTIONS } from '../../_constants';
+import { STATUS_OPTIONS, RATING_OPTIONS } from '@/app/(protected)/books/_constants';
 import FormInput from '@/components/forms/FormInput';
 import FormCheckbox from '@/components/forms/FormCheckbox';
 import FormTextarea from '@/components/forms/FormTextarea';
@@ -24,9 +23,8 @@ interface BookFormProps {
   book?: Book;
   authors?: Author[];
   categories?: Category[];
-  action: (formData: BookFormData) => Promise<{ success: true } | { error: string } | void>;
   submitLabel: string;
-  onClose: () => void;
+  cancel: () => void;
 }
 
 // TODO: Tag機能を実装したらTagsを追加する
@@ -34,20 +32,12 @@ export default function BookForm({
   book,
   authors = [],
   categories = [],
-  action,
   submitLabel,
-  onClose,
+  cancel,
 }: BookFormProps) {
-  // フォーム処理
   const { register, control, handleSubmit, errors, error, onSubmit, isSubmitting } =
-    useBookFormState({ book, action, onSuccess: onClose });
-
-  // 著者管理
-  const [createdAuthors, setCreatedAuthors] = useState<Author[]>(authors);
+    useBookFormState({ book, cancel });
   const authorModal = useModal();
-
-  // カテゴリ管理
-  const [createdCategories, setCreatedCategories] = useState<Category[]>(categories);
   const categoryModal = useModal();
 
   return (
@@ -93,7 +83,7 @@ export default function BookForm({
               name="author_ids"
               control={control}
               render={({ field: { onChange, value, ref } }) => {
-                const options = createdAuthors.map((a) => ({
+                const options = authors.map((a) => ({
                   value: a.id,
                   label: a.name,
                 }));
@@ -150,7 +140,7 @@ export default function BookForm({
         <FormSelect
           name="category_id"
           label="カテゴリ"
-          options={createdCategories.map((c) => ({ value: c.id, label: c.name }))}
+          options={categories.map((c) => ({ value: c.id, label: c.name }))}
           defaultValue="0"
           defaultLabel="未分類"
           error={errors.category_id?.message}
@@ -179,21 +169,13 @@ export default function BookForm({
         {error && <ErrorMessage message={error} />}
 
         <div className="flex justify-end gap-3">
-          <CancelButton onClick={onClose} />
+          <CancelButton onClick={cancel} />
           <SubmitButton label={submitLabel} disabled={isSubmitting} />
         </div>
       </form>
       {/* モーダル */}
-      <AuthorModal
-        isOpen={authorModal.isOpen}
-        onClose={authorModal.close}
-        setCreatedAuthors={setCreatedAuthors}
-      />
-      <CategoryModal
-        isOpen={categoryModal.isOpen}
-        onClose={categoryModal.close}
-        setCreatedCategories={setCreatedCategories}
-      />
+      <AuthorModal isOpen={authorModal.isOpen} onClose={authorModal.close} />
+      <CategoryModal isOpen={categoryModal.isOpen} onClose={categoryModal.close} />
     </>
   );
 }
