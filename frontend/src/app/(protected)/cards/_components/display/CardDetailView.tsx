@@ -1,11 +1,12 @@
 'use client';
 
-import { CardDetail } from '@/app/(protected)/cards/_types';
 import CardModal from '@/app/(protected)/cards/_components/modal';
 import { DeleteButton, UpdateButton } from '@/components/Buttons';
 import { useModal } from '@/hooks/useModal';
-import { useDeleteCard } from '@/app/(protected)/cards/_hooks/useDeleteCard';
-import { updateCard } from '@/app/(protected)/cards/_lib/actions';
+import { useCard } from '@/app/(protected)/cards/_hooks/useCard';
+import { useCardMutations } from '@/app/(protected)/cards/_hooks/useCardMutations';
+import LoadingState from '@/components/LoadingState';
+import ErrorMessage from '@/components/ErrorMessage';
 import {
   DetailContainer,
   DetailHeader,
@@ -14,23 +15,53 @@ import {
   DetailMetadataItem,
   DetailActions,
 } from '@/components/details';
+import { useRouter } from 'next/navigation';
 
 interface CardDetailViewProps {
-  card: CardDetail;
+  id: number;
 }
 
-export default function CardDetailView({ card }: CardDetailViewProps) {
-  const { error, handleDelete } = useDeleteCard({
-    cardId: card.id,
-    bookId: card.book_id,
-    redirectTo: '/cards',
-  });
-
+export default function CardDetailView({ id }: CardDetailViewProps) {
+  const router = useRouter();
+  const { data: card, error: cardError, isLoading: cardLoading } = useCard(id);
+  const { deleteCard, deleteError } = useCardMutations();
   const cardModal = useModal();
+
+  const handleDelete = () => {
+    if (!confirm('本当に削除しますか？')) {
+      return;
+    }
+
+    if (card) {
+      deleteCard(
+        { bookId: card.book_id, cardId: card.id },
+        {
+          onSuccess: () => {
+            router.push('/cards');
+          },
+        },
+      );
+    }
+  };
+
+  // ローディング状態
+  if (cardLoading) {
+    return <LoadingState message="カード情報を読み込んでいます..." />;
+  }
+
+  // エラー状態
+  if (cardError) {
+    return <ErrorMessage message={cardError?.message || 'エラーが発生しました'} />;
+  }
+
+  // データが取得できていない場合
+  if (!card) {
+    return <ErrorMessage message="データの取得に失敗しました" />;
+  }
 
   return (
     <>
-      <DetailContainer error={error}>
+      <DetailContainer error={deleteError?.message}>
         <DetailHeader title={card.title} />
 
         <DetailSection title="本文">
@@ -54,7 +85,6 @@ export default function CardDetailView({ card }: CardDetailViewProps) {
 
       <CardModal
         card={card}
-        action={updateCard}
         bookId={card.book_id}
         bookTitle={card.book.title}
         isOpen={cardModal.isOpen}

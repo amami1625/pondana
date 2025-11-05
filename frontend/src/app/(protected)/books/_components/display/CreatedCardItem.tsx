@@ -1,21 +1,31 @@
 'use client';
 
 import { Card } from '@/app/(protected)/cards/_types';
-import { useDeleteCard } from '@/app/(protected)/cards/_hooks/useDeleteCard';
 import { DeleteButton } from '@/components/Buttons';
 import ErrorMessage from '@/components/ErrorMessage';
+import { useCardMutations } from '@/app/(protected)/cards/_hooks/useCardMutations';
 
 interface CreatedCardItemProps {
   card: Card;
 }
 
 export default function CreatedCardItem({ card }: CreatedCardItemProps) {
-  const { error, handleDelete } = useDeleteCard({ cardId: card.id, bookId: card.book_id });
+  const { deleteCard, deleteError } = useCardMutations();
+
+  const handleDelete = () => {
+    if (!confirm('本当に削除しますか？')) {
+      return;
+    }
+
+    if (card) {
+      deleteCard({ bookId: card.book_id, cardId: card.id });
+    }
+  };
 
   return (
     <div className="border-b border-gray-200 p-4 last:border-b-0">
       {/* エラーメッセージ */}
-      {error && <ErrorMessage message={error} />}
+      {deleteError && <ErrorMessage message={deleteError.message} />}
 
       <div className="flex items-center justify-between gap-4">
         <div className="flex-1 min-w-0">

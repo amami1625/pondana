@@ -8,7 +8,6 @@ import AddListModal from '@/app/(protected)/listBooks/_components/modal/AddListM
 import AddedListsView from '@/app/(protected)/books/_components/display/AddedListsView';
 import CardModal from '@/app/(protected)/cards/_components/modal';
 import CreatedCardsView from '@/app/(protected)/books/_components/display/CreatedCardsView';
-import { createCard } from '@/app/(protected)/cards/_lib/actions';
 import {
   DetailContainer,
   DetailHeader,
@@ -107,7 +106,6 @@ export default function BookDetailView({ id }: BookDetailProps) {
         onClose={addListModal.close}
       />
       <CardModal
-        action={createCard}
         bookId={book.id}
         bookTitle={book.title}
         isOpen={cardModal.isOpen}
