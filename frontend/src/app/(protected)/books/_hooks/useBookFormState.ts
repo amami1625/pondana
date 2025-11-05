@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Book, BookFormData, bookFormSchema } from '@/app/(protected)/books/_types';
@@ -18,7 +18,7 @@ export function useBookFormState({ book, cancel }: UseBookFormStateProps) {
     id: book?.id,
     title: book?.title ?? '',
     description: book?.description ?? '',
-    author_ids: book?.author_ids ?? [],
+    author_ids: book?.authors.map((author) => author.id) ?? [],
     category_id: book?.category_id ?? 0,
     rating: book?.rating ?? 0,
     reading_status: book?.reading_status ?? 'unread',
