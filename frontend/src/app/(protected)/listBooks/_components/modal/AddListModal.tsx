@@ -1,18 +1,19 @@
-import { List } from '@/app/(protected)/lists/_types';
 import BaseModal from '@/components/BaseModal';
-import ListItem from '../display/ListItem';
+import ListItem from '@/app/(protected)/listBooks/_components/display/ListItem';
+import { useLists } from '@/app/(protected)/lists/_hooks/useLists';
 
 interface AddListModalProps {
   bookId: number;
-  lists: List[];
   isOpen: boolean;
   onClose: () => void;
 }
 
-export default function AddListModal({ bookId, lists, isOpen, onClose }: AddListModalProps) {
+export default function AddListModal({ bookId, isOpen, onClose }: AddListModalProps) {
+  const { data: lists } = useLists();
+
   return (
     <BaseModal title="本をリストに追加" isOpen={isOpen} onClose={onClose}>
-      {lists.length === 0 ? (
+      {!lists || lists.length === 0 ? (
         <p className="text-gray-500">リストがありません</p>
       ) : (
         <div className="space-y-2">
