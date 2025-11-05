@@ -3,6 +3,7 @@ export {
   type Book,
   type BookDetail,
   type BookFormData,
+  type AddedList,
   bookBaseSchema,
   bookSchema,
   bookDetailSchema,

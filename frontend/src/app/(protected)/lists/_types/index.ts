@@ -3,10 +3,9 @@ export {
   type List,
   type ListDetail,
   type ListFormData,
+  type AddedBook,
   listBaseSchema,
   listSchema,
   listDetailSchema,
   listFormSchema,
 } from '@/schemas/list';
-
-export { type AddedBook, type AddedList, addedBookSchema, addedListSchema } from '@/schemas/nested';
