@@ -5,21 +5,19 @@ import SubmitButton from '@/components/Buttons/SubmitButton';
 import FormInput from '@/components/forms/FormInput';
 import FormTextarea from '@/components/forms/FormTextarea';
 import ErrorMessage from '@/components/ErrorMessage';
-import { Card, CardFormData } from '@/app/(protected)/cards/_types';
+import { Card } from '@/app/(protected)/cards/_types';
 import { useCardForm } from '@/app/(protected)/cards/_hooks/useCardForm';
 
 interface CardFormProps {
   card?: Card;
   bookId: number;
-  action: (formData: CardFormData) => Promise<{ success: true } | { error: string }>;
   submitLabel: string;
   onClose: () => void;
 }
 
-export default function CardForm({ card, bookId, action, onClose, submitLabel }: CardFormProps) {
+export default function CardForm({ card, bookId, onClose, submitLabel }: CardFormProps) {
   const { error, register, handleSubmit, onSubmit, errors, isSubmitting } = useCardForm({
     card,
-    action,
     cancel: onClose,
     bookId,
   });

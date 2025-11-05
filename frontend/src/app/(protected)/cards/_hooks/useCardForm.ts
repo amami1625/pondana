@@ -2,16 +2,18 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Card, CardFormData, cardFormSchema } from '@/app/(protected)/cards/_types';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useCardMutations } from './useCardMutations';
 
 interface UseCardFormProps {
   card?: Card;
   bookId: number;
-  action: (formData: CardFormData) => Promise<{ success: true } | { error: string }>;
   cancel: () => void;
 }
 
-export const useCardForm = ({ card, bookId, action, cancel }: UseCardFormProps) => {
+export const useCardForm = ({ card, bookId, cancel }: UseCardFormProps) => {
   const [error, setError] = useState('');
+  const { createCard, updateCard, createError, updateError, isCreating, isUpdating } =
+    useCardMutations();
 
   const defaultValues: CardFormData = {
     id: card?.id,
@@ -30,20 +32,37 @@ export const useCardForm = ({ card, bookId, action, cancel }: UseCardFormProps) 
   });
 
   const onSubmit = async (formData: CardFormData) => {
-    const res = await action(formData);
-    if ('error' in res) {
-      setError(res.error);
-      return;
+    setError('');
+
+    if (card) {
+      // 更新
+      updateCard(formData, {
+        onSuccess: () => {
+          cancel();
+        },
+        onError: (error) => {
+          setError(error.message);
+        },
+      });
+    } else {
+      // 作成
+      createCard(formData, {
+        onSuccess: () => {
+          cancel();
+        },
+        onError: (error) => {
+          setError(error.message);
+        },
+      });
     }
-    cancel();
   };
 
   return {
-    error,
+    error: error || createError?.message || updateError?.message || '',
     register,
     handleSubmit,
     onSubmit,
     errors,
-    isSubmitting,
+    isSubmitting: isSubmitting || isCreating || isUpdating,
   };
 };
