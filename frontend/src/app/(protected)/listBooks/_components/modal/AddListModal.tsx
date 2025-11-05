@@ -4,11 +4,12 @@ import { useLists } from '@/app/(protected)/lists/_hooks/useLists';
 
 interface AddListModalProps {
   bookId: number;
+  listIds: number[];
   isOpen: boolean;
   onClose: () => void;
 }
 
-export default function AddListModal({ bookId, isOpen, onClose }: AddListModalProps) {
+export default function AddListModal({ bookId, listIds, isOpen, onClose }: AddListModalProps) {
   const { data: lists } = useLists();
 
   return (
@@ -18,7 +19,12 @@ export default function AddListModal({ bookId, isOpen, onClose }: AddListModalPr
       ) : (
         <div className="space-y-2">
           {lists.map((list) => (
-            <ListItem key={list.id} list={list} bookId={bookId} />
+            <ListItem
+              key={list.id}
+              list={list}
+              bookId={bookId}
+              isAdded={listIds.includes(list.id)}
+            />
           ))}
         </div>
       )}

@@ -100,7 +100,12 @@ export default function BookDetailView({ id }: BookDetailProps) {
       </DetailContainer>
 
       <UpdateBookFormModal book={book} isOpen={updateModal.isOpen} onClose={updateModal.close} />
-      <AddListModal bookId={book.id} isOpen={addListModal.isOpen} onClose={addListModal.close} />
+      <AddListModal
+        bookId={book.id}
+        listIds={book.lists.map((list) => list.id)}
+        isOpen={addListModal.isOpen}
+        onClose={addListModal.close}
+      />
       <CardModal
         action={createCard}
         bookId={book.id}

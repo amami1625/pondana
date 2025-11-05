@@ -6,11 +6,11 @@ import { AddButton } from '@/components/Buttons';
 interface BookItemProps {
   listId: number;
   book: Book;
+  isAdded: boolean;
 }
 
-export default function BookItem({ listId, book }: BookItemProps) {
+export default function BookItem({ listId, book, isAdded }: BookItemProps) {
   const { addListBook, addError } = useListBookMutations();
-  const isAdded = book.list_ids.includes(listId);
 
   const handleAdd = () => {
     addListBook({

@@ -4,11 +4,12 @@ import { useBooks } from '@/app/(protected)/books/_hooks/useBooks';
 
 interface AddBookModalProps {
   listId: number;
+  bookIds: number[];
   isOpen: boolean;
   onClose: () => void;
 }
 
-export default function AddBookModal({ listId, isOpen, onClose }: AddBookModalProps) {
+export default function AddBookModal({ listId, bookIds, isOpen, onClose }: AddBookModalProps) {
   const { data: books } = useBooks();
 
   return (
@@ -18,7 +19,12 @@ export default function AddBookModal({ listId, isOpen, onClose }: AddBookModalPr
       ) : (
         <div className="space-y-2">
           {books.map((book) => (
-            <BookItem key={book.id} book={book} listId={listId} />
+            <BookItem
+              key={book.id}
+              book={book}
+              listId={listId}
+              isAdded={bookIds.includes(book.id)}
+            />
           ))}
         </div>
       )}

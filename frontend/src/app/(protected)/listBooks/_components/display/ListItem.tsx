@@ -6,11 +6,11 @@ import { useListBookMutations } from '@/app/(protected)/listBooks/_hooks/useList
 interface ListItemProps {
   list: List;
   bookId: number;
+  isAdded: boolean;
 }
 
-export default function Listitem({ list, bookId }: ListItemProps) {
+export default function Listitem({ list, bookId, isAdded }: ListItemProps) {
   const { addListBook, addError } = useListBookMutations();
-  const isAdded = list.book_ids.includes(bookId);
 
   const handleAdd = () => {
     addListBook({

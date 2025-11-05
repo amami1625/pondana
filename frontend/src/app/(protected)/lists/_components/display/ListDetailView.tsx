@@ -80,7 +80,12 @@ export default function ListDetailView({ id }: ListDetailProps) {
       </DetailContainer>
 
       <UpdateListFormModal list={list} isOpen={updateModal.isOpen} onClose={updateModal.close} />
-      <AddBookModal listId={list.id} isOpen={addBookModal.isOpen} onClose={addBookModal.close} />
+      <AddBookModal
+        listId={list.id}
+        bookIds={list.books.map((book) => book.id)}
+        isOpen={addBookModal.isOpen}
+        onClose={addBookModal.close}
+      />
     </>
   );
 }
