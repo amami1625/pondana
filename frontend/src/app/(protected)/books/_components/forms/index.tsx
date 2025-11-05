@@ -1,8 +1,6 @@
 'use client';
 
 import { Book } from '@/app/(protected)/books/_types';
-import { Category } from '@/app/(protected)/categories/_types';
-import { Author } from '@/schemas/author';
 import Select from 'react-select';
 import { Controller } from 'react-hook-form';
 import AuthorModal from '@/app/(protected)/authors/_components/modal';
@@ -17,24 +15,20 @@ import FormSelect from '@/components/forms/FormSelect';
 import ErrorMessage from '@/components/ErrorMessage';
 import CancelButton from '@/components/Buttons/CancelButton';
 import SubmitButton from '@/components/Buttons/SubmitButton';
+import { useAuthors } from '@/app/(protected)/authors/_hooks/useAuthors';
+import { useCategories } from '@/app/(protected)/categories/_hooks/useCategories';
 
 // TODO: Tag機能を実装したらTag型をimportする
 interface BookFormProps {
   book?: Book;
-  authors?: Author[];
-  categories?: Category[];
   submitLabel: string;
   cancel: () => void;
 }
 
 // TODO: Tag機能を実装したらTagsを追加する
-export default function BookForm({
-  book,
-  authors = [],
-  categories = [],
-  submitLabel,
-  cancel,
-}: BookFormProps) {
+export default function BookForm({ book, submitLabel, cancel }: BookFormProps) {
+  const { data: authors } = useAuthors();
+  const { data: categories } = useCategories();
   const { register, control, handleSubmit, errors, error, onSubmit, isSubmitting } =
     useBookFormState({ book, cancel });
   const authorModal = useModal();
@@ -83,7 +77,7 @@ export default function BookForm({
               name="author_ids"
               control={control}
               render={({ field: { onChange, value, ref } }) => {
-                const options = authors.map((a) => ({
+                const options = (authors || []).map((a) => ({
                   value: a.id,
                   label: a.name,
                 }));
@@ -140,7 +134,7 @@ export default function BookForm({
         <FormSelect
           name="category_id"
           label="カテゴリ"
-          options={categories.map((c) => ({ value: c.id, label: c.name }))}
+          options={(categories || []).map((c) => ({ value: c.id, label: c.name }))}
           defaultValue="0"
           defaultLabel="未分類"
           error={errors.category_id?.message}
