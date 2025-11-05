@@ -1,6 +1,6 @@
 'use client';
 
-import { AddedList } from '@/app/(protected)/lists/_types';
+import { AddedList } from '@/app/(protected)/books/_types';
 import { useListBookMutations } from '@/app/(protected)/listBooks/_hooks/useListBookMutations';
 import { RemoveButton } from '@/components/Buttons';
 import ErrorMessage from '@/components/ErrorMessage';

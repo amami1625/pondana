@@ -1,6 +1,6 @@
 'use client';
 
-import { AddedList } from '@/app/(protected)/lists/_types';
+import { AddedList } from '@/app/(protected)/books/_types';
 import { ListBook } from '@/app/(protected)/listBooks/_types';
 import AddedListItem from './AddedListItem';
 import EmptyState from '@/components/EmptyState';
