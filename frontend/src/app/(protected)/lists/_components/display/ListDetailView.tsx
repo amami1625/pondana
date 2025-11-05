@@ -15,7 +15,6 @@ import {
   DetailActions,
 } from '@/components/details';
 import { useList } from '@/app/(protected)/lists/_hooks/useList';
-import { useBooks } from '@/app/(protected)/books/_hooks/useBooks';
 import LoadingState from '@/components/LoadingState';
 import ErrorMessage from '@/components/ErrorMessage';
 import { useListMutations } from '@/app/(protected)/lists/_hooks/useListMutations';
@@ -26,7 +25,6 @@ interface ListDetailProps {
 
 export default function ListDetailView({ id }: ListDetailProps) {
   const { data: list, error: listError, isLoading: listLoading } = useList(id);
-  const { data: books, error: bookError, isLoading: booksLoading } = useBooks();
   const { deleteList, deleteError } = useListMutations();
   const updateModal = useModal();
   const addBookModal = useModal();
@@ -40,19 +38,17 @@ export default function ListDetailView({ id }: ListDetailProps) {
   };
 
   // ローディング状態
-  if (listLoading || booksLoading) {
+  if (listLoading) {
     return <LoadingState message="リストを読み込んでいます..." />;
   }
 
   // エラー状態
-  if (listError || bookError) {
-    return (
-      <ErrorMessage message={listError?.message || bookError?.message || 'エラーが発生しました'} />
-    );
+  if (listError) {
+    return <ErrorMessage message={listError?.message || 'エラーが発生しました'} />;
   }
 
   // データが取得できていない場合
-  if (!list || !books) {
+  if (!list) {
     return <ErrorMessage message="データの取得に失敗しました" />;
   }
 
@@ -84,12 +80,7 @@ export default function ListDetailView({ id }: ListDetailProps) {
       </DetailContainer>
 
       <UpdateListFormModal list={list} isOpen={updateModal.isOpen} onClose={updateModal.close} />
-      <AddBookModal
-        listId={list.id}
-        books={books}
-        isOpen={addBookModal.isOpen}
-        onClose={addBookModal.close}
-      />
+      <AddBookModal listId={list.id} isOpen={addBookModal.isOpen} onClose={addBookModal.close} />
     </>
   );
 }
