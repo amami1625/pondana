@@ -1,6 +1,6 @@
 'use client';
 
-import { AddedList } from '@/app/(protected)/lists/_types';
+import { AddedList } from '@/app/(protected)/books/_types';
 import { ListBook } from '@/app/(protected)/listBooks/_types';
 import AddedListItem from './AddedListItem';
 import EmptyState from '@/components/EmptyState';
@@ -25,14 +25,7 @@ export default function AddedListsView({ lists, listBooks }: AddedListsViewProps
             const listBook = listBooks.find((lb) => lb.list_id === list.id);
             if (!listBook) return null;
 
-            return (
-              <AddedListItem
-                key={list.id}
-                list={list}
-                listBookId={listBook.id}
-                bookId={listBook.book_id}
-              />
-            );
+            return <AddedListItem key={list.id} list={list} listBookId={listBook.id} />;
           })}
         </div>
       )}

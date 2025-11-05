@@ -19,9 +19,6 @@ import {
 } from '@/components/details';
 import { useModal } from '@/hooks/useModal';
 import { useBook } from '@/app/(protected)/books/_hooks/useBook';
-import { useLists } from '@/app/(protected)/lists/_hooks/useLists';
-import { useAuthors } from '@/app/(protected)/authors/_hooks/useAuthors';
-import { useCategories } from '@/app/(protected)/categories/_hooks/useCategories';
 import LoadingState from '@/components/LoadingState';
 import ErrorMessage from '@/components/ErrorMessage';
 import { useBookMutations } from '@/app/(protected)/books/_hooks/useBookMutations';
@@ -32,9 +29,6 @@ interface BookDetailProps {
 
 export default function BookDetailView({ id }: BookDetailProps) {
   const { data: book, error: bookError, isLoading: bookLoading } = useBook(id);
-  const { data: lists, error: listError, isLoading: listLoading } = useLists();
-  const { data: authors, error: authorError, isLoading: authorLoading } = useAuthors();
-  const { data: categories, error: categoryError, isLoading: categoryLoading } = useCategories();
   const { deleteBook, deleteError } = useBookMutations();
   const updateModal = useModal();
   const addListModal = useModal();
@@ -49,26 +43,17 @@ export default function BookDetailView({ id }: BookDetailProps) {
   };
 
   // ローディング状態
-  if (bookLoading || authorLoading || categoryLoading || listLoading) {
+  if (bookLoading) {
     return <LoadingState message="本情報を読み込んでいます..." />;
   }
 
   // エラー状態
-  if (bookError || listError || authorError || categoryError) {
-    return (
-      <ErrorMessage
-        message={
-          bookError?.message ||
-          authorError?.message ||
-          categoryError?.message ||
-          'エラーが発生しました'
-        }
-      />
-    );
+  if (bookError) {
+    return <ErrorMessage message={bookError?.message || 'エラーが発生しました'} />;
   }
 
   // データが取得できていない場合
-  if (!book || !lists || !authors || !categories) {
+  if (!book) {
     return <ErrorMessage message="データの取得に失敗しました" />;
   }
 
@@ -114,16 +99,10 @@ export default function BookDetailView({ id }: BookDetailProps) {
         <CreatedCardsView cards={book.cards} />
       </DetailContainer>
 
-      <UpdateBookFormModal
-        book={book}
-        authors={authors}
-        categories={categories}
-        isOpen={updateModal.isOpen}
-        onClose={updateModal.close}
-      />
+      <UpdateBookFormModal book={book} isOpen={updateModal.isOpen} onClose={updateModal.close} />
       <AddListModal
         bookId={book.id}
-        lists={lists}
+        listIds={book.lists.map((list) => list.id)}
         isOpen={addListModal.isOpen}
         onClose={addListModal.close}
       />

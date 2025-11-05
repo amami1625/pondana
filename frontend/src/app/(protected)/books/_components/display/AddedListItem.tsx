@@ -1,26 +1,25 @@
 'use client';
 
-import { AddedList } from '@/app/(protected)/lists/_types';
-import { useRemoveBook } from '@/app/(protected)/listBooks/_hooks/useRemoveBook';
+import { AddedList } from '@/app/(protected)/books/_types';
+import { useListBookMutations } from '@/app/(protected)/listBooks/_hooks/useListBookMutations';
 import { RemoveButton } from '@/components/Buttons';
 import ErrorMessage from '@/components/ErrorMessage';
 
 interface AddedListItemProps {
   list: AddedList;
   listBookId: number;
-  bookId: number;
 }
 
-export default function AddedListItem({ list, listBookId, bookId }: AddedListItemProps) {
-  const { error, handleRemove } = useRemoveBook({
-    listBookId,
-    context: 'book',
-    bookId,
-  });
+export default function AddedListItem({ list, listBookId }: AddedListItemProps) {
+  const { removeListBook, removeError } = useListBookMutations();
+
+  const handleRemove = () => {
+    removeListBook({ id: listBookId });
+  };
 
   return (
     <div className="border-b border-gray-200 p-4 last:border-b-0">
-      {error && <ErrorMessage message={error} />}
+      {removeError && <ErrorMessage message={removeError.message} />}
       <div className="flex items-center justify-between gap-4">
         <div className="flex-1 min-w-0">
           {/* リスト名 */}

@@ -1,6 +1,7 @@
 import { z } from 'zod';
-import { bookSchema } from './book';
 import { listBookSchema } from './listBooks';
+import { bookBaseSchema } from './book';
+import { authorSchema } from './author';
 
 // Listベーススキーマ
 export const listBaseSchema = z.object({
@@ -22,13 +23,16 @@ export const listBaseSchema = z.object({
 });
 
 // List一覧データのバリデーションスキーマ(APIレスポンス用)
-export const listSchema = listBaseSchema.extend({
-  book_ids: z.number().array(),
-});
+export const listSchema = listBaseSchema;
 
 // List詳細データのバリデーションスキーマ(APIレスポンス用)
 export const listDetailSchema = listSchema.extend({
-  books: z.array(bookSchema),
+  books: z.array(
+    z.object({
+      ...bookBaseSchema.shape,
+      authors: authorSchema.array(),
+    }),
+  ),
   list_books: z.array(listBookSchema),
 });
 
@@ -47,3 +51,6 @@ export type ListBase = z.infer<typeof listBaseSchema>;
 export type List = z.infer<typeof listSchema>;
 export type ListDetail = z.infer<typeof listDetailSchema>;
 export type ListFormData = z.infer<typeof listFormSchema>;
+
+// リストに追加された本の型
+export type AddedBook = ListDetail['books'][number];

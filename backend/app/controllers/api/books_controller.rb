@@ -1,7 +1,7 @@
 class Api::BooksController < Api::ApplicationController
   def index
-    books = current_user.books.includes(:category, :authors, :lists).order(created_at: :desc)
-    render json: books, include: [:category, :authors, :lists], methods: [:author_ids, :list_ids]
+    books = current_user.books.includes(:category, :authors).order(created_at: :desc)
+    render json: books, include: [:category, :authors]
   end
 
   def create
@@ -31,8 +31,7 @@ class Api::BooksController < Api::ApplicationController
              lists: {},
              list_books: { only: [:id, :book_id, :list_id] },
              cards: {}
-           },
-           methods: [:author_ids, :list_ids]
+           }
   end
 
   def destroy

@@ -25,14 +25,7 @@ export default function AddedBooksView({ books, listBooks }: AddedBooksViewProps
             const listBook = listBooks.find((lb) => lb.book_id === book.id);
             if (!listBook) return null;
 
-            return (
-              <AddedBookItem
-                key={book.id}
-                book={book}
-                listBookId={listBook.id}
-                listId={listBook.list_id}
-              />
-            );
+            return <AddedBookItem key={book.id} book={book} listBookId={listBook.id} />;
           })}
         </div>
       )}
