@@ -3,10 +3,13 @@ import { bookBaseSchema, bookDetailSchema } from '@/app/(protected)/books/_types
 import { NextRequest, NextResponse } from 'next/server';
 
 // GET - 詳細取得
-export async function GET(_request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+export async function GET(
+  _request: NextRequest,
+  { params }: { params: Promise<{ bookId: string }> },
+) {
   try {
-    const { id } = await params;
-    const data = await authenticatedRequest(`/books/${id}`);
+    const { bookId } = await params;
+    const data = await authenticatedRequest(`/books/${bookId}`);
     const book = bookDetailSchema.parse(data);
     return NextResponse.json(book);
   } catch (error) {
@@ -18,9 +21,12 @@ export async function GET(_request: NextRequest, { params }: { params: Promise<{
 }
 
 // PUT - 更新
-export async function PUT(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+export async function PUT(
+  request: NextRequest,
+  { params }: { params: Promise<{ bookId: string }> },
+) {
   try {
-    const { id } = await params;
+    const { bookId } = await params;
     const body = await request.json();
 
     // category_idとratingの0をnullに変換
@@ -30,7 +36,7 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
       rating: body.rating === 0 ? null : body.rating,
     };
 
-    const data = await authenticatedRequest(`/books/${id}`, {
+    const data = await authenticatedRequest(`/books/${bookId}`, {
       method: 'PUT',
       body: JSON.stringify({ book: bookData }),
     });
@@ -47,11 +53,11 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
 // DELETE - 削除
 export async function DELETE(
   _request: NextRequest,
-  { params }: { params: Promise<{ id: string }> },
+  { params }: { params: Promise<{ bookId: string }> },
 ) {
   try {
-    const { id } = await params;
-    await authenticatedRequest(`/books/${id}`, {
+    const { bookId } = await params;
+    await authenticatedRequest(`/books/${bookId}`, {
       method: 'DELETE',
     });
 

@@ -3,11 +3,8 @@ import { queryKeys } from '@/constants/queryKeys';
 import { ListBase, ListFormData } from '@/app/(protected)/lists/_types';
 import { useRouter } from 'next/navigation';
 
-// 作成用の型
-type CreateListData = Pick<ListFormData, 'name' | 'description' | 'public'>;
-
 // 更新用の型
-type UpdateListData = Pick<ListFormData, 'id' | 'name' | 'description' | 'public'>;
+type UpdateListData = ListFormData & { id: number };
 
 export function useListMutations() {
   const queryClient = useQueryClient();
@@ -15,7 +12,7 @@ export function useListMutations() {
 
   // 作成
   const createMutation = useMutation({
-    mutationFn: async (data: CreateListData) => {
+    mutationFn: async (data: ListFormData) => {
       const response = await fetch('/api/lists', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -51,9 +48,11 @@ export function useListMutations() {
 
       return response.json() as Promise<ListBase>;
     },
-    onSuccess: () => {
-      // リスト関連のキャッシュを全て無効化
+    onSuccess: (_, variables) => {
+      // リスト一覧のキャッシュを無効化
       queryClient.invalidateQueries({ queryKey: queryKeys.lists.all });
+      // リスト詳細のキャッシュを無効化
+      queryClient.invalidateQueries({ queryKey: queryKeys.lists.detail(variables.id) });
     },
   });
 

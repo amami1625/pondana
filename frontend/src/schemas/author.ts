@@ -19,7 +19,6 @@ export const authorSchema = z.object({
 
 // Authorのバリデーションスキーマ(フォーム用)
 export const authorFormSchema = z.object({
-  id: z.number().optional(),
   name: z.string().min(1, { message: '著者名を入力してください' }),
 });
 

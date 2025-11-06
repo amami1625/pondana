@@ -38,7 +38,6 @@ export const listDetailSchema = listSchema.extend({
 
 // Listのバリデーションスキーマ(フォーム用)
 export const listFormSchema = z.object({
-  id: z.number().optional(),
   name: z
     .string()
     .min(1, { message: 'リスト名を入力してください' })

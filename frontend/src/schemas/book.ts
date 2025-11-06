@@ -49,7 +49,6 @@ export const bookDetailSchema = bookSchema.extend({
 // Bookのバリデーションスキーマ(フォーム用)
 // TODO: タグ機能実装時にtagsフィールドを追加
 export const bookFormSchema = z.object({
-  id: z.number().optional(),
   title: z
     .string()
     .min(1, { message: 'タイトルを入力してください' })

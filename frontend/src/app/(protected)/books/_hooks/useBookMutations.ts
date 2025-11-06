@@ -3,24 +3,8 @@ import { queryKeys } from '@/constants/queryKeys';
 import { BookBase, BookFormData } from '@/app/(protected)/books/_types';
 import { useRouter } from 'next/navigation';
 
-// 作成用の型
-type CreateBookData = Pick<
-  BookFormData,
-  'title' | 'description' | 'author_ids' | 'category_id' | 'rating' | 'reading_status' | 'public'
->;
-
 // 更新用の型
-type UpdateBookData = Pick<
-  BookFormData,
-  | 'id'
-  | 'title'
-  | 'description'
-  | 'author_ids'
-  | 'category_id'
-  | 'rating'
-  | 'reading_status'
-  | 'public'
->;
+type UpdateBookData = BookFormData & { id: number };
 
 export function useBookMutations() {
   const queryClient = useQueryClient();
@@ -28,7 +12,7 @@ export function useBookMutations() {
 
   // 作成
   const createMutation = useMutation({
-    mutationFn: async (data: CreateBookData) => {
+    mutationFn: async (data: BookFormData) => {
       const response = await fetch('/api/books', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -64,9 +48,11 @@ export function useBookMutations() {
 
       return response.json() as Promise<BookBase>;
     },
-    onSuccess: () => {
-      // 書籍関連のキャッシュを全て無効化
+    onSuccess: (_, variables) => {
+      // 書籍一覧のキャッシュを無効化
       queryClient.invalidateQueries({ queryKey: queryKeys.books.all });
+      // 書籍詳細のキャッシュを無効化
+      queryClient.invalidateQueries({ queryKey: queryKeys.books.detail(variables.id) });
     },
   });
 

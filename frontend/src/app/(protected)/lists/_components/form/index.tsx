@@ -24,15 +24,6 @@ export default function ListForm({ list, submitLabel, cancel }: ListFormProps) {
       className="flex flex-col gap-6 rounded-2xl border border-gray-200 bg-white p-6 shadow-sm"
       onSubmit={handleSubmit(onSubmit)}
     >
-      {list && (
-        <FormInput
-          name="id"
-          type="hidden"
-          register={register}
-          registerOptions={{ valueAsNumber: true }}
-        />
-      )}
-
       <div className="grid gap-4 md:grid-cols-2">
         {/* リスト名 */}
         <FormInput
