@@ -15,7 +15,6 @@ export function useListFormState({ list, cancel }: UseListFormStateProps) {
     useListMutations();
 
   const defaultValues: ListFormData = {
-    id: list?.id,
     name: list?.name ?? '',
     description: list?.description ?? '',
     public: list?.public ?? false,
@@ -29,10 +28,8 @@ export function useListFormState({ list, cancel }: UseListFormStateProps) {
         // 更新
         updateList(
           {
+            ...data,
             id: list.id,
-            name: data.name,
-            description: data.description,
-            public: data.public,
           },
           {
             onSuccess: () => cancel(),
@@ -41,17 +38,10 @@ export function useListFormState({ list, cancel }: UseListFormStateProps) {
         );
       } else {
         // 作成
-        createList(
-          {
-            name: data.name,
-            description: data.description,
-            public: data.public,
-          },
-          {
-            onSuccess: () => cancel(),
-            onError: (error) => setError(error.message),
-          },
-        );
+        createList(data, {
+          onSuccess: () => cancel(),
+          onError: (error) => setError(error.message),
+        });
       }
     } catch (_err) {
       setError('予期しないエラーが発生しました');
