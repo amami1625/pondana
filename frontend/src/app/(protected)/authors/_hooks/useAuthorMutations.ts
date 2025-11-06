@@ -2,18 +2,15 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { queryKeys } from '@/constants/queryKeys';
 import { Author, AuthorFormData } from '@/app/(protected)/authors/_types';
 
-// 作成用の型
-type CreateAuthorData = Pick<AuthorFormData, 'name'>;
-
 // 更新用の型
-type UpdateAuthorData = Required<Pick<AuthorFormData, 'id' | 'name'>>;
+type UpdateAuthorData = AuthorFormData & { id: number };
 
 export function useAuthorMutations() {
   const queryClient = useQueryClient();
 
   // 作成
   const createMutation = useMutation({
-    mutationFn: async (data: CreateAuthorData) => {
+    mutationFn: async (data: AuthorFormData) => {
       const response = await fetch('/api/authors', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

@@ -1,8 +1,8 @@
-import { zodResolver } from '@hookform/resolvers/zod';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { Author, AuthorFormData, authorFormSchema } from '@/app/(protected)/authors/_types';
-import { useAuthorMutations } from './useAuthorMutations';
+import { useAuthorMutations } from '@/app/(protected)/authors/_hooks/useAuthorMutations';
 
 interface UseAuthorFormProps {
   author?: Author;
@@ -14,7 +14,6 @@ export const useAuthorForm = ({ author, cancel }: UseAuthorFormProps) => {
   const { createAuthor, updateAuthor, createError, updateError } = useAuthorMutations();
 
   const defaultValues: AuthorFormData = {
-    id: author?.id,
     name: author?.name ?? '',
   };
 
@@ -32,7 +31,7 @@ export const useAuthorForm = ({ author, cancel }: UseAuthorFormProps) => {
       if (author) {
         // 更新
         updateAuthor(
-          { id: author.id, name: data.name },
+          { ...data, id: author.id },
           {
             onSuccess: () => {
               cancel();
@@ -44,17 +43,14 @@ export const useAuthorForm = ({ author, cancel }: UseAuthorFormProps) => {
         );
       } else {
         // 作成
-        createAuthor(
-          { name: data.name },
-          {
-            onSuccess: () => {
-              cancel();
-            },
-            onError: (error) => {
-              setError(error.message);
-            },
+        createAuthor(data, {
+          onSuccess: () => {
+            cancel();
           },
-        );
+          onError: (error) => {
+            setError(error.message);
+          },
+        });
       }
     } catch (_err) {
       setError('予期しないエラーが発生しました');
