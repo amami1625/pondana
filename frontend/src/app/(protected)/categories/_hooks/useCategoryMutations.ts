@@ -2,18 +2,15 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { queryKeys } from '@/constants/queryKeys';
 import { Category, CategoryFormData } from '@/app/(protected)/categories/_types';
 
-// 作成用の型
-type CreateCategoryData = Pick<CategoryFormData, 'name'>;
-
 // 更新用の型
-type UpdateCategoryData = Required<Pick<CategoryFormData, 'id' | 'name'>>;
+type UpdateCategoryData = CategoryFormData & { id: number };
 
 export function useCategoryMutations() {
   const queryClient = useQueryClient();
 
   // 作成
   const createMutation = useMutation({
-    mutationFn: async (data: CreateCategoryData) => {
+    mutationFn: async (data: CategoryFormData) => {
       const response = await fetch('/api/categories', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

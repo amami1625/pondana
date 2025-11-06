@@ -6,7 +6,7 @@ import {
   CategoryFormData,
   categoryFormSchema,
 } from '@/app/(protected)/categories/_types';
-import { useCategoryMutations } from './useCategoryMutations';
+import { useCategoryMutations } from '@/app/(protected)/categories/_hooks/useCategoryMutations';
 
 interface UseCategoryFormProps {
   category?: Category;
@@ -18,7 +18,6 @@ export const useCategoryForm = ({ category, cancel }: UseCategoryFormProps) => {
   const { createCategory, updateCategory, createError, updateError } = useCategoryMutations();
 
   const defaultValues: CategoryFormData = {
-    id: category?.id,
     name: category?.name ?? '',
   };
 
@@ -36,7 +35,7 @@ export const useCategoryForm = ({ category, cancel }: UseCategoryFormProps) => {
       if (category) {
         // 更新
         updateCategory(
-          { id: category.id, name: data.name },
+          { ...data, id: category.id },
           {
             onSuccess: () => {
               cancel();
@@ -48,17 +47,14 @@ export const useCategoryForm = ({ category, cancel }: UseCategoryFormProps) => {
         );
       } else {
         // 作成
-        createCategory(
-          { name: data.name },
-          {
-            onSuccess: () => {
-              cancel();
-            },
-            onError: (error) => {
-              setError(error.message);
-            },
+        createCategory(data, {
+          onSuccess: () => {
+            cancel();
           },
-        );
+          onError: (error) => {
+            setError(error.message);
+          },
+        });
       }
     } catch (_err) {
       setError('予期しないエラーが発生しました');
