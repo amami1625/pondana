@@ -3,17 +3,8 @@ import { queryKeys } from '@/constants/queryKeys';
 import { BookBase, BookFormData } from '@/app/(protected)/books/_types';
 import { useRouter } from 'next/navigation';
 
-// 作成用の型
-type CreateBookData = Pick<
-  BookFormData,
-  'title' | 'description' | 'author_ids' | 'category_id' | 'rating' | 'reading_status' | 'public'
->;
-
 // 更新用の型
-type UpdateBookData = Pick<
-  BookFormData,
-  'title' | 'description' | 'author_ids' | 'category_id' | 'rating' | 'reading_status' | 'public'
-> & { id: number };
+type UpdateBookData = BookFormData & { id: number };
 
 export function useBookMutations() {
   const queryClient = useQueryClient();
@@ -21,7 +12,7 @@ export function useBookMutations() {
 
   // 作成
   const createMutation = useMutation({
-    mutationFn: async (data: CreateBookData) => {
+    mutationFn: async (data: BookFormData) => {
       const response = await fetch('/api/books', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

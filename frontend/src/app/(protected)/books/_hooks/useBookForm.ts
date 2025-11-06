@@ -15,7 +15,6 @@ export function useBookFormState({ book, cancel }: UseBookFormStateProps) {
     useBookMutations();
 
   const defaultValues: BookFormData = {
-    id: book?.id,
     title: book?.title ?? '',
     description: book?.description ?? '',
     author_ids: book?.authors.map((author) => author.id) ?? [],
@@ -44,14 +43,8 @@ export function useBookFormState({ book, cancel }: UseBookFormStateProps) {
         // 更新
         updateBook(
           {
+            ...data,
             id: book.id,
-            title: data.title,
-            description: data.description,
-            author_ids: data.author_ids,
-            category_id: data.category_id,
-            rating: data.rating,
-            reading_status: data.reading_status,
-            public: data.public,
           },
           {
             onSuccess: () => cancel(),
@@ -60,21 +53,10 @@ export function useBookFormState({ book, cancel }: UseBookFormStateProps) {
         );
       } else {
         // 作成
-        createBook(
-          {
-            title: data.title,
-            description: data.description,
-            author_ids: data.author_ids,
-            category_id: data.category_id,
-            rating: data.rating,
-            reading_status: data.reading_status,
-            public: data.public,
-          },
-          {
-            onSuccess: () => cancel(),
-            onError: (error) => setError(error.message),
-          },
-        );
+        createBook(data, {
+          onSuccess: () => cancel(),
+          onError: (error) => setError(error.message),
+        });
       }
     } catch (_err) {
       setError('予期しないエラーが発生しました');

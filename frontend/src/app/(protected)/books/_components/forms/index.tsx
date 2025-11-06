@@ -5,7 +5,7 @@ import Select from 'react-select';
 import { Controller } from 'react-hook-form';
 import AuthorModal from '@/app/(protected)/authors/_components/modal';
 import CategoryModal from '@/app/(protected)/categories/_components/modal';
-import { useBookFormState } from '@/app/(protected)/books/_hooks/useBookFormState';
+import { useBookFormState } from '@/app/(protected)/books/_hooks/useBookForm';
 import { useModal } from '@/hooks/useModal';
 import { STATUS_OPTIONS, RATING_OPTIONS } from '@/app/(protected)/books/_constants';
 import FormInput from '@/components/forms/FormInput';
@@ -40,15 +40,6 @@ export default function BookForm({ book, submitLabel, cancel }: BookFormProps) {
         className="flex flex-col gap-6 rounded-2xl border border-gray-200 bg-white p-6 shadow-sm"
         onSubmit={handleSubmit(onSubmit)}
       >
-        {book && (
-          <FormInput
-            name="id"
-            type="hidden"
-            register={register}
-            registerOptions={{ valueAsNumber: true }}
-          />
-        )}
-
         <div className="grid gap-4 md:grid-cols-2">
           {/* タイトル */}
           <FormInput
