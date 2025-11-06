@@ -12,15 +12,8 @@ type CreateBookData = Pick<
 // 更新用の型
 type UpdateBookData = Pick<
   BookFormData,
-  | 'id'
-  | 'title'
-  | 'description'
-  | 'author_ids'
-  | 'category_id'
-  | 'rating'
-  | 'reading_status'
-  | 'public'
->;
+  'title' | 'description' | 'author_ids' | 'category_id' | 'rating' | 'reading_status' | 'public'
+> & { id: number };
 
 export function useBookMutations() {
   const queryClient = useQueryClient();
@@ -64,9 +57,11 @@ export function useBookMutations() {
 
       return response.json() as Promise<BookBase>;
     },
-    onSuccess: () => {
-      // 書籍関連のキャッシュを全て無効化
+    onSuccess: (_, variables) => {
+      // 書籍一覧のキャッシュを無効化
       queryClient.invalidateQueries({ queryKey: queryKeys.books.all });
+      // 書籍詳細のキャッシュを無効化
+      queryClient.invalidateQueries({ queryKey: queryKeys.books.detail(variables.id) });
     },
   });
 
