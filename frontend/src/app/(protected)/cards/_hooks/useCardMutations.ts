@@ -2,6 +2,9 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { queryKeys } from '@/constants/queryKeys';
 import { CardFormData } from '@/app/(protected)/cards/_types';
 
+// 更新用の型
+type UpdateCardData = CardFormData & { id: number };
+
 export function useCardMutations() {
   const queryClient = useQueryClient();
 
@@ -29,11 +32,7 @@ export function useCardMutations() {
   });
 
   const updateMutation = useMutation({
-    mutationFn: async (data: CardFormData) => {
-      if (!data.id) {
-        throw new Error('カードIDが必要です');
-      }
-
+    mutationFn: async (data: UpdateCardData) => {
       const response = await fetch(`/api/books/${data.book_id}/cards/${data.id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
@@ -51,9 +50,7 @@ export function useCardMutations() {
       // カード一覧のキャッシュを無効化
       queryClient.invalidateQueries({ queryKey: queryKeys.cards.all });
       // カード詳細のキャッシュを無効化
-      if (variables.id) {
-        queryClient.invalidateQueries({ queryKey: queryKeys.cards.detail(variables.id) });
-      }
+      queryClient.invalidateQueries({ queryKey: queryKeys.cards.detail(variables.id) });
       // 本詳細のキャッシュを無効化
       queryClient.invalidateQueries({ queryKey: queryKeys.books.detail(variables.book_id) });
     },

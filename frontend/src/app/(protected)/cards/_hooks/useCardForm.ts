@@ -16,7 +16,6 @@ export const useCardForm = ({ card, bookId, cancel }: UseCardFormProps) => {
     useCardMutations();
 
   const defaultValues: CardFormData = {
-    id: card?.id,
     book_id: card ? card.book_id : bookId,
     title: card ? card.title : '',
     content: card ? card.content : '',
@@ -31,22 +30,25 @@ export const useCardForm = ({ card, bookId, cancel }: UseCardFormProps) => {
     defaultValues,
   });
 
-  const onSubmit = async (formData: CardFormData) => {
+  const onSubmit = async (data: CardFormData) => {
     setError('');
 
     if (card) {
       // 更新
-      updateCard(formData, {
-        onSuccess: () => {
-          cancel();
+      updateCard(
+        { ...data, id: card.id },
+        {
+          onSuccess: () => {
+            cancel();
+          },
+          onError: (error) => {
+            setError(error.message);
+          },
         },
-        onError: (error) => {
-          setError(error.message);
-        },
-      });
+      );
     } else {
       // 作成
-      createCard(formData, {
+      createCard(data, {
         onSuccess: () => {
           cancel();
         },

@@ -39,7 +39,6 @@ export const cardDetailSchema = cardSchema.extend({
 
 // Cardのバリデーションスキーマ(フォーム用)
 export const cardFormSchema = z.object({
-  id: z.number().optional(),
   book_id: z.number(),
   title: z
     .string()
