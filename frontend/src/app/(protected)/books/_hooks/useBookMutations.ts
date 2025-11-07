@@ -66,7 +66,7 @@ export function useBookMutations() {
         throw new Error(error.error || '書籍の削除に失敗しました');
       }
 
-      return id;
+      return response.json();
     },
     onSuccess: () => {
       // 一覧ページにリダイレクト

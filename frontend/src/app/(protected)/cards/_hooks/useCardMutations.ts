@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { queryKeys } from '@/constants/queryKeys';
-import { CardFormData } from '@/app/(protected)/cards/_types';
+import { Card, CardFormData } from '@/app/(protected)/cards/_types';
 
 // 更新用の型
 type UpdateCardData = CardFormData & { id: number };
@@ -22,7 +22,7 @@ export function useCardMutations() {
         throw new Error(error.error || 'カードの作成に失敗しました');
       }
 
-      return response.json();
+      return response.json() as Promise<Card>;
     },
     onSuccess: (_, { book_id }) => {
       // カード一覧のキャッシュを無効化
@@ -46,7 +46,7 @@ export function useCardMutations() {
         throw new Error(error.error || 'カードの更新に失敗しました');
       }
 
-      return response.json();
+      return response.json() as Promise<Card>;
     },
     onSuccess: (_, { id, book_id }) => {
       // カード一覧のキャッシュを無効化

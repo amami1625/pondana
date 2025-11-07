@@ -66,7 +66,7 @@ export function useListMutations() {
         throw new Error(error.error || 'リストの削除に失敗しました');
       }
 
-      return id; // 削除したIDを返す
+      return response.json();
     },
     onSuccess: () => {
       // 一覧ページにリダイレクト
