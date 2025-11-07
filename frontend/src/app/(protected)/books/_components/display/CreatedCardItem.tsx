@@ -4,6 +4,7 @@ import { Card } from '@/app/(protected)/cards/_types';
 import { DeleteButton } from '@/components/Buttons';
 import ErrorMessage from '@/components/ErrorMessage';
 import { useCardMutations } from '@/app/(protected)/cards/_hooks/useCardMutations';
+import { DetailLink } from '@/components/links';
 
 interface CreatedCardItemProps {
   card: Card;
@@ -36,8 +37,9 @@ export default function CreatedCardItem({ card }: CreatedCardItemProps) {
           <p className="text-sm text-gray-600 whitespace-pre-wrap">{card.content}</p>
         </div>
 
-        {/* 削除ボタン */}
-        <div className="flex-shrink-0">
+        {/* アクションボタン */}
+        <div className="flex-shrink-0 flex gap-2">
+          <DetailLink href={`/cards/${card.id}`} />
           <DeleteButton onClick={handleDelete} />
         </div>
       </div>
