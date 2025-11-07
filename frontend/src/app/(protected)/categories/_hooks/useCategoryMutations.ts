@@ -25,7 +25,7 @@ export function useCategoryMutations() {
       return response.json() as Promise<Category>;
     },
     onSuccess: () => {
-      // カテゴリ一覧を再取得
+      // カテゴリ一覧のキャッシュを無効化
       queryClient.invalidateQueries({ queryKey: queryKeys.categories.all });
     },
   });
@@ -47,7 +47,11 @@ export function useCategoryMutations() {
       return response.json() as Promise<Category>;
     },
     onSuccess: () => {
+      // カテゴリ一覧のキャッシュを無効化
       queryClient.invalidateQueries({ queryKey: queryKeys.categories.all });
+      // 本のキャッシュをすべて無効化（一覧・詳細の両方）
+      // TODO: 現状どの本がこのカテゴリを使っているか判別できないため、パフォーマンスに問題が出てきたら修正する
+      queryClient.invalidateQueries({ queryKey: queryKeys.books.all });
     },
   });
 
@@ -66,7 +70,11 @@ export function useCategoryMutations() {
       return response.json();
     },
     onSuccess: () => {
+      // カテゴリ一覧のキャッシュを無効化
       queryClient.invalidateQueries({ queryKey: queryKeys.categories.all });
+      // 本のキャッシュをすべて無効化（一覧・詳細の両方）
+      // TODO: 現状どの本がこのカテゴリを使っているか判別できないため、パフォーマンスに問題が出てきたら修正する
+      queryClient.invalidateQueries({ queryKey: queryKeys.books.all });
     },
   });
 
