@@ -48,14 +48,15 @@ export function useBookMutations() {
 
       return response.json() as Promise<BookBase>;
     },
-    onSuccess: (_, variables) => {
+    onSuccess: (_, { id }) => {
       // 書籍一覧のキャッシュを無効化
       queryClient.invalidateQueries({ queryKey: queryKeys.books.all });
       // 書籍詳細のキャッシュを無効化
-      queryClient.invalidateQueries({ queryKey: queryKeys.books.detail(variables.id) });
+      queryClient.invalidateQueries({ queryKey: queryKeys.books.detail(id) });
     },
   });
 
+  // 削除
   const deleteMutation = useMutation({
     mutationFn: async (id: number) => {
       const response = await fetch(`/api/books/${id}`, { method: 'DELETE' });
