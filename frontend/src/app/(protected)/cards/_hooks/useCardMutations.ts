@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { queryKeys } from '@/constants/queryKeys';
-import { CardFormData } from '@/app/(protected)/cards/_types';
+import { Card, CardFormData } from '@/app/(protected)/cards/_types';
 
 // 更新用の型
 type UpdateCardData = CardFormData & { id: number };
@@ -8,6 +8,7 @@ type UpdateCardData = CardFormData & { id: number };
 export function useCardMutations() {
   const queryClient = useQueryClient();
 
+  // 作成
   const createMutation = useMutation({
     mutationFn: async (data: CardFormData) => {
       const response = await fetch(`/api/books/${data.book_id}/cards`, {
@@ -21,16 +22,17 @@ export function useCardMutations() {
         throw new Error(error.error || 'カードの作成に失敗しました');
       }
 
-      return response.json();
+      return response.json() as Promise<Card>;
     },
-    onSuccess: (_, variables) => {
+    onSuccess: (_, { book_id }) => {
       // カード一覧のキャッシュを無効化
       queryClient.invalidateQueries({ queryKey: queryKeys.cards.all });
       // 本詳細のキャッシュを無効化（カード一覧を含む）
-      queryClient.invalidateQueries({ queryKey: queryKeys.books.detail(variables.book_id) });
+      queryClient.invalidateQueries({ queryKey: queryKeys.books.detail(book_id) });
     },
   });
 
+  // 更新
   const updateMutation = useMutation({
     mutationFn: async (data: UpdateCardData) => {
       const response = await fetch(`/api/books/${data.book_id}/cards/${data.id}`, {
@@ -44,18 +46,19 @@ export function useCardMutations() {
         throw new Error(error.error || 'カードの更新に失敗しました');
       }
 
-      return response.json();
+      return response.json() as Promise<Card>;
     },
-    onSuccess: (_, variables) => {
+    onSuccess: (_, { id, book_id }) => {
       // カード一覧のキャッシュを無効化
       queryClient.invalidateQueries({ queryKey: queryKeys.cards.all });
       // カード詳細のキャッシュを無効化
-      queryClient.invalidateQueries({ queryKey: queryKeys.cards.detail(variables.id) });
+      queryClient.invalidateQueries({ queryKey: queryKeys.cards.detail(id) });
       // 本詳細のキャッシュを無効化
-      queryClient.invalidateQueries({ queryKey: queryKeys.books.detail(variables.book_id) });
+      queryClient.invalidateQueries({ queryKey: queryKeys.books.detail(book_id) });
     },
   });
 
+  // 削除
   const deleteMutation = useMutation({
     mutationFn: async ({ bookId, cardId }: { bookId: number; cardId: number }) => {
       const response = await fetch(`/api/books/${bookId}/cards/${cardId}`, {
@@ -69,11 +72,11 @@ export function useCardMutations() {
 
       return response.json();
     },
-    onSuccess: (_, variables) => {
+    onSuccess: (_, { bookId }) => {
       // カード一覧のキャッシュを無効化
       queryClient.invalidateQueries({ queryKey: queryKeys.cards.all });
       // 本詳細のキャッシュを無効化
-      queryClient.invalidateQueries({ queryKey: queryKeys.books.detail(variables.bookId) });
+      queryClient.invalidateQueries({ queryKey: queryKeys.books.detail(bookId) });
     },
   });
 

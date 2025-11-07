@@ -48,14 +48,15 @@ export function useListMutations() {
 
       return response.json() as Promise<ListBase>;
     },
-    onSuccess: (_, variables) => {
+    onSuccess: (_, { id }) => {
       // リスト一覧のキャッシュを無効化
       queryClient.invalidateQueries({ queryKey: queryKeys.lists.all });
       // リスト詳細のキャッシュを無効化
-      queryClient.invalidateQueries({ queryKey: queryKeys.lists.detail(variables.id) });
+      queryClient.invalidateQueries({ queryKey: queryKeys.lists.detail(id) });
     },
   });
 
+  // 削除
   const deleteMutation = useMutation({
     mutationFn: async (id: number) => {
       const response = await fetch(`/api/lists/${id}`, { method: 'DELETE' });
@@ -65,7 +66,7 @@ export function useListMutations() {
         throw new Error(error.error || 'リストの削除に失敗しました');
       }
 
-      return id; // 削除したIDを返す
+      return response.json();
     },
     onSuccess: () => {
       // 一覧ページにリダイレクト
