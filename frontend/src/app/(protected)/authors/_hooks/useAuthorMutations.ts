@@ -26,7 +26,7 @@ export function useAuthorMutations() {
     },
 
     onSuccess: () => {
-      // 著者一覧を再取得
+      // 著者一覧のキャッシュを無効化
       queryClient.invalidateQueries({ queryKey: queryKeys.authors.all });
     },
   });
@@ -49,7 +49,11 @@ export function useAuthorMutations() {
     },
 
     onSuccess: () => {
+      // 著者一覧のキャッシュを無効化
       queryClient.invalidateQueries({ queryKey: queryKeys.authors.all });
+      // 本のキャッシュをすべて無効化（一覧・詳細の両方）
+      // TODO: 現状どの本がこの著者データを使っているか判別できないため、パフォーマンスに問題が出てきたら修正する
+      queryClient.invalidateQueries({ queryKey: queryKeys.books.all });
     },
   });
 
@@ -69,7 +73,11 @@ export function useAuthorMutations() {
     },
 
     onSuccess: () => {
+      // 著者一覧のキャッシュを無効化
       queryClient.invalidateQueries({ queryKey: queryKeys.authors.all });
+      // 本のキャッシュをすべて無効化（一覧・詳細の両方）
+      // TODO: 現状どの本がこの著者データを使っているか判別できないため、パフォーマンスに問題が出てきたら修正する
+      queryClient.invalidateQueries({ queryKey: queryKeys.books.all });
     },
   });
 
