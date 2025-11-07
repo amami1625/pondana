@@ -16,5 +16,6 @@ export function useCard(id: number) {
       const data = await response.json();
       return cardDetailSchema.parse(data);
     },
+    enabled: !!id, // id がある時だけクエリを実行
   });
 }
