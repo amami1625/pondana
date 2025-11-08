@@ -17,4 +17,7 @@ export const queryKeys = {
     all: ['cards'] as const, // 一覧取得用
     detail: (id: number) => ['cards', 'detail', id] as const, // 詳細取得用
   },
+  profiles: {
+    all: ['profile'] as const, // 詳細取得用
+  },
 } as const;
