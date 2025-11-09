@@ -1,11 +1,11 @@
 import { authenticatedRequest } from '@/supabase/dal';
-import { profileSchema } from '@/schemas/profile';
+import { userSchema } from '@/schemas/user';
 import { NextResponse } from 'next/server';
 
 export async function GET() {
   try {
     const data = await authenticatedRequest('/profile');
-    const profile = profileSchema.parse(data);
+    const profile = userSchema.parse(data);
     return NextResponse.json(profile);
   } catch (error) {
     if (error instanceof Error) {

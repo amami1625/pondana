@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-export const profileSchema = z.object({
+export const userSchema = z.object({
   id: z.number(),
   supabase_uid: z.string(),
   name: z.string(),
@@ -18,10 +18,10 @@ export const profileSchema = z.object({
 });
 
 // Userのバリデーションスキーマ(フォーム用)
-export const profileFormSchema = z.object({
+export const userFormSchema = z.object({
   name: z.string().min(1, { message: 'ユーザー名を入力してください' }),
   avatar_url: z.string().optional(),
 });
 
-export type User = z.infer<typeof profileSchema>;
-export type UserFormData = z.infer<typeof profileFormSchema>;
+export type User = z.infer<typeof userSchema>;
+export type UserFormData = z.infer<typeof userFormSchema>;
