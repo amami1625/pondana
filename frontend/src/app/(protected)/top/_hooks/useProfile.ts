@@ -1,10 +1,10 @@
 import { useQuery } from '@tanstack/react-query';
 import { queryKeys } from '@/constants/queryKeys';
-import { profileSchema } from '@/schemas/profile';
+import { userSchema } from '@/schemas/user';
 
 export function useProfile() {
   return useQuery({
-    queryKey: queryKeys.profiles.all,
+    queryKey: queryKeys.profile.all,
     queryFn: async () => {
       const response = await fetch('/api/profiles');
 
@@ -14,7 +14,7 @@ export function useProfile() {
       }
 
       const data = await response.json();
-      return profileSchema.parse(data);
+      return userSchema.parse(data);
     },
   });
 }
