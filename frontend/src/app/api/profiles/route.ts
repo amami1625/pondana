@@ -14,3 +14,21 @@ export async function GET() {
     return NextResponse.json({ error: '不明なエラーが発生しました' }, { status: 500 });
   }
 }
+
+export async function PUT(request: Request) {
+  try {
+    const body = await request.json();
+    const data = await authenticatedRequest('/profile', {
+      method: 'PUT',
+      body: JSON.stringify({ profile: body }),
+    });
+
+    const updatedProfile = userSchema.parse(data);
+    return NextResponse.json(updatedProfile);
+  } catch (error) {
+    if (error instanceof Error) {
+      return NextResponse.json({ error: error.message }, { status: 500 });
+    }
+    return NextResponse.json({ error: '不明なエラーが発生しました' }, { status: 500 });
+  }
+}
