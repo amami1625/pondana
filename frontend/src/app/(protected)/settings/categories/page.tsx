@@ -2,18 +2,17 @@
 
 import { useState } from 'react';
 import { Category } from '@/app/(protected)/categories/_types';
-import SettingsItem from '@/app/(protected)/settings/_components/display/SettingsItem';
-import CategoryModal from '@/app/(protected)/categories/_components/modal';
 import { useCategories } from '@/app/(protected)/categories/_hooks/useCategories';
 import { useCategoryMutations } from '@/app/(protected)/categories/_hooks/useCategoryMutations';
 import { useModal } from '@/hooks/useModal';
+import SettingsItem from '@/app/(protected)/settings/_components/display/SettingsItem';
+import CategoryModal from '@/app/(protected)/categories/_components/modal';
 import ErrorMessage from '@/components/ErrorMessage';
 import LoadingState from '@/components/LoadingState';
 
 export default function SettingsCategoriesPage() {
   const { data: categories, isLoading, error } = useCategories();
   const { deleteCategory, deleteError } = useCategoryMutations();
-
   const [editingCategory, setEditingCategory] = useState<Category | undefined>();
   const createModal = useModal();
   const editModal = useModal();
@@ -46,6 +45,11 @@ export default function SettingsCategoriesPage() {
     return <ErrorMessage message={error.message} />;
   }
 
+  // データが取得できていない場合
+  if (!categories) {
+    return <ErrorMessage message="著者情報の取得に失敗しました" />;
+  }
+
   return (
     <>
       <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
@@ -60,7 +64,7 @@ export default function SettingsCategoriesPage() {
           </button>
         </div>
 
-        {categories && categories.length === 0 ? (
+        {categories.length === 0 ? (
           <div className="py-12 text-center">
             <p className="text-sm text-gray-500">カテゴリーが登録されていません</p>
           </div>

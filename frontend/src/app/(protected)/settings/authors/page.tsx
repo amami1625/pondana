@@ -2,11 +2,11 @@
 
 import { useState } from 'react';
 import { Author } from '@/app/(protected)/authors/_types';
+import { useAuthors } from '@/app/(protected)/authors/_hooks/useAuthors';
+import { useAuthorMutations } from '@/app/(protected)/authors/_hooks/useAuthorMutations';
+import { useModal } from '@/hooks/useModal';
 import SettingsItem from '@/app/(protected)/settings/_components/display/SettingsItem';
 import AuthorModal from '@/app/(protected)/authors/_components/modal';
-import { useAuthors } from '@/app/(protected)/authors/_hooks/useAuthors';
-import { useAuthorMutations } from '../../authors/_hooks/useAuthorMutations';
-import { useModal } from '@/hooks/useModal';
 import ErrorMessage from '@/components/ErrorMessage';
 import LoadingState from '@/components/LoadingState';
 
@@ -45,6 +45,11 @@ export default function SettingsAuthorsPage() {
     return <ErrorMessage message={error.message} />;
   }
 
+  // データが取得できていない場合
+  if (!authors) {
+    return <ErrorMessage message="著者情報の取得に失敗しました" />;
+  }
+
   return (
     <>
       <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
@@ -59,7 +64,7 @@ export default function SettingsAuthorsPage() {
           </button>
         </div>
 
-        {authors && authors.length === 0 ? (
+        {authors.length === 0 ? (
           <div className="py-12 text-center">
             <p className="text-sm text-gray-500">著者情報が登録されていません</p>
           </div>
