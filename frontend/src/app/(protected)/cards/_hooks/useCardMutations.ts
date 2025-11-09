@@ -29,6 +29,8 @@ export function useCardMutations() {
       queryClient.invalidateQueries({ queryKey: queryKeys.cards.all });
       // 本詳細のキャッシュを無効化（カード一覧を含む）
       queryClient.invalidateQueries({ queryKey: queryKeys.books.detail(book_id) });
+      // トップページのキャッシュを無効化
+      queryClient.invalidateQueries({ queryKey: queryKeys.top.all });
     },
   });
 
@@ -55,6 +57,8 @@ export function useCardMutations() {
       queryClient.invalidateQueries({ queryKey: queryKeys.cards.detail(id) });
       // 本詳細のキャッシュを無効化
       queryClient.invalidateQueries({ queryKey: queryKeys.books.detail(book_id) });
+      // トップページのキャッシュを無効化
+      queryClient.invalidateQueries({ queryKey: queryKeys.top.all });
     },
   });
 
@@ -77,6 +81,8 @@ export function useCardMutations() {
       queryClient.invalidateQueries({ queryKey: queryKeys.cards.all });
       // 本詳細のキャッシュを無効化
       queryClient.invalidateQueries({ queryKey: queryKeys.books.detail(bookId) });
+      // トップページのキャッシュを無効化
+      queryClient.invalidateQueries({ queryKey: queryKeys.top.all });
     },
   });
 
