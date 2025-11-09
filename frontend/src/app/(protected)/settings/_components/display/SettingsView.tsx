@@ -2,18 +2,35 @@
 
 import Image from 'next/image';
 import { User as UserIcon } from 'lucide-react';
-import { User } from '@/schemas/profile';
-import SettingsItem from '@/app/(protected)/settings/_components/display/SettingsItem';
+import { useProfile } from '@/app/(protected)/settings/_hooks/useProfile';
 import { useModal } from '@/hooks/useModal';
-import UserFormModal from '../modal/UserFormModal';
+import SettingsItem from '@/app/(protected)/settings/_components/display/SettingsItem';
+import UserFormModal from '@/app/(protected)/settings/_components/modal/UserFormModal';
+import ErrorMessage from '@/components/ErrorMessage';
+import LoadingState from '@/components/LoadingState';
 
 interface SettingsViewProps {
-  user: User;
   email: string;
 }
 
-export default function SettingsView({ user, email }: SettingsViewProps) {
+export default function SettingsView({ email }: SettingsViewProps) {
+  const { data: user, error, isLoading } = useProfile();
   const updateNameModal = useModal();
+
+  // ローディング状態
+  if (isLoading) {
+    return <LoadingState message="プロフィールデータを読み込んでいます..." />;
+  }
+
+  // エラー状態
+  if (error) {
+    return <ErrorMessage message={error?.message || 'エラーが発生しました'} />;
+  }
+
+  // データが取得できていない場合
+  if (!user) {
+    return <ErrorMessage message="プロフィールデータの取得に失敗しました" />;
+  }
 
   return (
     <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">

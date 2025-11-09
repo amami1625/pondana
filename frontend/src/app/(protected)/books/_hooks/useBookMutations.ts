@@ -29,6 +29,8 @@ export function useBookMutations() {
     onSuccess: () => {
       // 書籍一覧を再取得
       queryClient.invalidateQueries({ queryKey: queryKeys.books.all });
+      // トップページのキャッシュを無効化
+      queryClient.invalidateQueries({ queryKey: queryKeys.top.all });
     },
   });
 
@@ -53,6 +55,8 @@ export function useBookMutations() {
       queryClient.invalidateQueries({ queryKey: queryKeys.books.all });
       // 書籍詳細のキャッシュを無効化
       queryClient.invalidateQueries({ queryKey: queryKeys.books.detail(id) });
+      // トップページのキャッシュを無効化
+      queryClient.invalidateQueries({ queryKey: queryKeys.top.all });
     },
   });
 
@@ -77,6 +81,8 @@ export function useBookMutations() {
         queryKey: queryKeys.books.all,
         exact: true,
       });
+      // トップページのキャッシュを無効化
+      queryClient.invalidateQueries({ queryKey: queryKeys.top.all });
     },
   });
 

@@ -29,6 +29,8 @@ export function useListMutations() {
     onSuccess: () => {
       // リスト一覧を再取得
       queryClient.invalidateQueries({ queryKey: queryKeys.lists.all });
+      // トップページのキャッシュを無効化
+      queryClient.invalidateQueries({ queryKey: queryKeys.top.all });
     },
   });
 
@@ -53,6 +55,8 @@ export function useListMutations() {
       queryClient.invalidateQueries({ queryKey: queryKeys.lists.all });
       // リスト詳細のキャッシュを無効化
       queryClient.invalidateQueries({ queryKey: queryKeys.lists.detail(id) });
+      // トップページのキャッシュを無効化
+      queryClient.invalidateQueries({ queryKey: queryKeys.top.all });
     },
   });
 
@@ -77,6 +81,8 @@ export function useListMutations() {
         queryKey: queryKeys.lists.all,
         exact: true,
       });
+      // トップページのキャッシュを無効化
+      queryClient.invalidateQueries({ queryKey: queryKeys.top.all });
     },
   });
 

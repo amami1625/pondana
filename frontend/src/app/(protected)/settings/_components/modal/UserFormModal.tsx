@@ -1,7 +1,6 @@
 import BaseModal from '@/components/BaseModal';
 import NameForm from '../forms/NameForm';
-import { User } from '@/schemas/profile';
-import { updateProfile } from '../../_lib/actions';
+import { User } from '@/schemas/user';
 
 interface UserFormModalProps {
   user: User;
@@ -12,7 +11,7 @@ interface UserFormModalProps {
 export default function UserFormModal({ user, isOpen, onClose }: UserFormModalProps) {
   return (
     <BaseModal title="ユーザー名を変更" isOpen={isOpen} onClose={onClose}>
-      <NameForm user={user} onClose={onClose} action={updateProfile} />
+      <NameForm user={user} onClose={onClose} />
     </BaseModal>
   );
 }

@@ -1,22 +1,20 @@
 'use client';
 
 import FormInput from '@/components/forms/FormInput';
-import { useUpdateUser } from '../../_hooks/useUpdateUser';
-import { User, UserFormData } from '@/schemas/profile';
+import { useProfileForm } from '@/app/(protected)/settings/_hooks/useProfileForm';
+import { User } from '@/schemas/user';
 import ErrorMessage from '@/components/ErrorMessage';
 import SubmitButton from '@/components/Buttons/SubmitButton';
 
 interface NameFormProps {
   user: User;
-  action: (formData: UserFormData) => Promise<{ success: true } | { error: string }>;
   onClose: () => void;
 }
 
-export default function NameForm({ user, action, onClose }: NameFormProps) {
-  const { register, handleSubmit, errors, error, isSubmitting, onSubmit } = useUpdateUser({
+export default function NameForm({ user, onClose }: NameFormProps) {
+  const { register, handleSubmit, errors, error, isSubmitting, onSubmit } = useProfileForm({
     user,
-    action,
-    onClose,
+    cancel: onClose,
   });
 
   return (
