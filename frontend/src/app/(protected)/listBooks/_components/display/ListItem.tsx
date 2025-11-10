@@ -1,6 +1,5 @@
 import { List } from '@/app/(protected)/lists/_types';
-import { useListBookMutations } from '@/app/(protected)/listBooks/_hooks/useListBookMutations';
-import toast from 'react-hot-toast';
+import { useListBookActions } from '@/app/(protected)/listBooks/_hooks/useListBookActions';
 import { AddButton } from '@/components/Buttons';
 
 interface ListItemProps {
@@ -10,19 +9,7 @@ interface ListItemProps {
 }
 
 export default function Listitem({ list, bookId, isAdded }: ListItemProps) {
-  const { addListBook } = useListBookMutations();
-
-  const handleAdd = () => {
-    addListBook(
-      {
-        list_id: list.id,
-        book_id: bookId,
-      },
-      {
-        onError: (error) => toast.error(error.message),
-      },
-    );
-  };
+  const { handleAdd } = useListBookActions();
 
   return (
     <div className="border-b border-gray-200 py-4 last:border-b-0">
@@ -34,7 +21,7 @@ export default function Listitem({ list, bookId, isAdded }: ListItemProps) {
 
         {/* 追加ボタン */}
         <div className="flex-shrink-0">
-          <AddButton onClick={handleAdd} isAdded={isAdded} />
+          <AddButton onClick={() => handleAdd(list.id, bookId)} isAdded={isAdded} />
         </div>
       </div>
     </div>

@@ -1,9 +1,8 @@
 'use client';
 
 import { AddedList } from '@/app/(protected)/books/_types';
-import { useListBookMutations } from '@/app/(protected)/listBooks/_hooks/useListBookMutations';
+import { useListBookActions } from '@/app/(protected)/listBooks/_hooks/useListBookActions';
 import { RemoveButton } from '@/components/Buttons';
-import toast from 'react-hot-toast';
 
 interface AddedListItemProps {
   list: AddedList;
@@ -11,16 +10,7 @@ interface AddedListItemProps {
 }
 
 export default function AddedListItem({ list, listBookId }: AddedListItemProps) {
-  const { removeListBook } = useListBookMutations();
-
-  const handleRemove = () => {
-    removeListBook(
-      { id: listBookId },
-      {
-        onError: (error) => toast.error(error.message),
-      },
-    );
-  };
+  const { handleRemove } = useListBookActions();
 
   return (
     <div className="border-b border-gray-200 p-4 last:border-b-0">
@@ -44,7 +34,7 @@ export default function AddedListItem({ list, listBookId }: AddedListItemProps) 
 
         {/* リストから削除 */}
         <div className="flex-shrink-0">
-          <RemoveButton onClick={handleRemove} />
+          <RemoveButton onClick={() => handleRemove(listBookId)} />
         </div>
       </div>
     </div>
