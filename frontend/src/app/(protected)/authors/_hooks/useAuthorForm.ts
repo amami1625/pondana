@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import toast from 'react-hot-toast';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Author, AuthorFormData, authorFormSchema } from '@/app/(protected)/authors/_types';
@@ -10,8 +10,7 @@ interface UseAuthorFormProps {
 }
 
 export const useAuthorForm = ({ author, cancel }: UseAuthorFormProps) => {
-  const [error, setError] = useState('');
-  const { createAuthor, updateAuthor, createError, updateError } = useAuthorMutations();
+  const { createAuthor, updateAuthor, isCreating, isUpdating } = useAuthorMutations();
 
   const defaultValues: AuthorFormData = {
     name: author?.name ?? '',
@@ -20,49 +19,36 @@ export const useAuthorForm = ({ author, cancel }: UseAuthorFormProps) => {
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitting },
+    formState: { errors },
   } = useForm<AuthorFormData>({
     resolver: zodResolver(authorFormSchema),
     defaultValues,
   });
 
   const onSubmit = async (data: AuthorFormData) => {
-    try {
-      if (author) {
-        // 更新
-        updateAuthor(
-          { ...data, id: author.id },
-          {
-            onSuccess: () => {
-              cancel();
-            },
-            onError: (error) => {
-              setError(error.message);
-            },
-          },
-        );
-      } else {
-        // 作成
-        createAuthor(data, {
-          onSuccess: () => {
-            cancel();
-          },
-          onError: (error) => {
-            setError(error.message);
-          },
-        });
-      }
-    } catch (_err) {
-      setError('予期しないエラーが発生しました');
+    if (author) {
+      // 更新
+      updateAuthor(
+        { ...data, id: author.id },
+        {
+          onSuccess: () => cancel(),
+          onError: (error) => toast.error(error.message),
+        },
+      );
+    } else {
+      // 作成
+      createAuthor(data, {
+        onSuccess: () => cancel(),
+        onError: (error) => toast.error(error.message),
+      });
     }
   };
 
   return {
-    error: error || createError?.message || updateError?.message,
     register,
     handleSubmit,
     onSubmit,
     errors,
-    isSubmitting,
+    isSubmitting: isCreating || isUpdating,
   };
 };
