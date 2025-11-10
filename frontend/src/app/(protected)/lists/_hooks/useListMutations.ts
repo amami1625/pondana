@@ -2,6 +2,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { queryKeys } from '@/constants/queryKeys';
 import { ListBase, ListFormData } from '@/app/(protected)/lists/_types';
 import { useRouter } from 'next/navigation';
+import toast from 'react-hot-toast';
 
 // 更新用の型
 type UpdateListData = ListFormData & { id: number };
@@ -27,6 +28,7 @@ export function useListMutations() {
       return response.json() as Promise<ListBase>;
     },
     onSuccess: () => {
+      toast.success('リストを作成しました');
       // リスト一覧を再取得
       queryClient.invalidateQueries({ queryKey: queryKeys.lists.all });
       // トップページのキャッシュを無効化
@@ -51,6 +53,7 @@ export function useListMutations() {
       return response.json() as Promise<ListBase>;
     },
     onSuccess: (_, { id }) => {
+      toast.success('リストを更新しました');
       // リスト一覧のキャッシュを無効化
       queryClient.invalidateQueries({ queryKey: queryKeys.lists.all });
       // リスト詳細のキャッシュを無効化
@@ -73,6 +76,7 @@ export function useListMutations() {
       return response.json();
     },
     onSuccess: () => {
+      toast.success('リストを削除しました');
       // 一覧ページにリダイレクト
       router.push('/lists');
 
