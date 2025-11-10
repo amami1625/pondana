@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import toast from 'react-hot-toast';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { User, UserFormData, userFormSchema } from '@/schemas/user';
@@ -10,8 +10,7 @@ interface UseProfileFormStateProps {
 }
 
 export function useProfileForm({ user, cancel }: UseProfileFormStateProps) {
-  const [error, setError] = useState('');
-  const { updateUser, updateError, isUpdating } = useProfileMutations();
+  const { updateUser, isUpdating } = useProfileMutations();
 
   const defaultValues: UserFormData = {
     name: user.name,
@@ -28,23 +27,16 @@ export function useProfileForm({ user, cancel }: UseProfileFormStateProps) {
   });
 
   const onSubmit = (data: UserFormData) => {
-    try {
-      setError(''); // 前回のエラーをクリア
-
-      updateUser(data, {
-        onSuccess: () => cancel(),
-        onError: (error) => setError(error.message),
-      });
-    } catch (_err) {
-      setError('予期しないエラーが発生しました');
-    }
+    updateUser(data, {
+      onSuccess: () => cancel(),
+      onError: (error) => toast.error(error.message),
+    });
   };
 
   return {
     register,
     handleSubmit,
     errors,
-    error: error || updateError?.message,
     onSubmit,
     isSubmitting: isUpdating,
   };

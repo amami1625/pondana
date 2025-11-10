@@ -1,9 +1,8 @@
 'use client';
 
-import FormInput from '@/components/forms/FormInput';
-import { useProfileForm } from '@/app/(protected)/settings/_hooks/useProfileForm';
 import { User } from '@/schemas/user';
-import ErrorMessage from '@/components/ErrorMessage';
+import { useProfileForm } from '@/app/(protected)/settings/_hooks/useProfileForm';
+import FormInput from '@/components/forms/FormInput';
 import SubmitButton from '@/components/Buttons/SubmitButton';
 
 interface NameFormProps {
@@ -12,7 +11,7 @@ interface NameFormProps {
 }
 
 export default function NameForm({ user, onClose }: NameFormProps) {
-  const { register, handleSubmit, errors, error, isSubmitting, onSubmit } = useProfileForm({
+  const { register, handleSubmit, errors, isSubmitting, onSubmit } = useProfileForm({
     user,
     cancel: onClose,
   });
@@ -22,8 +21,6 @@ export default function NameForm({ user, onClose }: NameFormProps) {
       className="flex flex-col gap-6 rounded-2xl border border-gray-200 bg-white p-6 shadow-sm"
       onSubmit={handleSubmit(onSubmit)}
     >
-      {error && <ErrorMessage message={error} />}
-
       <div className="space-y-4">
         <FormInput
           name="name"
