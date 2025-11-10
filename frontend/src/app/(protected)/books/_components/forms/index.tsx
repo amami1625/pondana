@@ -1,20 +1,19 @@
 'use client';
 
-import { Book } from '@/app/(protected)/books/_types';
 import Select from 'react-select';
 import { Controller } from 'react-hook-form';
+import { Book } from '@/app/(protected)/books/_types';
+import { STATUS_OPTIONS, RATING_OPTIONS } from '@/app/(protected)/books/_constants';
 import AuthorModal from '@/app/(protected)/authors/_components/modal';
 import CategoryModal from '@/app/(protected)/categories/_components/modal';
-import { useBookFormState } from '@/app/(protected)/books/_hooks/useBookForm';
-import { useModal } from '@/hooks/useModal';
-import { STATUS_OPTIONS, RATING_OPTIONS } from '@/app/(protected)/books/_constants';
 import FormInput from '@/components/forms/FormInput';
 import FormCheckbox from '@/components/forms/FormCheckbox';
 import FormTextarea from '@/components/forms/FormTextarea';
 import FormSelect from '@/components/forms/FormSelect';
-import ErrorMessage from '@/components/ErrorMessage';
 import CancelButton from '@/components/Buttons/CancelButton';
 import SubmitButton from '@/components/Buttons/SubmitButton';
+import { useBookForm } from '@/app/(protected)/books/_hooks/useBookForm';
+import { useModal } from '@/hooks/useModal';
 import { useAuthors } from '@/app/(protected)/authors/_hooks/useAuthors';
 import { useCategories } from '@/app/(protected)/categories/_hooks/useCategories';
 
@@ -29,8 +28,10 @@ interface BookFormProps {
 export default function BookForm({ book, submitLabel, cancel }: BookFormProps) {
   const { data: authors } = useAuthors();
   const { data: categories } = useCategories();
-  const { register, control, handleSubmit, errors, error, onSubmit, isSubmitting } =
-    useBookFormState({ book, cancel });
+  const { register, control, handleSubmit, errors, onSubmit, isSubmitting } = useBookForm({
+    book,
+    cancel,
+  });
   const authorModal = useModal();
   const categoryModal = useModal();
 
@@ -149,9 +150,6 @@ export default function BookForm({ book, submitLabel, cancel }: BookFormProps) {
           error={errors.public?.message}
           register={register}
         />
-
-        {/* エラーメッセージ */}
-        {error && <ErrorMessage message={error} />}
 
         <div className="flex justify-end gap-3">
           <CancelButton onClick={cancel} />
