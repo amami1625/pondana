@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { queryKeys } from '@/constants/queryKeys';
 import { Category, CategoryFormData } from '@/app/(protected)/categories/_types';
+import toast from 'react-hot-toast';
 
 // 更新用の型
 type UpdateCategoryData = CategoryFormData & { id: number };
@@ -25,6 +26,7 @@ export function useCategoryMutations() {
       return response.json() as Promise<Category>;
     },
     onSuccess: () => {
+      toast.success('カテゴリを作成しました');
       // カテゴリ一覧のキャッシュを無効化
       queryClient.invalidateQueries({ queryKey: queryKeys.categories.all });
     },
@@ -47,6 +49,7 @@ export function useCategoryMutations() {
       return response.json() as Promise<Category>;
     },
     onSuccess: () => {
+      toast.success('カテゴリを更新しました');
       // カテゴリ一覧のキャッシュを無効化
       queryClient.invalidateQueries({ queryKey: queryKeys.categories.all });
       // 本のキャッシュをすべて無効化（一覧・詳細の両方）
@@ -70,6 +73,7 @@ export function useCategoryMutations() {
       return response.json();
     },
     onSuccess: () => {
+      toast.success('カテゴリを削除しました');
       // カテゴリ一覧のキャッシュを無効化
       queryClient.invalidateQueries({ queryKey: queryKeys.categories.all });
       // 本のキャッシュをすべて無効化（一覧・詳細の両方）
