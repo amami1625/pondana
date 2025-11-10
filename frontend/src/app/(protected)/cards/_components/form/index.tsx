@@ -1,12 +1,11 @@
 'use client';
 
+import { Card } from '@/app/(protected)/cards/_types';
+import { useCardForm } from '@/app/(protected)/cards/_hooks/useCardForm';
 import CancelButton from '@/components/Buttons/CancelButton';
 import SubmitButton from '@/components/Buttons/SubmitButton';
 import FormInput from '@/components/forms/FormInput';
 import FormTextarea from '@/components/forms/FormTextarea';
-import ErrorMessage from '@/components/ErrorMessage';
-import { Card } from '@/app/(protected)/cards/_types';
-import { useCardForm } from '@/app/(protected)/cards/_hooks/useCardForm';
 
 interface CardFormProps {
   card?: Card;
@@ -16,7 +15,7 @@ interface CardFormProps {
 }
 
 export default function CardForm({ card, bookId, onClose, submitLabel }: CardFormProps) {
-  const { error, register, handleSubmit, onSubmit, errors, isSubmitting } = useCardForm({
+  const { register, handleSubmit, onSubmit, errors, isSubmitting } = useCardForm({
     card,
     cancel: onClose,
     bookId,
@@ -47,9 +46,6 @@ export default function CardForm({ card, bookId, onClose, submitLabel }: CardFor
         error={errors.content?.message}
         register={register}
       />
-
-      {/* エラーメッセージ */}
-      {error && <ErrorMessage message={error} />}
 
       <div className="flex justify-end gap-3">
         <CancelButton onClick={onClose} />
