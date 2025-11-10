@@ -3,7 +3,7 @@
 import { AddedBook } from '@/app/(protected)/lists/_types';
 import { useListBookMutations } from '@/app/(protected)/listBooks/_hooks/useListBookMutations';
 import { RemoveButton } from '@/components/Buttons';
-import ErrorMessage from '@/components/ErrorMessage';
+import toast from 'react-hot-toast';
 
 interface AddedBookProps {
   book: AddedBook;
@@ -11,15 +11,19 @@ interface AddedBookProps {
 }
 
 export default function AddedBookItem({ book, listBookId }: AddedBookProps) {
-  const { removeListBook, removeError } = useListBookMutations();
+  const { removeListBook } = useListBookMutations();
 
   const handleRemove = () => {
-    removeListBook({ id: listBookId });
+    removeListBook(
+      { id: listBookId },
+      {
+        onError: (error) => toast.error(error.message),
+      },
+    );
   };
 
   return (
     <div className="border-b border-gray-200 p-4 last:border-b-0">
-      {removeError && <ErrorMessage message={removeError.message} />}
       <div className="flex items-start justify-between gap-4">
         <div className="flex-1 min-w-0">
           {/* タイトル */}

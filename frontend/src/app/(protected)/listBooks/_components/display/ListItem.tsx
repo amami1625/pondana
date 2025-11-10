@@ -1,7 +1,7 @@
-import { AddButton } from '@/components/Buttons';
-import ErrorMessage from '@/components/ErrorMessage';
 import { List } from '@/app/(protected)/lists/_types';
 import { useListBookMutations } from '@/app/(protected)/listBooks/_hooks/useListBookMutations';
+import toast from 'react-hot-toast';
+import { AddButton } from '@/components/Buttons';
 
 interface ListItemProps {
   list: List;
@@ -10,18 +10,22 @@ interface ListItemProps {
 }
 
 export default function Listitem({ list, bookId, isAdded }: ListItemProps) {
-  const { addListBook, addError } = useListBookMutations();
+  const { addListBook } = useListBookMutations();
 
   const handleAdd = () => {
-    addListBook({
-      list_id: list.id,
-      book_id: bookId,
-    });
+    addListBook(
+      {
+        list_id: list.id,
+        book_id: bookId,
+      },
+      {
+        onError: (error) => toast.error(error.message),
+      },
+    );
   };
 
   return (
     <div className="border-b border-gray-200 py-4 last:border-b-0">
-      {addError && <ErrorMessage message={addError.message} />}
       <div className="flex items-start justify-between gap-4">
         <div className="flex-1 min-w-0">
           {/* タイトル */}
