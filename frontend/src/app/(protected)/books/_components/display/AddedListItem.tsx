@@ -1,9 +1,8 @@
 'use client';
 
 import { AddedList } from '@/app/(protected)/books/_types';
-import { useListBookMutations } from '@/app/(protected)/listBooks/_hooks/useListBookMutations';
+import { useListBookActions } from '@/app/(protected)/listBooks/_hooks/useListBookActions';
 import { RemoveButton } from '@/components/Buttons';
-import ErrorMessage from '@/components/ErrorMessage';
 
 interface AddedListItemProps {
   list: AddedList;
@@ -11,15 +10,10 @@ interface AddedListItemProps {
 }
 
 export default function AddedListItem({ list, listBookId }: AddedListItemProps) {
-  const { removeListBook, removeError } = useListBookMutations();
-
-  const handleRemove = () => {
-    removeListBook({ id: listBookId });
-  };
+  const { handleRemove } = useListBookActions();
 
   return (
     <div className="border-b border-gray-200 p-4 last:border-b-0">
-      {removeError && <ErrorMessage message={removeError.message} />}
       <div className="flex items-center justify-between gap-4">
         <div className="flex-1 min-w-0">
           {/* リスト名 */}
@@ -40,7 +34,7 @@ export default function AddedListItem({ list, listBookId }: AddedListItemProps) 
 
         {/* リストから削除 */}
         <div className="flex-shrink-0">
-          <RemoveButton onClick={handleRemove} />
+          <RemoveButton onClick={() => handleRemove(listBookId)} />
         </div>
       </div>
     </div>

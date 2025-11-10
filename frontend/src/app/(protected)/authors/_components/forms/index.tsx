@@ -4,7 +4,6 @@ import { Author } from '@/app/(protected)/authors/_types';
 import { useAuthorForm } from '@/app/(protected)/authors/_hooks/useAuthorForm';
 import FormInput from '@/components/forms/FormInput';
 import CancelButton from '@/components/Buttons/CancelButton';
-import ErrorMessage from '@/components/ErrorMessage';
 import SubmitButton from '@/components/Buttons/SubmitButton';
 
 interface AuthorFormProps {
@@ -14,7 +13,7 @@ interface AuthorFormProps {
 }
 
 export default function AuthorForm({ author, submitLabel, cancel }: AuthorFormProps) {
-  const { error, register, handleSubmit, onSubmit, errors, isSubmitting } = useAuthorForm({
+  const { register, handleSubmit, onSubmit, errors, isSubmitting } = useAuthorForm({
     author,
     cancel,
   });
@@ -38,9 +37,6 @@ export default function AuthorForm({ author, submitLabel, cancel }: AuthorFormPr
         <CancelButton onClick={cancel} />
         <SubmitButton label={submitLabel} disabled={isSubmitting} />
       </div>
-
-      {/* エラーメッセージ */}
-      {error && <ErrorMessage message={error} />}
     </form>
   );
 }

@@ -2,6 +2,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { queryKeys } from '@/constants/queryKeys';
 import { BookBase, BookFormData } from '@/app/(protected)/books/_types';
 import { useRouter } from 'next/navigation';
+import toast from 'react-hot-toast';
 
 // 更新用の型
 type UpdateBookData = BookFormData & { id: number };
@@ -27,6 +28,7 @@ export function useBookMutations() {
       return response.json() as Promise<BookBase>;
     },
     onSuccess: () => {
+      toast.success('本を作成しました');
       // 書籍一覧を再取得
       queryClient.invalidateQueries({ queryKey: queryKeys.books.all });
       // トップページのキャッシュを無効化
@@ -51,6 +53,7 @@ export function useBookMutations() {
       return response.json() as Promise<BookBase>;
     },
     onSuccess: (_, { id }) => {
+      toast.success('本を更新しました');
       // 書籍一覧のキャッシュを無効化
       queryClient.invalidateQueries({ queryKey: queryKeys.books.all });
       // 書籍詳細のキャッシュを無効化
@@ -73,6 +76,7 @@ export function useBookMutations() {
       return response.json();
     },
     onSuccess: () => {
+      toast.success('本を削除しました');
       // 一覧ページにリダイレクト
       router.push('/books');
 

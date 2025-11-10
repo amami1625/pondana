@@ -1,9 +1,10 @@
+'use client';
+
 import { List } from '@/app/(protected)/lists/_types';
-import { useListFormState } from '@/app/(protected)/lists/_hooks/useListFormState';
+import { useListForm } from '@/app/(protected)/lists/_hooks/useListForm';
 import FormInput from '@/components/forms/FormInput';
 import FormTextarea from '@/components/forms/FormTextarea';
 import FormCheckbox from '@/components/forms/FormCheckbox';
-import ErrorMessage from '@/components/ErrorMessage';
 import CancelButton from '@/components/Buttons/CancelButton';
 import SubmitButton from '@/components/Buttons/SubmitButton';
 
@@ -14,7 +15,7 @@ interface ListFormProps {
 }
 
 export default function ListForm({ list, submitLabel, cancel }: ListFormProps) {
-  const { register, handleSubmit, errors, error, onSubmit, isSubmitting } = useListFormState({
+  const { register, handleSubmit, errors, onSubmit, isSubmitting } = useListForm({
     list,
     cancel,
   });
@@ -54,9 +55,6 @@ export default function ListForm({ list, submitLabel, cancel }: ListFormProps) {
           register={register}
         />
       </div>
-
-      {/* エラーメッセージ */}
-      {error && <ErrorMessage message={error} />}
 
       <div className="flex justify-end gap-3">
         <CancelButton onClick={cancel} />

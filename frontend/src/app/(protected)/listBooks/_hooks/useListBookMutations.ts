@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { queryKeys } from '@/constants/queryKeys';
 import { ListBook, ListBookFormData } from '@/app/(protected)/listBooks/_types';
+import toast from 'react-hot-toast';
 
 export function useListBookMutations() {
   const queryClient = useQueryClient();
@@ -22,6 +23,7 @@ export function useListBookMutations() {
       return response.json() as Promise<ListBook>;
     },
     onSuccess: () => {
+      toast.success('リストに本を追加しました');
       // リスト一覧のキャッシュを無効化（AddListModal の isAdded 更新のため）
       queryClient.invalidateQueries({
         queryKey: queryKeys.lists.all,
@@ -48,6 +50,7 @@ export function useListBookMutations() {
       return response.json();
     },
     onSuccess: () => {
+      toast.success('リストから本を削除しました');
       // すべてのリスト詳細のキャッシュを無効化（どのリストから削除されたか分からないため）
       queryClient.invalidateQueries({
         queryKey: queryKeys.lists.all,

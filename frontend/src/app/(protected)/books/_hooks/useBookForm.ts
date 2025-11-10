@@ -1,18 +1,16 @@
-import { useState } from 'react';
+import toast from 'react-hot-toast';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Book, BookFormData, bookFormSchema } from '@/app/(protected)/books/_types';
 import { useBookMutations } from '@/app/(protected)/books/_hooks/useBookMutations';
 
-interface UseBookFormStateProps {
+interface UseBookFormProps {
   book?: Book;
   cancel: () => void;
 }
 
-export function useBookFormState({ book, cancel }: UseBookFormStateProps) {
-  const [error, setError] = useState('');
-  const { createBook, updateBook, createError, updateError, isCreating, isUpdating } =
-    useBookMutations();
+export function useBookForm({ book, cancel }: UseBookFormProps) {
+  const { createBook, updateBook, isCreating, isUpdating } = useBookMutations();
 
   const defaultValues: BookFormData = {
     title: book?.title ?? '',
@@ -36,30 +34,24 @@ export function useBookFormState({ book, cancel }: UseBookFormStateProps) {
   });
 
   const onSubmit = (data: BookFormData) => {
-    try {
-      setError(''); // 前回のエラーをクリア
-
-      if (book) {
-        // 更新
-        updateBook(
-          {
-            ...data,
-            id: book.id,
-          },
-          {
-            onSuccess: () => cancel(),
-            onError: (error) => setError(error.message),
-          },
-        );
-      } else {
-        // 作成
-        createBook(data, {
+    if (book) {
+      // 更新
+      updateBook(
+        {
+          ...data,
+          id: book.id,
+        },
+        {
           onSuccess: () => cancel(),
-          onError: (error) => setError(error.message),
-        });
-      }
-    } catch (_err) {
-      setError('予期しないエラーが発生しました');
+          onError: (error) => toast.error(error.message),
+        },
+      );
+    } else {
+      // 作成
+      createBook(data, {
+        onSuccess: () => cancel(),
+        onError: (error) => toast.error(error.message),
+      });
     }
   };
 
@@ -69,7 +61,6 @@ export function useBookFormState({ book, cancel }: UseBookFormStateProps) {
     setValue,
     handleSubmit,
     errors,
-    error: error || createError?.message || updateError?.message,
     onSubmit,
     isSubmitting: isCreating || isUpdating,
   };

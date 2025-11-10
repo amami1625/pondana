@@ -1,11 +1,10 @@
 'use client';
 
 import { Category } from '@/app/(protected)/categories/_types';
+import { useCategoryForm } from '@/app/(protected)/categories/_hooks/useCategoryForm';
 import FormInput from '@/components/forms/FormInput';
 import CancelButton from '@/components/Buttons/CancelButton';
-import ErrorMessage from '@/components/ErrorMessage';
 import SubmitButton from '@/components/Buttons/SubmitButton';
-import { useCategoryForm } from '@/app/(protected)/categories/_hooks/useCategoryForm';
 
 interface CategoryFormProps {
   category?: Category;
@@ -14,7 +13,7 @@ interface CategoryFormProps {
 }
 
 export default function CategoryForm({ category, submitLabel, cancel }: CategoryFormProps) {
-  const { error, register, handleSubmit, onSubmit, errors, isSubmitting } = useCategoryForm({
+  const { register, handleSubmit, onSubmit, errors, isSubmitting } = useCategoryForm({
     category,
     cancel,
   });
@@ -38,9 +37,6 @@ export default function CategoryForm({ category, submitLabel, cancel }: Category
         <CancelButton onClick={cancel} />
         <SubmitButton label={submitLabel} disabled={isSubmitting} />
       </div>
-
-      {/* エラーメッセージ */}
-      {error && <ErrorMessage message={error} />}
     </form>
   );
 }

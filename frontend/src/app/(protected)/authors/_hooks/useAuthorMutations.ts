@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { queryKeys } from '@/constants/queryKeys';
 import { Author, AuthorFormData } from '@/app/(protected)/authors/_types';
+import toast from 'react-hot-toast';
 
 // 更新用の型
 type UpdateAuthorData = AuthorFormData & { id: number };
@@ -26,6 +27,7 @@ export function useAuthorMutations() {
     },
 
     onSuccess: () => {
+      toast.success('著者を作成しました');
       // 著者一覧のキャッシュを無効化
       queryClient.invalidateQueries({ queryKey: queryKeys.authors.all });
     },
@@ -49,6 +51,7 @@ export function useAuthorMutations() {
     },
 
     onSuccess: () => {
+      toast.success('著者を更新しました');
       // 著者一覧のキャッシュを無効化
       queryClient.invalidateQueries({ queryKey: queryKeys.authors.all });
       // 本のキャッシュをすべて無効化（一覧・詳細の両方）
@@ -73,6 +76,7 @@ export function useAuthorMutations() {
     },
 
     onSuccess: () => {
+      toast.success('著者を削除しました');
       // 著者一覧のキャッシュを無効化
       queryClient.invalidateQueries({ queryKey: queryKeys.authors.all });
       // 本のキャッシュをすべて無効化（一覧・詳細の両方）

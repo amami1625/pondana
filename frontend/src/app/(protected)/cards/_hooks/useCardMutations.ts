@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { queryKeys } from '@/constants/queryKeys';
 import { Card, CardFormData } from '@/app/(protected)/cards/_types';
+import toast from 'react-hot-toast';
 
 // 更新用の型
 type UpdateCardData = CardFormData & { id: number };
@@ -25,6 +26,7 @@ export function useCardMutations() {
       return response.json() as Promise<Card>;
     },
     onSuccess: (_, { book_id }) => {
+      toast.success('カードを作成しました');
       // カード一覧のキャッシュを無効化
       queryClient.invalidateQueries({ queryKey: queryKeys.cards.all });
       // 本詳細のキャッシュを無効化（カード一覧を含む）
@@ -51,6 +53,7 @@ export function useCardMutations() {
       return response.json() as Promise<Card>;
     },
     onSuccess: (_, { id, book_id }) => {
+      toast.success('カードを更新しました');
       // カード一覧のキャッシュを無効化
       queryClient.invalidateQueries({ queryKey: queryKeys.cards.all });
       // カード詳細のキャッシュを無効化
@@ -77,6 +80,7 @@ export function useCardMutations() {
       return response.json();
     },
     onSuccess: (_, { bookId }) => {
+      toast.success('カードを削除しました');
       // カード一覧のキャッシュを無効化
       queryClient.invalidateQueries({ queryKey: queryKeys.cards.all });
       // 本詳細のキャッシュを無効化

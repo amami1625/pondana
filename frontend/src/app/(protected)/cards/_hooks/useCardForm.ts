@@ -1,8 +1,8 @@
-import { useState } from 'react';
+import toast from 'react-hot-toast';
 import { useForm } from 'react-hook-form';
-import { Card, CardFormData, cardFormSchema } from '@/app/(protected)/cards/_types';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useCardMutations } from './useCardMutations';
+import { Card, CardFormData, cardFormSchema } from '@/app/(protected)/cards/_types';
+import { useCardMutations } from '@/app/(protected)/cards/_hooks/useCardMutations';
 
 interface UseCardFormProps {
   card?: Card;
@@ -11,9 +11,7 @@ interface UseCardFormProps {
 }
 
 export const useCardForm = ({ card, bookId, cancel }: UseCardFormProps) => {
-  const [error, setError] = useState('');
-  const { createCard, updateCard, createError, updateError, isCreating, isUpdating } =
-    useCardMutations();
+  const { createCard, updateCard, isCreating, isUpdating } = useCardMutations();
 
   const defaultValues: CardFormData = {
     book_id: card ? card.book_id : bookId,
@@ -31,36 +29,25 @@ export const useCardForm = ({ card, bookId, cancel }: UseCardFormProps) => {
   });
 
   const onSubmit = async (data: CardFormData) => {
-    setError('');
-
     if (card) {
       // 更新
       updateCard(
         { ...data, id: card.id },
         {
-          onSuccess: () => {
-            cancel();
-          },
-          onError: (error) => {
-            setError(error.message);
-          },
+          onSuccess: () => cancel(),
+          onError: (error) => toast.error(error.message),
         },
       );
     } else {
       // 作成
       createCard(data, {
-        onSuccess: () => {
-          cancel();
-        },
-        onError: (error) => {
-          setError(error.message);
-        },
+        onSuccess: () => cancel(),
+        onError: (error) => toast.error(error.message),
       });
     }
   };
 
   return {
-    error: error || createError?.message || updateError?.message || '',
     register,
     handleSubmit,
     onSubmit,

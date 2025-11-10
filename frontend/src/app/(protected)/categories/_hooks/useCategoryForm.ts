@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import toast from 'react-hot-toast';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
@@ -14,8 +14,7 @@ interface UseCategoryFormProps {
 }
 
 export const useCategoryForm = ({ category, cancel }: UseCategoryFormProps) => {
-  const [error, setError] = useState('');
-  const { createCategory, updateCategory, createError, updateError } = useCategoryMutations();
+  const { createCategory, updateCategory, isCreating, isUpdating } = useCategoryMutations();
 
   const defaultValues: CategoryFormData = {
     name: category?.name ?? '',
@@ -24,49 +23,36 @@ export const useCategoryForm = ({ category, cancel }: UseCategoryFormProps) => {
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitting },
+    formState: { errors },
   } = useForm<CategoryFormData>({
     resolver: zodResolver(categoryFormSchema),
     defaultValues,
   });
 
   const onSubmit = async (data: CategoryFormData) => {
-    try {
-      if (category) {
-        // 更新
-        updateCategory(
-          { ...data, id: category.id },
-          {
-            onSuccess: () => {
-              cancel();
-            },
-            onError: (error) => {
-              setError(error.message);
-            },
-          },
-        );
-      } else {
-        // 作成
-        createCategory(data, {
-          onSuccess: () => {
-            cancel();
-          },
-          onError: (error) => {
-            setError(error.message);
-          },
-        });
-      }
-    } catch (_err) {
-      setError('予期しないエラーが発生しました');
+    if (category) {
+      // 更新
+      updateCategory(
+        { ...data, id: category.id },
+        {
+          onSuccess: () => cancel(),
+          onError: (error) => toast.error(error.message),
+        },
+      );
+    } else {
+      // 作成
+      createCategory(data, {
+        onSuccess: () => cancel(),
+        onError: (error) => toast.error(error.message),
+      });
     }
   };
 
   return {
-    error: error || createError?.message || updateError?.message,
     register,
     handleSubmit,
     onSubmit,
     errors,
-    isSubmitting,
+    isSubmitting: isCreating || isUpdating,
   };
 };

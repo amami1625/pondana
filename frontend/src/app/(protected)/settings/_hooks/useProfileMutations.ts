@@ -1,14 +1,13 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { queryKeys } from '@/constants/queryKeys';
 import { UserFormData } from '@/schemas/user';
-
-type UpdateProfileData = UserFormData;
+import toast from 'react-hot-toast';
 
 export function useProfileMutations() {
   const queryClient = useQueryClient();
 
   const updateMutation = useMutation({
-    mutationFn: async (data: UpdateProfileData) => {
+    mutationFn: async (data: UserFormData) => {
       const response = await fetch('/api/profiles', {
         method: 'PUT',
         headers: {
@@ -25,6 +24,7 @@ export function useProfileMutations() {
       return response.json();
     },
     onSuccess: () => {
+      toast.success('プロフィールを更新しました');
       // プロフィール情報のキャッシュを無効化
       queryClient.invalidateQueries({ queryKey: queryKeys.profile.all });
       // トップページのキャッシュも無効化（プロフィール情報が含まれるため）

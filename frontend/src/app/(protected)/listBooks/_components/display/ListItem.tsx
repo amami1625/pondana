@@ -1,7 +1,6 @@
-import { AddButton } from '@/components/Buttons';
-import ErrorMessage from '@/components/ErrorMessage';
 import { List } from '@/app/(protected)/lists/_types';
-import { useListBookMutations } from '@/app/(protected)/listBooks/_hooks/useListBookMutations';
+import { useListBookActions } from '@/app/(protected)/listBooks/_hooks/useListBookActions';
+import { AddButton } from '@/components/Buttons';
 
 interface ListItemProps {
   list: List;
@@ -10,18 +9,10 @@ interface ListItemProps {
 }
 
 export default function Listitem({ list, bookId, isAdded }: ListItemProps) {
-  const { addListBook, addError } = useListBookMutations();
-
-  const handleAdd = () => {
-    addListBook({
-      list_id: list.id,
-      book_id: bookId,
-    });
-  };
+  const { handleAdd } = useListBookActions();
 
   return (
     <div className="border-b border-gray-200 py-4 last:border-b-0">
-      {addError && <ErrorMessage message={addError.message} />}
       <div className="flex items-start justify-between gap-4">
         <div className="flex-1 min-w-0">
           {/* タイトル */}
@@ -30,7 +21,7 @@ export default function Listitem({ list, bookId, isAdded }: ListItemProps) {
 
         {/* 追加ボタン */}
         <div className="flex-shrink-0">
-          <AddButton onClick={handleAdd} isAdded={isAdded} />
+          <AddButton onClick={() => handleAdd(list.id, bookId)} isAdded={isAdded} />
         </div>
       </div>
     </div>
