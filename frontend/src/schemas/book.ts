@@ -51,6 +51,7 @@ export const bookDetailSchema = bookSchema.extend({
 export const bookFormSchema = z.object({
   title: z
     .string()
+    .trim()
     .min(1, { message: 'タイトルを入力してください' })
     .max(255, { message: 'タイトルは255文字以内で入力してください' }),
   description: z.string().optional(),
