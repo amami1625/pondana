@@ -16,8 +16,8 @@ export function useBookForm({ book, cancel }: UseBookFormProps) {
     title: book?.title ?? '',
     description: book?.description ?? '',
     author_ids: book?.authors.map((author) => author.id) ?? [],
-    category_id: book?.category_id ?? 0,
-    rating: book?.rating ?? 0,
+    category_id: book?.category_id ?? undefined,
+    rating: book?.rating ?? undefined,
     reading_status: book?.reading_status ?? 'unread',
     public: book ? book.public : false,
   };
