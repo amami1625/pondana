@@ -21,8 +21,9 @@ export const categorySchema = z.object({
 export const categoryFormSchema = z.object({
   name: z
     .string()
-    .min(1, 'カテゴリ名を入力してください')
-    .max(100, 'カテゴリ名は100文字以内で入力してください'),
+    .trim()
+    .min(1, { message: 'カテゴリ名を入力してください' })
+    .max(100, { message: 'カテゴリ名は100文字以内で入力してください' }),
 });
 
 export type Category = z.infer<typeof categorySchema>;
