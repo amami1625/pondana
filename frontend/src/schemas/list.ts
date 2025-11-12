@@ -40,6 +40,7 @@ export const listDetailSchema = listSchema.extend({
 export const listFormSchema = z.object({
   name: z
     .string()
+    .trim()
     .min(1, { message: 'リスト名を入力してください' })
     .max(255, { message: 'リスト名は255文字以内で入力してください' }),
   description: z.string().optional(),
