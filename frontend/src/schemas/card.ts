@@ -39,13 +39,15 @@ export const cardDetailSchema = cardSchema.extend({
 
 // Cardのバリデーションスキーマ(フォーム用)
 export const cardFormSchema = z.object({
-  book_id: z.number(),
+  book_id: z.number().int().positive(),
   title: z
     .string()
+    .trim()
     .min(1, { message: 'タイトルを入力してください' })
     .max(255, { message: 'タイトルは255文字以内で入力してください' }),
   content: z
     .string()
+    .trim()
     .min(1, { message: '本文を入力してください' })
     .max(10000, { message: '本文は10000文字以内で入力してください' }),
 });
