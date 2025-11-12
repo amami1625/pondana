@@ -236,7 +236,7 @@ describe('cardFormSchema', () => {
       expect(contentError?.message).toBe('本文を入力してください');
     });
 
-    it('content が長過ぎる場合、適切なエラーメッセージを返す', () => {
+    it('content が長すぎる場合、適切なエラーメッセージを返す', () => {
       const invalidData = {
         book_id: 1,
         title: 'テストカード',
