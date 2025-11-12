@@ -19,7 +19,11 @@ export const userSchema = z.object({
 
 // Userのバリデーションスキーマ(フォーム用)
 export const userFormSchema = z.object({
-  name: z.string().min(1, { message: 'ユーザー名を入力してください' }),
+  name: z
+    .string()
+    .trim()
+    .min(1, { message: 'ユーザー名を入力してください' })
+    .max(50, { message: 'ユーザー名は50文字以内で入力してください' }),
   avatar_url: z.string().optional(),
 });
 
