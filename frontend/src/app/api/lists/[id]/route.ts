@@ -22,9 +22,16 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
   try {
     const { id } = await params;
     const body = await request.json();
+
+    // TODO: 将来的にzodのスキーマで変換を行うように変更する
+    const listData = {
+      ...body,
+      description: body.description?.trim() || null,
+    };
+
     const data = await authenticatedRequest(`/lists/${id}`, {
       method: 'PUT',
-      body: JSON.stringify({ list: body }),
+      body: JSON.stringify({ list: listData }),
     });
     const list = listBaseSchema.parse(data);
     return NextResponse.json(list);

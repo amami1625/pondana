@@ -19,7 +19,11 @@ export const authorSchema = z.object({
 
 // Authorのバリデーションスキーマ(フォーム用)
 export const authorFormSchema = z.object({
-  name: z.string().min(1, { message: '著者名を入力してください' }),
+  name: z
+    .string()
+    .trim()
+    .min(1, { message: '著者名を入力してください' })
+    .max(100, { message: '著者名は100文字以内で入力してください' }),
 });
 
 export type Author = z.infer<typeof authorSchema>;

@@ -105,11 +105,13 @@ export default function BookForm({ book, submitLabel, cancel }: BookFormProps) {
             name="rating"
             label="評価 (1-5)"
             options={RATING_OPTIONS}
-            defaultValue="0"
+            defaultValue=""
             defaultLabel="未評価"
             error={errors.rating?.message}
             register={register}
-            registerOptions={{ valueAsNumber: true }}
+            registerOptions={{
+              setValueAs: (v) => (v === '' ? undefined : Number(v)),
+            }}
           />
         </div>
 
@@ -127,11 +129,13 @@ export default function BookForm({ book, submitLabel, cancel }: BookFormProps) {
           name="category_id"
           label="カテゴリ"
           options={(categories || []).map((c) => ({ value: c.id, label: c.name }))}
-          defaultValue="0"
+          defaultValue=""
           defaultLabel="未分類"
           error={errors.category_id?.message}
           register={register}
-          registerOptions={{ valueAsNumber: true }}
+          registerOptions={{
+            setValueAs: (v) => (v === '' ? undefined : Number(v)),
+          }}
           button={
             <button
               type="button"

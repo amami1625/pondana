@@ -13,7 +13,7 @@ export const bookBaseSchema = z.object({
   user_id: z.number(),
   category_id: z.number().nullable(),
   category: categorySchema.optional(),
-  rating: z.number().int().min(0).max(5).nullable(),
+  rating: z.number().int().min(1).max(5).nullable(),
   reading_status: z.enum(['unread', 'reading', 'completed']),
   public: z.boolean(),
   created_at: z.string().transform((str) => {
@@ -51,12 +51,13 @@ export const bookDetailSchema = bookSchema.extend({
 export const bookFormSchema = z.object({
   title: z
     .string()
+    .trim()
     .min(1, { message: 'タイトルを入力してください' })
     .max(255, { message: 'タイトルは255文字以内で入力してください' }),
   description: z.string().optional(),
   author_ids: z.number().array().min(1, { message: '著者を1人以上選択してください' }),
   category_id: z.number().optional(),
-  rating: z.number().min(0).max(5).optional(),
+  rating: z.number().int().min(1).max(5).optional(),
   reading_status: z.enum(['unread', 'reading', 'completed']),
   public: z.boolean(),
 });

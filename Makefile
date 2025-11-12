@@ -60,3 +60,7 @@ fix:
 # Prettierでフォーマットを統一
 fmt:
 	docker compose exec web npm run format
+
+# Vitestを実行
+test:
+	docker compose exec web npm run test:run

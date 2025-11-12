@@ -29,11 +29,11 @@ export async function PUT(
     const { bookId } = await params;
     const body = await request.json();
 
-    // category_idとratingの0をnullに変換
+    // category_idとratingのundefinedをnullに変換
     const bookData = {
       ...body,
-      category_id: body.category_id === 0 ? null : body.category_id,
-      rating: body.rating === 0 ? null : body.rating,
+      category_id: body.category_id ?? null,
+      rating: body.rating ?? null,
     };
 
     const data = await authenticatedRequest(`/books/${bookId}`, {
