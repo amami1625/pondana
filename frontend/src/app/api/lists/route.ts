@@ -20,9 +20,16 @@ export async function GET() {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
+
+    // TODO: 将来的にzodのスキーマで変換を行うように変更する
+    const listData = {
+      ...body,
+      description: body.description?.trim() || null,
+    };
+
     const data = await authenticatedRequest('/lists', {
       method: 'POST',
-      body: JSON.stringify({ list: body }),
+      body: JSON.stringify({ list: listData }),
     });
     const list = listBaseSchema.parse(data);
     return NextResponse.json(list);
