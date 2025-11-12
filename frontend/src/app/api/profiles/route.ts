@@ -18,9 +18,16 @@ export async function GET() {
 export async function PUT(request: Request) {
   try {
     const body = await request.json();
+
+    // TODO: 将来的にzodのスキーマで変換を行うように変更する
+    const profileData = {
+      ...body,
+      avatar_url: body.avatar_url?.trim() || null,
+    };
+
     const data = await authenticatedRequest('/profile', {
       method: 'PUT',
-      body: JSON.stringify({ profile: body }),
+      body: JSON.stringify({ profile: profileData }),
     });
 
     const updatedProfile = userSchema.parse(data);
