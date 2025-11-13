@@ -10,6 +10,7 @@ export const listBaseSchema = z.object({
   description: z.string().nullable(),
   user_id: z.number(),
   public: z.boolean(),
+  books_count: z.number().optional(),
   created_at: z.string().transform((str) => {
     return new Date(str).toLocaleString('ja-JP', {
       timeZone: 'Asia/Tokyo',
