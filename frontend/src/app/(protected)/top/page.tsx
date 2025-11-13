@@ -27,7 +27,7 @@ export default function TopPage() {
     return <ErrorMessage message="データの取得に失敗しました" />;
   }
 
-  const { profile, recent_books, recent_lists, recent_cards } = data;
+  const { recent_books, recent_lists, recent_cards } = data;
 
   return (
     <div className="flex h-full min-h-screen bg-background-light font-display">
@@ -44,7 +44,7 @@ export default function TopPage() {
             </h1>
           </div>
 
-          {/* 最近作成した本セクション */}
+          {/* 最近作成した本 */}
           <section className="mb-10">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-slate-900 text-[22px] font-bold leading-tight tracking-[-0.015em]">
@@ -71,7 +71,7 @@ export default function TopPage() {
             )}
           </section>
 
-          {/* 最近作成したリストセクション */}
+          {/* 最近作成したリスト */}
           <section className="mb-10">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-slate-900 text-[22px] font-bold leading-tight tracking-[-0.015em]">
@@ -89,6 +89,7 @@ export default function TopPage() {
                     id={list.id}
                     name={list.name}
                     description={list.description ?? ''}
+                    bookCount={list.books_count ?? 0}
                   />
                 ))}
               </div>
@@ -97,7 +98,7 @@ export default function TopPage() {
             )}
           </section>
 
-          {/* 最近作成したカードセクション */}
+          {/* 最近作成したカード */}
           <section>
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-slate-900 text-[22px] font-bold leading-tight tracking-[-0.015em]">
