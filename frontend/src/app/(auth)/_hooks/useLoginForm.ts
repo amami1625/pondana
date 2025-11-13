@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
 import { loginSchema, type LoginFormData } from '@/schemas/auth';
 import { loginAction } from '@/app/(auth)/_lib';
@@ -8,6 +9,7 @@ import { loginAction } from '@/app/(auth)/_lib';
 export function useLoginForm() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
   const {
     register,
@@ -27,8 +29,11 @@ export function useLoginForm() {
       setError(result.error);
       toast.error(result.error);
       setLoading(false);
-    } else {
+    }
+
+    if (result?.success) {
       toast.success('ログインしました');
+      router.push('/top');
     }
   };
 
