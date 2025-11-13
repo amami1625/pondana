@@ -32,6 +32,8 @@ export function useListBookMutations() {
       queryClient.invalidateQueries({
         queryKey: queryKeys.books.all,
       });
+      // トップページのキャッシュを無効化
+      queryClient.invalidateQueries({ queryKey: queryKeys.top.all });
     },
   });
 
@@ -59,6 +61,8 @@ export function useListBookMutations() {
       queryClient.invalidateQueries({
         queryKey: queryKeys.books.all,
       });
+      // トップページのキャッシュを無効化
+      queryClient.invalidateQueries({ queryKey: queryKeys.top.all });
     },
   });
 
