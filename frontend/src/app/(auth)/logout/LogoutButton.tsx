@@ -13,7 +13,7 @@ export function LogoutButton() {
   };
 
   return (
-    <button type="button" onClick={handleClick} disabled={loading}>
+    <button type="button" className="cursor-pointer" onClick={handleClick} disabled={loading}>
       {loading ? 'ログアウト中...' : 'ログアウト'}
     </button>
   );

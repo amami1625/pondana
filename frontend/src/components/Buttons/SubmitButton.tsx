@@ -9,7 +9,7 @@ interface SubmitButtonProps {
 export default function SubmitButton({
   label,
   loadingLabel = '送信中...',
-  disabled = false
+  disabled = false,
 }: SubmitButtonProps) {
   return (
     <BaseButton type="submit" variant="submit" disabled={disabled}>
