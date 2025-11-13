@@ -1,4 +1,4 @@
-import SideNav from '@/components/Navigation/SideNav';
+import SideNav from '@/components/navigation/SideNav';
 
 export default function CardsLayout({ children }: { children: React.ReactNode }) {
   return (

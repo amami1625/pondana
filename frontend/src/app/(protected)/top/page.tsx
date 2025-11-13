@@ -3,7 +3,7 @@
 import { useTopPageData } from '@/app/(protected)/top/_hooks/useTopPageData';
 import LoadingState from '@/components/LoadingState';
 import ErrorMessage from '@/components/ErrorMessage';
-import SideNav from '@/components/Navigation/SideNav';
+import SideNav from '@/components/navigation/SideNav';
 import BookCard from '@/app/(protected)/top/_components/BookCard';
 import ListCard from '@/app/(protected)/top/_components/ListCard';
 import KnowledgeCard from '@/app/(protected)/top/_components/KnowledgeCard';
