@@ -3,7 +3,7 @@
 import { User } from '@/schemas/user';
 import { useProfileForm } from '@/app/(protected)/settings/_hooks/useProfileForm';
 import FormInput from '@/components/forms/FormInput';
-import SubmitButton from '@/components/Buttons/SubmitButton';
+import SubmitButton from '@/components/buttons/SubmitButton';
 
 interface NameFormProps {
   user: User;

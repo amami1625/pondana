@@ -6,7 +6,7 @@ import PageTitle from '@/components/PageTitle';
 import ErrorMessage from '@/components/ErrorMessage';
 import EmptyState from '@/components/EmptyState';
 import LoadingState from '@/components/LoadingState';
-import { CreateButton } from '@/components/Buttons';
+import { CreateButton } from '@/components/buttons';
 import { useBooks } from '@/app/(protected)/books/_hooks/useBooks';
 import { useModal } from '@/hooks/useModal';
 

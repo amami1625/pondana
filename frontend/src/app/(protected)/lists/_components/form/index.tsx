@@ -5,8 +5,8 @@ import { useListForm } from '@/app/(protected)/lists/_hooks/useListForm';
 import FormInput from '@/components/forms/FormInput';
 import FormTextarea from '@/components/forms/FormTextarea';
 import FormCheckbox from '@/components/forms/FormCheckbox';
-import CancelButton from '@/components/Buttons/CancelButton';
-import SubmitButton from '@/components/Buttons/SubmitButton';
+import CancelButton from '@/components/buttons/CancelButton';
+import SubmitButton from '@/components/buttons/SubmitButton';
 
 interface ListFormProps {
   list?: List;

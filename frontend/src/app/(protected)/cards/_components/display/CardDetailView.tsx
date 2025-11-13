@@ -1,7 +1,7 @@
 'use client';
 
 import CardModal from '@/app/(protected)/cards/_components/modal';
-import { DeleteButton, UpdateButton } from '@/components/Buttons';
+import { DeleteButton, UpdateButton } from '@/components/buttons';
 import { useModal } from '@/hooks/useModal';
 import { useCard } from '@/app/(protected)/cards/_hooks/useCard';
 import { useCardMutations } from '@/app/(protected)/cards/_hooks/useCardMutations';

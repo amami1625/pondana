@@ -3,8 +3,8 @@
 import { Category } from '@/app/(protected)/categories/_types';
 import { useCategoryForm } from '@/app/(protected)/categories/_hooks/useCategoryForm';
 import FormInput from '@/components/forms/FormInput';
-import CancelButton from '@/components/Buttons/CancelButton';
-import SubmitButton from '@/components/Buttons/SubmitButton';
+import CancelButton from '@/components/buttons/CancelButton';
+import SubmitButton from '@/components/buttons/SubmitButton';
 
 interface CategoryFormProps {
   category?: Category;

@@ -1,4 +1,4 @@
-import { DeleteButton, UpdateButton } from '@/components/Buttons';
+import { DeleteButton, UpdateButton } from '@/components/buttons';
 
 interface SettingsItemProps {
   label: string;

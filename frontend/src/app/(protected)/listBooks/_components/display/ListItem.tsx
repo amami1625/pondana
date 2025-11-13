@@ -1,6 +1,6 @@
 import { List } from '@/app/(protected)/lists/_types';
 import { useListBookActions } from '@/app/(protected)/listBooks/_hooks/useListBookActions';
-import { AddButton } from '@/components/Buttons';
+import { AddButton } from '@/components/buttons';
 
 interface ListItemProps {
   list: List;

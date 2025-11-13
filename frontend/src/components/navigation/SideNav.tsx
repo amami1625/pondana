@@ -40,9 +40,7 @@ export default function SideNav() {
                 key={item.href}
                 href={item.href}
                 className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-colors ${
-                  isActive
-                    ? 'bg-primary/10 text-primary'
-                    : 'hover:bg-slate-100 text-slate-800'
+                  isActive ? 'bg-primary/10 text-primary' : 'hover:bg-slate-100 text-slate-800'
                 }`}
               >
                 <Icon size={20} />

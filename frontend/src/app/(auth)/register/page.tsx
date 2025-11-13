@@ -1,7 +1,7 @@
 'use client';
 
 import FormInput from '@/components/forms/FormInput';
-import SubmitButton from '@/components/Buttons/SubmitButton';
+import SubmitButton from '@/components/buttons/SubmitButton';
 import ErrorMessage from '@/components/ErrorMessage';
 import AuthLayout from '@/app/(auth)/_components/AuthLayout';
 import { useRegisterForm } from '@/app/(auth)/_hooks/useRegisterForm';

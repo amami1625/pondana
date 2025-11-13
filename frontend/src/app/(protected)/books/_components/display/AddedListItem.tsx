@@ -2,7 +2,7 @@
 
 import { AddedList } from '@/app/(protected)/books/_types';
 import { useListBookActions } from '@/app/(protected)/listBooks/_hooks/useListBookActions';
-import { RemoveButton } from '@/components/Buttons';
+import { RemoveButton } from '@/components/buttons';
 
 interface AddedListItemProps {
   list: AddedList;

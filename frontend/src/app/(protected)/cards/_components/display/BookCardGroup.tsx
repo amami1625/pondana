@@ -3,7 +3,7 @@
 import { Card } from '@/app/(protected)/cards/_types';
 import CardItem from '@/app/(protected)/cards/_components/display/CardItem';
 import CardModal from '@/app/(protected)/cards/_components/modal';
-import { CreateCardButton } from '@/components/Buttons';
+import { CreateCardButton } from '@/components/buttons';
 import { useModal } from '@/hooks/useModal';
 
 interface BookCardGroupProps {
