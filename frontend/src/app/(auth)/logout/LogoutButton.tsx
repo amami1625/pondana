@@ -1,20 +1,20 @@
 'use client';
 
-import { logoutAction } from '@/app/(auth)/_lib';
+import { useLogout } from '@/app/(auth)/_hooks/useLogout';
 
 export function LogoutButton() {
-  const handleClick = async (e: React.MouseEvent<HTMLButtonElement>) => {
+  const { logout, loading } = useLogout();
+
+  const handleClick = async () => {
     if (!confirm('ログアウトしますか？')) {
-      e.preventDefault();
       return;
     }
+    await logout();
   };
 
   return (
-    <form action={logoutAction}>
-      <button type="submit" onClick={handleClick}>
-        ログアウト
-      </button>
-    </form>
+    <button type="button" onClick={handleClick} disabled={loading}>
+      {loading ? 'ログアウト中...' : 'ログアウト'}
+    </button>
   );
 }
