@@ -1,7 +1,6 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
-import { redirect } from 'next/navigation';
 import { LoginFormData } from '@/schemas/auth';
 import { createServerSupabaseClient } from '@/supabase/clients/server';
 
@@ -15,16 +14,20 @@ export async function loginAction(formData: LoginFormData) {
   }
 
   revalidatePath('/', 'layout');
-  redirect('/top');
+  return { success: true };
 }
 
 export async function logoutAction() {
   const supabase = await createServerSupabaseClient();
 
-  await supabase.auth.signOut();
+  const { error } = await supabase.auth.signOut();
+
+  if (error) {
+    return { error: error.message };
+  }
 
   revalidatePath('/', 'layout');
-  redirect('/');
+  return { success: true };
 }
 
 export async function signUpAction(name: string, email: string, password: string) {
@@ -45,5 +48,5 @@ export async function signUpAction(name: string, email: string, password: string
   }
 
   revalidatePath('/', 'layout');
-  redirect('/top');
+  return { success: true };
 }
