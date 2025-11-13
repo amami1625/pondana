@@ -157,7 +157,11 @@ export default function BookForm({ book, submitLabel, cancel }: BookFormProps) {
 
         <div className="flex justify-end gap-3">
           <CancelButton onClick={cancel} />
-          <SubmitButton label={submitLabel} disabled={isSubmitting} />
+          <SubmitButton
+            label={submitLabel}
+            loadingLabel={`${submitLabel}中...`}
+            disabled={isSubmitting}
+          />
         </div>
       </form>
       {/* モーダル */}
