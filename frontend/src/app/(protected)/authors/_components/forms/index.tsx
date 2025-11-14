@@ -3,8 +3,8 @@
 import { Author } from '@/app/(protected)/authors/_types';
 import { useAuthorForm } from '@/app/(protected)/authors/_hooks/useAuthorForm';
 import FormInput from '@/components/forms/FormInput';
-import CancelButton from '@/components/Buttons/CancelButton';
-import SubmitButton from '@/components/Buttons/SubmitButton';
+import CancelButton from '@/components/buttons/CancelButton';
+import SubmitButton from '@/components/buttons/SubmitButton';
 
 interface AuthorFormProps {
   author?: Author;

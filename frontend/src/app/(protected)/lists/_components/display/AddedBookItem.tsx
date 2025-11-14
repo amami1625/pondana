@@ -2,7 +2,7 @@
 
 import { AddedBook } from '@/app/(protected)/lists/_types';
 import { useListBookActions } from '@/app/(protected)/listBooks/_hooks/useListBookActions';
-import { RemoveButton } from '@/components/Buttons';
+import { RemoveButton } from '@/components/buttons';
 
 interface AddedBookProps {
   book: AddedBook;

@@ -1,7 +1,7 @@
 'use client';
 
 import { Card } from '@/app/(protected)/cards/_types';
-import { DeleteButton } from '@/components/Buttons';
+import { DeleteButton } from '@/components/buttons';
 import ErrorMessage from '@/components/ErrorMessage';
 import { useCardMutations } from '@/app/(protected)/cards/_hooks/useCardMutations';
 import { DetailLink } from '@/components/links';

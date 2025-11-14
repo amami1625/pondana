@@ -1,4 +1,4 @@
-import BaseButton from '@/components/Buttons/BaseButton';
+import BaseButton from '@/components/buttons/BaseButton';
 
 interface RemoveButtonProps {
   onClick: () => void;

@@ -2,8 +2,8 @@
 
 import { Card } from '@/app/(protected)/cards/_types';
 import { useCardForm } from '@/app/(protected)/cards/_hooks/useCardForm';
-import CancelButton from '@/components/Buttons/CancelButton';
-import SubmitButton from '@/components/Buttons/SubmitButton';
+import CancelButton from '@/components/buttons/CancelButton';
+import SubmitButton from '@/components/buttons/SubmitButton';
 import FormInput from '@/components/forms/FormInput';
 import FormTextarea from '@/components/forms/FormTextarea';
 

@@ -3,7 +3,7 @@
 import UpdateBookFormModal from '@/app/(protected)/books/_components/modal';
 import { STATUS_LABEL } from '@/app/(protected)/books/_constants';
 import { formatRating, formatVisibility } from '@/lib/utils';
-import { UpdateButton, DeleteButton, AddButton, CreateCardButton } from '@/components/Buttons';
+import { UpdateButton, DeleteButton, AddButton, CreateCardButton } from '@/components/buttons';
 import AddListModal from '@/app/(protected)/listBooks/_components/modal/AddListModal';
 import AddedListsView from '@/app/(protected)/books/_components/display/AddedListsView';
 import CardModal from '@/app/(protected)/cards/_components/modal';

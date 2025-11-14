@@ -1,6 +1,6 @@
 import { Book } from '@/app/(protected)/books/_types';
 import { useListBookActions } from '@/app/(protected)/listBooks/_hooks/useListBookActions';
-import { AddButton } from '@/components/Buttons';
+import { AddButton } from '@/components/buttons';
 
 interface BookItemProps {
   listId: number;

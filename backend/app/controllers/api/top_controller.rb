@@ -1,8 +1,5 @@
 class Api::TopController < Api::ApplicationController
   def index
-    # プロフィール情報
-    profile = current_user
-
     # 最新の本（5件）
     recent_books = current_user.books
                                .includes(:category, :authors)
@@ -11,6 +8,9 @@ class Api::TopController < Api::ApplicationController
 
     # 最新のリスト（5件）
     recent_lists = current_user.lists
+                               .left_joins(:list_books)
+                               .select('lists.*, COUNT(list_books.id) as books_count')
+                               .group('lists.id')
                                .order(created_at: :desc)
                                .limit(5)
 
@@ -22,7 +22,6 @@ class Api::TopController < Api::ApplicationController
                        .limit(5)
 
     render json: {
-      profile: profile,
       recent_books: recent_books.as_json(include: [:category, :authors]),
       recent_lists: recent_lists,
       recent_cards: recent_cards.as_json(include: [:book])

@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import { User as UserIcon } from 'lucide-react';
-import { useProfile } from '@/app/(protected)/settings/_hooks/useProfile';
+import { useProfile } from '@/hooks/useProfile';
 import { useModal } from '@/hooks/useModal';
 import SettingsItem from '@/app/(protected)/settings/_components/display/SettingsItem';
 import UserFormModal from '@/app/(protected)/settings/_components/modal/UserFormModal';

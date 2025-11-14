@@ -5,7 +5,7 @@ import { useLists } from '@/app/(protected)/lists/_hooks/useLists';
 import PageTitle from '@/components/PageTitle';
 import ListCard from './_components/display/ListCard';
 import CreateListFormModal from '@/app/(protected)/lists/_components/modal/';
-import { CreateButton } from '@/components/Buttons';
+import { CreateButton } from '@/components/buttons';
 import EmptyState from '@/components/EmptyState';
 import ErrorMessage from '@/components/ErrorMessage';
 import LoadingState from '@/components/LoadingState';
