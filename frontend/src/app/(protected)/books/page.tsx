@@ -53,7 +53,7 @@ export default function BooksPage() {
   }
 
   return (
-    <>
+    <div className="max-w-4xl mx-auto">
       {/* ページヘッダー */}
       <header className="mb-6">
         <div className="flex flex-wrap justify-between gap-3">
@@ -97,6 +97,6 @@ export default function BooksPage() {
       )}
 
       <CreateBookFormModal isOpen={createModal.isOpen} onClose={createModal.close} />
-    </>
+    </div>
   );
 }
