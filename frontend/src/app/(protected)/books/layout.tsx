@@ -5,7 +5,7 @@ export default function BooksLayout({ children }: { children: React.ReactNode })
     <div className="flex min-h-screen bg-background-light font-display">
       <SideNav />
       <main className="flex-1 p-8">
-        <div className="mx-auto max-w-6xl">{children}</div>
+        <div className="mx-auto max-w-4xl">{children}</div>
       </main>
     </div>
   );
