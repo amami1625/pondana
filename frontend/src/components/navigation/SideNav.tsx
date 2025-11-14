@@ -10,7 +10,7 @@ export default function SideNav() {
   const { data: profile } = useProfile();
 
   return (
-    <aside className="flex w-64 flex-col gap-y-6 border-r border-slate-200 bg-white p-4">
+    <aside className="fixed left-0 top-header-height bottom-0 z-40 flex w-64 flex-col gap-y-6 border-r border-slate-200 bg-white p-4 overflow-y-auto">
       <div className="flex flex-col gap-4">
         {/* ユーザープロフィール */}
         <div className="flex items-center gap-3">

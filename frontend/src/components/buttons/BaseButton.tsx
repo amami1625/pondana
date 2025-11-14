@@ -10,17 +10,17 @@ interface BaseButtonProps {
 }
 
 const BUTTON_STYLES = {
-  update: 'bg-blue-600 hover:bg-blue-700',
+  create: 'bg-primary hover:bg-primary/90',
   delete: 'bg-red-600 hover:bg-red-700',
   add: 'bg-pink-600 hover:bg-pink-700',
   remove: 'bg-gray-600 hover:bg-gray-700',
-  create: 'bg-green-600 hover:bg-green-700',
-  submit: 'bg-blue-600 hover:bg-blue-700',
+  update: 'bg-green-600 hover:bg-green-700',
+  submit: 'bg-primary hover:bg-primary/90',
   cancel: 'bg-red-600 hover:bg-red-700',
 };
 
 const BASE_STYLES =
-  'inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold text-white transition cursor-pointer';
+  'flex min-w-[84px] items-center justify-center overflow-hidden rounded-lg h-10 px-4 text-sm font-medium text-white transition-colors cursor-pointer gap-2';
 
 const DISABLED_STYLES =
   'disabled:bg-gray-300 disabled:text-gray-500 disabled:cursor-not-allowed disabled:hover:bg-gray-300';

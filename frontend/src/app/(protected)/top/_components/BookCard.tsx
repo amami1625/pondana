@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { getCategoryColor } from '@/app/(protected)/top/_lib/getCategoryColor';
+import { getCategoryColor } from '@/lib/utils';
 
 interface BookCardProps {
   id: number;
