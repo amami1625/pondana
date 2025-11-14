@@ -7,7 +7,7 @@ interface HeaderProps {
 
 export default function Header({ isAuthenticated }: HeaderProps) {
   return (
-    <header className="border-b border-gray-200 bg-white/80 backdrop-blur">
+    <header className="fixed top-0 left-0 right-0 z-50 border-b border-gray-200 bg-white/80 backdrop-blur">
       <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-3">
         <h1 className="text-lg font-semibold tracking-tight text-gray-900">
           <Link href={isAuthenticated ? '/top' : '/'}>ぽんダナ</Link>
