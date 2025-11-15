@@ -1,11 +1,29 @@
-import BookDetailView from '@/app/(protected)/books/_components/display/BookDetailView';
+'use client';
 
-interface PageProps {
-  params: Promise<{ id: string }>;
-}
+import BookDetailView from '@/app/(protected)/books/_components/display/view/BookDetailView';
+import { useParams } from 'next/navigation';
+import { useBook } from '@/app/(protected)/books/_hooks/useBook';
+import LoadingState from '@/components/LoadingState';
+import ErrorMessage from '@/components/ErrorMessage';
 
-export default async function BookPage({ params }: PageProps) {
-  const { id } = await params;
+export default function BookPage() {
+  const { id } = useParams();
+  const { data: book, error: bookError, isLoading: bookLoading } = useBook(Number(id));
 
-  return <BookDetailView id={Number(id)} />;
+  // ローディング状態
+  if (bookLoading) {
+    return <LoadingState message="本情報を読み込んでいます..." />;
+  }
+
+  // エラー状態
+  if (bookError) {
+    return <ErrorMessage message={bookError?.message || 'エラーが発生しました'} />;
+  }
+
+  // データが取得できていない場合
+  if (!book) {
+    return <ErrorMessage message="データの取得に失敗しました" />;
+  }
+
+  return <BookDetailView book={book} />;
 }

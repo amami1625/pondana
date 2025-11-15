@@ -3,10 +3,7 @@
 import CardModal from '@/app/(protected)/cards/_components/modal';
 import Button from '@/components/buttons/Button';
 import { useModal } from '@/hooks/useModal';
-import { useCard } from '@/app/(protected)/cards/_hooks/useCard';
 import { useCardMutations } from '@/app/(protected)/cards/_hooks/useCardMutations';
-import LoadingState from '@/components/LoadingState';
-import ErrorMessage from '@/components/ErrorMessage';
 import {
   DetailContainer,
   DetailHeader,
@@ -16,14 +13,14 @@ import {
   DetailActions,
 } from '@/components/details';
 import { useRouter } from 'next/navigation';
+import { CardDetail } from '@/app/(protected)/cards/_types/index';
 
 interface CardDetailViewProps {
-  id: number;
+  card: CardDetail;
 }
 
-export default function CardDetailView({ id }: CardDetailViewProps) {
+export default function CardDetailView({ card }: CardDetailViewProps) {
   const router = useRouter();
-  const { data: card, error: cardError, isLoading: cardLoading } = useCard(id);
   const { deleteCard, deleteError } = useCardMutations();
   const cardModal = useModal();
 
@@ -43,21 +40,6 @@ export default function CardDetailView({ id }: CardDetailViewProps) {
       );
     }
   };
-
-  // ローディング状態
-  if (cardLoading) {
-    return <LoadingState message="カード情報を読み込んでいます..." />;
-  }
-
-  // エラー状態
-  if (cardError) {
-    return <ErrorMessage message={cardError?.message || 'エラーが発生しました'} />;
-  }
-
-  // データが取得できていない場合
-  if (!card) {
-    return <ErrorMessage message="データの取得に失敗しました" />;
-  }
 
   return (
     <>
