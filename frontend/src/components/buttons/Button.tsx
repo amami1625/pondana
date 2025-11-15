@@ -1,6 +1,16 @@
 interface ButtonProps {
   type?: 'button' | 'submit';
-  variant: 'update' | 'delete' | 'add' | 'remove' | 'create' | 'cancel' | 'submit' | 'primary' | 'secondary' | 'danger';
+  variant:
+    | 'update'
+    | 'delete'
+    | 'add'
+    | 'remove'
+    | 'create'
+    | 'cancel'
+    | 'submit'
+    | 'primary'
+    | 'secondary'
+    | 'danger';
   onClick?: () => void;
   disabled?: boolean;
   children: React.ReactNode;

@@ -7,7 +7,8 @@ import CreateBookFormModal from '@/app/(protected)/books/_components/modal';
 import ErrorMessage from '@/components/ErrorMessage';
 import EmptyState from '@/components/EmptyState';
 import LoadingState from '@/components/LoadingState';
-import { CreateButton } from '@/components/buttons';
+import Button from '@/components/buttons/Button';
+import { Plus } from 'lucide-react';
 import { useBooks } from '@/app/(protected)/books/_hooks/useBooks';
 import { useModal } from '@/hooks/useModal';
 
@@ -66,7 +67,9 @@ export default function BooksPage() {
             </p>
           </div>
           <div className="flex items-end">
-            <CreateButton onClick={createModal.open}>本を追加</CreateButton>
+            <Button variant="create" onClick={createModal.open} icon={<Plus className="h-4 w-4" />}>
+              本を追加
+            </Button>
           </div>
         </div>
       </header>

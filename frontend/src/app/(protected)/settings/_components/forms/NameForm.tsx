@@ -3,7 +3,7 @@
 import { User } from '@/schemas/user';
 import { useProfileForm } from '@/app/(protected)/settings/_hooks/useProfileForm';
 import FormInput from '@/components/forms/FormInput';
-import SubmitButton from '@/components/buttons/SubmitButton';
+import Button from '@/components/buttons/Button';
 
 interface NameFormProps {
   user: User;
@@ -33,7 +33,9 @@ export default function NameForm({ user, onClose }: NameFormProps) {
       </div>
 
       <div className="flex justify-end gap-3">
-        <SubmitButton label="更新" loadingLabel="更新中..." disabled={isSubmitting} />
+        <Button type="submit" variant="submit" disabled={isSubmitting} loadingLabel="更新中...">
+          更新
+        </Button>
       </div>
     </form>
   );

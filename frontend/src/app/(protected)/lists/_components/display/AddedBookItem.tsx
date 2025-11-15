@@ -2,7 +2,7 @@
 
 import { AddedBook } from '@/app/(protected)/lists/_types';
 import { useListBookActions } from '@/app/(protected)/listBooks/_hooks/useListBookActions';
-import { RemoveButton } from '@/components/buttons';
+import Button from '@/components/buttons/Button';
 
 interface AddedBookProps {
   book: AddedBook;
@@ -40,7 +40,9 @@ export default function AddedBookItem({ book, listBookId }: AddedBookProps) {
           )}
 
           {/* リストから削除 */}
-          <RemoveButton onClick={() => handleRemove(listBookId)} />
+          <Button variant="remove" onClick={() => handleRemove(listBookId)}>
+            削除
+          </Button>
         </div>
       </div>
     </div>

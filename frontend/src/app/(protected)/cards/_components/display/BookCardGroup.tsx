@@ -3,7 +3,8 @@
 import { Card } from '@/app/(protected)/cards/_types';
 import CardItem from '@/app/(protected)/cards/_components/display/CardItem';
 import CardModal from '@/app/(protected)/cards/_components/modal';
-import { CreateCardButton } from '@/components/buttons';
+import Button from '@/components/buttons/Button';
+import { StickyNote } from 'lucide-react';
 import { useModal } from '@/hooks/useModal';
 
 interface BookCardGroupProps {
@@ -22,7 +23,9 @@ export default function BookCardGroup({ book, cards }: BookCardGroupProps) {
       {/* 本のタイトルと作成ボタン */}
       <div className="flex items-center justify-between">
         <h2 className="text-xl font-bold text-gray-900">{book.title}</h2>
-        <CreateCardButton onClick={cardModal.open} />
+        <Button variant="create" onClick={cardModal.open} icon={<StickyNote className="h-4 w-4" />}>
+          カードを作成
+        </Button>
       </div>
 
       {/* カードのリスト */}

@@ -1,6 +1,6 @@
 import { List } from '@/app/(protected)/lists/_types';
 import { useListBookActions } from '@/app/(protected)/listBooks/_hooks/useListBookActions';
-import { AddButton } from '@/components/buttons';
+import Button from '@/components/buttons/Button';
 
 interface ListItemProps {
   list: List;
@@ -21,7 +21,9 @@ export default function Listitem({ list, bookId, isAdded }: ListItemProps) {
 
         {/* 追加ボタン */}
         <div className="flex-shrink-0">
-          <AddButton onClick={() => handleAdd(list.id, bookId)} isAdded={isAdded} />
+          <Button variant="add" onClick={() => handleAdd(list.id, bookId)} disabled={isAdded}>
+            {isAdded ? '追加済み' : '追加'}
+          </Button>
         </div>
       </div>
     </div>

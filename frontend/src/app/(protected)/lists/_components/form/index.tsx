@@ -5,8 +5,7 @@ import { useListForm } from '@/app/(protected)/lists/_hooks/useListForm';
 import FormInput from '@/components/forms/FormInput';
 import FormTextarea from '@/components/forms/FormTextarea';
 import FormCheckbox from '@/components/forms/FormCheckbox';
-import CancelButton from '@/components/buttons/CancelButton';
-import SubmitButton from '@/components/buttons/SubmitButton';
+import Button from '@/components/buttons/Button';
 
 interface ListFormProps {
   list?: List;
@@ -57,12 +56,17 @@ export default function ListForm({ list, submitLabel, cancel }: ListFormProps) {
       </div>
 
       <div className="flex justify-end gap-3">
-        <CancelButton onClick={cancel} />
-        <SubmitButton
-          label={submitLabel}
-          loadingLabel={`${submitLabel}中...`}
+        <Button variant="cancel" onClick={cancel}>
+          キャンセル
+        </Button>
+        <Button
+          type="submit"
+          variant="submit"
           disabled={isSubmitting}
-        />
+          loadingLabel={`${submitLabel}中...`}
+        >
+          {submitLabel}
+        </Button>
       </div>
     </form>
   );

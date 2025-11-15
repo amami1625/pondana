@@ -1,7 +1,7 @@
 'use client';
 
 import FormInput from '@/components/forms/FormInput';
-import SubmitButton from '@/components/buttons/SubmitButton';
+import Button from '@/components/buttons/Button';
 import ErrorMessage from '@/components/ErrorMessage';
 import AuthLayout from '@/app/(auth)/_components/AuthLayout';
 import { useRegisterForm } from '@/app/(auth)/_hooks/useRegisterForm';
@@ -46,7 +46,9 @@ export default function RegisterPage() {
         {error && <ErrorMessage message={error} />}
 
         <div>
-          <SubmitButton label="登録" loadingLabel="登録中..." disabled={loading} />
+          <Button type="submit" variant="submit" disabled={loading} loadingLabel="登録中...">
+            登録
+          </Button>
         </div>
       </form>
     </AuthLayout>

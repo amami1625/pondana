@@ -10,8 +10,7 @@ import FormInput from '@/components/forms/FormInput';
 import FormCheckbox from '@/components/forms/FormCheckbox';
 import FormTextarea from '@/components/forms/FormTextarea';
 import FormSelect from '@/components/forms/FormSelect';
-import CancelButton from '@/components/buttons/CancelButton';
-import SubmitButton from '@/components/buttons/SubmitButton';
+import Button from '@/components/buttons/Button';
 import { useBookForm } from '@/app/(protected)/books/_hooks/useBookForm';
 import { useModal } from '@/hooks/useModal';
 import { useAuthors } from '@/app/(protected)/authors/_hooks/useAuthors';
@@ -156,12 +155,17 @@ export default function BookForm({ book, submitLabel, cancel }: BookFormProps) {
         />
 
         <div className="flex justify-end gap-3">
-          <CancelButton onClick={cancel} />
-          <SubmitButton
-            label={submitLabel}
-            loadingLabel={`${submitLabel}中...`}
+          <Button variant="cancel" onClick={cancel}>
+            キャンセル
+          </Button>
+          <Button
+            type="submit"
+            variant="submit"
             disabled={isSubmitting}
-          />
+            loadingLabel={`${submitLabel}中...`}
+          >
+            {submitLabel}
+          </Button>
         </div>
       </form>
       {/* モーダル */}

@@ -3,8 +3,7 @@
 import { Category } from '@/app/(protected)/categories/_types';
 import { useCategoryForm } from '@/app/(protected)/categories/_hooks/useCategoryForm';
 import FormInput from '@/components/forms/FormInput';
-import CancelButton from '@/components/buttons/CancelButton';
-import SubmitButton from '@/components/buttons/SubmitButton';
+import Button from '@/components/buttons/Button';
 
 interface CategoryFormProps {
   category?: Category;
@@ -34,12 +33,17 @@ export default function CategoryForm({ category, submitLabel, cancel }: Category
       </div>
 
       <div className="flex justify-end gap-3">
-        <CancelButton onClick={cancel} />
-        <SubmitButton
-          label={submitLabel}
-          loadingLabel={`${submitLabel}中...`}
+        <Button variant="cancel" onClick={cancel}>
+          キャンセル
+        </Button>
+        <Button
+          type="submit"
+          variant="submit"
           disabled={isSubmitting}
-        />
+          loadingLabel={`${submitLabel}中...`}
+        >
+          {submitLabel}
+        </Button>
       </div>
     </form>
   );

@@ -5,7 +5,8 @@ import { useLists } from '@/app/(protected)/lists/_hooks/useLists';
 import PageTitle from '@/components/PageTitle';
 import ListCard from './_components/display/ListCard';
 import CreateListFormModal from '@/app/(protected)/lists/_components/modal/';
-import { CreateButton } from '@/components/buttons';
+import Button from '@/components/buttons/Button';
+import { Plus } from 'lucide-react';
 import EmptyState from '@/components/EmptyState';
 import ErrorMessage from '@/components/ErrorMessage';
 import LoadingState from '@/components/LoadingState';
@@ -28,7 +29,9 @@ export default function ListPage() {
     <>
       <PageTitle title="リスト一覧" />
       <div className="mb-6 flex justify-end">
-        <CreateButton onClick={createModal.open} />
+        <Button variant="create" onClick={createModal.open} icon={<Plus className="h-4 w-4" />}>
+          作成
+        </Button>
       </div>
       {lists && lists.length === 0 ? (
         <EmptyState element="リスト" />
