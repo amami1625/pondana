@@ -1,26 +1,23 @@
 'use client';
 
+import { BookDetail } from '@/app/(protected)/books/_types';
+import { useModal } from '@/hooks/useModal';
+import { useBookMutations } from '@/app/(protected)/books/_hooks/useBookMutations';
+import { getBookDetailBreadcrumbs } from '@/lib/utils';
 import UpdateBookFormModal from '@/app/(protected)/books/_components/modal';
 import AddListModal from '@/app/(protected)/listBooks/_components/modal/AddListModal';
 import CardModal from '@/app/(protected)/cards/_components/modal';
-import { useModal } from '@/hooks/useModal';
-import { useBook } from '@/app/(protected)/books/_hooks/useBook';
-import LoadingState from '@/components/LoadingState';
-import ErrorMessage from '@/components/ErrorMessage';
-import { useBookMutations } from '@/app/(protected)/books/_hooks/useBookMutations';
 import Breadcrumb from '@/components/Breadcrumb';
-import { getBookDetailBreadcrumbs } from '@/lib/utils';
 import CategoryBadge from '@/app/(protected)/books/_components/detail/badge/CategoryBadge';
 import PublicBadge from '@/app/(protected)/books/_components/detail/badge/PublicBadge';
 import BookActions from '@/app/(protected)/books/_components/detail/BookActions';
 import BookDetailTabs from '@/app/(protected)/books/_components/detail/tab/BookDetailTabs';
 
 interface BookDetailProps {
-  id: number;
+  book: BookDetail;
 }
 
-export default function BookDetailView({ id }: BookDetailProps) {
-  const { data: book, error: bookError, isLoading: bookLoading } = useBook(id);
+export default function BookDetailView({ book }: BookDetailProps) {
   const { deleteBook } = useBookMutations();
   const updateModal = useModal();
   const addListModal = useModal();
@@ -33,21 +30,6 @@ export default function BookDetailView({ id }: BookDetailProps) {
 
     deleteBook(id);
   };
-
-  // ローディング状態
-  if (bookLoading) {
-    return <LoadingState message="本情報を読み込んでいます..." />;
-  }
-
-  // エラー状態
-  if (bookError) {
-    return <ErrorMessage message={bookError?.message || 'エラーが発生しました'} />;
-  }
-
-  // データが取得できていない場合
-  if (!book) {
-    return <ErrorMessage message="データの取得に失敗しました" />;
-  }
 
   // パンくずリストのアイテム
   const breadcrumbItems = getBookDetailBreadcrumbs(book.title);
@@ -70,7 +52,7 @@ export default function BookDetailView({ id }: BookDetailProps) {
               {/* 著者 */}
               {book.authors && book.authors.length > 0 && (
                 <p className="text-slate-500 text-lg font-medium">
-                  {book.authors.map((author) => author.name).join(', ')}
+                  著者: {book.authors.map((author) => author.name).join(', ')}
                 </p>
               )}
             </div>
@@ -97,7 +79,7 @@ export default function BookDetailView({ id }: BookDetailProps) {
             onEdit={updateModal.open}
             onAddToList={addListModal.open}
             onCreateCard={cardModal.open}
-            onDelete={() => handleDelete(id)}
+            onDelete={() => handleDelete(book.id)}
           />
         </div>
 
