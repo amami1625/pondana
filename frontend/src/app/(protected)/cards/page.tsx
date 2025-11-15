@@ -1,10 +1,9 @@
 'use client';
 
-import PageTitle from '@/components/PageTitle';
+import { useCards } from '@/app/(protected)/cards/_hooks/useCards';
+import CardListView from '@/app/(protected)/cards/_components/display/view/CardListView';
 import ErrorMessage from '@/components/ErrorMessage';
 import LoadingState from '@/components/LoadingState';
-import CardListView from '@/app/(protected)/cards/_components/display/CardListView';
-import { useCards } from '@/app/(protected)/cards/_hooks/useCards';
 
 export default function CardsPage() {
   const { data: cardList, error, isLoading } = useCards();
@@ -24,10 +23,5 @@ export default function CardsPage() {
     return <ErrorMessage message="データの取得に失敗しました" />;
   }
 
-  return (
-    <>
-      <PageTitle title="カード一覧" />
-      <CardListView cardList={cardList} />
-    </>
-  );
+  return <CardListView cardList={cardList} />;
 }
