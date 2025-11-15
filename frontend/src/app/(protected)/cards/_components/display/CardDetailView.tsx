@@ -1,7 +1,7 @@
 'use client';
 
 import CardModal from '@/app/(protected)/cards/_components/modal';
-import { DeleteButton, UpdateButton } from '@/components/buttons';
+import Button from '@/components/buttons/Button';
 import { useModal } from '@/hooks/useModal';
 import { useCard } from '@/app/(protected)/cards/_hooks/useCard';
 import { useCardMutations } from '@/app/(protected)/cards/_hooks/useCardMutations';
@@ -78,8 +78,12 @@ export default function CardDetailView({ id }: CardDetailViewProps) {
         </DetailMetadata>
 
         <DetailActions>
-          <UpdateButton onClick={cardModal.open} />
-          <DeleteButton onClick={handleDelete} />
+          <Button variant="update" onClick={cardModal.open}>
+            編集
+          </Button>
+          <Button variant="delete" onClick={handleDelete}>
+            削除
+          </Button>
         </DetailActions>
       </DetailContainer>
 

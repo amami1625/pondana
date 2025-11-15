@@ -1,7 +1,7 @@
 'use client';
 
 import FormInput from '@/components/forms/FormInput';
-import SubmitButton from '@/components/buttons/SubmitButton';
+import Button from '@/components/buttons/Button';
 import ErrorMessage from '@/components/ErrorMessage';
 import AuthLayout from '@/app/(auth)/_components/AuthLayout';
 import { useLoginForm } from '@/app/(auth)/_hooks/useLoginForm';
@@ -32,7 +32,9 @@ export default function LoginPage() {
         {error && <ErrorMessage message={error} />}
 
         <div>
-          <SubmitButton label="ログイン" loadingLabel="ログイン中..." disabled={loading} />
+          <Button type="submit" variant="submit" disabled={loading} loadingLabel="ログイン中...">
+            ログイン
+          </Button>
         </div>
       </form>
     </AuthLayout>

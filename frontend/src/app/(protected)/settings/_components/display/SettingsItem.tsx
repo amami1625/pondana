@@ -1,4 +1,4 @@
-import { DeleteButton, UpdateButton } from '@/components/buttons';
+import Button from '@/components/buttons/Button';
 
 interface SettingsItemProps {
   label: string;
@@ -24,8 +24,16 @@ export default function SettingsItem({
         </div>
         {(onEdit || onDelete) && (
           <div className="flex items-center gap-2">
-            {onEdit && <UpdateButton onClick={onEdit} />}
-            {onDelete && <DeleteButton onClick={onDelete} />}
+            {onEdit && (
+              <Button variant="update" onClick={onEdit}>
+                編集
+              </Button>
+            )}
+            {onDelete && (
+              <Button variant="delete" onClick={onDelete}>
+                削除
+              </Button>
+            )}
           </div>
         )}
       </div>

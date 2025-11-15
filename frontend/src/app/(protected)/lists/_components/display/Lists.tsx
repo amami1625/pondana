@@ -2,7 +2,8 @@
 
 import { List } from '@/app/(protected)/lists/_types';
 import { useModal } from '@/hooks/useModal';
-import { CreateButton } from '@/components/buttons';
+import Button from '@/components/buttons/Button';
+import { Plus } from 'lucide-react';
 import CreateListFormModal from '@/app/(protected)/lists/_components/modal/';
 import ListCard from '@/app/(protected)/lists/_components/display/ListCard';
 import EmptyState from '@/components/EmptyState';
@@ -17,7 +18,9 @@ export default function Lists({ lists }: ListProps) {
   return (
     <>
       <div className="mb-6 flex justify-end">
-        <CreateButton onClick={createModal.open} />
+        <Button variant="create" onClick={createModal.open} icon={<Plus className="h-4 w-4" />}>
+          作成
+        </Button>
       </div>
       {lists.length === 0 ? (
         <EmptyState element="リスト" />

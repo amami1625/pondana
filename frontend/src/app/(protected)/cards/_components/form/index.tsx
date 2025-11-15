@@ -2,8 +2,7 @@
 
 import { Card } from '@/app/(protected)/cards/_types';
 import { useCardForm } from '@/app/(protected)/cards/_hooks/useCardForm';
-import CancelButton from '@/components/buttons/CancelButton';
-import SubmitButton from '@/components/buttons/SubmitButton';
+import Button from '@/components/buttons/Button';
 import FormInput from '@/components/forms/FormInput';
 import FormTextarea from '@/components/forms/FormTextarea';
 
@@ -48,12 +47,17 @@ export default function CardForm({ card, bookId, onClose, submitLabel }: CardFor
       />
 
       <div className="flex justify-end gap-3">
-        <CancelButton onClick={onClose} />
-        <SubmitButton
-          label={submitLabel}
-          loadingLabel={`${submitLabel}中...`}
+        <Button variant="cancel" onClick={onClose}>
+          キャンセル
+        </Button>
+        <Button
+          type="submit"
+          variant="submit"
           disabled={isSubmitting}
-        />
+          loadingLabel={`${submitLabel}中...`}
+        >
+          {submitLabel}
+        </Button>
       </div>
     </form>
   );

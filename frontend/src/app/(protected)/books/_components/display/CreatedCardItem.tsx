@@ -1,7 +1,7 @@
 'use client';
 
 import { Card } from '@/app/(protected)/cards/_types';
-import { DeleteButton } from '@/components/buttons';
+import Button from '@/components/buttons/Button';
 import ErrorMessage from '@/components/ErrorMessage';
 import { useCardMutations } from '@/app/(protected)/cards/_hooks/useCardMutations';
 import { DetailLink } from '@/components/links';
@@ -40,7 +40,9 @@ export default function CreatedCardItem({ card }: CreatedCardItemProps) {
         {/* アクションボタン */}
         <div className="flex-shrink-0 flex gap-2">
           <DetailLink href={`/cards/${card.id}`} />
-          <DeleteButton onClick={handleDelete} />
+          <Button variant="delete" onClick={handleDelete}>
+            削除
+          </Button>
         </div>
       </div>
     </div>

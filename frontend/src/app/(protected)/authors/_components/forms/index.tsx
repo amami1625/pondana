@@ -3,8 +3,7 @@
 import { Author } from '@/app/(protected)/authors/_types';
 import { useAuthorForm } from '@/app/(protected)/authors/_hooks/useAuthorForm';
 import FormInput from '@/components/forms/FormInput';
-import CancelButton from '@/components/buttons/CancelButton';
-import SubmitButton from '@/components/buttons/SubmitButton';
+import Button from '@/components/buttons/Button';
 
 interface AuthorFormProps {
   author?: Author;
@@ -34,12 +33,17 @@ export default function AuthorForm({ author, submitLabel, cancel }: AuthorFormPr
       </div>
 
       <div className="flex justify-end gap-3">
-        <CancelButton onClick={cancel} />
-        <SubmitButton
-          label={submitLabel}
-          loadingLabel={`${submitLabel}中...`}
+        <Button variant="cancel" onClick={cancel}>
+          キャンセル
+        </Button>
+        <Button
+          type="submit"
+          variant="submit"
           disabled={isSubmitting}
-        />
+          loadingLabel={`${submitLabel}中...`}
+        >
+          {submitLabel}
+        </Button>
       </div>
     </form>
   );
