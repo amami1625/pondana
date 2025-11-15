@@ -34,12 +34,14 @@ export default function BookListCard({ book }: { book: Book }) {
             <p className="text-slate-900 text-lg font-bold leading-tight">{book.title}</p>
 
             {/* 著者 | 最終更新日 */}
-            <p className="text-slate-500 text-sm font-normal leading-normal">
-              {book.authors && book.authors.length > 0
-                ? `${book.authors.map((a) => a.name).join(', ')} | `
-                : ''}
-              最終更新: {book.updated_at}
-            </p>
+            <div className="text-slate-500 text-sm font-normal leading-normal">
+              <p>
+                {book.authors && book.authors.length > 0
+                  ? `著者: ${book.authors.map((a) => a.name).join(', ')}`
+                  : ''}
+              </p>
+              <p>最終更新: {book.updated_at}</p>
+            </div>
 
             {/* 説明文 */}
             {book.description && (

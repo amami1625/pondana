@@ -60,18 +60,21 @@ export default function BookDetailView({ id }: BookDetailProps) {
 
         {/* 書籍情報カード */}
         <div className="flex flex-col gap-6 p-6 sm:p-8 bg-white rounded-xl border border-slate-200">
-          {/* ヘッダー: タイトル・著者・バッジ */}
+          {/* ヘッダー */}
           <div className="flex flex-wrap justify-between items-start gap-4">
             <div className="flex flex-col gap-1">
+              {/* タイトル */}
               <h1 className="text-slate-900 text-3xl sm:text-4xl font-black tracking-tighter">
                 {book.title}
               </h1>
+              {/* 著者 */}
               {book.authors && book.authors.length > 0 && (
                 <p className="text-slate-500 text-lg font-medium">
                   {book.authors.map((author) => author.name).join(', ')}
                 </p>
               )}
             </div>
+            {/* バッジ */}
             <div className="flex items-center gap-3">
               {book.category && <CategoryBadge label={book.category.name} />}
               <PublicBadge isPublic={book.public} />
