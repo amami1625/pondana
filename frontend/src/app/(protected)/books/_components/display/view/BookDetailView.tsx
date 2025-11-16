@@ -8,8 +8,8 @@ import UpdateBookFormModal from '@/app/(protected)/books/_components/modal';
 import AddListModal from '@/app/(protected)/listBooks/_components/modal/AddListModal';
 import CardModal from '@/app/(protected)/cards/_components/modal';
 import Breadcrumb from '@/components/Breadcrumb';
-import CategoryBadge from '@/app/(protected)/books/_components/detail/badge/CategoryBadge';
-import PublicBadge from '@/app/(protected)/books/_components/detail/badge/PublicBadge';
+import CategoryBadge from '@/components/badge/CategoryBadge';
+import PublicBadge from '@/components/badge/PublicBadge';
 import BookActions from '@/app/(protected)/books/_components/detail/BookActions';
 import BookDetailTabs from '@/app/(protected)/books/_components/detail/tab/BookDetailTabs';
 

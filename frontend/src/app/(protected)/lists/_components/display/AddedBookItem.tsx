@@ -1,8 +1,10 @@
 'use client';
 
+import Link from 'next/link';
+import { Trash2, Star } from 'lucide-react';
 import { AddedBook } from '@/app/(protected)/lists/_types';
+import { getCategoryColor } from '@/lib/utils';
 import { useListBookActions } from '@/app/(protected)/listBooks/_hooks/useListBookActions';
-import Button from '@/components/buttons/Button';
 
 interface AddedBookProps {
   book: AddedBook;
@@ -11,38 +13,62 @@ interface AddedBookProps {
 
 export default function AddedBookItem({ book, listBookId }: AddedBookProps) {
   const { handleRemove } = useListBookActions();
+  const coverColorClass = getCategoryColor(book.category?.name);
 
   return (
-    <div className="border-b border-gray-200 p-4 last:border-b-0">
-      <div className="flex items-start justify-between gap-4">
-        <div className="flex-1 min-w-0">
-          {/* タイトル */}
-          <h3 className="text-base font-semibold text-gray-900 mb-2 truncate">{book.title}</h3>
+    <div className="flex flex-col rounded-xl border border-slate-200 bg-white overflow-hidden transition-shadow hover:shadow-lg">
+      {/* 書籍カバー画像 */}
+      <div className={`h-48 w-full flex items-center justify-center ${coverColorClass}`}>
+        <div className="text-white text-center p-4">
+          <div className="text-5xl font-black mb-2">{book.title.charAt(0).toUpperCase()}</div>
+          {book.category && (
+            <div className="text-xs font-medium bg-white/20 rounded px-2 py-1 backdrop-blur-sm">
+              {book.category.name}
+            </div>
+          )}
+        </div>
+      </div>
 
-          {/* 著者 */}
-          {book.authors.length > 0 && (
-            <div className="flex items-center gap-1 mb-1">
-              <span className="text-xs text-gray-500">著者:</span>
-              <p className="text-sm text-gray-700">
+      <div className="flex flex-1 flex-col p-4">
+        {/* タイトルと削除ボタン */}
+        <div className="flex items-start justify-between">
+          <div className="flex-1">
+            <h3 className="text-lg font-bold text-slate-900">{book.title}</h3>
+            {book.authors && book.authors.length > 0 && (
+              <p className="text-sm text-slate-600 mb-2">
                 {book.authors.map((author) => author.name).join(', ')}
               </p>
-            </div>
-          )}
+            )}
+          </div>
+          <button
+            onClick={() => handleRemove(listBookId)}
+            className="ml-2 flex-shrink-0 rounded-full p-2 text-slate-500 cursor-pointer hover:bg-slate-100 hover:text-red-500"
+            title="リストから削除"
+          >
+            <Trash2 className="h-5 w-5" />
+          </button>
+        </div>
 
-          {/* カテゴリ */}
-          {book.category && (
-            <div className="flex items-center gap-1">
-              <span className="text-xs text-gray-500">カテゴリ:</span>
-              <span className="inline-block rounded-full bg-blue-100 px-2 py-0.5 text-xs text-blue-700">
-                {book.category.name}
-              </span>
-            </div>
-          )}
+        {/* 評価（星） */}
+        {book.rating && book.rating > 0 && (
+          <div className="flex items-center gap-1 text-primary mb-3">
+            {[...Array(5)].map((_, i) => (
+              <Star key={i} className={`h-4 w-4 ${i < (book.rating ?? 0) ? 'fill-current' : ''}`} />
+            ))}
+          </div>
+        )}
 
-          {/* リストから削除 */}
-          <Button variant="remove" onClick={() => handleRemove(listBookId)}>
-            削除
-          </Button>
+        {/* 説明 */}
+        {book.description && <p className="text-sm text-slate-700 flex-1">{book.description}</p>}
+
+        {/* 詳細ページへのリンク */}
+        <div className="mt-4 flex justify-between items-center">
+          <Link
+            href={`/books/${book.id}`}
+            className="text-sm font-semibold text-primary hover:underline"
+          >
+            詳細を見る
+          </Link>
         </div>
       </div>
     </div>
