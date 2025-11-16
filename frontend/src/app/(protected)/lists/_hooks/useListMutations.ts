@@ -1,8 +1,8 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import toast from 'react-hot-toast';
+import { useRouter } from 'next/navigation';
 import { queryKeys } from '@/constants/queryKeys';
 import { ListBase, ListFormData } from '@/app/(protected)/lists/_types';
-import { useRouter } from 'next/navigation';
-import toast from 'react-hot-toast';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 // 更新用の型
 type UpdateListData = ListFormData & { id: number };
@@ -58,6 +58,11 @@ export function useListMutations() {
       queryClient.invalidateQueries({ queryKey: queryKeys.lists.all });
       // リスト詳細のキャッシュを無効化
       queryClient.invalidateQueries({ queryKey: queryKeys.lists.detail(id) });
+      // 書籍のキャッシュを無効化
+      // TODO: リストを使用していた書籍のキャッシュのみ無効化するように最適化する
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.books.all,
+      });
       // トップページのキャッシュを無効化
       queryClient.invalidateQueries({ queryKey: queryKeys.top.all });
     },
@@ -77,16 +82,22 @@ export function useListMutations() {
     },
     onSuccess: () => {
       toast.success('リストを削除しました');
-      // 一覧ページにリダイレクト
-      router.push('/lists');
 
-      // リスト一覧のキャッシュのみを無効化（exact: true で詳細キャッシュは対象外）
+      // リスト一覧のキャッシュのみを無効化（詳細キャッシュは対象外）
       queryClient.invalidateQueries({
         queryKey: queryKeys.lists.all,
         exact: true,
       });
+      // 書籍のキャッシュを無効化
+      // TODO: リストを使用していた書籍のキャッシュのみ無効化するように最適化する
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.books.all,
+      });
       // トップページのキャッシュを無効化
       queryClient.invalidateQueries({ queryKey: queryKeys.top.all });
+
+      // 一覧ページにリダイレクト
+      router.push('/lists');
     },
   });
 
