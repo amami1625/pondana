@@ -42,7 +42,7 @@ export default function AddedBookItem({ book, listBookId }: AddedBookProps) {
           </div>
           <button
             onClick={() => handleRemove(listBookId)}
-            className="ml-2 flex-shrink-0 rounded-full p-2 text-slate-500 hover:bg-slate-100 hover:text-red-500"
+            className="ml-2 flex-shrink-0 rounded-full p-2 text-slate-500 cursor-pointer hover:bg-slate-100 hover:text-red-500"
             title="リストから削除"
           >
             <Trash2 className="h-5 w-5" />
