@@ -1,6 +1,10 @@
 class Api::ListsController < Api::ApplicationController
   def index
-    lists = current_user.lists.order(created_at: :desc)
+    lists = current_user.lists
+                        .left_joins(:list_books)
+                        .select('lists.*, COUNT(list_books.id) as books_count')
+                        .group('lists.id')
+                        .order(created_at: :desc)
     render json: lists
   end
 
