@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
 
-interface BookBadgeProps {
+interface BaseBadgeProps {
   icon: ReactNode;
   label: string;
   variant: 'category' | 'public' | 'private';
@@ -12,7 +12,7 @@ const BADGE_STYLES = {
   private: 'bg-slate-200 text-slate-700',
 };
 
-export default function BookBadge({ icon, label, variant }: BookBadgeProps) {
+export default function BaseBadge({ icon, label, variant }: BaseBadgeProps) {
   return (
     <div
       className={`flex h-8 items-center justify-center gap-x-2 rounded-lg px-3 ${BADGE_STYLES[variant]}`}

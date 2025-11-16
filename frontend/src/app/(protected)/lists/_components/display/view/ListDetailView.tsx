@@ -6,7 +6,7 @@ import UpdateListFormModal from '@/app/(protected)/lists/_components/modal';
 import AddBookModal from '@/app/(protected)/listBooks/_components/modal/AddBookModal';
 import AddedBooks from '@/app/(protected)/lists/_components/display/AddedBooks';
 import Breadcrumb from '@/components/Breadcrumb';
-import PublicBadge from '@/app/(protected)/books/_components/detail/badge/PublicBadge';
+import PublicBadge from '@/components/badge/PublicBadge';
 import ListActions from '@/app/(protected)/lists/_components/detail/ListActions';
 import { useListMutations } from '@/app/(protected)/lists/_hooks/useListMutations';
 import { ListDetail } from '@/schemas/list';

@@ -1,5 +1,5 @@
 import { Unlock, Lock } from 'lucide-react';
-import BookBadge from './BookBadge';
+import BaseBadge from './BaseBadge';
 
 interface PublicBadgeProps {
   isPublic: boolean;
@@ -7,7 +7,7 @@ interface PublicBadgeProps {
 
 export default function PublicBadge({ isPublic }: PublicBadgeProps) {
   return (
-    <BookBadge
+    <BaseBadge
       icon={isPublic ? <Unlock size={16} /> : <Lock size={16} />}
       label={isPublic ? '公開' : '非公開'}
       variant={isPublic ? 'public' : 'private'}

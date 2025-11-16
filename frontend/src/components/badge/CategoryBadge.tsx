@@ -1,10 +1,10 @@
 import { Tag } from 'lucide-react';
-import BookBadge from './BookBadge';
+import BaseBadge from './BaseBadge';
 
 interface CategoryBadgeProps {
   label: string;
 }
 
 export default function CategoryBadge({ label }: CategoryBadgeProps) {
-  return <BookBadge icon={<Tag size={16} />} label={label} variant="category" />;
+  return <BaseBadge icon={<Tag size={16} />} label={label} variant="category" />;
 }
