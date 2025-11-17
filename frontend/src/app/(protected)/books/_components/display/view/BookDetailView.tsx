@@ -1,9 +1,7 @@
 'use client';
 
 import { BookDetail } from '@/app/(protected)/books/_types';
-import { useModal } from '@/hooks/useModal';
-import { useBookMutations } from '@/app/(protected)/books/_hooks/useBookMutations';
-import { getBookDetailBreadcrumbs } from '@/lib/utils';
+import { useBookDetailView } from '@/app/(protected)/books/_hooks/useBookDetailView';
 import UpdateBookFormModal from '@/app/(protected)/books/_components/modal';
 import AddListModal from '@/app/(protected)/listBooks/_components/modal/AddListModal';
 import CardModal from '@/app/(protected)/cards/_components/modal';
@@ -14,8 +12,6 @@ import {
   DetailDescription,
   DetailMetadata,
 } from '@/components/details';
-import CategoryBadge from '@/components/badge/CategoryBadge';
-import PublicBadge from '@/components/badge/PublicBadge';
 import BookActions from '@/app/(protected)/books/_components/detail/BookActions';
 import BookDetailTabs from '@/app/(protected)/books/_components/detail/tab/BookDetailTabs';
 
@@ -24,35 +20,15 @@ interface BookDetailProps {
 }
 
 export default function BookDetailView({ book }: BookDetailProps) {
-  const { deleteBook } = useBookMutations();
-  const updateModal = useModal();
-  const addListModal = useModal();
-  const cardModal = useModal();
-
-  const handleDelete = (id: number) => {
-    if (!confirm('本当に削除しますか？')) {
-      return;
-    }
-
-    deleteBook(id);
-  };
-
-  // パンくずリストのアイテム
-  const breadcrumbItems = getBookDetailBreadcrumbs(book.title);
-
-  // 著者情報のサブタイトル
-  const subtitle =
-    book.authors && book.authors.length > 0
-      ? `著者: ${book.authors.map((author) => author.name).join(', ')}`
-      : undefined;
-
-  // バッジ
-  const badges = (
-    <>
-      {book.category && <CategoryBadge label={book.category.name} />}
-      <PublicBadge isPublic={book.public} />
-    </>
-  );
+  const {
+    breadcrumbItems,
+    subtitle,
+    badges,
+    handleDelete,
+    updateModal,
+    addListModal,
+    cardModal,
+  } = useBookDetailView(book);
 
   return (
     <>
