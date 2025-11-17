@@ -1,19 +1,13 @@
 'use client';
 
 import CardModal from '@/app/(protected)/cards/_components/modal';
-import Button from '@/components/buttons/Button';
 import { useModal } from '@/hooks/useModal';
 import { useCardMutations } from '@/app/(protected)/cards/_hooks/useCardMutations';
-import {
-  DetailContainer,
-  DetailHeader,
-  DetailSection,
-  DetailMetadata,
-  DetailMetadataItem,
-  DetailActions,
-} from '@/components/details';
 import { useRouter } from 'next/navigation';
 import { CardDetail } from '@/app/(protected)/cards/_types/index';
+import { getCardDetailBreadcrumbs } from '@/lib/utils';
+import Breadcrumb from '@/components/Breadcrumb';
+import CardActions from '@/app/(protected)/cards/_components/detail/CardActions';
 
 interface CardDetailViewProps {
   card: CardDetail;
@@ -21,8 +15,8 @@ interface CardDetailViewProps {
 
 export default function CardDetailView({ card }: CardDetailViewProps) {
   const router = useRouter();
-  const { deleteCard, deleteError } = useCardMutations();
-  const cardModal = useModal();
+  const { deleteCard } = useCardMutations();
+  const updateModal = useModal();
 
   const handleDelete = () => {
     if (!confirm('本当に削除しますか？')) {
@@ -41,40 +35,48 @@ export default function CardDetailView({ card }: CardDetailViewProps) {
     }
   };
 
+  const breadcrumbItems = getCardDetailBreadcrumbs(card.title);
+
   return (
     <>
-      <DetailContainer error={deleteError?.message}>
-        <DetailHeader title={card.title} />
+      <div className="flex flex-col gap-8">
+        {/* パンくずリスト */}
+        <Breadcrumb items={breadcrumbItems} />
 
-        <DetailSection title="本文">
-          <p className="whitespace-pre-wrap text-base leading-relaxed text-gray-700">
-            {card.content}
-          </p>
-        </DetailSection>
+        {/* カード情報 */}
+        <div className="flex flex-col gap-6 p-6 sm:p-8 bg-white rounded-xl border border-slate-200">
+          {/* ヘッダー */}
+          <div className="flex flex-wrap justify-between items-start gap-4">
+            <div className="flex flex-col gap-1">
+              {/* タイトル */}
+              <h1 className="text-slate-900 text-3xl sm:text-4xl font-black tracking-tighter">
+                {card.title}
+              </h1>
+              {/* 書籍名 */}
+              <p className="text-slate-500 text-lg font-medium">書籍名: {card.book.title}</p>
+            </div>
+          </div>
 
-        <DetailMetadata>
-          <DetailMetadataItem label="書籍名" value={card.book.title} />
-          <DetailMetadataItem label="更新日" value={card.updated_at} />
-          <DetailMetadataItem label="登録日" value={card.created_at} />
-          <DetailMetadataItem label="ID" value={`#${card.id}`} />
-        </DetailMetadata>
+          {/* 説明文 */}
+          <p className="text-slate-600 text-base font-normal leading-relaxed">{card.content}</p>
 
-        <DetailActions>
-          <Button variant="update" onClick={cardModal.open}>
-            編集
-          </Button>
-          <Button variant="delete" onClick={handleDelete}>
-            削除
-          </Button>
-        </DetailActions>
-      </DetailContainer>
+          {/* メタ情報 */}
+          <div className="flex flex-wrap gap-x-6 gap-y-2 text-sm text-slate-500 pt-2 border-t border-slate-200">
+            <span>登録日: {card.created_at}</span>
+            <span>更新日: {card.updated_at}</span>
+          </div>
+
+          {/* アクションボタン */}
+          <CardActions onEdit={updateModal.open} onDelete={handleDelete} />
+        </div>
+      </div>
 
       <CardModal
         card={card}
         bookId={card.book_id}
         bookTitle={card.book.title}
-        isOpen={cardModal.isOpen}
-        onClose={cardModal.close}
+        isOpen={updateModal.isOpen}
+        onClose={updateModal.close}
       />
     </>
   );
