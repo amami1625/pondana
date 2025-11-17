@@ -34,6 +34,7 @@ export function useBookMutations() {
       // トップページのキャッシュを無効化
       queryClient.invalidateQueries({ queryKey: queryKeys.top.all });
     },
+    onError: (error) => toast.error(error.message),
   });
 
   // 更新
@@ -61,6 +62,7 @@ export function useBookMutations() {
       // トップページのキャッシュを無効化
       queryClient.invalidateQueries({ queryKey: queryKeys.top.all });
     },
+    onError: (error) => toast.error(error.message),
   });
 
   // 削除
@@ -88,6 +90,7 @@ export function useBookMutations() {
       // トップページのキャッシュを無効化
       queryClient.invalidateQueries({ queryKey: queryKeys.top.all });
     },
+    onError: (error) => toast.error(error.message),
   });
 
   return {

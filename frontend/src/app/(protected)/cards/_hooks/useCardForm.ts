@@ -1,4 +1,3 @@
-import toast from 'react-hot-toast';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Card, CardFormData, cardFormSchema } from '@/app/(protected)/cards/_types';
@@ -35,14 +34,12 @@ export const useCardForm = ({ card, bookId, cancel }: UseCardFormProps) => {
         { ...data, id: card.id },
         {
           onSuccess: () => cancel(),
-          onError: (error) => toast.error(error.message),
         },
       );
     } else {
       // 作成
       createCard(data, {
         onSuccess: () => cancel(),
-        onError: (error) => toast.error(error.message),
       });
     }
   };
