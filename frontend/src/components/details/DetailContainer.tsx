@@ -1,18 +1,18 @@
-import { ReactNode } from 'react';
-import ErrorMessage from '@/components/ErrorMessage';
+import Breadcrumb from '@/components/Breadcrumb';
+import { BreadcrumbItem } from '@/constants/breadcrumbs';
 
 interface DetailContainerProps {
-  error?: string;
-  children: ReactNode;
+  breadcrumbItems: BreadcrumbItem[];
+  children: React.ReactNode;
 }
 
-export default function DetailContainer({ error, children }: DetailContainerProps) {
+export default function DetailContainer({ breadcrumbItems, children }: DetailContainerProps) {
   return (
-    <section className="mx-auto max-w-4xl px-4 py-10">
-      {error && <ErrorMessage message={error} />}
-      <article className="flex flex-col gap-6 rounded-2xl border border-gray-200 bg-white p-8 shadow-sm">
-        {children}
-      </article>
-    </section>
+    <div className="flex flex-col gap-8">
+      {/* パンくずリスト */}
+      <Breadcrumb items={breadcrumbItems} />
+
+      {children}
+    </div>
   );
 }

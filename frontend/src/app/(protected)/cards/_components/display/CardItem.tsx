@@ -3,7 +3,6 @@
 import { Card } from '@/app/(protected)/cards/_types';
 import Button from '@/components/buttons/Button';
 import { DetailLink } from '@/components/links';
-import ErrorMessage from '@/components/ErrorMessage';
 import { useCardMutations } from '@/app/(protected)/cards/_hooks/useCardMutations';
 import { useRouter } from 'next/navigation';
 
@@ -13,7 +12,7 @@ interface CardItemProps {
 
 export default function CardItem({ card }: CardItemProps) {
   const router = useRouter();
-  const { deleteCard, deleteError } = useCardMutations();
+  const { deleteCard } = useCardMutations();
 
   const handleDelete = () => {
     if (!confirm('本当に削除しますか？')) {
@@ -34,9 +33,6 @@ export default function CardItem({ card }: CardItemProps) {
 
   return (
     <div className="border-b border-gray-200 p-4 last:border-b-0">
-      {/* エラーメッセージ */}
-      {deleteError && <ErrorMessage message={deleteError.message} />}
-
       <div className="flex items-center justify-between gap-4">
         <div className="flex-1 min-w-0">
           {/* タイトル */}

@@ -1,4 +1,3 @@
-import toast from 'react-hot-toast';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Book, BookFormData, bookFormSchema } from '@/app/(protected)/books/_types';
@@ -43,14 +42,12 @@ export function useBookForm({ book, cancel }: UseBookFormProps) {
         },
         {
           onSuccess: () => cancel(),
-          onError: (error) => toast.error(error.message),
         },
       );
     } else {
       // 作成
       createBook(data, {
         onSuccess: () => cancel(),
-        onError: (error) => toast.error(error.message),
       });
     }
   };
