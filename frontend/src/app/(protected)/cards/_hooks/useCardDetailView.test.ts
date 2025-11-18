@@ -2,7 +2,7 @@ import { createMockCard } from '@/test/factories';
 import { renderHook } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { useCardDetailView } from './useCardDetailView';
-import { mockUseCardMutations, mockUseModal } from '@/test/helpers';
+import { mockUseCardMutations, mockUseModal } from '@/test/mocks';
 
 // モックの設定
 vi.mock('@/hooks/useModal');

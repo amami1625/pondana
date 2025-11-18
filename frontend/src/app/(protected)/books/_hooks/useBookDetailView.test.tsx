@@ -2,7 +2,7 @@ import React from 'react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { renderHook } from '@testing-library/react';
 import { createMockBook, createMockAuthor, createMockCategory } from '@/test/factories';
-import { mockUseBookMutations, mockUseModal } from '@/test/helpers';
+import { mockUseBookMutations, mockUseModal } from '@/test/mocks';
 import { useBookDetailView } from './useBookDetailView';
 
 // モックの設定

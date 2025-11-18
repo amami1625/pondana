@@ -1,7 +1,6 @@
-import React from 'react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { renderHook } from '@testing-library/react';
-import { mockUseListMutations, mockUseModal } from '@/test/helpers';
+import { mockUseListMutations, mockUseModal } from '@/test/mocks';
 import { createMockList } from '@/test/factories';
 import { useListDetailView } from './useListDetailView';
 
