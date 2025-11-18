@@ -10,8 +10,8 @@ export const createMockCard = (overrides?: Partial<CardDetail>): CardDetail => (
   title: 'テストカード',
   content: 'テスト本文',
   book_id: 1,
-  created_at: '2025-01-01',
-  updated_at: '2025-01-01',
+  created_at: '2025-01-01T00:00:00Z',
+  updated_at: '2025-01-01T00:00:00Z',
   book: {
     title: 'テスト本',
   },
