@@ -22,10 +22,7 @@ export function useBookDetailView(book: BookDetail) {
   const breadcrumbItems = getBookDetailBreadcrumbs(book.title);
 
   // 著者情報のサブタイトル
-  const subtitle =
-    book.authors && book.authors.length > 0
-      ? `著者: ${book.authors.map((author) => author.name).join(', ')}`
-      : undefined;
+  const subtitle = `著者: ${book.authors.map((author) => author.name).join(', ')}`;
 
   // バッジ
   const badges = (
