@@ -93,6 +93,21 @@ describe('useBook', () => {
       expect(fetch).toHaveBeenCalledWith('/api/books/1');
       expect(fetch).toHaveBeenCalledTimes(1);
     });
+
+    it('idが0の時、クエリを実行しない', () => {
+      // フックをレンダリング
+      const { result } = renderHook(() => useBook(0), {
+        wrapper: createProvider(),
+      });
+
+      // クエリが無効化されているため、データ取得が行われない
+      expect(result.current.isLoading).toBe(false);
+      expect(result.current.fetchStatus).toBe('idle');
+      expect(result.current.data).toBeUndefined();
+
+      // fetchが呼ばれていないことを確認
+      expect(fetch).not.toHaveBeenCalled();
+    });
   });
 
   describe('エラー時', () => {
