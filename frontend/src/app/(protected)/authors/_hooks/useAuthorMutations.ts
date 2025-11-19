@@ -31,6 +31,7 @@ export function useAuthorMutations() {
       // 著者一覧のキャッシュを無効化
       queryClient.invalidateQueries({ queryKey: queryKeys.authors.all });
     },
+    onError: (error) => toast.error(error.message),
   });
 
   // 更新
@@ -58,6 +59,7 @@ export function useAuthorMutations() {
       // TODO: 現状どの本がこの著者データを使っているか判別できないため、パフォーマンスに問題が出てきたら修正する
       queryClient.invalidateQueries({ queryKey: queryKeys.books.all });
     },
+    onError: (error) => toast.error(error.message),
   });
 
   // 削除
@@ -83,6 +85,7 @@ export function useAuthorMutations() {
       // TODO: 現状どの本がこの著者データを使っているか判別できないため、パフォーマンスに問題が出てきたら修正する
       queryClient.invalidateQueries({ queryKey: queryKeys.books.all });
     },
+    onError: (error) => toast.error(error.message),
   });
 
   return {
