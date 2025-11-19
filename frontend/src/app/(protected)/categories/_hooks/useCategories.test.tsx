@@ -69,6 +69,41 @@ describe('useCategories', () => {
       expect(fetch).toHaveBeenCalledWith('/api/categories');
       expect(fetch).toHaveBeenCalledTimes(1);
     });
+
+    it('データが存在しない場合、空配列を取得する', async () => {
+      // fetchをモック
+      vi.stubGlobal(
+        'fetch',
+        vi.fn().mockResolvedValue({
+          ok: true,
+          json: async () => [],
+        }),
+      );
+
+      // フックをレンダリング
+      const { result } = renderHook(() => useCategories(), {
+        wrapper: createProvider(),
+      });
+
+      // 初期状態：ローディング中
+      expect(result.current.isLoading).toBe(true);
+      expect(result.current.data).toBeUndefined();
+
+      // データ取得完了を待つ
+      await waitFor(() => expect(result.current.isSuccess).toBe(true));
+
+      // 成功状態を確認
+      expect(result.current.isLoading).toBe(false);
+      expect(result.current.isSuccess).toBe(true);
+      expect(result.current.error).toBeNull();
+
+      // Zodで変換された後のデータを確認
+      expect(result.current.data).toEqual([]);
+
+      // fetchが正しく呼ばれたことを確認
+      expect(fetch).toHaveBeenCalledWith('/api/categories');
+      expect(fetch).toHaveBeenCalledTimes(1);
+    });
   });
 
   describe('エラー時', () => {
