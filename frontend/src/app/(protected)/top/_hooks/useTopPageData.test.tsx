@@ -1,7 +1,12 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { renderHook, waitFor } from '@testing-library/react';
 import { createProvider, toJapaneseLocaleString } from '@/test/helpers';
-import { createMockAuthor, createMockBook, createMockList } from '@/test/factories';
+import {
+  createMockAuthor,
+  createMockBook,
+  createMockList,
+  createMockTopPageData,
+} from '@/test/factories';
 import { useTopPageData } from './useTopPageData';
 
 describe('useTopPageData', () => {
@@ -13,7 +18,7 @@ describe('useTopPageData', () => {
   describe('成功時', () => {
     it('トップページ用のデータを正しく取得できる', async () => {
       // APIから返ってくる想定のデータ
-      const mockApiResponse = {
+      const mockApiResponse = createMockTopPageData({
         recent_books: [
           createMockBook({
             id: 1,
@@ -28,7 +33,7 @@ describe('useTopPageData', () => {
         ],
         recent_lists: [createMockList({ id: 1, name: 'テストリスト' })],
         recent_cards: [],
-      };
+      });
 
       // fetchをモック
       vi.stubGlobal(
