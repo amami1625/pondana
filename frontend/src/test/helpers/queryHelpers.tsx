@@ -18,9 +18,9 @@ export const createTestQueryClient = () =>
  * テスト用のQueryClientProviderを作成するヘルパー関数
  * renderHookのwrapperオプションに渡すために使用
  */
-export const createProvider = () => {
+export const createProvider = (client?: QueryClient) => {
   const testQueryClient = createTestQueryClient();
   return ({ children }: { children: React.ReactNode }) => (
-    <QueryClientProvider client={testQueryClient}>{children}</QueryClientProvider>
+    <QueryClientProvider client={client || testQueryClient}>{children}</QueryClientProvider>
   );
 };
