@@ -22,7 +22,7 @@ export function useBookMutations() {
 
       if (!response.ok) {
         const error = await response.json();
-        throw new Error(error.error || '書籍の作成に失敗しました');
+        throw new Error(error.error || '本の作成に失敗しました');
       }
 
       return response.json() as Promise<BookBase>;
@@ -48,7 +48,7 @@ export function useBookMutations() {
 
       if (!response.ok) {
         const error = await response.json();
-        throw new Error(error.error || '書籍の更新に失敗しました');
+        throw new Error(error.error || '本の更新に失敗しました');
       }
 
       return response.json() as Promise<BookBase>;
@@ -72,7 +72,7 @@ export function useBookMutations() {
 
       if (!response.ok) {
         const error = await response.json();
-        throw new Error(error.error || '書籍の削除に失敗しました');
+        throw new Error(error.error || '本の削除に失敗しました');
       }
 
       return response.json();
