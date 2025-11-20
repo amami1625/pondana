@@ -166,11 +166,11 @@ describe('useAuthorMutations', () => {
 
       // fetchが正しく呼ばれたことを確認
       expect(fetch).toHaveBeenCalledWith(
-        '/api/authors',
+        '/api/authors/1',
         expect.objectContaining({
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ id: 1, name: '更新された著者' }),
+          body: JSON.stringify({ name: '更新された著者' }),
         }),
       );
 
@@ -277,7 +277,7 @@ describe('useAuthorMutations', () => {
       await waitFor(() => expect(result.current.isDeleting).toBe(false));
 
       // fetchが正しく呼ばれたことを確認
-      expect(fetch).toHaveBeenCalledWith('/api/authors?id=1', {
+      expect(fetch).toHaveBeenCalledWith('/api/authors/1', {
         method: 'DELETE',
       });
 
