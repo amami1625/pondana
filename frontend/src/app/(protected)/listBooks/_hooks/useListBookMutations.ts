@@ -35,6 +35,7 @@ export function useListBookMutations() {
       // トップページのキャッシュを無効化
       queryClient.invalidateQueries({ queryKey: queryKeys.top.all });
     },
+    onError: (error) => toast.error(error.message),
   });
 
   // リストから本を削除
@@ -64,6 +65,7 @@ export function useListBookMutations() {
       // トップページのキャッシュを無効化
       queryClient.invalidateQueries({ queryKey: queryKeys.top.all });
     },
+    onError: (error) => toast.error(error.message),
   });
 
   return {
