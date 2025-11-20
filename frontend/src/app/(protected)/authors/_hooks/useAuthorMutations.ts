@@ -37,10 +37,11 @@ export function useAuthorMutations() {
   // 更新
   const updateMutation = useMutation({
     mutationFn: async (data: UpdateAuthorData) => {
-      const response = await fetch('/api/authors', {
+      const { id, ...updateData } = data;
+      const response = await fetch(`/api/authors/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
+        body: JSON.stringify(updateData),
       });
 
       if (!response.ok) {
@@ -65,7 +66,7 @@ export function useAuthorMutations() {
   // 削除
   const deleteMutation = useMutation({
     mutationFn: async (id: number) => {
-      const response = await fetch(`/api/authors?id=${id}`, {
+      const response = await fetch(`/api/authors/${id}`, {
         method: 'DELETE',
       });
 
