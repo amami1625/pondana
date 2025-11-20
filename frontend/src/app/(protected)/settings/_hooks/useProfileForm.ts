@@ -29,7 +29,6 @@ export function useProfileForm({ user, cancel }: UseProfileFormStateProps) {
   const onSubmit = (data: UserFormData) => {
     updateUser(data, {
       onSuccess: () => cancel(),
-      onError: (error) => toast.error(error.message),
     });
   };
 

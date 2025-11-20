@@ -1,4 +1,3 @@
-import toast from 'react-hot-toast';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Author, AuthorFormData, authorFormSchema } from '@/app/(protected)/authors/_types';
@@ -32,14 +31,12 @@ export const useAuthorForm = ({ author, cancel }: UseAuthorFormProps) => {
         { ...data, id: author.id },
         {
           onSuccess: () => cancel(),
-          onError: (error) => toast.error(error.message),
         },
       );
     } else {
       // 作成
       createAuthor(data, {
         onSuccess: () => cancel(),
-        onError: (error) => toast.error(error.message),
       });
     }
   };

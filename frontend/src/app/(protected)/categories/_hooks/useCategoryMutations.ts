@@ -30,15 +30,17 @@ export function useCategoryMutations() {
       // カテゴリ一覧のキャッシュを無効化
       queryClient.invalidateQueries({ queryKey: queryKeys.categories.all });
     },
+    onError: (error) => toast.error(error.message),
   });
 
   // 更新
   const updateMutation = useMutation({
     mutationFn: async (data: UpdateCategoryData) => {
-      const response = await fetch('/api/categories', {
+      const { id, ...updateData } = data;
+      const response = await fetch(`/api/categories/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
+        body: JSON.stringify(updateData),
       });
 
       if (!response.ok) {
@@ -55,13 +57,16 @@ export function useCategoryMutations() {
       // 本のキャッシュをすべて無効化（一覧・詳細の両方）
       // TODO: 現状どの本がこのカテゴリを使っているか判別できないため、パフォーマンスに問題が出てきたら修正する
       queryClient.invalidateQueries({ queryKey: queryKeys.books.all });
+      // トップページのキャッシュを無効化
+      queryClient.invalidateQueries({ queryKey: queryKeys.top.all });
     },
+    onError: (error) => toast.error(error.message),
   });
 
   // 削除
   const deleteMutation = useMutation({
     mutationFn: async (id: number) => {
-      const response = await fetch(`/api/categories?id=${id}`, {
+      const response = await fetch(`/api/categories/${id}`, {
         method: 'DELETE',
       });
 
@@ -79,7 +84,10 @@ export function useCategoryMutations() {
       // 本のキャッシュをすべて無効化（一覧・詳細の両方）
       // TODO: 現状どの本がこのカテゴリを使っているか判別できないため、パフォーマンスに問題が出てきたら修正する
       queryClient.invalidateQueries({ queryKey: queryKeys.books.all });
+      // トップページのキャッシュを無効化
+      queryClient.invalidateQueries({ queryKey: queryKeys.top.all });
     },
+    onError: (error) => toast.error(error.message),
   });
 
   return {

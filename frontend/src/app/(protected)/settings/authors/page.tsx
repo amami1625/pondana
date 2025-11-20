@@ -15,7 +15,7 @@ export default function SettingsAuthorsPage() {
   const [editingAuthor, setEditingAuthor] = useState<Author | undefined>();
   const createModal = useModal();
   const editModal = useModal();
-  const { deleteAuthor, deleteError } = useAuthorMutations();
+  const { deleteAuthor } = useAuthorMutations();
 
   const handleEdit = (author: Author) => {
     setEditingAuthor(author);
@@ -55,7 +55,6 @@ export default function SettingsAuthorsPage() {
       <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
         <div className="mb-6 flex items-center justify-between">
           <h2 className="text-xl font-semibold text-gray-900">著者情報管理</h2>
-          {deleteError && <ErrorMessage message={deleteError.message} />}
           <button
             onClick={handleCreate}
             className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"

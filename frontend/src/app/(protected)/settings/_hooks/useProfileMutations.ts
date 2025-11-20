@@ -30,6 +30,7 @@ export function useProfileMutations() {
       // トップページのキャッシュも無効化（プロフィール情報が含まれるため）
       queryClient.invalidateQueries({ queryKey: queryKeys.top.all });
     },
+    onError: (error) => toast.error(error.message),
   });
 
   return {

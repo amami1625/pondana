@@ -9,13 +9,13 @@ export function useCardDetailView(card: CardDetail) {
   const { deleteCard } = useCardMutations();
   const updateModal = useModal();
 
-  const handleDelete = () => {
+  const handleDelete = (bookId: number, cardId: number) => {
     if (!confirm('本当に削除しますか？')) {
       return;
     }
 
     deleteCard(
-      { bookId: card.book_id, cardId: card.id },
+      { bookId, cardId },
       {
         onSuccess: () => {
           router.push('/cards');

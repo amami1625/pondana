@@ -26,7 +26,10 @@ export default function CardDetailView({ card }: CardDetailViewProps) {
           <DetailHeader title={card.title} subtitle={subtitle} />
           <DetailDescription>{card.content}</DetailDescription>
           <DetailMetadata createdAt={card.created_at} updatedAt={card.updated_at} />
-          <CardActions onEdit={updateModal.open} onDelete={handleDelete} />
+          <CardActions
+            onEdit={updateModal.open}
+            onDelete={() => handleDelete(card.book_id, card.id)}
+          />
         </DetailCard>
       </DetailContainer>
 

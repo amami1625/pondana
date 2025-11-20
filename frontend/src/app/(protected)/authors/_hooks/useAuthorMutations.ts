@@ -31,15 +31,17 @@ export function useAuthorMutations() {
       // 著者一覧のキャッシュを無効化
       queryClient.invalidateQueries({ queryKey: queryKeys.authors.all });
     },
+    onError: (error) => toast.error(error.message),
   });
 
   // 更新
   const updateMutation = useMutation({
     mutationFn: async (data: UpdateAuthorData) => {
-      const response = await fetch('/api/authors', {
+      const { id, ...updateData } = data;
+      const response = await fetch(`/api/authors/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
+        body: JSON.stringify(updateData),
       });
 
       if (!response.ok) {
@@ -58,12 +60,13 @@ export function useAuthorMutations() {
       // TODO: 現状どの本がこの著者データを使っているか判別できないため、パフォーマンスに問題が出てきたら修正する
       queryClient.invalidateQueries({ queryKey: queryKeys.books.all });
     },
+    onError: (error) => toast.error(error.message),
   });
 
   // 削除
   const deleteMutation = useMutation({
     mutationFn: async (id: number) => {
-      const response = await fetch(`/api/authors?id=${id}`, {
+      const response = await fetch(`/api/authors/${id}`, {
         method: 'DELETE',
       });
 
@@ -83,6 +86,7 @@ export function useAuthorMutations() {
       // TODO: 現状どの本がこの著者データを使っているか判別できないため、パフォーマンスに問題が出てきたら修正する
       queryClient.invalidateQueries({ queryKey: queryKeys.books.all });
     },
+    onError: (error) => toast.error(error.message),
   });
 
   return {
