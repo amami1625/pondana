@@ -1,5 +1,5 @@
 import { Book } from '@/app/(protected)/books/_types';
-import { useListBookActions } from '@/app/(protected)/listBooks/_hooks/useListBookActions';
+import { useListBookMutations } from '@/app/(protected)/listBooks/_hooks/useListBookMutations';
 import Button from '@/components/buttons/Button';
 
 interface BookItemProps {
@@ -9,7 +9,7 @@ interface BookItemProps {
 }
 
 export default function BookItem({ listId, book, isAdded }: BookItemProps) {
-  const { handleAdd } = useListBookActions();
+  const { addListBook } = useListBookMutations();
 
   return (
     <div className="border-b border-gray-200 py-4 last:border-b-0">
@@ -41,7 +41,11 @@ export default function BookItem({ listId, book, isAdded }: BookItemProps) {
 
         {/* 追加ボタン */}
         <div className="flex-shrink-0">
-          <Button variant="add" onClick={() => handleAdd(listId, book.id)} disabled={isAdded}>
+          <Button
+            variant="add"
+            onClick={() => addListBook({ list_id: listId, book_id: book.id })}
+            disabled={isAdded}
+          >
             {isAdded ? '追加済み' : '追加'}
           </Button>
         </div>

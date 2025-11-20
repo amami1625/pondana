@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { Trash2, Star } from 'lucide-react';
 import { AddedBook } from '@/app/(protected)/lists/_types';
 import { getCategoryColor } from '@/lib/utils';
-import { useListBookActions } from '@/app/(protected)/listBooks/_hooks/useListBookActions';
+import { useListBookMutations } from '@/app/(protected)/listBooks/_hooks/useListBookMutations';
 
 interface AddedBookProps {
   book: AddedBook;
@@ -12,7 +12,7 @@ interface AddedBookProps {
 }
 
 export default function AddedBookItem({ book, listBookId }: AddedBookProps) {
-  const { handleRemove } = useListBookActions();
+  const { removeListBook } = useListBookMutations();
   const coverColorClass = getCategoryColor(book.category?.name);
 
   return (
@@ -41,7 +41,7 @@ export default function AddedBookItem({ book, listBookId }: AddedBookProps) {
             )}
           </div>
           <button
-            onClick={() => handleRemove(listBookId)}
+            onClick={() => removeListBook({ id: listBookId })}
             className="ml-2 flex-shrink-0 rounded-full p-2 text-slate-500 cursor-pointer hover:bg-slate-100 hover:text-red-500"
             title="リストから削除"
           >
