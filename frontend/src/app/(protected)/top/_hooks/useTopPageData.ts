@@ -1,20 +1,10 @@
 import { useQuery } from '@tanstack/react-query';
 import { queryKeys } from '@/constants/queryKeys';
-import { topPageSchema } from '@/schemas/top';
+import { fetchTopPageData } from '@/app/(protected)/top/_lib/fetchTopPageData';
 
 export function useTopPageData() {
   return useQuery({
     queryKey: queryKeys.top.all,
-    queryFn: async () => {
-      const response = await fetch('/api/top');
-
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.error || 'トップページデータの取得に失敗しました');
-      }
-
-      const data = await response.json();
-      return topPageSchema.parse(data);
-    },
+    queryFn: fetchTopPageData,
   });
 }
