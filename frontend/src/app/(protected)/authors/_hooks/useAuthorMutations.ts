@@ -59,6 +59,8 @@ export function useAuthorMutations() {
       // 本のキャッシュをすべて無効化（一覧・詳細の両方）
       // TODO: 現状どの本がこの著者データを使っているか判別できないため、パフォーマンスに問題が出てきたら修正する
       queryClient.invalidateQueries({ queryKey: queryKeys.books.all });
+      // トップページのキャッシュを無効化
+      queryClient.invalidateQueries({ queryKey: queryKeys.top.all });
     },
     onError: (error) => toast.error(error.message),
   });
