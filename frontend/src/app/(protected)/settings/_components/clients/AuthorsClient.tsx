@@ -1,7 +1,7 @@
 'use client';
 
 import { useAuthors } from '@/app/(protected)/authors/_hooks/useAuthors';
-import AuthorindexView from '@/app/(protected)/settings/_components/display/view/AuthorIndexView';
+import AuthorIndexView from '@/app/(protected)/settings/_components/display/view/AuthorIndexView';
 import ErrorMessage from '@/components/ErrorMessage';
 import LoadingState from '@/components/LoadingState';
 
@@ -23,5 +23,5 @@ export default function AuthorsClient() {
     return <ErrorMessage message="著者情報の取得に失敗しました" />;
   }
 
-  return <AuthorindexView authors={authors} />;
+  return <AuthorIndexView authors={authors} />;
 }

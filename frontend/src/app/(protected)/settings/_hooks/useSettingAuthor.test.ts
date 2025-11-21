@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { renderHook, act } from '@testing-library/react';
 import { mockUseModal } from '@/test/mocks';
 import { createMockAuthor } from '@/test/factories';
-import { mockUseAuthorMutations } from '@/test/mocks/mockAuthorHooks';
+import { mockUseAuthorMutations } from '@/test/mocks';
 import { useSettingAuthor } from './useSettingAuthor';
 
 // モックの設定

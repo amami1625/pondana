@@ -1,9 +1,9 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { renderHook, act } from '@testing-library/react';
 import { mockUseModal } from '@/test/mocks';
-import { mockUseCategoryMutations } from '@/test/mocks/mockCategoryHooks';
-import { useSettingCategory } from './useSettingCategory';
+import { mockUseCategoryMutations } from '@/test/mocks';
 import { createMockCategory } from '@/test/factories';
+import { useSettingCategory } from './useSettingCategory';
 
 // モックの設定
 vi.mock('@/hooks/useModal');
