@@ -1,27 +1,21 @@
-'use client';
+import { HydrationBoundary, dehydrate } from '@tanstack/react-query';
+import { createServerQueryClient } from '@/lib/queryClient';
+import { queryKeys } from '@/constants/queryKeys';
+import { fetchCards } from '@/app/(protected)/cards/_lib/fetchCards';
+import CardsClient from '@/app/(protected)/cards/_components/clients/CardsClient';
 
-import { useCards } from '@/app/(protected)/cards/_hooks/useCards';
-import CardListView from '@/app/(protected)/cards/_components/display/view/CardListView';
-import ErrorMessage from '@/components/ErrorMessage';
-import LoadingState from '@/components/LoadingState';
+export default async function CardsPage() {
+  const queryClient = createServerQueryClient();
 
-export default function CardsPage() {
-  const { data: cardList, error, isLoading } = useCards();
+  // サーバー側でデータをprefetch
+  await queryClient.prefetchQuery({
+    queryKey: queryKeys.cards.all,
+    queryFn: fetchCards,
+  });
 
-  // ローディング状態
-  if (isLoading) {
-    return <LoadingState message="カード一覧を読み込んでいます..." />;
-  }
-
-  // エラー状態
-  if (error) {
-    return <ErrorMessage message={error?.message || 'エラーが発生しました'} />;
-  }
-
-  // データが取得できていない場合
-  if (!cardList) {
-    return <ErrorMessage message="データの取得に失敗しました" />;
-  }
-
-  return <CardListView cardList={cardList} />;
+  return (
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <CardsClient />
+    </HydrationBoundary>
+  );
 }
