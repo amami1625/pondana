@@ -1,0 +1,28 @@
+'use client';
+
+import { useBook } from '@/app/(protected)/books/_hooks/useBook';
+import BookDetailView from '@/app/(protected)/books/_components/display/view/BookDetailView';
+import ErrorMessage from '@/components/ErrorMessage';
+import LoadingState from '@/components/LoadingState';
+
+type Props = {
+  id: number;
+};
+
+export default function BookDetailClient({ id }: Props) {
+  const { data: book, error: bookError, isLoading } = useBook(id);
+
+  if (isLoading) {
+    return <LoadingState message="本情報を読み込んでいます..." />;
+  }
+
+  if (bookError) {
+    return <ErrorMessage message={bookError?.message || 'エラーが発生しました'} />;
+  }
+
+  if (!book) {
+    return <ErrorMessage message="データの取得に失敗しました" />;
+  }
+
+  return <BookDetailView book={book} />;
+}

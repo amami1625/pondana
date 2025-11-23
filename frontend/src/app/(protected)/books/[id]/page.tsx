@@ -1,29 +1,27 @@
-'use client';
+import { HydrationBoundary, dehydrate } from '@tanstack/react-query';
+import { createServerQueryClient } from '@/lib/queryClient';
+import { queryKeys } from '@/constants/queryKeys';
+import { fetchBook } from '@/app/(protected)/books/_lib/fetchBook';
+import BookDetailClient from '@/app/(protected)/books/_components/clients/BookDetailClient';
 
-import BookDetailView from '@/app/(protected)/books/_components/display/view/BookDetailView';
-import { useParams } from 'next/navigation';
-import { useBook } from '@/app/(protected)/books/_hooks/useBook';
-import LoadingState from '@/components/LoadingState';
-import ErrorMessage from '@/components/ErrorMessage';
+type Props = {
+  params: Promise<{ id: string }>;
+};
 
-export default function BookPage() {
-  const { id } = useParams();
-  const { data: book, error: bookError, isLoading: bookLoading } = useBook(Number(id));
+export default async function BookPage({ params }: Props) {
+  const { id } = await params;
+  const bookId = Number(id);
 
-  // ローディング状態
-  if (bookLoading) {
-    return <LoadingState message="本情報を読み込んでいます..." />;
-  }
+  const queryClient = createServerQueryClient();
 
-  // エラー状態
-  if (bookError) {
-    return <ErrorMessage message={bookError?.message || 'エラーが発生しました'} />;
-  }
+  await queryClient.prefetchQuery({
+    queryKey: queryKeys.books.detail(bookId),
+    queryFn: () => fetchBook(bookId),
+  });
 
-  // データが取得できていない場合
-  if (!book) {
-    return <ErrorMessage message="データの取得に失敗しました" />;
-  }
-
-  return <BookDetailView book={book} />;
+  return (
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <BookDetailClient id={bookId} />
+    </HydrationBoundary>
+  );
 }
