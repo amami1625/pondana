@@ -1,29 +1,27 @@
-'use client';
+import { HydrationBoundary, dehydrate } from '@tanstack/react-query';
+import { createServerQueryClient } from '@/lib/queryClient';
+import { queryKeys } from '@/constants/queryKeys';
+import { fetchCard } from '@/app/(protected)/cards/_lib/fetchCard';
+import CardDetailClient from '@/app/(protected)/cards/_components/clients/CardDetailClient';
 
-import { useParams } from 'next/navigation';
-import { useCard } from '@/app/(protected)/cards/_hooks/useCard';
-import CardDetailView from '@/app/(protected)/cards/_components/display/view/CardDetailView';
-import LoadingState from '@/components/LoadingState';
-import ErrorMessage from '@/components/ErrorMessage';
+type Props = {
+  params: Promise<{ id: string }>;
+};
 
-export default function CardPage() {
-  const { id } = useParams();
-  const { data: card, error: cardError, isLoading: cardLoading } = useCard(Number(id));
+export default async function CardPage({ params }: Props) {
+  const { id } = await params;
+  const cardId = Number(id);
 
-  // ローディング状態
-  if (cardLoading) {
-    return <LoadingState message="カード情報を読み込んでいます..." />;
-  }
+  const queryClient = createServerQueryClient();
 
-  // エラー状態
-  if (cardError) {
-    return <ErrorMessage message={cardError?.message || 'エラーが発生しました'} />;
-  }
+  await queryClient.prefetchQuery({
+    queryKey: queryKeys.cards.detail(cardId),
+    queryFn: () => fetchCard(cardId),
+  });
 
-  // データが取得できていない場合
-  if (!card) {
-    return <ErrorMessage message="データの取得に失敗しました" />;
-  }
-
-  return <CardDetailView card={card} />;
+  return (
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <CardDetailClient id={cardId} />
+    </HydrationBoundary>
+  );
 }
