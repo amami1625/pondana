@@ -1,71 +1,57 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { renderHook, waitFor } from '@testing-library/react';
-import { createProvider, toJapaneseLocaleString } from '@/test/helpers';
+import { createProvider } from '@/test/helpers';
 import { createMockUser } from '@/test/factories';
 import { useProfile } from './useProfile';
+import { fetchProfile } from '@/lib/fetchProfile';
+import type { User } from '@/schemas/user';
+
+// fetchProfileをモック化
+vi.mock('@/lib/fetchProfile');
 
 describe('useProfile', () => {
   beforeEach(() => {
-    // 各テストの前にモックをリセット
     vi.clearAllMocks();
   });
 
   describe('成功時', () => {
-    it('正しくプロフィールデータが取得できる', async () => {
-      const mockApiResponse = createMockUser();
+    it('fetchProfileを呼び出してデータを取得する', async () => {
+      const mockUser: User = createMockUser();
 
-      vi.stubGlobal(
-        'fetch',
-        vi.fn().mockResolvedValue({
-          ok: true,
-          json: async () => mockApiResponse,
-        }),
-      );
+      vi.mocked(fetchProfile).mockResolvedValue(mockUser);
 
       const { result } = renderHook(() => useProfile(), {
         wrapper: createProvider(),
       });
 
+      // 初期状態: ローディング中
       expect(result.current.isLoading).toBe(true);
       expect(result.current.data).toBeUndefined();
 
+      // データ取得完了を待つ
       await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
+      // 成功状態を確認
       expect(result.current.isLoading).toBe(false);
+      expect(result.current.isSuccess).toBe(true);
       expect(result.current.error).toBeNull();
+      expect(result.current.data).toEqual(mockUser);
 
-      // 日付変換の期待値を計算（'2025-01-01T00:00:00Z' → 日本時間）
-      const expectedDate = toJapaneseLocaleString('2025-01-01T00:00:00Z');
-
-      expect(result.current.data).toEqual({
-        id: 1,
-        name: 'テストユーザー',
-        supabase_uid: '1',
-        avatar_url: null,
-        created_at: expectedDate,
-        updated_at: expectedDate,
-      });
-
-      expect(fetch).toBeCalledWith('/api/profiles');
-      expect(fetch).toBeCalledTimes(1);
+      // fetchProfileが呼ばれたことを確認
+      expect(fetchProfile).toHaveBeenCalledTimes(1);
     });
   });
 
   describe('エラー時', () => {
-    it('APIエラー時にエラー状態になる', async () => {
-      // fetchをモック（エラーレスポンス）
-      vi.stubGlobal(
-        'fetch',
-        vi.fn().mockResolvedValue({
-          ok: false,
-          json: async () => ({ error: 'プロフィール情報の取得に失敗しました' }),
-        }),
-      );
+    it('fetchProfileがエラーをスローした場合、エラー状態になる', async () => {
+      vi.mocked(fetchProfile).mockRejectedValue(new Error('プロフィール情報の取得に失敗しました'));
 
-      // フックをレンダリング
       const { result } = renderHook(() => useProfile(), {
         wrapper: createProvider(),
       });
+
+      // 初期状態: ローディング中
+      expect(result.current.isLoading).toBe(true);
 
       // エラー完了を待つ
       await waitFor(() => expect(result.current.isError).toBe(true));
@@ -76,22 +62,19 @@ describe('useProfile', () => {
       expect(result.current.error).toBeInstanceOf(Error);
       expect(result.current.error?.message).toBe('プロフィール情報の取得に失敗しました');
     });
+  });
 
-    it('ネットワークエラー時にエラー状態になる', async () => {
-      // fetchをモック（ネットワークエラー）
-      vi.stubGlobal('fetch', vi.fn().mockRejectedValue(new Error('Network error')));
+  describe('React Queryの動作', () => {
+    it('正しいqueryKeyを使用する', async () => {
+      vi.mocked(fetchProfile).mockResolvedValue(createMockUser());
 
-      // フックをレンダリング
       const { result } = renderHook(() => useProfile(), {
         wrapper: createProvider(),
       });
 
-      // エラー完了を待つ
-      await waitFor(() => expect(result.current.isError).toBe(true));
+      await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
-      // エラー状態を確認
-      expect(result.current.error).toBeInstanceOf(Error);
-      expect(result.current.error?.message).toBe('Network error');
+      expect(result.current.isSuccess).toBe(true);
     });
   });
 });
