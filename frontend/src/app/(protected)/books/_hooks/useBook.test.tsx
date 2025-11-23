@@ -1,19 +1,22 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { renderHook, waitFor } from '@testing-library/react';
-import { createProvider, toJapaneseLocaleString } from '@/test/helpers';
-import { createMockAuthor, createMockBook, createMockCard, createMockList } from '@/test/factories';
+import { createProvider } from '@/test/helpers';
+import { createMockBook, createMockAuthor, createMockCard, createMockList } from '@/test/factories';
 import { useBook } from './useBook';
+import { fetchBook } from '@/app/(protected)/books/_lib/fetchBook';
+import type { BookDetail } from '@/app/(protected)/books/_types';
+
+// fetchBookをモック化
+vi.mock('@/app/(protected)/books/_lib/fetchBook');
 
 describe('useBook', () => {
   beforeEach(() => {
-    // 各テストの前にモックをリセット
     vi.clearAllMocks();
   });
 
   describe('成功時', () => {
-    it('本データを正しく取得できる', async () => {
-      // APIから返ってくる想定のデータ
-      const mockApiResponse = createMockBook({
+    it('fetchBookを呼び出してデータを取得する', async () => {
+      const mockBook: BookDetail = createMockBook({
         id: 1,
         title: 'テスト本',
         authors: [createMockAuthor()],
@@ -21,21 +24,13 @@ describe('useBook', () => {
         cards: [createMockCard()],
       });
 
-      // fetchをモック
-      vi.stubGlobal(
-        'fetch',
-        vi.fn().mockResolvedValue({
-          ok: true,
-          json: async () => mockApiResponse,
-        }),
-      );
+      vi.mocked(fetchBook).mockResolvedValue(mockBook);
 
-      // フックをレンダリング
       const { result } = renderHook(() => useBook(1), {
         wrapper: createProvider(),
       });
 
-      // 初期状態：ローディング中
+      // 初期状態: ローディング中
       expect(result.current.isLoading).toBe(true);
       expect(result.current.data).toBeUndefined();
 
@@ -44,58 +39,16 @@ describe('useBook', () => {
 
       // 成功状態を確認
       expect(result.current.isLoading).toBe(false);
+      expect(result.current.isSuccess).toBe(true);
       expect(result.current.error).toBeNull();
+      expect(result.current.data).toEqual(mockBook);
 
-      // 日付変換の期待値を計算（'2025-01-01T00:00:00Z' → 日本時間）
-      const expectedDate = toJapaneseLocaleString('2025-01-01T00:00:00Z');
-
-      expect(result.current.data).toEqual({
-        id: 1,
-        title: 'テスト本',
-        description: 'テスト説明',
-        user_id: 1,
-        category_id: 1,
-        rating: 5,
-        reading_status: 'completed',
-        public: true,
-        created_at: expectedDate,
-        updated_at: expectedDate,
-        authors: [
-          {
-            id: 1,
-            name: 'テスト著者',
-            user_id: 1,
-            created_at: expectedDate,
-            updated_at: expectedDate,
-          },
-        ],
-        lists: [
-          {
-            id: 1,
-            name: 'テストリスト',
-            public: true,
-          },
-        ],
-        list_books: [],
-        cards: [
-          {
-            id: 1,
-            title: 'テストカード',
-            content: 'テスト本文',
-            book_id: 1,
-            created_at: expectedDate,
-            updated_at: expectedDate,
-          },
-        ],
-      });
-
-      // fetchが正しく呼ばれたことを確認
-      expect(fetch).toHaveBeenCalledWith('/api/books/1');
-      expect(fetch).toHaveBeenCalledTimes(1);
+      // fetchBookが正しい引数で呼ばれたことを確認
+      expect(fetchBook).toHaveBeenCalledWith(1);
+      expect(fetchBook).toHaveBeenCalledTimes(1);
     });
 
     it('idが0の時、クエリを実行しない', () => {
-      // フックをレンダリング
       const { result } = renderHook(() => useBook(0), {
         wrapper: createProvider(),
       });
@@ -105,30 +58,21 @@ describe('useBook', () => {
       expect(result.current.fetchStatus).toBe('idle');
       expect(result.current.data).toBeUndefined();
 
-      // fetchが呼ばれていないことを確認
-      expect(fetch).not.toHaveBeenCalled();
+      // fetchBookが呼ばれていないことを確認
+      expect(fetchBook).not.toHaveBeenCalled();
     });
   });
 
   describe('エラー時', () => {
-    it('APIエラー時にエラー状態になる', async () => {
-      // fetchをモック
-      vi.stubGlobal(
-        'fetch',
-        vi.fn().mockResolvedValue({
-          ok: false,
-          json: async () => ({ error: '書籍詳細の取得に失敗しました' }),
-        }),
-      );
+    it('fetchBookがエラーをスローした場合、エラー状態になる', async () => {
+      vi.mocked(fetchBook).mockRejectedValue(new Error('書籍詳細の取得に失敗しました'));
 
-      // フックをレンダリング
       const { result } = renderHook(() => useBook(1), {
         wrapper: createProvider(),
       });
 
-      // 初期状態：ローディング中
+      // 初期状態: ローディング中
       expect(result.current.isLoading).toBe(true);
-      expect(result.current.data).toBeUndefined();
 
       // エラー完了を待つ
       await waitFor(() => expect(result.current.isError).toBe(true));
@@ -139,26 +83,20 @@ describe('useBook', () => {
       expect(result.current.error).toBeInstanceOf(Error);
       expect(result.current.error?.message).toBe('書籍詳細の取得に失敗しました');
     });
+  });
 
-    it('ネットワークエラー時にエラー状態になる', async () => {
-      // fetchをモック
-      vi.stubGlobal('fetch', vi.fn().mockRejectedValue(new Error('Network error')));
+  describe('React Queryの動作', () => {
+    it('正しいqueryKeyを使用する', async () => {
+      vi.mocked(fetchBook).mockResolvedValue(createMockBook());
 
-      // フックをレンダリング
-      const { result } = renderHook(() => useBook(1), {
+      const { result } = renderHook(() => useBook(42), {
         wrapper: createProvider(),
       });
 
-      // 初期状態：ローディング中
-      expect(result.current.isLoading).toBe(true);
-      expect(result.current.data).toBeUndefined();
+      await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
-      // エラー完了を待つ
-      await waitFor(() => expect(result.current.isError).toBe(true));
-
-      // エラー状態を確認
-      expect(result.current.error).toBeInstanceOf(Error);
-      expect(result.current.error?.message).toBe('Network error');
+      // fetchBookが正しいidで呼ばれたことを確認
+      expect(fetchBook).toHaveBeenCalledWith(42);
     });
   });
 });

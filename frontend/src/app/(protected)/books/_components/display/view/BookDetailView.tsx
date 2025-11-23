@@ -20,24 +20,15 @@ interface BookDetailProps {
 }
 
 export default function BookDetailView({ book }: BookDetailProps) {
-  const {
-    breadcrumbItems,
-    subtitle,
-    badges,
-    handleDelete,
-    updateModal,
-    addListModal,
-    cardModal,
-  } = useBookDetailView(book);
+  const { breadcrumbItems, subtitle, badges, handleDelete, updateModal, addListModal, cardModal } =
+    useBookDetailView(book);
 
   return (
     <>
       <DetailContainer breadcrumbItems={breadcrumbItems}>
         <DetailCard>
           <DetailHeader title={book.title} subtitle={subtitle} badges={badges} />
-          <DetailDescription>
-            {book.description || '説明が登録されていません。'}
-          </DetailDescription>
+          <DetailDescription>{book.description || '説明が登録されていません。'}</DetailDescription>
           <DetailMetadata createdAt={book.created_at} updatedAt={book.updated_at} />
           <BookActions
             onEdit={updateModal.open}

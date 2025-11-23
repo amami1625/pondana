@@ -1,29 +1,21 @@
-'use client';
+import { HydrationBoundary, dehydrate } from '@tanstack/react-query';
+import { createServerQueryClient } from '@/lib/queryClient';
+import { queryKeys } from '@/constants/queryKeys';
+import { fetchTopPageData } from '@/app/(protected)/top/_lib/fetchTopPageData';
+import TopClient from '@/app/(protected)/top/_components/clients/TopClient';
 
-import { useTopPageData } from '@/app/(protected)/top/_hooks/useTopPageData';
-import TopView from '@/app/(protected)/top/_components/view/TopView';
-import LoadingState from '@/components/LoadingState';
-import ErrorMessage from '@/components/ErrorMessage';
+export default async function TopPage() {
+  const queryClient = createServerQueryClient();
 
-export default function TopPage() {
-  const { data, error, isLoading } = useTopPageData();
+  // サーバー側でデータをprefetch
+  await queryClient.prefetchQuery({
+    queryKey: queryKeys.top.all,
+    queryFn: fetchTopPageData,
+  });
 
-  // ローディング状態
-  if (isLoading) {
-    return <LoadingState message="データを読み込んでいます..." />;
-  }
-
-  // エラー状態
-  if (error) {
-    return <ErrorMessage message={error?.message || 'エラーが発生しました'} />;
-  }
-
-  // データが取得できていない場合
-  if (!data) {
-    return <ErrorMessage message="データの取得に失敗しました" />;
-  }
-
-  const { recent_books, recent_lists, recent_cards } = data;
-
-  return <TopView books={recent_books} lists={recent_lists} cards={recent_cards} />;
+  return (
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <TopClient />
+    </HydrationBoundary>
+  );
 }

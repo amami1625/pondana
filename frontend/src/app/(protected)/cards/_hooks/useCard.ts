@@ -1,21 +1,11 @@
 import { useQuery } from '@tanstack/react-query';
 import { queryKeys } from '@/constants/queryKeys';
-import { cardDetailSchema } from '@/app/(protected)/cards/_types';
+import { fetchCard } from '@/app/(protected)/cards/_lib/fetchCard';
 
 export function useCard(id: number) {
   return useQuery({
     queryKey: queryKeys.cards.detail(id),
-    queryFn: async () => {
-      const response = await fetch(`/api/cards/${id}`);
-
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.error || 'カード詳細の取得に失敗しました');
-      }
-
-      const data = await response.json();
-      return cardDetailSchema.parse(data);
-    },
-    enabled: !!id, // id がある時だけクエリを実行
+    queryFn: () => fetchCard(id),
+    enabled: !!id,
   });
 }

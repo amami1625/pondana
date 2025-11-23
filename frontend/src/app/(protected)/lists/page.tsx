@@ -1,27 +1,21 @@
-'use client';
+import { HydrationBoundary, dehydrate } from '@tanstack/react-query';
+import { createServerQueryClient } from '@/lib/queryClient';
+import { queryKeys } from '@/constants/queryKeys';
+import { fetchLists } from '@/app/(protected)/lists/_lib/fetchLists';
+import ListsClient from '@/app/(protected)/lists/_components/clients/ListsClient';
 
-import { useLists } from '@/app/(protected)/lists/_hooks/useLists';
-import ErrorMessage from '@/components/ErrorMessage';
-import LoadingState from '@/components/LoadingState';
-import ListIndexView from '@/app/(protected)/lists/_components/display/view/ListIndexView';
+export default async function ListPage() {
+  const queryClient = createServerQueryClient();
 
-export default function ListPage() {
-  const { data: lists, error, isLoading } = useLists();
+  // サーバー側でデータをprefetch
+  await queryClient.prefetchQuery({
+    queryKey: queryKeys.lists.all,
+    queryFn: fetchLists,
+  });
 
-  // ローディング状態
-  if (isLoading) {
-    return <LoadingState message="リスト一覧を読み込んでいます..." />;
-  }
-
-  // エラー状態
-  if (error) {
-    return <ErrorMessage message={error.message} />;
-  }
-
-  // データが取得できていない場合
-  if (!lists) {
-    return <ErrorMessage message="データの取得に失敗しました" />;
-  }
-
-  return <ListIndexView lists={lists} />;
+  return (
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <ListsClient />
+    </HydrationBoundary>
+  );
 }
