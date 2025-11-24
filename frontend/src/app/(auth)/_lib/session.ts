@@ -3,6 +3,7 @@
 import { revalidatePath } from 'next/cache';
 import { LoginFormData } from '@/schemas/auth';
 import { createServerSupabaseClient } from '@/supabase/clients/server';
+import { translateAuthError } from '@/lib/utils/translateAuthError';
 
 export async function loginAction(formData: LoginFormData) {
   const supabase = await createServerSupabaseClient();
@@ -10,7 +11,7 @@ export async function loginAction(formData: LoginFormData) {
   const { error } = await supabase.auth.signInWithPassword(formData);
 
   if (error) {
-    return { error: error.message };
+    return { error: translateAuthError(error.message) };
   }
 
   revalidatePath('/', 'layout');
@@ -23,7 +24,7 @@ export async function logoutAction() {
   const { error } = await supabase.auth.signOut();
 
   if (error) {
-    return { error: error.message };
+    return { error: translateAuthError(error.message) };
   }
 
   revalidatePath('/', 'layout');
@@ -44,7 +45,7 @@ export async function signUpAction(name: string, email: string, password: string
   });
 
   if (error) {
-    return { error: '登録に失敗しました。入力内容を確認してください。' };
+    return { error: translateAuthError(error.message) };
   }
 
   revalidatePath('/', 'layout');

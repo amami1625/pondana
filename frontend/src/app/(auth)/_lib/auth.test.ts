@@ -5,9 +5,14 @@ import {
   updatePassword,
 } from './auth';
 import { createServerSupabaseClient } from '@/supabase/clients/server';
+import { translateAuthError } from '@/lib/utils/translateAuthError';
 
 vi.mock('@/supabase/clients/server', () => ({
   createServerSupabaseClient: vi.fn(),
+}));
+
+vi.mock('@/lib/utils/translateAuthError', () => ({
+  translateAuthError: vi.fn(),
 }));
 
 describe('verifyAndSendPasswordResetEmail', () => {
@@ -95,6 +100,8 @@ describe('verifyAndSendPasswordResetEmail', () => {
     });
 
     it('リセットメール送信でエラーが発生した場合、エラーメッセージを返す', async () => {
+      const translatedError = 'リクエストが多すぎます。しばらく待ってから再度お試しください';
+
       const mockSupabase = {
         auth: {
           getUser: vi.fn().mockResolvedValue({
@@ -108,10 +115,11 @@ describe('verifyAndSendPasswordResetEmail', () => {
         },
       };
       vi.mocked(createServerSupabaseClient).mockResolvedValue(mockSupabase as never);
+      vi.mocked(translateAuthError).mockReturnValue(translatedError);
 
       const result = await verifyAndSendPasswordResetEmail('correctPassword');
 
-      expect(result).toEqual({ error: 'Rate limit exceeded' });
+      expect(result).toEqual({ error: translatedError });
     });
   });
 });
@@ -178,6 +186,8 @@ describe('sendEmailChangeConfirmation', () => {
     });
 
     it('メールアドレス更新でエラーが発生した場合、エラーメッセージを返す', async () => {
+      const translatedError = 'このメールアドレスは既に使用されています';
+
       const mockSupabase = {
         auth: {
           getUser: vi.fn().mockResolvedValue({
@@ -189,11 +199,13 @@ describe('sendEmailChangeConfirmation', () => {
           }),
         },
       };
+
       vi.mocked(createServerSupabaseClient).mockResolvedValue(mockSupabase as never);
+      vi.mocked(translateAuthError).mockReturnValue(translatedError);
 
       const result = await sendEmailChangeConfirmation('existing@example.com');
 
-      expect(result).toEqual({ error: 'Email already in use' });
+      expect(result).toEqual({ error: translatedError });
     });
   });
 });
@@ -219,6 +231,8 @@ describe('updatePassword', () => {
 
   describe('異常系', () => {
     it('パスワード更新でエラーが発生した場合、エラーメッセージを返す', async () => {
+      const translatedError = 'パスワードが弱すぎます';
+
       const mockSupabase = {
         auth: {
           updateUser: vi.fn().mockResolvedValue({
@@ -226,11 +240,13 @@ describe('updatePassword', () => {
           }),
         },
       };
+
       vi.mocked(createServerSupabaseClient).mockResolvedValue(mockSupabase as never);
+      vi.mocked(translateAuthError).mockReturnValue(translatedError);
 
       const result = await updatePassword('weak');
 
-      expect(result).toEqual({ error: 'Password too weak' });
+      expect(result).toEqual({ error: translatedError });
     });
   });
 });
