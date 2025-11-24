@@ -33,6 +33,16 @@ export const currentPasswordSchema = z.object({
     .regex(/^\S+$/, { message: 'パスワードに空白文字は使用できません' }),
 });
 
+export const passwordChangeSchema = z
+  .object({
+    password: passwordValidation,
+    confirmPassword: z.string().min(1, { message: '確認用パスワードを入力してください' }),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: 'パスワードが一致しません',
+    path: ['confirmPassword'],
+  });
+
 export const emailChangeSchema = z.object({
   email: z.email({ message: '有効なメールアドレスを入力してください' }),
 });
@@ -41,3 +51,4 @@ export type LoginFormData = z.infer<typeof loginSchema>;
 export type RegisterFormData = z.infer<typeof registerSchema>;
 export type CurrentPasswordFormData = z.infer<typeof currentPasswordSchema>;
 export type EmailChangeFormData = z.infer<typeof emailChangeSchema>;
+export type PasswordChangeFormData = z.infer<typeof passwordChangeSchema>;
