@@ -29,6 +29,7 @@ export default function CardDetailView({ card }: CardDetailViewProps) {
           <CardActions
             onEdit={updateModal.open}
             onDelete={() => handleDelete(card.book_id, card.id)}
+            id={card.book_id}
           />
         </DetailCard>
       </DetailContainer>
