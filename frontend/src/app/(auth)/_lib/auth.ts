@@ -1,6 +1,7 @@
 'use server';
 
 import { createServerSupabaseClient } from '@/supabase/clients/server';
+import { translateAuthError } from '@/lib/utils/translateAuthError';
 
 /**
  * パスワードを検証してからパスワード変更用のメールを送信する
@@ -36,7 +37,7 @@ export async function verifyAndSendPasswordResetEmail(currentPassword: string) {
   });
 
   if (error) {
-    return { error: error.message };
+    return { error: translateAuthError(error.message) };
   }
 
   return { success: true };
@@ -67,7 +68,7 @@ export async function sendEmailChangeConfirmation(newEmail: string) {
   );
 
   if (error) {
-    return { error: error.message };
+    return { error: translateAuthError(error.message) };
   }
 
   return { success: true };
@@ -85,7 +86,7 @@ export async function updatePassword(newPassword: string) {
   });
 
   if (error) {
-    return { error: error.message };
+    return { error: translateAuthError(error.message) };
   }
 
   return { success: true };

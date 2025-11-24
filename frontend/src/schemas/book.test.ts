@@ -206,7 +206,7 @@ describe('bookFormSchema', () => {
       const invalidData = {
         title: 'テスト本',
         author_ids: [1],
-        reading_status: 'invalid' as any,
+        reading_status: 'invalid' as const,
         public: false,
       };
 
