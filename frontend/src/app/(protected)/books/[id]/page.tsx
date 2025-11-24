@@ -1,8 +1,9 @@
 import { HydrationBoundary, dehydrate } from '@tanstack/react-query';
 import { createServerQueryClient } from '@/lib/queryClient';
 import { queryKeys } from '@/constants/queryKeys';
-import { fetchBook } from '@/app/(protected)/books/_lib/fetchBook';
 import BookDetailClient from '@/app/(protected)/books/_components/clients/BookDetailClient';
+import { authenticatedRequest } from '@/supabase/dal';
+import { bookDetailSchema } from '@/app/(protected)/books/_types/';
 
 type Props = {
   params: Promise<{ id: string }>;
@@ -16,7 +17,10 @@ export default async function BookPage({ params }: Props) {
 
   await queryClient.prefetchQuery({
     queryKey: queryKeys.books.detail(bookId),
-    queryFn: () => fetchBook(bookId),
+    queryFn: async () => {
+      const data = await authenticatedRequest(`/books/${bookId}`);
+      return bookDetailSchema.parse(data);
+    },
   });
 
   return (
