@@ -18,7 +18,7 @@ export default async function ListPage({ params }: Props) {
   await queryClient.prefetchQuery({
     queryKey: queryKeys.lists.detail(listId),
     queryFn: async () => {
-      const data = await authenticatedRequest(`/api/lists/${listId}`);
+      const data = await authenticatedRequest(`/lists/${listId}`);
       return listDetailSchema.parse(data);
     },
   });

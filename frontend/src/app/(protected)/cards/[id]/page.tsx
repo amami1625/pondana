@@ -18,7 +18,7 @@ export default async function CardPage({ params }: Props) {
   await queryClient.prefetchQuery({
     queryKey: queryKeys.cards.detail(cardId),
     queryFn: async () => {
-      const data = authenticatedRequest(`/cards/${cardId}`);
+      const data = await authenticatedRequest(`/cards/${cardId}`);
       return cardDetailSchema.parse(data);
     },
   });
