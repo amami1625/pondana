@@ -1,9 +1,9 @@
 import { HydrationBoundary, dehydrate } from '@tanstack/react-query';
 import { createServerQueryClient } from '@/lib/queryClient';
 import { queryKeys } from '@/constants/queryKeys';
-import { fetchProfile } from '@/lib/fetchProfile';
-import { verifySession } from '@/supabase/dal';
+import { authenticatedRequest, verifySession } from '@/supabase/dal';
 import SettingsClient from '@/app/(protected)/settings/_components/clients/SettingsClient';
+import { userSchema } from '@/schemas/user';
 
 export default async function SettingsPage() {
   const { user: authInfo } = await verifySession();
@@ -12,7 +12,10 @@ export default async function SettingsPage() {
 
   await queryClient.prefetchQuery({
     queryKey: queryKeys.profile.all,
-    queryFn: fetchProfile,
+    queryFn: async () => {
+      const data = await authenticatedRequest('/profiles');
+      return userSchema.parse(data);
+    },
   });
 
   return (
