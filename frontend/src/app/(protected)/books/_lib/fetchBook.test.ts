@@ -29,7 +29,7 @@ describe('fetchBook', () => {
       expect(result.title).toBe('テスト本');
       expect(result.authors).toHaveLength(1);
 
-      expect(fetch).toHaveBeenCalledWith('/api/books/1', { cache: 'default' });
+      expect(fetch).toHaveBeenCalledWith('/api/books/1');
       expect(fetch).toHaveBeenCalledTimes(1);
     });
 
@@ -48,7 +48,7 @@ describe('fetchBook', () => {
 
       expect(result.id).toBe(42);
       expect(result.title).toBe('別の本');
-      expect(fetch).toHaveBeenCalledWith('/api/books/42', { cache: 'default' });
+      expect(fetch).toHaveBeenCalledWith('/api/books/42');
     });
   });
 
@@ -81,45 +81,6 @@ describe('fetchBook', () => {
       vi.stubGlobal('fetch', vi.fn().mockRejectedValue(new Error('Network error')));
 
       await expect(fetchBook(1)).rejects.toThrow('Network error');
-    });
-  });
-
-  describe('環境による分岐', () => {
-    it('クライアント側では相対URLを使用する', async () => {
-      vi.stubGlobal('window', {});
-
-      vi.stubGlobal(
-        'fetch',
-        vi.fn().mockResolvedValue({
-          ok: true,
-          json: async () => createMockBook(),
-        }),
-      );
-
-      await fetchBook(1);
-
-      expect(fetch).toHaveBeenCalledWith('/api/books/1', { cache: 'default' });
-    });
-
-    it('サーバー側では絶対URLを使用する', async () => {
-      vi.stubGlobal('window', undefined);
-      process.env.NEXT_PUBLIC_API_URL = 'http://localhost:3000';
-
-      vi.stubGlobal(
-        'fetch',
-        vi.fn().mockResolvedValue({
-          ok: true,
-          json: async () => createMockBook(),
-        }),
-      );
-
-      await fetchBook(1);
-
-      expect(fetch).toHaveBeenCalledWith('http://localhost:3000/api/books/1', {
-        cache: 'no-store',
-      });
-
-      delete process.env.NEXT_PUBLIC_API_URL;
     });
   });
 

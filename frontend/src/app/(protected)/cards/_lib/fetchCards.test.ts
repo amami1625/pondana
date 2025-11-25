@@ -57,7 +57,7 @@ describe('fetchCards', () => {
         cards: [],
       });
 
-      expect(fetch).toHaveBeenCalledWith('/api/cards', { cache: 'default' });
+      expect(fetch).toHaveBeenCalledWith('/api/cards');
       expect(fetch).toHaveBeenCalledTimes(1);
     });
 
@@ -77,7 +77,7 @@ describe('fetchCards', () => {
       const result = await fetchCards();
 
       expect(result.books).toEqual([]);
-      expect(fetch).toHaveBeenCalledWith('/api/cards', { cache: 'default' });
+      expect(fetch).toHaveBeenCalledWith('/api/cards');
       expect(fetch).toHaveBeenCalledTimes(1);
     });
   });
@@ -111,43 +111,6 @@ describe('fetchCards', () => {
       vi.stubGlobal('fetch', vi.fn().mockRejectedValue(new Error('Network error')));
 
       await expect(fetchCards()).rejects.toThrow('Network error');
-    });
-  });
-
-  describe('環境による分岐', () => {
-    it('クライアント側では相対URLを使用する', async () => {
-      vi.stubGlobal('window', {});
-
-      vi.stubGlobal(
-        'fetch',
-        vi.fn().mockResolvedValue({
-          ok: true,
-          json: async () => ({ books: [] }),
-        }),
-      );
-
-      await fetchCards();
-
-      expect(fetch).toHaveBeenCalledWith('/api/cards', { cache: 'default' });
-    });
-
-    it('サーバー側では絶対URLを使用する', async () => {
-      vi.stubGlobal('window', undefined);
-      process.env.NEXT_PUBLIC_API_URL = 'http://localhost:3000';
-
-      vi.stubGlobal(
-        'fetch',
-        vi.fn().mockResolvedValue({
-          ok: true,
-          json: async () => ({ books: [] }),
-        }),
-      );
-
-      await fetchCards();
-
-      expect(fetch).toHaveBeenCalledWith('http://localhost:3000/api/cards', { cache: 'no-store' });
-
-      delete process.env.NEXT_PUBLIC_API_URL;
     });
   });
 

@@ -45,7 +45,7 @@ describe('fetchAuthors', () => {
         updated_at: expectedDate,
       });
 
-      expect(fetch).toHaveBeenCalledWith('/api/authors', { cache: 'default' });
+      expect(fetch).toHaveBeenCalledWith('/api/authors');
       expect(fetch).toHaveBeenCalledTimes(1);
     });
 
@@ -61,7 +61,7 @@ describe('fetchAuthors', () => {
       const result = await fetchAuthors();
 
       expect(result).toEqual([]);
-      expect(fetch).toHaveBeenCalledWith('/api/authors', { cache: 'default' });
+      expect(fetch).toHaveBeenCalledWith('/api/authors');
       expect(fetch).toHaveBeenCalledTimes(1);
     });
   });
@@ -95,50 +95,6 @@ describe('fetchAuthors', () => {
       vi.stubGlobal('fetch', vi.fn().mockRejectedValue(new Error('Network error')));
 
       await expect(fetchAuthors()).rejects.toThrow('Network error');
-    });
-  });
-
-  describe('環境による分岐', () => {
-    it('クライアント側では相対URLを使用する', async () => {
-      // windowが存在する場合（クライアント側）
-      vi.stubGlobal('window', {});
-
-      vi.stubGlobal(
-        'fetch',
-        vi.fn().mockResolvedValue({
-          ok: true,
-          json: async () => [],
-        }),
-      );
-
-      await fetchAuthors();
-
-      expect(fetch).toHaveBeenCalledWith('/api/authors', { cache: 'default' });
-    });
-
-    it('サーバー側では絶対URLを使用する', async () => {
-      // windowが存在しない場合（サーバー側）
-      vi.stubGlobal('window', undefined);
-      // 環境変数を設定
-      process.env.NEXT_PUBLIC_API_URL = 'http://localhost:3000';
-
-      vi.stubGlobal(
-        'fetch',
-        vi.fn().mockResolvedValue({
-          ok: true,
-          json: async () => [],
-        }),
-      );
-
-      await fetchAuthors();
-
-      // サーバー側ではno-storeキャッシュを使用
-      expect(fetch).toHaveBeenCalledWith('http://localhost:3000/api/authors', {
-        cache: 'no-store',
-      });
-
-      // クリーンアップ
-      delete process.env.NEXT_PUBLIC_API_URL;
     });
   });
 

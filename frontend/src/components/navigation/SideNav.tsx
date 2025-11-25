@@ -21,12 +21,6 @@ export default function SideNav() {
             <h1 className="text-slate-900 text-base font-medium leading-normal">
               {profile?.name || 'ロード中...'}
             </h1>
-            <Link
-              href="/settings"
-              className="text-slate-500 text-sm font-normal leading-normal hover:text-primary"
-            >
-              プロフィールを見る
-            </Link>
           </div>
         </div>
 

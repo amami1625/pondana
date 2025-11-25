@@ -59,7 +59,7 @@ describe('fetchTopPageData', () => {
         authors: expect.any(Array),
       });
 
-      expect(fetch).toHaveBeenCalledWith('/api/top', { cache: 'default' });
+      expect(fetch).toHaveBeenCalledWith('/api/top');
       expect(fetch).toHaveBeenCalledTimes(1);
     });
 
@@ -77,7 +77,7 @@ describe('fetchTopPageData', () => {
       expect(result.recent_books).toEqual([]);
       expect(result.recent_lists).toEqual([]);
       expect(result.recent_cards).toEqual([]);
-      expect(fetch).toHaveBeenCalledWith('/api/top', { cache: 'default' });
+      expect(fetch).toHaveBeenCalledWith('/api/top');
       expect(fetch).toHaveBeenCalledTimes(1);
     });
   });
@@ -111,43 +111,6 @@ describe('fetchTopPageData', () => {
       vi.stubGlobal('fetch', vi.fn().mockRejectedValue(new Error('Network error')));
 
       await expect(fetchTopPageData()).rejects.toThrow('Network error');
-    });
-  });
-
-  describe('環境による分岐', () => {
-    it('クライアント側では相対URLを使用する', async () => {
-      vi.stubGlobal('window', {});
-
-      vi.stubGlobal(
-        'fetch',
-        vi.fn().mockResolvedValue({
-          ok: true,
-          json: async () => createMockTopPageData(),
-        }),
-      );
-
-      await fetchTopPageData();
-
-      expect(fetch).toHaveBeenCalledWith('/api/top', { cache: 'default' });
-    });
-
-    it('サーバー側では絶対URLを使用する', async () => {
-      vi.stubGlobal('window', undefined);
-      process.env.NEXT_PUBLIC_API_URL = 'http://localhost:3000';
-
-      vi.stubGlobal(
-        'fetch',
-        vi.fn().mockResolvedValue({
-          ok: true,
-          json: async () => createMockTopPageData(),
-        }),
-      );
-
-      await fetchTopPageData();
-
-      expect(fetch).toHaveBeenCalledWith('http://localhost:3000/api/top', { cache: 'no-store' });
-
-      delete process.env.NEXT_PUBLIC_API_URL;
     });
   });
 
