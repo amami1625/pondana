@@ -1,8 +1,9 @@
 import { HydrationBoundary, dehydrate } from '@tanstack/react-query';
 import { createServerQueryClient } from '@/lib/queryClient';
 import { queryKeys } from '@/constants/queryKeys';
-import { fetchCard } from '@/app/(protected)/cards/_lib/fetchCard';
 import CardDetailClient from '@/app/(protected)/cards/_components/clients/CardDetailClient';
+import { authenticatedRequest } from '@/supabase/dal';
+import { cardDetailSchema } from '@/app/(protected)/cards/_types';
 
 type Props = {
   params: Promise<{ id: string }>;
@@ -16,7 +17,10 @@ export default async function CardPage({ params }: Props) {
 
   await queryClient.prefetchQuery({
     queryKey: queryKeys.cards.detail(cardId),
-    queryFn: () => fetchCard(cardId),
+    queryFn: async () => {
+      const data = authenticatedRequest(`/cards/${cardId}`);
+      return cardDetailSchema.parse(data);
+    },
   });
 
   return (
