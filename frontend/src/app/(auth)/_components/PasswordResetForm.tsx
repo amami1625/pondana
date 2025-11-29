@@ -55,7 +55,12 @@ export default function PasswordResetForm() {
             パスワードは8文字以上で、英字と数字を含める必要があります。
           </p>
           <div className="flex justify-end">
-            <Button type="submit" variant="primary" disabled={isSubmitting} loadingLabel="変更中...">
+            <Button
+              type="submit"
+              variant="primary"
+              disabled={isSubmitting}
+              loadingLabel="変更中..."
+            >
               パスワードを変更
             </Button>
           </div>

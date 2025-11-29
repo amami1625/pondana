@@ -52,7 +52,12 @@ export default function PasswordChangeForm({ email, onClose }: PasswordChangeFor
             <Button type="button" variant="cancel" onClick={onClose}>
               キャンセル
             </Button>
-            <Button type="submit" variant="primary" disabled={isSubmitting} loadingLabel="確認中...">
+            <Button
+              type="submit"
+              variant="primary"
+              disabled={isSubmitting}
+              loadingLabel="確認中..."
+            >
               メールを送信
             </Button>
           </div>
