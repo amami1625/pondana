@@ -42,7 +42,7 @@ export default function BookItem({ listId, book, isAdded }: BookItemProps) {
         {/* 追加ボタン */}
         <div className="flex-shrink-0">
           <Button
-            variant="add"
+            variant="primary"
             onClick={() => addListBook({ list_id: listId, book_id: book.id })}
             disabled={isAdded}
           >

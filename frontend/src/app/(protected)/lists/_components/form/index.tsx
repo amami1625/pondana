@@ -61,7 +61,7 @@ export default function ListForm({ list, submitLabel, cancel }: ListFormProps) {
         </Button>
         <Button
           type="submit"
-          variant="submit"
+          variant="primary"
           disabled={isSubmitting}
           loadingLabel={`${submitLabel}中...`}
         >

@@ -54,7 +54,7 @@ export default function EmailChangeForm({ currentEmail, onClose }: EmailChangeFo
             <Button type="button" variant="cancel" onClick={onClose}>
               キャンセル
             </Button>
-            <Button type="submit" variant="submit" disabled={isSubmitting} loadingLabel="送信中...">
+            <Button type="submit" variant="primary" disabled={isSubmitting} loadingLabel="送信中...">
               確認メールを送信
             </Button>
           </div>

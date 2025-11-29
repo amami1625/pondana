@@ -33,7 +33,7 @@ export default function NameForm({ user, onClose }: NameFormProps) {
       </div>
 
       <div className="flex justify-end gap-3">
-        <Button type="submit" variant="submit" disabled={isSubmitting} loadingLabel="更新中...">
+        <Button type="submit" variant="primary" disabled={isSubmitting} loadingLabel="更新中...">
           更新
         </Button>
       </div>
