@@ -2,8 +2,8 @@ import { useModal } from '@/hooks/useModal';
 import { useBookMutations } from '@/app/(protected)/books/_hooks/useBookMutations';
 import { getBookDetailBreadcrumbs } from '@/lib/utils';
 import { BookDetail } from '@/app/(protected)/books/_types';
-import CategoryBadge from '@/components/badge/CategoryBadge';
-import PublicBadge from '@/components/badge/PublicBadge';
+import CategoryBadge from '@/components/badges/CategoryBadge';
+import PublicBadge from '@/components/badges/PublicBadge';
 
 export function useBookDetailView(book: BookDetail) {
   const { deleteBook } = useBookMutations();
