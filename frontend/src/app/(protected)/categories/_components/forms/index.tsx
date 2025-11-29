@@ -38,7 +38,7 @@ export default function CategoryForm({ category, submitLabel, cancel }: Category
         </Button>
         <Button
           type="submit"
-          variant="submit"
+          variant="primary"
           disabled={isSubmitting}
           loadingLabel={`${submitLabel}中...`}
         >

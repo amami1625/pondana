@@ -1,9 +1,9 @@
 'use client';
 
 import { useBooks } from '@/app/(protected)/books/_hooks/useBooks';
-import ErrorMessage from '@/components/ErrorMessage';
+import ErrorMessage from '@/components/feedback/ErrorMessage';
 import BookIndexView from '@/app/(protected)/books/_components/display/view/BookIndexView';
-import LoadingState from '@/components/LoadingState';
+import LoadingState from '@/components/feedback/LoadingState';
 
 export default function BooksClient() {
   const { data: books, error: bookError, isLoading } = useBooks();

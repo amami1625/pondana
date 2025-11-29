@@ -2,8 +2,8 @@
 
 import { useCard } from '@/app/(protected)/cards/_hooks/useCard';
 import CardDetailView from '@/app/(protected)/cards/_components/display/view/CardDetailView';
-import ErrorMessage from '@/components/ErrorMessage';
-import LoadingState from '@/components/LoadingState';
+import ErrorMessage from '@/components/feedback/ErrorMessage';
+import LoadingState from '@/components/feedback/LoadingState';
 
 type Props = {
   id: number;

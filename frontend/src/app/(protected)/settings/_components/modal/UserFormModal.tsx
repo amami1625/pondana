@@ -1,4 +1,4 @@
-import BaseModal from '@/components/BaseModal';
+import BaseModal from '@/components/modals/BaseModal';
 import NameForm from '../forms/NameForm';
 import { User } from '@/schemas/user';
 

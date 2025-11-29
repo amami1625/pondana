@@ -160,7 +160,7 @@ export default function BookForm({ book, submitLabel, cancel }: BookFormProps) {
           </Button>
           <Button
             type="submit"
-            variant="submit"
+            variant="primary"
             disabled={isSubmitting}
             loadingLabel={`${submitLabel}中...`}
           >

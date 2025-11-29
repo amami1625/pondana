@@ -52,7 +52,7 @@ export default function CardForm({ card, bookId, onClose, submitLabel }: CardFor
         </Button>
         <Button
           type="submit"
-          variant="submit"
+          variant="primary"
           disabled={isSubmitting}
           loadingLabel={`${submitLabel}中...`}
         >

@@ -38,7 +38,7 @@ export default function AuthorForm({ author, submitLabel, cancel }: AuthorFormPr
         </Button>
         <Button
           type="submit"
-          variant="submit"
+          variant="primary"
           disabled={isSubmitting}
           loadingLabel={`${submitLabel}中...`}
         >

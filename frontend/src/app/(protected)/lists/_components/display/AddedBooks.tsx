@@ -3,7 +3,7 @@
 import { AddedBook } from '@/app/(protected)/lists/_types';
 import { ListBook } from '@/app/(protected)/listBooks/_types';
 import AddedBookItem from '@/app/(protected)/lists/_components/display/AddedBookItem';
-import EmptyState from '@/components/EmptyState';
+import EmptyState from '@/components/feedback/EmptyState';
 
 interface AddedBooksProps {
   books: AddedBook[];

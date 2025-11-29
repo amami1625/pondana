@@ -1,4 +1,4 @@
-import Breadcrumb from '@/components/Breadcrumb';
+import Breadcrumb from '@/components/layout/Breadcrumb';
 import { BreadcrumbItem } from '@/constants/breadcrumbs';
 
 interface DetailContainerProps {
