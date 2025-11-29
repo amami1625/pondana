@@ -2,8 +2,8 @@
 
 import { useList } from '@/app/(protected)/lists/_hooks/useList';
 import ListDetailView from '@/app/(protected)/lists/_components/display/view/ListDetailView';
-import ErrorMessage from '@/components/ErrorMessage';
-import LoadingState from '@/components/LoadingState';
+import ErrorMessage from '@/components/feedback/ErrorMessage';
+import LoadingState from '@/components/feedback/LoadingState';
 
 type Props = {
   id: number;

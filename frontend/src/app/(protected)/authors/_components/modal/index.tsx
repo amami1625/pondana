@@ -1,6 +1,6 @@
 import { Author } from '@/app/(protected)/authors/_types';
 import AuthorForm from '@/app/(protected)/authors/_components/forms';
-import BaseModal from '@/components/BaseModal';
+import BaseModal from '@/components/modals/BaseModal';
 
 interface AuthorModalProps {
   author?: Author;

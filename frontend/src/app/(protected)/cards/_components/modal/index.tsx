@@ -1,4 +1,4 @@
-import BaseModal from '@/components/BaseModal';
+import BaseModal from '@/components/modals/BaseModal';
 import ModalInfo from '@/components/modals/ModalInfo';
 import CardForm from '@/app/(protected)/cards/_components/form';
 import { Card } from '@/app/(protected)/cards/_types';

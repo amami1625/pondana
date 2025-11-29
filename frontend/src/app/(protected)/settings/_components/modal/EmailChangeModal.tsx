@@ -1,6 +1,6 @@
 'use client';
 
-import BaseModal from '@/components/BaseModal';
+import BaseModal from '@/components/modals/BaseModal';
 import EmailChangeForm from '@/app/(protected)/settings/_components/forms/EmailChangeForm';
 
 interface EmailChangeModalProps {

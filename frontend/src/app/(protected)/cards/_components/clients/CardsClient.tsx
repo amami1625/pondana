@@ -2,8 +2,8 @@
 
 import { useCards } from '@/app/(protected)/cards/_hooks/useCards';
 import CardListView from '@/app/(protected)/cards/_components/display/view/CardListView';
-import ErrorMessage from '@/components/ErrorMessage';
-import LoadingState from '@/components/LoadingState';
+import ErrorMessage from '@/components/feedback/ErrorMessage';
+import LoadingState from '@/components/feedback/LoadingState';
 
 export default function CardsClient() {
   const { data: cardList, error, isLoading } = useCards();

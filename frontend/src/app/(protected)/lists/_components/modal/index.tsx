@@ -1,4 +1,4 @@
-import BaseModal from '@/components/BaseModal';
+import BaseModal from '@/components/modals/BaseModal';
 import ListForm from '@/app/(protected)/lists/_components/form';
 import { List } from '@/app/(protected)/lists/_types';
 

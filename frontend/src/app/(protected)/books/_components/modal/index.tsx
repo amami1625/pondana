@@ -1,6 +1,6 @@
 import { Book } from '@/app/(protected)/books/_types';
 import BookForm from '@/app/(protected)/books/_components/forms';
-import BaseModal from '@/components/BaseModal';
+import BaseModal from '@/components/modals/BaseModal';
 
 interface BookFormModalProps {
   book?: Book;

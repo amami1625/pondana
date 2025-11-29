@@ -2,8 +2,8 @@
 
 import { useProfile } from '@/hooks/useProfile';
 import SettingsView from '@/app/(protected)/settings/_components/display/view/SettingsView';
-import ErrorMessage from '@/components/ErrorMessage';
-import LoadingState from '@/components/LoadingState';
+import ErrorMessage from '@/components/feedback/ErrorMessage';
+import LoadingState from '@/components/feedback/LoadingState';
 
 type Props = {
   email: string;

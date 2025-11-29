@@ -2,8 +2,8 @@
 
 import { useBook } from '@/app/(protected)/books/_hooks/useBook';
 import BookDetailView from '@/app/(protected)/books/_components/display/view/BookDetailView';
-import ErrorMessage from '@/components/ErrorMessage';
-import LoadingState from '@/components/LoadingState';
+import ErrorMessage from '@/components/feedback/ErrorMessage';
+import LoadingState from '@/components/feedback/LoadingState';
 
 type Props = {
   id: number;
