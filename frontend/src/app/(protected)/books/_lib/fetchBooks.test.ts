@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { createMockAuthor, createMockBook } from '@/test/factories';
+import { createMockBook } from '@/test/factories';
 import { toJapaneseLocaleString } from '@/test/helpers';
 import { fetchBooks } from './fetchBooks';
 

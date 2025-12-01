@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { renderHook, waitFor } from '@testing-library/react';
 import { createProvider } from '@/test/helpers';
-import { createMockBook, createMockAuthor, createMockCard, createMockList } from '@/test/factories';
+import { createMockBook, createMockCard, createMockList } from '@/test/factories';
 import { useBook } from './useBook';
 import { fetchBook } from '@/app/(protected)/books/_lib/fetchBook';
 import type { BookDetail } from '@/app/(protected)/books/_types';
