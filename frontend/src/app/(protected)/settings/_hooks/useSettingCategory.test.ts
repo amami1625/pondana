@@ -1,7 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { renderHook, act } from '@testing-library/react';
-import { mockUseModal } from '@/test/mocks';
-import { mockUseCategoryMutations } from '@/test/mocks';
+import { mockUseModal, mockUseCategoryMutations } from '@/test/mocks';
 import { createMockCategory } from '@/test/factories';
 import { useSettingCategory } from './useSettingCategory';
 
@@ -41,8 +40,6 @@ describe('useSettingCategory', () => {
     it('選択中のカテゴリを無効化し、作成用モーダルが開く', () => {
       const mockCategory = createMockCategory({ name: 'テストカテゴリ' });
       const { result } = renderHook(() => useSettingCategory());
-
-      act(() => result.current.handleEdit(mockCategory));
 
       // まず編集モードにする
       act(() => result.current.handleEdit(mockCategory));

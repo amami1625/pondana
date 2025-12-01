@@ -1,6 +1,6 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Tag, TagFormData, tagFormSchema } from '../_types';
+import { Tag, TagFormData, tagFormSchema } from '@/app/(protected)/tags/_types';
 import { useTagMutations } from './useTagMutations';
 
 interface UseTagFormProps {
@@ -9,7 +9,7 @@ interface UseTagFormProps {
 }
 
 export const useTagForm = ({ tag, cancel }: UseTagFormProps) => {
-  const { createTag, isCreating } = useTagMutations();
+  const { createTag, updateTag, isCreating, isUpdating } = useTagMutations();
 
   const defaultValues: TagFormData = {
     name: tag?.name ?? '',
@@ -27,7 +27,12 @@ export const useTagForm = ({ tag, cancel }: UseTagFormProps) => {
   const onSubmit = async (data: TagFormData) => {
     if (tag) {
       // 更新
-      // TODO: 更新機能を実装する際に記述
+      updateTag(
+        { id: tag.id, ...data },
+        {
+          onSuccess: () => cancel(),
+        },
+      );
     } else {
       // 作成
       createTag(data, {
@@ -41,6 +46,6 @@ export const useTagForm = ({ tag, cancel }: UseTagFormProps) => {
     handleSubmit,
     onSubmit,
     errors,
-    isSubmitting: isCreating,
+    isSubmitting: isCreating || isUpdating,
   };
 };
