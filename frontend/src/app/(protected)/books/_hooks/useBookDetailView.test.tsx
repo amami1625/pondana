@@ -4,6 +4,7 @@ import { renderHook } from '@testing-library/react';
 import { createMockBook, createMockAuthor, createMockCategory } from '@/test/factories';
 import { mockUseBookMutations, mockUseModal } from '@/test/mocks';
 import { useBookDetailView } from './useBookDetailView';
+import { createMockTag } from '@/test/factories/tag';
 
 // モックの設定
 vi.mock('@/hooks/useModal');
@@ -130,9 +131,10 @@ describe('useBookDetailView', () => {
       expect(result.current.badges).toHaveProperty('type');
     });
 
-    it('カテゴリーがある場合、CategoryBadge が含まれる', () => {
+    it('カテゴリ・タグがある場合、バッジが表示される', () => {
       const book = createMockBook({
-        category: createMockCategory({ name: '技術書' }),
+        category: createMockCategory({ name: 'テストカテゴリ' }),
+        tags: [createMockTag({ name: 'テストタグ' })],
       });
 
       const { result } = renderHook(() => useBookDetailView(book));
@@ -141,13 +143,19 @@ describe('useBookDetailView', () => {
       const badges = result.current.badges as React.ReactElement<{ children: React.ReactNode[] }>;
       const children = badges.props.children;
 
-      // 2つの子要素があることを確認（CategoryBadge と PublicBadge）
+      // 3つの子要素があることを確認（CategoryBadge, TagBadge, PublicBadge）
       expect(Array.isArray(children)).toBe(true);
-      expect(children).toHaveLength(2);
+      expect(children).toHaveLength(3);
+      expect(children[0]).toBeDefined(); // CategoryBadge
+      expect(children[1]).toBeDefined(); // TagBadge
+      expect(children[2]).toBeDefined(); // PublicBadge
     });
 
-    it('カテゴリーがない場合、PublicBadge のみが含まれる', () => {
-      const book = createMockBook({ category: undefined });
+    it('カテゴリのみがある場合、CategoryBadge と PublicBadge が含まれる', () => {
+      const book = createMockBook({
+        category: createMockCategory({ name: 'テストカテゴリ' }),
+        tags: [],
+      });
 
       const { result } = renderHook(() => useBookDetailView(book));
 
@@ -155,10 +163,28 @@ describe('useBookDetailView', () => {
       const badges = result.current.badges as React.ReactElement<{ children: React.ReactNode[] }>;
       const children = badges.props.children;
 
-      // 2つの子要素があるが、1つ目はundefined（条件付きレンダリングのため）
+      // 3つの子要素があることを確認（CategoryBadge, TagBadge(null), PublicBadge）
       expect(Array.isArray(children)).toBe(true);
-      expect(children[0]).toBe(undefined);
-      expect(children[1]).toBeDefined();
+      expect(children).toHaveLength(3);
+      expect(children[0]).toBeDefined(); // CategoryBadge
+      expect(children[1]).toBe(false); // TagBadge
+      expect(children[2]).toBeDefined(); // PublicBadge
+    });
+
+    it('カテゴリーがない場合、PublicBadge のみが含まれる', () => {
+      const book = createMockBook({ category: undefined, tags: [] });
+
+      const { result } = renderHook(() => useBookDetailView(book));
+
+      // Fragment の props.children を確認
+      const badges = result.current.badges as React.ReactElement<{ children: React.ReactNode[] }>;
+      const children = badges.props.children;
+
+      // 3つの子要素があることを確認（CategoryBadge, TagBadge(null), PublicBadge）
+      expect(Array.isArray(children)).toBe(true);
+      expect(children[0]).toBe(undefined); // CategoryBadge
+      expect(children[1]).toBeDefined(); // TagBadge
+      expect(children[2]).toBeDefined(); // PublicBadge
     });
   });
 });
