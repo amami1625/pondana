@@ -12,7 +12,7 @@ export const bookBaseSchema = z.object({
   description: z.string().nullable(),
   user_id: z.number(),
   category: categorySchema.optional(),
-  tags: z.array(tagSchema).optional(),
+  tags: z.array(tagSchema),
   rating: z.number().int().min(1).max(5).nullable(),
   reading_status: z.enum(['unread', 'reading', 'completed']),
   public: z.boolean(),
