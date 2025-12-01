@@ -5,7 +5,7 @@ import { createMockCategory } from '@/test/factories';
 import { fetchCategories } from '@/app/(protected)/categories/_lib/fetchCategories';
 import { useCategories } from './useCategories';
 
-// fetchAuthorsをモック化
+// fetchCategories をモック化
 vi.mock('@/app/(protected)/categories/_lib/fetchCategories');
 
 describe('useCategories', () => {
