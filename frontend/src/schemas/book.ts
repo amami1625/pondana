@@ -1,18 +1,18 @@
 import { z } from 'zod';
 import { categorySchema } from './category';
+import { tagSchema } from './tag';
 import { authorSchema } from './author';
 import { listBookSchema } from '@/app/(protected)/listBooks/_types';
 import { cardSchema } from '@/app/(protected)/cards/_types';
 
 // Bookベーススキーマ
-// TODO: タグ機能実装時にtagsフィールドを追加
 export const bookBaseSchema = z.object({
   id: z.number(),
   title: z.string(),
   description: z.string().nullable(),
   user_id: z.number(),
-  category_id: z.number().nullable(),
   category: categorySchema.optional(),
+  tags: z.array(tagSchema),
   rating: z.number().int().min(1).max(5).nullable(),
   reading_status: z.enum(['unread', 'reading', 'completed']),
   public: z.boolean(),
@@ -47,7 +47,6 @@ export const bookDetailSchema = bookSchema.extend({
 });
 
 // Bookのバリデーションスキーマ(フォーム用)
-// TODO: タグ機能実装時にtagsフィールドを追加
 export const bookFormSchema = z.object({
   title: z
     .string()
@@ -57,6 +56,7 @@ export const bookFormSchema = z.object({
   description: z.string().optional(),
   author_ids: z.number().array().min(1, { message: '著者を1人以上選択してください' }),
   category_id: z.number().optional(),
+  tag_ids: z.number().array().optional(),
   rating: z.number().int().min(1).max(5).optional(),
   reading_status: z.enum(['unread', 'reading', 'completed']),
   public: z.boolean(),

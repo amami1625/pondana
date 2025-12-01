@@ -8,7 +8,7 @@ import BookListCard from '@/app/(protected)/books/_components/display/BookListCa
 import CategoryFilter from '@/app/(protected)/books/_components/filters/CategoryFilter';
 import CreateBookFormModal from '@/app/(protected)/books/_components/modal';
 import Button from '@/components/buttons/Button';
-import EmptyState from '@/components/EmptyState';
+import EmptyState from '@/components/feedback/EmptyState';
 
 interface BookIndexViewProps {
   books: Book[];

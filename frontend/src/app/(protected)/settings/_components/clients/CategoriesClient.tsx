@@ -1,8 +1,8 @@
 'use client';
 
 import { useCategories } from '@/app/(protected)/categories/_hooks/useCategories';
-import ErrorMessage from '@/components/ErrorMessage';
-import LoadingState from '@/components/LoadingState';
+import ErrorMessage from '@/components/feedback/ErrorMessage';
+import LoadingState from '@/components/feedback/LoadingState';
 import CategoryIndexView from '../display/view/CategoryIndexView';
 
 export default function CategoriesClient() {

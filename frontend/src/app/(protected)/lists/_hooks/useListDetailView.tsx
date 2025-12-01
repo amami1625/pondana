@@ -1,6 +1,6 @@
 import { useModal } from '@/hooks/useModal';
 import { getListDetailBreadcrumbs } from '@/lib/utils';
-import PublicBadge from '@/components/badge/PublicBadge';
+import PublicBadge from '@/components/badges/PublicBadge';
 import { useListMutations } from '@/app/(protected)/lists/_hooks/useListMutations';
 import { ListDetail } from '@/schemas/list';
 

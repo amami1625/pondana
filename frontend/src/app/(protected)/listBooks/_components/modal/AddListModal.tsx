@@ -1,4 +1,4 @@
-import BaseModal from '@/components/BaseModal';
+import BaseModal from '@/components/modals/BaseModal';
 import ListItem from '@/app/(protected)/listBooks/_components/display/ListItem';
 import { useLists } from '@/app/(protected)/lists/_hooks/useLists';
 

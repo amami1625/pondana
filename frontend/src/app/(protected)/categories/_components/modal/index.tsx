@@ -1,6 +1,6 @@
 import { Category } from '@/app/(protected)/categories/_types';
 import CategoryForm from '@/app/(protected)/categories/_components/forms';
-import BaseModal from '@/components/BaseModal';
+import BaseModal from '@/components/modals/BaseModal';
 
 interface CategoryModalProps {
   category?: Category;

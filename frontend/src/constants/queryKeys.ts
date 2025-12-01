@@ -2,6 +2,9 @@ export const queryKeys = {
   categories: {
     all: ['categories'] as const, // 一覧取得用
   },
+  tags: {
+    all: ['tags'] as const, // 一覧取得用
+  },
   authors: {
     all: ['authors'] as const, // 一覧取得用
   },

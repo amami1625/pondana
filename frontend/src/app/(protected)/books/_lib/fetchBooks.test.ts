@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { createMockAuthor, createMockBook } from '@/test/factories';
+import { createMockBook } from '@/test/factories';
 import { toJapaneseLocaleString } from '@/test/helpers';
 import { fetchBooks } from './fetchBooks';
 
@@ -11,8 +11,8 @@ describe('fetchBooks', () => {
   describe('成功時', () => {
     it('書籍データを正しく取得できる', async () => {
       const mockApiResponse = [
-        createMockBook({ id: 1, title: 'テスト本A', authors: [createMockAuthor()] }),
-        createMockBook({ id: 2, title: 'テスト本B', authors: [createMockAuthor()] }),
+        createMockBook({ id: 1, title: 'テスト本A' }),
+        createMockBook({ id: 2, title: 'テスト本B' }),
       ];
 
       vi.stubGlobal(
@@ -34,7 +34,8 @@ describe('fetchBooks', () => {
         title: 'テスト本A',
         description: 'テスト説明',
         user_id: 1,
-        category_id: 1,
+        category: expect.any(Object),
+        tags: expect.any(Array),
         rating: 5,
         reading_status: 'completed',
         public: true,
@@ -56,7 +57,8 @@ describe('fetchBooks', () => {
         title: 'テスト本B',
         description: 'テスト説明',
         user_id: 1,
-        category_id: 1,
+        category: expect.any(Object),
+        tags: expect.any(Array),
         rating: 5,
         reading_status: 'completed',
         public: true,

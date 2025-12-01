@@ -1,8 +1,8 @@
 'use client';
 
 import { useLists } from '@/app/(protected)/lists/_hooks/useLists';
-import ErrorMessage from '@/components/ErrorMessage';
-import LoadingState from '@/components/LoadingState';
+import ErrorMessage from '@/components/feedback/ErrorMessage';
+import LoadingState from '@/components/feedback/LoadingState';
 import ListIndexView from '@/app/(protected)/lists/_components/display/view/ListIndexView';
 
 export default function ListsClient() {

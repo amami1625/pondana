@@ -3,11 +3,11 @@
 import { List } from '@/app/(protected)/lists/_types';
 import { Plus } from 'lucide-react';
 import { useModal } from '@/hooks/useModal';
-import PageTitle from '@/components/PageTitle';
+import PageTitle from '@/components/layout/PageTitle';
 import ListCard from '@/app/(protected)/lists/_components/display/ListCard';
 import CreateListFormModal from '@/app/(protected)/lists/_components/modal/';
 import Button from '@/components/buttons/Button';
-import EmptyState from '@/components/EmptyState';
+import EmptyState from '@/components/feedback/EmptyState';
 
 interface ListIndexViewProps {
   lists: List[];

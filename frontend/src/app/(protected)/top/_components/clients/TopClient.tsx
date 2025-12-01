@@ -2,8 +2,8 @@
 
 import { useTopPageData } from '@/app/(protected)/top/_hooks/useTopPageData';
 import TopView from '@/app/(protected)/top/_components/view/TopView';
-import LoadingState from '@/components/LoadingState';
-import ErrorMessage from '@/components/ErrorMessage';
+import LoadingState from '@/components/feedback/LoadingState';
+import ErrorMessage from '@/components/feedback/ErrorMessage';
 
 export default function TopClient() {
   const { data, error, isLoading } = useTopPageData();

@@ -1,7 +1,7 @@
 import { CardList } from '@/app/(protected)/cards/_types';
-import EmptyState from '@/components/EmptyState';
+import EmptyState from '@/components/feedback/EmptyState';
 import BookCardGroup from '@/app/(protected)/cards/_components/display/BookCardGroup';
-import PageTitle from '@/components/PageTitle';
+import PageTitle from '@/components/layout/PageTitle';
 
 interface CardListViewProps {
   cardList: CardList;

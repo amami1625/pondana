@@ -21,7 +21,7 @@ export default function PasswordResetForm() {
             <p className="text-gray-600">新しいパスワードでログインできるようになりました。</p>
           </div>
           <div className="mt-6 flex justify-center">
-            <Button type="button" variant="submit" onClick={() => router.push('/settings')}>
+            <Button type="button" variant="primary" onClick={() => router.push('/settings')}>
               設定画面に戻る
             </Button>
           </div>
@@ -55,7 +55,12 @@ export default function PasswordResetForm() {
             パスワードは8文字以上で、英字と数字を含める必要があります。
           </p>
           <div className="flex justify-end">
-            <Button type="submit" variant="submit" disabled={isSubmitting} loadingLabel="変更中...">
+            <Button
+              type="submit"
+              variant="primary"
+              disabled={isSubmitting}
+              loadingLabel="変更中..."
+            >
               パスワードを変更
             </Button>
           </div>

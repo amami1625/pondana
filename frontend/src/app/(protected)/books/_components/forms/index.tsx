@@ -2,7 +2,7 @@
 
 import Select from 'react-select';
 import { Controller } from 'react-hook-form';
-import { Book } from '@/app/(protected)/books/_types';
+import { BookDetail } from '@/app/(protected)/books/_types';
 import { STATUS_OPTIONS, RATING_OPTIONS } from '@/app/(protected)/books/_constants';
 import AuthorModal from '@/app/(protected)/authors/_components/modal';
 import CategoryModal from '@/app/(protected)/categories/_components/modal';
@@ -15,24 +15,26 @@ import { useBookForm } from '@/app/(protected)/books/_hooks/useBookForm';
 import { useModal } from '@/hooks/useModal';
 import { useAuthors } from '@/app/(protected)/authors/_hooks/useAuthors';
 import { useCategories } from '@/app/(protected)/categories/_hooks/useCategories';
+import { useTags } from '@/app/(protected)/tags/_hooks/useTags';
+import TagModal from '@/app/(protected)/tags/_components/modal';
 
-// TODO: Tag機能を実装したらTag型をimportする
 interface BookFormProps {
-  book?: Book;
+  book?: BookDetail;
   submitLabel: string;
   cancel: () => void;
 }
 
-// TODO: Tag機能を実装したらTagsを追加する
 export default function BookForm({ book, submitLabel, cancel }: BookFormProps) {
   const { data: authors } = useAuthors();
   const { data: categories } = useCategories();
+  const { data: tags } = useTags();
   const { register, control, handleSubmit, errors, onSubmit, isSubmitting } = useBookForm({
     book,
     cancel,
   });
   const authorModal = useModal();
   const categoryModal = useModal();
+  const tagModal = useModal();
 
   return (
     <>
@@ -145,6 +147,45 @@ export default function BookForm({ book, submitLabel, cancel }: BookFormProps) {
             </button>
           }
         />
+        {/* タグ */}
+        <div className="flex flex-col gap-2 text-sm">
+          <div className="flex items-center justify-between">
+            <label htmlFor="tags" className="font-semibold text-gray-700">
+              タグ
+            </label>
+            <button
+              type="button"
+              onClick={tagModal.open}
+              className="text-sm text-blue-600 hover:text-blue-700"
+            >
+              + タグを追加
+            </button>
+          </div>
+          <Controller
+            name="tag_ids"
+            control={control}
+            render={({ field: { onChange, value, ref } }) => {
+              const options = (tags || []).map((a) => ({
+                value: a.id,
+                label: a.name,
+              }));
+              return (
+                <Select
+                  ref={ref}
+                  instanceId="tags"
+                  inputId="tags"
+                  isMulti
+                  options={options}
+                  value={options.filter((c) => value?.includes(c.value))}
+                  onChange={(val) => onChange(val.map((c) => c.value))}
+                  placeholder="タグを検索・選択"
+                  className="text-sm"
+                />
+              );
+            }}
+          />
+          {errors.tag_ids && <p className="mt-1 text-sm text-red-600">{errors.tag_ids.message}</p>}
+        </div>
 
         {/* 公開・非公開 */}
         <FormCheckbox
@@ -160,7 +201,7 @@ export default function BookForm({ book, submitLabel, cancel }: BookFormProps) {
           </Button>
           <Button
             type="submit"
-            variant="submit"
+            variant="primary"
             disabled={isSubmitting}
             loadingLabel={`${submitLabel}中...`}
           >
@@ -168,9 +209,11 @@ export default function BookForm({ book, submitLabel, cancel }: BookFormProps) {
           </Button>
         </div>
       </form>
+
       {/* モーダル */}
       <AuthorModal isOpen={authorModal.isOpen} onClose={authorModal.close} />
       <CategoryModal isOpen={categoryModal.isOpen} onClose={categoryModal.close} />
+      <TagModal isOpen={tagModal.isOpen} onClose={tagModal.close} />
     </>
   );
 }

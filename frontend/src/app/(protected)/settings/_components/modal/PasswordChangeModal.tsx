@@ -1,6 +1,6 @@
 'use client';
 
-import BaseModal from '@/components/BaseModal';
+import BaseModal from '@/components/modals/BaseModal';
 import PasswordChangeForm from '@/app/(protected)/settings/_components/forms/PasswordChangeForm';
 
 interface PasswordChangeModalProps {

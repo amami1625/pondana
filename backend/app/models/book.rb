@@ -6,6 +6,8 @@ class Book < ApplicationRecord
   has_many :list_books, dependent: :destroy
   has_many :lists, through: :list_books
   has_many :cards, dependent: :destroy
+  has_many :book_tags, dependent: :destroy
+  has_many :tags, through: :book_tags
 
   validates :title, presence: true, uniqueness: { scope: :user_id }, length: { maximum: 255 }
   validates :rating, inclusion: { in: 1..5 }, allow_nil: true

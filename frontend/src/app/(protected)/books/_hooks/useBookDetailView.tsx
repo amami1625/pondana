@@ -2,8 +2,9 @@ import { useModal } from '@/hooks/useModal';
 import { useBookMutations } from '@/app/(protected)/books/_hooks/useBookMutations';
 import { getBookDetailBreadcrumbs } from '@/lib/utils';
 import { BookDetail } from '@/app/(protected)/books/_types';
-import CategoryBadge from '@/components/badge/CategoryBadge';
-import PublicBadge from '@/components/badge/PublicBadge';
+import CategoryBadge from '@/components/badges/CategoryBadge';
+import PublicBadge from '@/components/badges/PublicBadge';
+import TagBadge from '@/components/badges/TagBadge';
 
 export function useBookDetailView(book: BookDetail) {
   const { deleteBook } = useBookMutations();
@@ -28,6 +29,9 @@ export function useBookDetailView(book: BookDetail) {
   const badges = (
     <>
       {book.category && <CategoryBadge label={book.category.name} />}
+      {book.tags &&
+        book.tags.length > 0 &&
+        book.tags.map((tag) => <TagBadge key={tag.id} label={tag.name} />)}
       <PublicBadge isPublic={book.public} />
     </>
   );
