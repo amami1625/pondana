@@ -1,11 +1,10 @@
 import Link from 'next/link';
 import { Book } from '@/app/(protected)/books/_types';
 import { getCategoryColor } from '@/lib/utils';
-import { getCategoryBadgeColor } from '@/app/(protected)/books/_lib/getCategoryBadgeColor';
+import { CategoryBadge, TagBadge } from '@/components/badges';
 
 export default function BookListCard({ book }: { book: Book }) {
   const coverColorClass = getCategoryColor(book.category?.name);
-  const badgeColors = getCategoryBadgeColor(book.category?.name);
 
   return (
     <Link
@@ -51,14 +50,15 @@ export default function BookListCard({ book }: { book: Book }) {
             )}
           </div>
 
-          {/* カテゴリバッジ */}
+          {/* カテゴリ・タグ */}
           {book.category && (
-            <div className="flex items-center gap-2">
-              <span
-                className={`inline-flex items-center justify-center rounded-full px-3 py-1 text-xs font-medium ${badgeColors.bg} ${badgeColors.text}`}
-              >
-                {book.category.name}
-              </span>
+            <div className="flex items-center gap-2 text-xs">
+              {/* カテゴリ: <BookBadge name={book.category.name} /> */}
+              カテゴリ: <CategoryBadge label={book.category.name} />
+              タグ:
+              {book.tags.map((tag) => (
+                <TagBadge key={tag.id} label={tag.name} />
+              ))}
             </div>
           )}
         </div>

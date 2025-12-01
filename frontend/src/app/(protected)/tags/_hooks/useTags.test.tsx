@@ -1,31 +1,31 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { renderHook, waitFor } from '@testing-library/react';
 import { createProvider } from '@/test/helpers';
-import { createMockCategory } from '@/test/factories';
-import { fetchCategories } from '@/app/(protected)/categories/_lib/fetchCategories';
-import { useCategories } from './useCategories';
+import { createMockTag } from '@/test/factories/tag';
+import { fetchTags } from '@/app/(protected)/tags/_lib/fetchTags';
+import { useTags } from './useTags';
 
-// fetchCategories をモック化
-vi.mock('@/app/(protected)/categories/_lib/fetchCategories');
+// fetchTags をモック化
+vi.mock('@/app/(protected)/tags/_lib/fetchTags');
 
-describe('useCategories', () => {
+describe('useTags', () => {
   beforeEach(() => {
     // 各テストの前にモックをリセット
     vi.clearAllMocks();
   });
 
   describe('成功時', () => {
-    it('fetchCategories を呼び出してデータを取得する', async () => {
+    it('fetchTags を呼び出してデータを取得する', async () => {
       // APIから返ってくる想定のデータ
-      const mockCategories = [
-        createMockCategory({ id: 1, name: 'テストカテゴリA' }),
-        createMockCategory({ id: 2, name: 'テストカテゴリB' }),
+      const mockTags = [
+        createMockTag({ id: 1, name: 'テストタグA' }),
+        createMockTag({ id: 2, name: 'テストタグB' }),
       ];
 
-      vi.mocked(fetchCategories).mockResolvedValue(mockCategories);
+      vi.mocked(fetchTags).mockResolvedValue(mockTags);
 
       // フックをレンダリング
-      const { result } = renderHook(() => useCategories(), {
+      const { result } = renderHook(() => useTags(), {
         wrapper: createProvider(),
       });
 
@@ -40,17 +40,17 @@ describe('useCategories', () => {
       expect(result.current.isLoading).toBe(false);
       expect(result.current.isSuccess).toBe(true);
       expect(result.current.error).toBeNull();
-      expect(result.current.data).toEqual(mockCategories);
+      expect(result.current.data).toEqual(mockTags);
 
-      // fetchCategories が正しく呼ばれたことを確認
-      expect(fetchCategories).toHaveBeenCalledTimes(1);
+      // fetchTags が正しく呼ばれたことを確認
+      expect(fetchTags).toHaveBeenCalledTimes(1);
     });
 
     it('空配列を取得できる', async () => {
-      vi.mocked(fetchCategories).mockResolvedValue([]);
+      vi.mocked(fetchTags).mockResolvedValue([]);
 
       // フックをレンダリング
-      const { result } = renderHook(() => useCategories(), {
+      const { result } = renderHook(() => useTags(), {
         wrapper: createProvider(),
       });
 
@@ -62,11 +62,11 @@ describe('useCategories', () => {
   });
 
   describe('エラー時', () => {
-    it('fetchCategories がエラーをスローした場合、エラー状態になる', async () => {
-      vi.mocked(fetchCategories).mockRejectedValue(new Error('カテゴリの取得に失敗しました'));
+    it('fetchTags がエラーをスローした場合、エラー状態になる', async () => {
+      vi.mocked(fetchTags).mockRejectedValue(new Error('タグの取得に失敗しました'));
 
       // フックをレンダリング
-      const { result } = renderHook(() => useCategories(), {
+      const { result } = renderHook(() => useTags(), {
         wrapper: createProvider(),
       });
 
@@ -80,15 +80,15 @@ describe('useCategories', () => {
       expect(result.current.isLoading).toBe(false);
       expect(result.current.data).toBeUndefined();
       expect(result.current.error).toBeInstanceOf(Error);
-      expect(result.current.error?.message).toBe('カテゴリの取得に失敗しました');
+      expect(result.current.error?.message).toBe('タグの取得に失敗しました');
     });
   });
 
   describe('React Queryの動作', () => {
     it('正しいqueryKeyを使用する', async () => {
-      vi.mocked(fetchCategories).mockResolvedValue([]);
+      vi.mocked(fetchTags).mockResolvedValue([]);
 
-      const { result } = renderHook(() => useCategories(), {
+      const { result } = renderHook(() => useTags(), {
         wrapper: createProvider(),
       });
 

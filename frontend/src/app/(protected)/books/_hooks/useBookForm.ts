@@ -1,10 +1,10 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Book, BookFormData, bookFormSchema } from '@/app/(protected)/books/_types';
+import { BookDetail, BookFormData, bookFormSchema } from '@/app/(protected)/books/_types';
 import { useBookMutations } from '@/app/(protected)/books/_hooks/useBookMutations';
 
 interface UseBookFormProps {
-  book?: Book;
+  book?: BookDetail;
   cancel: () => void;
 }
 
@@ -15,7 +15,8 @@ export function useBookForm({ book, cancel }: UseBookFormProps) {
     title: book?.title ?? '',
     description: book?.description ?? '',
     author_ids: book?.authors.map((author) => author.id) ?? [],
-    category_id: book?.category_id ?? undefined,
+    category_id: book?.category?.id ?? undefined,
+    tag_ids: book?.tags.map((tag) => tag.id) ?? [],
     rating: book?.rating ?? undefined,
     reading_status: book?.reading_status ?? 'unread',
     public: book ? book.public : false,

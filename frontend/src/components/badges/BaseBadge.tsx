@@ -3,11 +3,12 @@ import { ReactNode } from 'react';
 interface BaseBadgeProps {
   icon: ReactNode;
   label: string;
-  variant: 'category' | 'public' | 'private';
+  variant: 'category' | 'tag' | 'public' | 'private';
 }
 
 const BADGE_STYLES = {
   category: 'bg-primary/10 text-primary',
+  tag: 'bg-slate-200 text-slate-700',
   public: 'bg-green-500/10 text-green-600',
   private: 'bg-slate-200 text-slate-700',
 };
