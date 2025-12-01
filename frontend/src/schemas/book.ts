@@ -11,7 +11,6 @@ export const bookBaseSchema = z.object({
   title: z.string(),
   description: z.string().nullable(),
   user_id: z.number(),
-  category_id: z.number().nullable(),
   category: categorySchema.optional(),
   rating: z.number().int().min(1).max(5).nullable(),
   reading_status: z.enum(['unread', 'reading', 'completed']),

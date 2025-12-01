@@ -19,7 +19,6 @@ describe('useBook', () => {
       const mockBook: BookDetail = createMockBook({
         id: 1,
         title: 'テスト本',
-        authors: [createMockAuthor()],
         lists: [createMockList()],
         cards: [createMockCard()],
       });

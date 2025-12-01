@@ -50,7 +50,7 @@ describe('fetchTopPageData', () => {
         title: 'テスト本',
         description: 'テスト説明',
         user_id: 1,
-        category_id: 1,
+        category: expect.any(Object),
         rating: 5,
         reading_status: 'completed',
         public: true,
