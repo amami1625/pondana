@@ -17,6 +17,22 @@ export const createMockBook = (overrides?: Partial<BookDetail>): BookDetail => (
     created_at: '2025-01-01T00:00:00Z',
     updated_at: '2025-01-01T00:00:00Z',
   },
+  tags: [
+    {
+      id: 1,
+      name: 'テストタグ1',
+      user_id: 1,
+      created_at: '2025-01-01T00:00:00Z',
+      updated_at: '2025-01-01T00:00:00Z',
+    },
+    {
+      id: 2,
+      name: 'テストタグ2',
+      user_id: 1,
+      created_at: '2025-01-01T00:00:00Z',
+      updated_at: '2025-01-01T00:00:00Z',
+    },
+  ],
   rating: 5,
   reading_status: 'completed',
   public: true,

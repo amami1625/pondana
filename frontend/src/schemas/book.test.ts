@@ -23,6 +23,7 @@ describe('bookFormSchema', () => {
         description: 'これはテスト用の説明です',
         author_ids: [1, 2, 3],
         category_id: 5,
+        tag_ids: [1, 2],
         rating: 4,
         reading_status: 'reading' as const,
         public: true,

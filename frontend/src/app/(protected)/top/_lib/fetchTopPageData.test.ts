@@ -51,6 +51,7 @@ describe('fetchTopPageData', () => {
         description: 'テスト説明',
         user_id: 1,
         category: expect.any(Object),
+        tags: expect.any(Array),
         rating: 5,
         reading_status: 'completed',
         public: true,
