@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { renderHook, act } from '@testing-library/react';
 import { mockUseModal, mockUseTagMutations } from '@/test/mocks';
 import { createMockTag } from '@/test/factories/tag';
@@ -51,6 +51,48 @@ describe('useSettingTag', () => {
       // editingTag がクリアされていることを確認
       expect(result.current.editingTag).toBeUndefined();
       expect(result.current.createModal.open).toHaveBeenCalled();
+    });
+  });
+
+  describe('handleDelete', () => {
+    const mockDeleteTag = vi.fn();
+
+    beforeEach(() => {
+      mockUseTagMutations({ deleteTag: mockDeleteTag });
+    });
+
+    afterEach(() => {
+      vi.restoreAllMocks();
+    });
+
+    it('ユーザーが削除をキャンセルした場合、削除されない', () => {
+      // 確認ダイアログを偽物にして、falseを返す
+      const confirmSpy = vi.spyOn(window, 'confirm').mockReturnValue(false);
+
+      const { result } = renderHook(() => useSettingTag());
+
+      act(() => result.current.handleDelete(1));
+
+      // 確認ダイアログが表示されたことを確認
+      expect(confirmSpy).toHaveBeenCalledWith('本当に削除しますか？');
+
+      // 削除関数は呼ばれていないことを確認
+      expect(mockDeleteTag).not.toHaveBeenCalled();
+    });
+
+    it('ユーザーが削除をキャンセルしなかった場合、削除される', () => {
+      // 確認ダイアログを偽物にして、trueを返す
+      const confirmSpy = vi.spyOn(window, 'confirm').mockReturnValue(true);
+
+      const { result } = renderHook(() => useSettingTag());
+
+      act(() => result.current.handleDelete(1));
+
+      // 確認ダイアログが表示されたことを確認
+      expect(confirmSpy).toHaveBeenCalledWith('本当に削除しますか？');
+
+      // 削除関数が正しい引数で呼ばれたことを確認
+      expect(mockDeleteTag).toHaveBeenCalledWith(1);
     });
   });
 });

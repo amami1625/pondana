@@ -9,10 +9,13 @@ export const mockUseTagMutations = (overrides = {}) => {
   vi.mocked(useTagMutations).mockReturnValue({
     createTag: vi.fn(),
     updateTag: vi.fn(),
+    deleteTag: vi.fn(),
     isCreating: false,
     isUpdating: false,
+    isDeleting: false,
     createError: null,
     updateError: null,
+    deleteError: null,
     ...overrides,
   });
 };
