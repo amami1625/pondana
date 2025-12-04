@@ -10,7 +10,8 @@ interface TagsIndexViewProps {
 }
 
 export default function TagsIndexView({ tags }: TagsIndexViewProps) {
-  const { editingTag, handleEdit, handleCreate, createModal, editModal } = useSettingTag();
+  const { editingTag, handleEdit, handleCreate, handleDelete, createModal, editModal } =
+    useSettingTag();
 
   return (
     <>
@@ -38,7 +39,7 @@ export default function TagsIndexView({ tags }: TagsIndexViewProps) {
                 value={`作成日: ${tag.created_at}`}
                 isLast={index === tags.length - 1}
                 onEdit={() => handleEdit(tag)}
-                // onDelete={() => handleDelete(tag.id)}
+                onDelete={() => handleDelete(tag.id)}
               />
             ))}
           </div>

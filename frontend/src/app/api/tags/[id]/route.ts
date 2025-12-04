@@ -21,3 +21,24 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
     return NextResponse.json({ error: '不明なエラーが発生しました' }, { status: 500 });
   }
 }
+
+// DELETE - 削除
+export async function DELETE(
+  _request: NextRequest,
+  { params }: { params: Promise<{ id: string }> },
+) {
+  try {
+    const { id } = await params;
+
+    await authenticatedRequest(`/tags/${id}`, {
+      method: 'DELETE',
+    });
+
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    if (error instanceof Error) {
+      return NextResponse.json({ error: error.message }, { status: 500 });
+    }
+    return NextResponse.json({ error: '不明なエラーが発生しました' }, { status: 500 });
+  }
+}
