@@ -71,7 +71,7 @@ describe('useSettingCategory', () => {
 
       const { result } = renderHook(() => useSettingCategory());
 
-      result.current.handleDelete(1);
+      act(() => result.current.handleDelete(1));
 
       // 確認ダイアログが表示されたことを確認
       expect(confirmSpy).toHaveBeenCalledWith('本当に削除しますか？');
@@ -86,7 +86,7 @@ describe('useSettingCategory', () => {
 
       const { result } = renderHook(() => useSettingCategory());
 
-      result.current.handleDelete(1);
+      act(() => result.current.handleDelete(1));
 
       // 確認ダイアログが表示されたことを確認
       expect(confirmSpy).toHaveBeenCalledWith('本当に削除しますか？');

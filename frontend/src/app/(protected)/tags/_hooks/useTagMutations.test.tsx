@@ -4,7 +4,7 @@ import { createProvider, createTestQueryClient } from '@/test/helpers';
 import { createMockTag } from '@/test/factories/tag';
 import { useTagMutations } from './useTagMutations';
 import toast from 'react-hot-toast';
-import { createMockTopPageData } from '@/test/factories';
+import { createMockBook, createMockTopPageData } from '@/test/factories';
 
 // react-hot-toastをモック
 vi.mock('react-hot-toast', () => ({
@@ -143,8 +143,9 @@ describe('useTagMutations', () => {
       const mockTag = createMockTag({ id: 1, name: 'テストタグ' });
       const queryClient = createTestQueryClient();
 
-      // 事前に tags と top のデータをキャッシュに追加
+      // 事前に tags と books,  top のデータをキャッシュに追加
       queryClient.setQueryData(['tags'], [createMockTag({ id: 1 })]);
+      queryClient.setQueryData(['books'], [createMockBook()]);
       queryClient.setQueryData(['top'], createMockTopPageData());
 
       vi.stubGlobal(
@@ -192,6 +193,8 @@ describe('useTagMutations', () => {
       // キャッシュが無効化されることを確認
       const tagsQueryState = queryClient.getQueryState(['tags']);
       expect(tagsQueryState?.isInvalidated).toBe(true);
+      const booksQueryState = queryClient.getQueryState(['books']);
+      expect(booksQueryState?.isInvalidated).toBe(true);
       const topQueryState = queryClient.getQueryState(['top']);
       expect(topQueryState?.isInvalidated).toBe(true);
     });
@@ -259,6 +262,112 @@ describe('useTagMutations', () => {
       // エラー状態を確認
       expect(result.current.isUpdating).toBe(false);
       expect(result.current.updateError?.message).toBe('Network error');
+    });
+  });
+
+  describe('deleteTag', () => {
+    it('タグの削除が成功する', async () => {
+      const mockTag = createMockTag({ id: 1 });
+      const queryClient = createTestQueryClient();
+
+      // 事前に tag と book、topページのデータをキャッシュに追加
+      queryClient.setQueryData(['tags'], [createMockTag({ id: 1 })]);
+      queryClient.setQueryData(['books'], [createMockBook()]);
+      queryClient.setQueryData(['top'], createMockTopPageData());
+
+      vi.stubGlobal(
+        'fetch',
+        vi.fn().mockResolvedValue({
+          ok: true,
+          json: async () => mockTag,
+        }),
+      );
+
+      const { result } = renderHook(() => useTagMutations(), {
+        wrapper: createProvider(queryClient),
+      });
+
+      expect(result.current.isDeleting).toBe(false);
+      expect(result.current.deleteError).toBeNull();
+
+      act(() => result.current.deleteTag(1));
+
+      await waitFor(() => expect(result.current.isDeleting).toBe(false));
+
+      expect(fetch).toHaveBeenCalledWith('/api/tags/1', {
+        method: 'DELETE',
+      });
+
+      // トーストが表示されることを確認
+      expect(toast.success).toHaveBeenCalledWith('タグを削除しました');
+
+      // キャッシュが無効化されることを確認
+      const tagsQueryState = queryClient.getQueryState(['tags']);
+      expect(tagsQueryState?.isInvalidated).toBe(true);
+      const booksQueryState = queryClient.getQueryState(['books']);
+      expect(booksQueryState?.isInvalidated).toBe(true);
+      const topQueryState = queryClient.getQueryState(['top']);
+      expect(topQueryState?.isInvalidated).toBe(true);
+    });
+
+    it('タグの削除に失敗する', async () => {
+      const errorMessage = 'タグの削除に失敗しました';
+
+      vi.stubGlobal(
+        'fetch',
+        vi.fn().mockResolvedValue({
+          ok: false,
+          json: async () => ({ error: errorMessage }),
+        }),
+      );
+
+      const { result } = renderHook(() => useTagMutations(), {
+        wrapper: createProvider(),
+      });
+
+      expect(result.current.isDeleting).toBe(false);
+      expect(result.current.deleteError).toBeNull();
+
+      act(() => result.current.deleteTag(1));
+
+      await waitFor(() => expect(result.current.deleteError).toBeInstanceOf(Error));
+
+      expect(fetch).toHaveBeenCalledWith('/api/tags/1', {
+        method: 'DELETE',
+      });
+
+      // トーストが表示されることを確認
+      expect(toast.error).toHaveBeenCalledWith(errorMessage);
+
+      expect(result.current.isDeleting).toBe(false);
+      expect(result.current.deleteError?.message).toBe(errorMessage);
+    });
+
+    it('ネットワークエラー時にエラー状態になる', async () => {
+      const errorMessage = 'Network error';
+
+      vi.stubGlobal('fetch', vi.fn().mockRejectedValue(new Error(errorMessage)));
+
+      const { result } = renderHook(() => useTagMutations(), {
+        wrapper: createProvider(),
+      });
+
+      expect(result.current.isDeleting).toBe(false);
+      expect(result.current.deleteError).toBeNull();
+
+      act(() => result.current.deleteTag(1));
+
+      await waitFor(() => expect(result.current.deleteError).toBeInstanceOf(Error));
+
+      expect(fetch).toHaveBeenCalledWith('/api/tags/1', {
+        method: 'DELETE',
+      });
+
+      // トーストが表示されることを確認
+      expect(toast.error).toHaveBeenCalledWith(errorMessage);
+
+      expect(result.current.isDeleting).toBe(false);
+      expect(result.current.deleteError?.message).toBe(errorMessage);
     });
   });
 });
