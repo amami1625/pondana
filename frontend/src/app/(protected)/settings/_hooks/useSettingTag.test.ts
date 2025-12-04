@@ -1,64 +1,64 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { renderHook, act } from '@testing-library/react';
-import { mockUseModal, mockUseCategoryMutations } from '@/test/mocks';
-import { createMockCategory } from '@/test/factories';
-import { useSettingCategory } from './useSettingCategory';
+import { mockUseModal, mockUseTagMutations } from '@/test/mocks';
+import { createMockTag } from '@/test/factories/tag';
+import { useSettingTag } from './useSettingTag';
 
 // モックの設定
 vi.mock('@/hooks/useModal');
-vi.mock('@/app/(protected)/categories/_hooks/useCategoryMutations');
+vi.mock('@/app/(protected)/tags/_hooks/useTagMutations');
 
-describe('useSettingCategory', () => {
+describe('useSettingTag', () => {
   beforeEach(() => {
     // 各テストの前にモックをリセット
     vi.clearAllMocks();
-    mockUseCategoryMutations();
+    mockUseTagMutations();
     mockUseModal();
   });
 
   describe('初期状態', () => {
-    it('editingCategory が undefined になっている', () => {
-      const { result } = renderHook(() => useSettingCategory());
+    it('editingTag が undefined になっている', () => {
+      const { result } = renderHook(() => useSettingTag());
 
-      expect(result.current.editingCategory).toBeUndefined();
+      expect(result.current.editingTag).toBeUndefined();
     });
   });
 
   describe('handleEdit', () => {
-    it('カテゴリを選択し、編集用モーダルが開く', () => {
-      const mockCategory = createMockCategory({ name: 'テストカテゴリ' });
-      const { result } = renderHook(() => useSettingCategory());
+    it('タグを選択し、編集用モーダルが開く', () => {
+      const mockTag = createMockTag({ name: 'テストタグ' });
+      const { result } = renderHook(() => useSettingTag());
 
-      act(() => result.current.handleEdit(mockCategory));
+      act(() => result.current.handleEdit(mockTag));
 
-      expect(result.current.editingCategory).toEqual(mockCategory);
+      expect(result.current.editingTag).toEqual(mockTag);
       expect(result.current.editModal.open).toHaveBeenCalled();
     });
   });
 
   describe('handleCreate', () => {
-    it('選択中のカテゴリを無効化し、作成用モーダルが開く', () => {
-      const mockCategory = createMockCategory({ name: 'テストカテゴリ' });
-      const { result } = renderHook(() => useSettingCategory());
+    it('選択中のタグを無効化し、作成用モーダルが開く', () => {
+      const mockTag = createMockTag({ name: 'テストタグ' });
+      const { result } = renderHook(() => useSettingTag());
 
       // まず編集モードにする
-      act(() => result.current.handleEdit(mockCategory));
-      expect(result.current.editingCategory).toEqual(mockCategory);
+      act(() => result.current.handleEdit(mockTag));
+      expect(result.current.editingTag).toEqual(mockTag);
 
       // 作成モードに切り替える
       act(() => result.current.handleCreate());
 
-      // editingCategoryがクリアされていることを確認
-      expect(result.current.editingCategory).toBeUndefined();
+      // editingTag がクリアされていることを確認
+      expect(result.current.editingTag).toBeUndefined();
       expect(result.current.createModal.open).toHaveBeenCalled();
     });
   });
 
   describe('handleDelete', () => {
-    const mockDeleteCategory = vi.fn();
+    const mockDeleteTag = vi.fn();
 
     beforeEach(() => {
-      mockUseCategoryMutations({ deleteCategory: mockDeleteCategory });
+      mockUseTagMutations({ deleteTag: mockDeleteTag });
     });
 
     afterEach(() => {
@@ -69,7 +69,7 @@ describe('useSettingCategory', () => {
       // 確認ダイアログを偽物にして、falseを返す
       const confirmSpy = vi.spyOn(window, 'confirm').mockReturnValue(false);
 
-      const { result } = renderHook(() => useSettingCategory());
+      const { result } = renderHook(() => useSettingTag());
 
       act(() => result.current.handleDelete(1));
 
@@ -77,14 +77,14 @@ describe('useSettingCategory', () => {
       expect(confirmSpy).toHaveBeenCalledWith('本当に削除しますか？');
 
       // 削除関数は呼ばれていないことを確認
-      expect(mockDeleteCategory).not.toHaveBeenCalled();
+      expect(mockDeleteTag).not.toHaveBeenCalled();
     });
 
     it('ユーザーが削除をキャンセルしなかった場合、削除される', () => {
       // 確認ダイアログを偽物にして、trueを返す
       const confirmSpy = vi.spyOn(window, 'confirm').mockReturnValue(true);
 
-      const { result } = renderHook(() => useSettingCategory());
+      const { result } = renderHook(() => useSettingTag());
 
       act(() => result.current.handleDelete(1));
 
@@ -92,7 +92,7 @@ describe('useSettingCategory', () => {
       expect(confirmSpy).toHaveBeenCalledWith('本当に削除しますか？');
 
       // 削除関数が正しい引数で呼ばれたことを確認
-      expect(mockDeleteCategory).toHaveBeenCalledWith(1);
+      expect(mockDeleteTag).toHaveBeenCalledWith(1);
     });
   });
 });
