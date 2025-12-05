@@ -1,10 +1,9 @@
 @import 'tailwindcss';
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap');
 
 @theme {
   --color-primary: #1173d4;
   --color-background-light: #f6f7f8;
   --color-background-dark: #101922;
-  --font-family-display: 'Inter', sans-serif;
+  --font-family-display: var(--font-inter), sans-serif;
   --spacing-header-height: 57px;
 }
