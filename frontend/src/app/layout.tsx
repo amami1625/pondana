@@ -1,10 +1,18 @@
 import type { Metadata } from 'next';
-import './globals.css';
+import { Inter } from 'next/font/google';
+import { Toaster } from 'react-hot-toast';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import { createServerSupabaseClient } from '@/supabase/clients/server';
-import { Providers } from './providers';
-import { Toaster } from 'react-hot-toast';
+import { Providers } from '@/app/providers';
+import './globals.css';
+
+const inter = Inter({
+  subsets: ['latin'],
+  weight: ['400', '500', '700', '900'],
+  display: 'swap',
+  variable: '--font-inter',
+});
 
 export const metadata: Metadata = {
   title: 'ぽんダナ',
@@ -24,7 +32,7 @@ export default async function RootLayout({
   // セッション情報を取得できた場合はユーザー情報を取得してメタデータに反映
   return (
     <html lang="ja">
-      <body className="flex flex-col min-h-screen">
+      <body className={`${inter.variable} flex flex-col min-h-screen`}>
         <Providers>
           <Header isAuthenticated={!!session} />
           <main className="flex-1 pt-header-height">{children}</main>
