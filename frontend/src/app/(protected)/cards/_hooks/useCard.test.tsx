@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { renderHook, waitFor } from '@testing-library/react';
-import { createProvider } from '@/test/helpers';
+import { createProvider, createTestUuid } from '@/test/helpers';
 import { createMockCard } from '@/test/factories';
 import { useCard } from './useCard';
 import { fetchCard } from '@/app/(protected)/cards/_lib/fetchCard';
@@ -17,13 +17,13 @@ describe('useCard', () => {
   describe('成功時', () => {
     it('fetchCardを呼び出してデータを取得する', async () => {
       const mockCard: CardDetail = createMockCard({
-        id: 1,
+        id: createTestUuid(1),
         title: 'テストカード',
       });
 
       vi.mocked(fetchCard).mockResolvedValue(mockCard);
 
-      const { result } = renderHook(() => useCard(1), {
+      const { result } = renderHook(() => useCard('1'), {
         wrapper: createProvider(),
       });
 
@@ -41,12 +41,12 @@ describe('useCard', () => {
       expect(result.current.data).toEqual(mockCard);
 
       // fetchCardが正しい引数で呼ばれたことを確認
-      expect(fetchCard).toHaveBeenCalledWith(1);
+      expect(fetchCard).toHaveBeenCalledWith('1');
       expect(fetchCard).toHaveBeenCalledTimes(1);
     });
 
-    it('idが0の時、クエリを実行しない', () => {
-      const { result } = renderHook(() => useCard(0), {
+    it('idが空文字列の時、クエリを実行しない', () => {
+      const { result } = renderHook(() => useCard(''), {
         wrapper: createProvider(),
       });
 
@@ -64,7 +64,7 @@ describe('useCard', () => {
     it('fetchCardがエラーをスローした場合、エラー状態になる', async () => {
       vi.mocked(fetchCard).mockRejectedValue(new Error('カード詳細の取得に失敗しました'));
 
-      const { result } = renderHook(() => useCard(1), {
+      const { result } = renderHook(() => useCard('1'), {
         wrapper: createProvider(),
       });
 
@@ -86,14 +86,14 @@ describe('useCard', () => {
     it('正しいqueryKeyを使用する', async () => {
       vi.mocked(fetchCard).mockResolvedValue(createMockCard());
 
-      const { result } = renderHook(() => useCard(42), {
+      const { result } = renderHook(() => useCard('42'), {
         wrapper: createProvider(),
       });
 
       await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
       // fetchCardが正しいidで呼ばれたことを確認
-      expect(fetchCard).toHaveBeenCalledWith(42);
+      expect(fetchCard).toHaveBeenCalledWith('42');
     });
   });
 });
