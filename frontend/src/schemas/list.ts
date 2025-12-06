@@ -1,7 +1,6 @@
 import { z } from 'zod';
 import { listBookSchema } from '@/schemas/listBooks';
 import { bookBaseSchema } from '@/schemas/book';
-import { authorSchema } from '@/schemas/author';
 
 // Listベーススキーマ
 export const listBaseSchema = z.object({
@@ -31,7 +30,6 @@ export const listDetailSchema = listSchema.extend({
   books: z.array(
     z.object({
       ...bookBaseSchema.shape,
-      authors: authorSchema.array(),
     }),
   ),
   list_books: z.array(listBookSchema),
