@@ -3,6 +3,7 @@ import { renderHook } from '@testing-library/react';
 import { mockUseListMutations, mockUseModal } from '@/test/mocks';
 import { createMockList } from '@/test/factories';
 import { useListDetailView } from './useListDetailView';
+import { createTestUuid } from '@/test/helpers';
 
 // モックの設定
 vi.mock('@/hooks/useModal');
@@ -28,12 +29,12 @@ describe('useListDetailView', () => {
       // 確認ダイアログを偽物にして、falseを返す
       const confirmSpy = vi.spyOn(window, 'confirm').mockReturnValue(false);
 
-      const list = createMockList({ id: 1 });
+      const list = createMockList({ id: createTestUuid(1) });
 
       const { result } = renderHook(() => useListDetailView(list));
 
       // 削除を実行
-      result.current.handleDelete(1);
+      result.current.handleDelete(createTestUuid(1));
 
       // 確認ダイアログが表示されたことを確認
       expect(confirmSpy).toHaveBeenCalledWith('本当に削除しますか？');
@@ -46,18 +47,18 @@ describe('useListDetailView', () => {
       // 確認ダイアログを偽物にして、true を返す
       const confirmSpy = vi.spyOn(window, 'confirm').mockReturnValue(true);
 
-      const list = createMockList({ id: 1 });
+      const list = createMockList({ id: createTestUuid(1) });
 
       const { result } = renderHook(() => useListDetailView(list));
 
       // 削除を実行
-      result.current.handleDelete(1);
+      result.current.handleDelete(createTestUuid(1));
 
       // 確認ダイアログが表示されたことを確認
       expect(confirmSpy).toHaveBeenCalledWith('本当に削除しますか？');
 
       // 削除関数が正しい引数で呼ばれたことを確認
-      expect(mockDeleteList).toHaveBeenCalledWith(1);
+      expect(mockDeleteList).toHaveBeenCalledWith(createTestUuid(1));
     });
   });
 
