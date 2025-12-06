@@ -11,21 +11,20 @@ type Props = {
 
 export default async function ListPage({ params }: Props) {
   const { id } = await params;
-  const listId = Number(id);
 
   const queryClient = createServerQueryClient();
 
   await queryClient.prefetchQuery({
-    queryKey: queryKeys.lists.detail(listId),
+    queryKey: queryKeys.lists.detail(id),
     queryFn: async () => {
-      const data = await authenticatedRequest(`/lists/${listId}`);
+      const data = await authenticatedRequest(`/lists/${id}`);
       return listDetailSchema.parse(data);
     },
   });
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      <ListDetailClient id={listId} />
+      <ListDetailClient id={id} />
     </HydrationBoundary>
   );
 }

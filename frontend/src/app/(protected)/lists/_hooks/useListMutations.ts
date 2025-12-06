@@ -5,7 +5,7 @@ import { ListBase, ListFormData } from '@/app/(protected)/lists/_types';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 // 更新用の型
-type UpdateListData = ListFormData & { id: number };
+type UpdateListData = ListFormData & { id: string };
 
 export function useListMutations() {
   const queryClient = useQueryClient();
@@ -72,7 +72,7 @@ export function useListMutations() {
 
   // 削除
   const deleteMutation = useMutation({
-    mutationFn: async (id: number) => {
+    mutationFn: async (id: string) => {
       const response = await fetch(`/api/lists/${id}`, { method: 'DELETE' });
 
       if (!response.ok) {

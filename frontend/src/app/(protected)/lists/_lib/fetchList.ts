@@ -4,7 +4,7 @@ import { listDetailSchema, type ListDetail } from '@/app/(protected)/lists/_type
  * リスト詳細を取得する
  * クライアントコンポーネント（useQuery）で使用
  */
-export async function fetchList(id: number): Promise<ListDetail> {
+export async function fetchList(id: string): Promise<ListDetail> {
   const response = await fetch(`/api/lists/${id}`);
 
   if (!response.ok) {
