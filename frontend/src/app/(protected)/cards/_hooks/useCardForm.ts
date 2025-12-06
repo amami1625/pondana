@@ -5,7 +5,7 @@ import { useCardMutations } from '@/app/(protected)/cards/_hooks/useCardMutation
 
 interface UseCardFormProps {
   card?: Card;
-  bookId: number;
+  bookId: string;
   cancel: () => void;
 }
 

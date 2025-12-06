@@ -9,7 +9,7 @@ export function useCardDetailView(card: CardDetail) {
   const { deleteCard } = useCardMutations();
   const updateModal = useModal();
 
-  const handleDelete = (bookId: number, cardId: number) => {
+  const handleDelete = (bookId: string, cardId: string) => {
     if (!confirm('本当に削除しますか？')) {
       return;
     }

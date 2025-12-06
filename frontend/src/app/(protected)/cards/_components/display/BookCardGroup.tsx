@@ -9,7 +9,7 @@ import { useModal } from '@/hooks/useModal';
 
 interface BookCardGroupProps {
   book: {
-    id: number;
+    id: string;
     title: string;
   };
   cards: Card[];

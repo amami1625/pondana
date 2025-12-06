@@ -8,7 +8,7 @@ import FormTextarea from '@/components/forms/FormTextarea';
 
 interface CardFormProps {
   card?: Card;
-  bookId: number;
+  bookId: string;
   submitLabel: string;
   onClose: () => void;
 }
