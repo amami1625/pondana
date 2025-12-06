@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { getCategoryColor } from '@/lib/utils';
 
 interface BookCardProps {
-  id: number;
+  id: string;
   title: string;
   authors?: { name: string }[];
   category?: { name: string };

@@ -5,7 +5,7 @@ import Button from '@/components/buttons/Button';
 interface CardActionsProps {
   onEdit: () => void;
   onDelete: () => void;
-  id: number;
+  id: string;
 }
 
 export default function CardActions({ onEdit, onDelete, id }: CardActionsProps) {

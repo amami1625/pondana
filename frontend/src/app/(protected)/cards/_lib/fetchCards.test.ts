@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { createMockCard } from '@/test/factories';
 import { fetchCards } from './fetchCards';
-import { toJapaneseLocaleString } from '@/test/helpers';
+import { toJapaneseLocaleString, createTestUuid } from '@/test/helpers';
 
 describe('fetchCards', () => {
   beforeEach(() => {
@@ -13,11 +13,11 @@ describe('fetchCards', () => {
       const mockApiResponse = {
         books: [
           {
-            book: { id: 1, title: 'テスト本A' },
-            cards: [createMockCard({ id: 1, book_id: 1 })],
+            book: { id: createTestUuid(1), title: 'テスト本A' },
+            cards: [createMockCard({ id: createTestUuid(1), book_id: createTestUuid(1) })],
           },
           {
-            book: { id: 2, title: 'テスト本B' },
+            book: { id: createTestUuid(2), title: 'テスト本B' },
             cards: [],
           },
         ],
@@ -39,13 +39,13 @@ describe('fetchCards', () => {
       const expectedDate = toJapaneseLocaleString('2025-01-01T00:00:00Z');
 
       expect(result.books[0]).toEqual({
-        book: { id: 1, title: 'テスト本A' },
+        book: { id: createTestUuid(1), title: 'テスト本A' },
         cards: [
           {
-            id: 1,
+            id: createTestUuid(1),
             title: 'テストカード',
             content: 'テスト本文',
-            book_id: 1,
+            book_id: createTestUuid(1),
             created_at: expectedDate,
             updated_at: expectedDate,
           },
@@ -53,7 +53,7 @@ describe('fetchCards', () => {
       });
 
       expect(result.books[1]).toEqual({
-        book: { id: 2, title: 'テスト本B' },
+        book: { id: createTestUuid(2), title: 'テスト本B' },
         cards: [],
       });
 

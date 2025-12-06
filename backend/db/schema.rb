@@ -10,8 +10,9 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_12_01_115405) do
+ActiveRecord::Schema[7.1].define(version: 2025_12_06_022342) do
   # These are extensions that must be enabled in order to support this database
+  enable_extension "pgcrypto"
   enable_extension "plpgsql"
 
   create_table "authors", force: :cascade do |t|
@@ -23,26 +24,24 @@ ActiveRecord::Schema[7.1].define(version: 2025_12_01_115405) do
   end
 
   create_table "book_authors", force: :cascade do |t|
-    t.bigint "book_id", null: false
     t.bigint "author_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.uuid "book_id", null: false
     t.index ["author_id"], name: "index_book_authors_on_author_id"
-    t.index ["book_id", "author_id"], name: "index_book_authors_on_book_id_and_author_id", unique: true
     t.index ["book_id"], name: "index_book_authors_on_book_id"
   end
 
   create_table "book_tags", force: :cascade do |t|
-    t.bigint "book_id", null: false
     t.bigint "tag_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["book_id", "tag_id"], name: "index_book_tags_on_book_id_and_tag_id", unique: true
+    t.uuid "book_id", null: false
     t.index ["book_id"], name: "index_book_tags_on_book_id"
     t.index ["tag_id"], name: "index_book_tags_on_tag_id"
   end
 
-  create_table "books", force: :cascade do |t|
+  create_table "books", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "title", null: false
     t.text "description"
     t.bigint "user_id", null: false
@@ -56,12 +55,12 @@ ActiveRecord::Schema[7.1].define(version: 2025_12_01_115405) do
     t.index ["user_id"], name: "index_books_on_user_id"
   end
 
-  create_table "cards", force: :cascade do |t|
-    t.bigint "book_id", null: false
+  create_table "cards", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "title", null: false
     t.text "content", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.uuid "book_id", null: false
     t.index ["book_id"], name: "index_cards_on_book_id"
   end
 
@@ -74,16 +73,15 @@ ActiveRecord::Schema[7.1].define(version: 2025_12_01_115405) do
   end
 
   create_table "list_books", force: :cascade do |t|
-    t.bigint "list_id", null: false
-    t.bigint "book_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.uuid "book_id", null: false
+    t.uuid "list_id", null: false
     t.index ["book_id"], name: "index_list_books_on_book_id"
-    t.index ["list_id", "book_id"], name: "index_list_books_on_list_id_and_book_id", unique: true
     t.index ["list_id"], name: "index_list_books_on_list_id"
   end
 
-  create_table "lists", force: :cascade do |t|
+  create_table "lists", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "name"
     t.text "description"
     t.bigint "user_id", null: false

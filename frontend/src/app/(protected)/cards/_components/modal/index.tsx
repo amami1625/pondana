@@ -5,7 +5,7 @@ import { Card } from '@/app/(protected)/cards/_types';
 
 interface CardModalProps {
   card?: Card;
-  bookId: number;
+  bookId: string;
   bookTitle: string;
   isOpen: boolean;
   onClose: () => void;

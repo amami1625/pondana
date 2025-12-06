@@ -4,7 +4,7 @@ import { bookDetailSchema, type BookDetail } from '@/app/(protected)/books/_type
  * 書籍詳細を取得する
  * クライアントコンポーネント（useQuery）で使用
  */
-export async function fetchBook(id: number): Promise<BookDetail> {
+export async function fetchBook(id: string): Promise<BookDetail> {
   const response = await fetch(`/api/books/${id}`);
 
   if (!response.ok) {

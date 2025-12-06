@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { renderHook, waitFor, act } from '@testing-library/react';
-import { createProvider, createTestQueryClient } from '@/test/helpers';
+import { createProvider, createTestQueryClient, createTestUuid } from '@/test/helpers';
 import {
   createMockListBook,
   createMockBook,
@@ -26,7 +26,10 @@ describe('useListBookMutations', () => {
 
   describe('addListBook', () => {
     it('リストへの本の追加に成功する', async () => {
-      const mockListBook = createMockListBook({ list_id: 1, book_id: 1 });
+      const mockListBook = createMockListBook({
+        list_id: createTestUuid(1),
+        book_id: createTestUuid(1),
+      });
       const queryClient = createTestQueryClient();
 
       // 事前にlists、books、topページのデータをキャッシュに追加
@@ -51,8 +54,8 @@ describe('useListBookMutations', () => {
 
       act(() =>
         result.current.addListBook({
-          list_id: 1,
-          book_id: 1,
+          list_id: createTestUuid(1),
+          book_id: createTestUuid(1),
         }),
       );
 
@@ -62,8 +65,8 @@ describe('useListBookMutations', () => {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          list_id: 1,
-          book_id: 1,
+          list_id: createTestUuid(1),
+          book_id: createTestUuid(1),
         }),
       });
 
@@ -99,8 +102,8 @@ describe('useListBookMutations', () => {
 
       act(() =>
         result.current.addListBook({
-          list_id: 1,
-          book_id: 1,
+          list_id: createTestUuid(1),
+          book_id: createTestUuid(1),
         }),
       );
 
@@ -110,8 +113,8 @@ describe('useListBookMutations', () => {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          list_id: 1,
-          book_id: 1,
+          list_id: createTestUuid(1),
+          book_id: createTestUuid(1),
         }),
       });
 
@@ -136,8 +139,8 @@ describe('useListBookMutations', () => {
 
       act(() =>
         result.current.addListBook({
-          list_id: 1,
-          book_id: 1,
+          list_id: createTestUuid(1),
+          book_id: createTestUuid(1),
         }),
       );
 
@@ -147,8 +150,8 @@ describe('useListBookMutations', () => {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          list_id: 1,
-          book_id: 1,
+          list_id: createTestUuid(1),
+          book_id: createTestUuid(1),
         }),
       });
 

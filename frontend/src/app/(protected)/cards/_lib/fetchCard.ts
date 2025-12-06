@@ -4,7 +4,7 @@ import { cardDetailSchema, type CardDetail } from '@/app/(protected)/cards/_type
  * カード詳細を取得する
  * クライアントコンポーネント（useQuery）で使用
  */
-export async function fetchCard(id: number): Promise<CardDetail> {
+export async function fetchCard(id: string): Promise<CardDetail> {
   const response = await fetch(`/api/cards/${id}`);
 
   if (!response.ok) {

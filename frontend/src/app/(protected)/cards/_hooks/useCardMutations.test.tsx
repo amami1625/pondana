@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { renderHook, waitFor, act } from '@testing-library/react';
-import { createProvider, createTestQueryClient } from '@/test/helpers';
+import { createProvider, createTestQueryClient, createTestUuid } from '@/test/helpers';
 import { createMockBook, createMockCard, createMockTopPageData } from '@/test/factories';
 import { useCardMutations } from './useCardMutations';
 import toast from 'react-hot-toast';
@@ -24,13 +24,16 @@ describe('useCardMutations', () => {
       const mockCard = createMockCard({
         title: 'テストカード',
         content: 'テスト本文',
-        book_id: 1,
+        book_id: createTestUuid(1),
       });
       const queryClient = createTestQueryClient();
 
       // 事前にcardsとbooks, topページのデータをキャッシュに追加
-      queryClient.setQueryData(['cards'], [createMockCard({ id: 1 })]);
-      queryClient.setQueryData(['books', 'detail', 1], createMockBook({ id: 1 }));
+      queryClient.setQueryData(['cards'], [createMockCard({ id: createTestUuid(1) })]);
+      queryClient.setQueryData(
+        ['books', 'detail', createTestUuid(1)],
+        createMockBook({ id: createTestUuid(1) }),
+      );
       queryClient.setQueryData(['top'], createMockTopPageData());
 
       vi.stubGlobal(
@@ -52,7 +55,7 @@ describe('useCardMutations', () => {
       // ミューテーション実行
       act(() =>
         result.current.createCard({
-          book_id: 1,
+          book_id: createTestUuid(1),
           title: 'テストカード',
           content: 'テスト本文',
         }),
@@ -61,11 +64,11 @@ describe('useCardMutations', () => {
       // 完了を待つ
       await waitFor(() => expect(result.current.isCreating).toBe(false));
 
-      expect(fetch).toHaveBeenCalledWith('/api/books/1/cards', {
+      expect(fetch).toHaveBeenCalledWith(`/api/books/${createTestUuid(1)}/cards`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          book_id: 1,
+          book_id: createTestUuid(1),
           title: 'テストカード',
           content: 'テスト本文',
         }),
@@ -76,7 +79,7 @@ describe('useCardMutations', () => {
 
       // キャッシュが無効化されることを確認
       const cardsQueryState = queryClient.getQueryState(['cards']);
-      const bookQueryState = queryClient.getQueryState(['books', 'detail', 1]);
+      const bookQueryState = queryClient.getQueryState(['books', 'detail', createTestUuid(1)]);
       const topQueryState = queryClient.getQueryState(['top']);
       expect(cardsQueryState?.isInvalidated).toBe(true);
       expect(bookQueryState?.isInvalidated).toBe(true);
@@ -105,7 +108,7 @@ describe('useCardMutations', () => {
       // ミューテーション実行
       act(() =>
         result.current.createCard({
-          book_id: 1,
+          book_id: createTestUuid(1),
           title: 'テストカード',
           content: 'テスト本文',
         }),
@@ -114,11 +117,11 @@ describe('useCardMutations', () => {
       // エラーを待つ
       await waitFor(() => expect(result.current.createError).toBeInstanceOf(Error));
 
-      expect(fetch).toHaveBeenCalledWith('/api/books/1/cards', {
+      expect(fetch).toHaveBeenCalledWith(`/api/books/${createTestUuid(1)}/cards`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          book_id: 1,
+          book_id: createTestUuid(1),
           title: 'テストカード',
           content: 'テスト本文',
         }),
@@ -146,7 +149,7 @@ describe('useCardMutations', () => {
       // ミューテーション実行
       act(() =>
         result.current.createCard({
-          book_id: 1,
+          book_id: createTestUuid(1),
           title: 'テストカード',
           content: 'テスト本文',
         }),
@@ -155,11 +158,11 @@ describe('useCardMutations', () => {
       // エラーを待つ
       await waitFor(() => expect(result.current.createError).toBeInstanceOf(Error));
 
-      expect(fetch).toHaveBeenCalledWith('/api/books/1/cards', {
+      expect(fetch).toHaveBeenCalledWith(`/api/books/${createTestUuid(1)}/cards`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          book_id: 1,
+          book_id: createTestUuid(1),
           title: 'テストカード',
           content: 'テスト本文',
         }),
@@ -177,17 +180,23 @@ describe('useCardMutations', () => {
   describe('updateCard', () => {
     it('カードの更新が成功する', async () => {
       const mockCard = createMockCard({
-        id: 1,
+        id: createTestUuid(1),
         title: 'テストカード',
         content: 'テスト本文',
-        book_id: 1,
+        book_id: createTestUuid(1),
       });
       const queryClient = createTestQueryClient();
 
       // 事前にcardsとbooks, topページのデータをキャッシュに追加
-      queryClient.setQueryData(['cards'], [createMockCard({ id: 1 })]);
-      queryClient.setQueryData(['cards', 'detail', 1], createMockCard({ id: 1 }));
-      queryClient.setQueryData(['books', 'detail', 1], createMockBook({ id: 1 }));
+      queryClient.setQueryData(['cards'], [createMockCard({ id: createTestUuid(1) })]);
+      queryClient.setQueryData(
+        ['cards', 'detail', createTestUuid(1)],
+        createMockCard({ id: createTestUuid(1) }),
+      );
+      queryClient.setQueryData(
+        ['books', 'detail', createTestUuid(1)],
+        createMockBook({ id: createTestUuid(1) }),
+      );
       queryClient.setQueryData(['top'], createMockTopPageData());
 
       vi.stubGlobal(
@@ -209,34 +218,41 @@ describe('useCardMutations', () => {
       // ミューテーション実行
       act(() =>
         result.current.updateCard({
-          id: 1,
+          id: createTestUuid(1),
           title: 'テストカード',
           content: 'テスト本文',
-          book_id: 1,
+          book_id: createTestUuid(1),
         }),
       );
 
       // 完了を待つ
       await waitFor(() => expect(result.current.isUpdating).toBe(false));
 
-      expect(fetch).toHaveBeenCalledWith('/api/books/1/cards/1', {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          id: 1,
-          title: 'テストカード',
-          content: 'テスト本文',
-          book_id: 1,
-        }),
-      });
+      expect(fetch).toHaveBeenCalledWith(
+        `/api/books/${createTestUuid(1)}/cards/${createTestUuid(1)}`,
+        {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            id: createTestUuid(1),
+            title: 'テストカード',
+            content: 'テスト本文',
+            book_id: createTestUuid(1),
+          }),
+        },
+      );
 
       // トーストが表示されることを確認
       expect(toast.success).toHaveBeenCalledWith('カードを更新しました');
 
       // キャッシュが無効化されることを確認
       const cardsQueryState = queryClient.getQueryState(['cards']);
-      const cardDetailQueryState = queryClient.getQueryState(['cards', 'detail', 1]);
-      const bookQueryState = queryClient.getQueryState(['books', 'detail', 1]);
+      const cardDetailQueryState = queryClient.getQueryState([
+        'cards',
+        'detail',
+        createTestUuid(1),
+      ]);
+      const bookQueryState = queryClient.getQueryState(['books', 'detail', createTestUuid(1)]);
       const topQueryState = queryClient.getQueryState(['top']);
       expect(cardsQueryState?.isInvalidated).toBe(true);
       expect(cardDetailQueryState?.isInvalidated).toBe(true);
@@ -266,26 +282,29 @@ describe('useCardMutations', () => {
       // ミューテーション実行
       act(() =>
         result.current.updateCard({
-          id: 1,
+          id: createTestUuid(1),
           title: 'テストカード',
           content: 'テスト本文',
-          book_id: 1,
+          book_id: createTestUuid(1),
         }),
       );
 
       // エラーを待つ
       await waitFor(() => expect(result.current.updateError).toBeInstanceOf(Error));
 
-      expect(fetch).toHaveBeenCalledWith('/api/books/1/cards/1', {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          id: 1,
-          title: 'テストカード',
-          content: 'テスト本文',
-          book_id: 1,
-        }),
-      });
+      expect(fetch).toHaveBeenCalledWith(
+        `/api/books/${createTestUuid(1)}/cards/${createTestUuid(1)}`,
+        {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            id: createTestUuid(1),
+            title: 'テストカード',
+            content: 'テスト本文',
+            book_id: createTestUuid(1),
+          }),
+        },
+      );
 
       // エラー状態を確認
       expect(result.current.isUpdating).toBe(false);
@@ -309,26 +328,29 @@ describe('useCardMutations', () => {
       // ミューテーション実行
       act(() =>
         result.current.updateCard({
-          id: 1,
+          id: createTestUuid(1),
           title: 'テストカード',
           content: 'テスト本文',
-          book_id: 1,
+          book_id: createTestUuid(1),
         }),
       );
 
       // エラーを待つ
       await waitFor(() => expect(result.current.updateError).toBeInstanceOf(Error));
 
-      expect(fetch).toHaveBeenCalledWith('/api/books/1/cards/1', {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          id: 1,
-          title: 'テストカード',
-          content: 'テスト本文',
-          book_id: 1,
-        }),
-      });
+      expect(fetch).toHaveBeenCalledWith(
+        `/api/books/${createTestUuid(1)}/cards/${createTestUuid(1)}`,
+        {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            id: createTestUuid(1),
+            title: 'テストカード',
+            content: 'テスト本文',
+            book_id: createTestUuid(1),
+          }),
+        },
+      );
 
       // エラー状態を確認
       expect(result.current.isUpdating).toBe(false);
@@ -342,16 +364,19 @@ describe('useCardMutations', () => {
   describe('deleteCard', () => {
     it('カードの削除が成功する', async () => {
       const mockCard = createMockCard({
-        id: 1,
+        id: createTestUuid(1),
         title: 'テストカード',
         content: 'テスト本文',
-        book_id: 1,
+        book_id: createTestUuid(1),
       });
       const queryClient = createTestQueryClient();
 
       // 事前にcardsとbooks, topページのデータをキャッシュに追加
-      queryClient.setQueryData(['cards'], [createMockCard({ id: 1 })]);
-      queryClient.setQueryData(['books', 'detail', 1], createMockBook({ id: 1 }));
+      queryClient.setQueryData(['cards'], [createMockCard({ id: createTestUuid(1) })]);
+      queryClient.setQueryData(
+        ['books', 'detail', createTestUuid(1)],
+        createMockBook({ id: createTestUuid(1) }),
+      );
       queryClient.setQueryData(['top'], createMockTopPageData());
 
       vi.stubGlobal(
@@ -373,24 +398,27 @@ describe('useCardMutations', () => {
       // ミューテーション実行
       act(() =>
         result.current.deleteCard({
-          cardId: 1,
-          bookId: 1,
+          cardId: createTestUuid(1),
+          bookId: createTestUuid(1),
         }),
       );
 
       // 完了を待つ
       await waitFor(() => expect(result.current.isDeleting).toBe(false));
 
-      expect(fetch).toHaveBeenCalledWith('/api/books/1/cards/1', {
-        method: 'DELETE',
-      });
+      expect(fetch).toHaveBeenCalledWith(
+        `/api/books/${createTestUuid(1)}/cards/${createTestUuid(1)}`,
+        {
+          method: 'DELETE',
+        },
+      );
 
       // トーストが表示されることを確認
       expect(toast.success).toHaveBeenCalledWith('カードを削除しました');
 
       // キャッシュが無効化されることを確認
       const cardsQueryState = queryClient.getQueryState(['cards']);
-      const bookQueryState = queryClient.getQueryState(['books', 'detail', 1]);
+      const bookQueryState = queryClient.getQueryState(['books', 'detail', createTestUuid(1)]);
       const topQueryState = queryClient.getQueryState(['top']);
       expect(cardsQueryState?.isInvalidated).toBe(true);
       expect(bookQueryState?.isInvalidated).toBe(true);
@@ -419,17 +447,20 @@ describe('useCardMutations', () => {
       // ミューテーション実行
       act(() =>
         result.current.deleteCard({
-          cardId: 1,
-          bookId: 1,
+          cardId: createTestUuid(1),
+          bookId: createTestUuid(1),
         }),
       );
 
       // エラーを待つ
       await waitFor(() => expect(result.current.deleteError).toBeInstanceOf(Error));
 
-      expect(fetch).toHaveBeenCalledWith('/api/books/1/cards/1', {
-        method: 'DELETE',
-      });
+      expect(fetch).toHaveBeenCalledWith(
+        `/api/books/${createTestUuid(1)}/cards/${createTestUuid(1)}`,
+        {
+          method: 'DELETE',
+        },
+      );
 
       // エラー状態を確認
       expect(result.current.isDeleting).toBe(false);
@@ -453,17 +484,20 @@ describe('useCardMutations', () => {
       // ミューテーション実行
       act(() =>
         result.current.deleteCard({
-          cardId: 1,
-          bookId: 1,
+          cardId: createTestUuid(1),
+          bookId: createTestUuid(1),
         }),
       );
 
       // エラーを待つ
       await waitFor(() => expect(result.current.deleteError).toBeInstanceOf(Error));
 
-      expect(fetch).toHaveBeenCalledWith('/api/books/1/cards/1', {
-        method: 'DELETE',
-      });
+      expect(fetch).toHaveBeenCalledWith(
+        `/api/books/${createTestUuid(1)}/cards/${createTestUuid(1)}`,
+        {
+          method: 'DELETE',
+        },
+      );
 
       // エラー状態を確認
       expect(result.current.isDeleting).toBe(false);

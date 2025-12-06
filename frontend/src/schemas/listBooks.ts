@@ -2,8 +2,8 @@ import { z } from 'zod';
 
 // ListBookのバリデーションスキーマ(フォーム用)
 export const listBookFormSchema = z.object({
-  list_id: z.number().int().positive(),
-  book_id: z.number().int().positive(),
+  list_id: z.uuid(),
+  book_id: z.uuid(),
 });
 
 // ListBookのスキーマ(APIレスポンス用)

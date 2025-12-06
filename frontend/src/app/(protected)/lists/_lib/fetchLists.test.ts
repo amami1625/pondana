@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { createMockList } from '@/test/factories';
-import { toJapaneseLocaleString } from '@/test/helpers';
+import { toJapaneseLocaleString, createTestUuid } from '@/test/helpers';
 import { fetchLists } from './fetchLists';
 
 describe('fetchLists', () => {
@@ -11,8 +11,8 @@ describe('fetchLists', () => {
   describe('成功時', () => {
     it('リストデータを正しく取得できる', async () => {
       const mockApiResponse = [
-        createMockList({ id: 1, name: 'テストリストA' }),
-        createMockList({ id: 2, name: 'テストリストB' }),
+        createMockList({ id: createTestUuid(1), name: 'テストリストA' }),
+        createMockList({ id: createTestUuid(2), name: 'テストリストB' }),
       ];
 
       vi.stubGlobal(
@@ -30,7 +30,7 @@ describe('fetchLists', () => {
       const expectedDate = toJapaneseLocaleString('2025-01-01T00:00:00Z');
 
       expect(result[0]).toEqual({
-        id: 1,
+        id: createTestUuid(1),
         name: 'テストリストA',
         description: 'テスト説明',
         user_id: 1,
@@ -41,7 +41,7 @@ describe('fetchLists', () => {
       });
 
       expect(result[1]).toEqual({
-        id: 2,
+        id: createTestUuid(2),
         name: 'テストリストB',
         description: 'テスト説明',
         user_id: 1,

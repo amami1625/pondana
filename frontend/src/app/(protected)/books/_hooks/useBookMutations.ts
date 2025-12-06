@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
 
 // 更新用の型
-type UpdateBookData = BookFormData & { id: number };
+type UpdateBookData = BookFormData & { id: string };
 
 export function useBookMutations() {
   const queryClient = useQueryClient();
@@ -67,7 +67,7 @@ export function useBookMutations() {
 
   // 削除
   const deleteMutation = useMutation({
-    mutationFn: async (id: number) => {
+    mutationFn: async (id: string) => {
       const response = await fetch(`/api/books/${id}`, { method: 'DELETE' });
 
       if (!response.ok) {

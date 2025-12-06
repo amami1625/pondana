@@ -1,4 +1,5 @@
 import { ListDetail } from '@/schemas/list';
+import { createTestUuid } from '@/test/helpers';
 
 /**
  * テスト用のListDetailオブジェクトを作成するファクトリー関数
@@ -6,7 +7,7 @@ import { ListDetail } from '@/schemas/list';
  * @returns ListDetail型のモックオブジェクト
  */
 export const createMockList = (overrides?: Partial<ListDetail>): ListDetail => ({
-  id: 1,
+  id: createTestUuid(1),
   name: 'テストリスト',
   description: 'テスト説明',
   user_id: 1,

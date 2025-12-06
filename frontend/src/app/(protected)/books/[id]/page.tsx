@@ -11,21 +11,20 @@ type Props = {
 
 export default async function BookPage({ params }: Props) {
   const { id } = await params;
-  const bookId = Number(id);
 
   const queryClient = createServerQueryClient();
 
   await queryClient.prefetchQuery({
-    queryKey: queryKeys.books.detail(bookId),
+    queryKey: queryKeys.books.detail(id),
     queryFn: async () => {
-      const data = await authenticatedRequest(`/books/${bookId}`);
+      const data = await authenticatedRequest(`/books/${id}`);
       return bookDetailSchema.parse(data);
     },
   });
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      <BookDetailClient id={bookId} />
+      <BookDetailClient id={id} />
     </HydrationBoundary>
   );
 }

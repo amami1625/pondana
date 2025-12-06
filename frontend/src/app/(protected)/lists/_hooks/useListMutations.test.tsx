@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { renderHook, waitFor, act } from '@testing-library/react';
-import { createProvider, createTestQueryClient } from '@/test/helpers';
+import { createProvider, createTestQueryClient, createTestUuid } from '@/test/helpers';
 import { createMockList, createMockBook, createMockTopPageData } from '@/test/factories';
 import toast from 'react-hot-toast';
 import { useListMutations } from './useListMutations';
@@ -169,7 +169,7 @@ describe('useListMutations', () => {
   describe('updateList', () => {
     it('リストの更新に成功する', async () => {
       const mockList = createMockList({
-        id: 1,
+        id: createTestUuid(1),
         name: '更新されたリスト',
         description: '更新された説明',
       });
@@ -177,7 +177,10 @@ describe('useListMutations', () => {
 
       // 事前にlists、list detail、books、topページのデータをキャッシュに追加
       queryClient.setQueryData(['lists'], [createMockList()]);
-      queryClient.setQueryData(['lists', 'detail', 1], createMockList({ id: 1 }));
+      queryClient.setQueryData(
+        ['lists', 'detail', createTestUuid(1)],
+        createMockList({ id: createTestUuid(1) }),
+      );
       queryClient.setQueryData(['books'], [createMockBook()]);
       queryClient.setQueryData(['top'], createMockTopPageData());
 
@@ -198,7 +201,7 @@ describe('useListMutations', () => {
 
       act(() =>
         result.current.updateList({
-          id: 1,
+          id: createTestUuid(1),
           name: '更新されたリスト',
           description: '更新された説明',
           public: true,
@@ -207,11 +210,11 @@ describe('useListMutations', () => {
 
       await waitFor(() => expect(result.current.isUpdating).toBe(false));
 
-      expect(fetch).toHaveBeenCalledWith('/api/lists/1', {
+      expect(fetch).toHaveBeenCalledWith(`/api/lists/${createTestUuid(1)}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          id: 1,
+          id: createTestUuid(1),
           name: '更新されたリスト',
           description: '更新された説明',
           public: true,
@@ -223,7 +226,11 @@ describe('useListMutations', () => {
 
       // キャッシュが無効化されることを確認
       const listsQueryState = queryClient.getQueryState(['lists']);
-      const listDetailQueryState = queryClient.getQueryState(['lists', 'detail', 1]);
+      const listDetailQueryState = queryClient.getQueryState([
+        'lists',
+        'detail',
+        createTestUuid(1),
+      ]);
       const booksQueryState = queryClient.getQueryState(['books']);
       const topQueryState = queryClient.getQueryState(['top']);
       expect(listsQueryState?.isInvalidated).toBe(true);
@@ -252,7 +259,7 @@ describe('useListMutations', () => {
 
       act(() =>
         result.current.updateList({
-          id: 1,
+          id: createTestUuid(1),
           name: '更新されたリスト',
           description: '更新された説明',
           public: true,
@@ -261,11 +268,11 @@ describe('useListMutations', () => {
 
       await waitFor(() => expect(result.current.updateError).toBeInstanceOf(Error));
 
-      expect(fetch).toHaveBeenCalledWith('/api/lists/1', {
+      expect(fetch).toHaveBeenCalledWith(`/api/lists/${createTestUuid(1)}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          id: 1,
+          id: createTestUuid(1),
           name: '更新されたリスト',
           description: '更新された説明',
           public: true,
@@ -293,7 +300,7 @@ describe('useListMutations', () => {
 
       act(() =>
         result.current.updateList({
-          id: 1,
+          id: createTestUuid(1),
           name: '更新されたリスト',
           description: '更新された説明',
           public: true,
@@ -302,11 +309,11 @@ describe('useListMutations', () => {
 
       await waitFor(() => expect(result.current.updateError).toBeInstanceOf(Error));
 
-      expect(fetch).toHaveBeenCalledWith('/api/lists/1', {
+      expect(fetch).toHaveBeenCalledWith(`/api/lists/${createTestUuid(1)}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          id: 1,
+          id: createTestUuid(1),
           name: '更新されたリスト',
           description: '更新された説明',
           public: true,
@@ -323,7 +330,7 @@ describe('useListMutations', () => {
 
   describe('deleteList', () => {
     it('リストの削除に成功する', async () => {
-      const mockList = createMockList({ id: 1 });
+      const mockList = createMockList({ id: createTestUuid(1) });
       const queryClient = createTestQueryClient();
 
       // 事前にlists、books、topページのデータをキャッシュに追加
@@ -346,11 +353,11 @@ describe('useListMutations', () => {
       expect(result.current.isDeleting).toBe(false);
       expect(result.current.deleteError).toBeNull();
 
-      act(() => result.current.deleteList(1));
+      act(() => result.current.deleteList(createTestUuid(1)));
 
       await waitFor(() => expect(result.current.isDeleting).toBe(false));
 
-      expect(fetch).toHaveBeenCalledWith('/api/lists/1', {
+      expect(fetch).toHaveBeenCalledWith(`/api/lists/${createTestUuid(1)}`, {
         method: 'DELETE',
       });
 
@@ -387,11 +394,11 @@ describe('useListMutations', () => {
       expect(result.current.isDeleting).toBe(false);
       expect(result.current.deleteError).toBeNull();
 
-      act(() => result.current.deleteList(1));
+      act(() => result.current.deleteList(createTestUuid(1)));
 
       await waitFor(() => expect(result.current.deleteError).toBeInstanceOf(Error));
 
-      expect(fetch).toHaveBeenCalledWith('/api/lists/1', {
+      expect(fetch).toHaveBeenCalledWith(`/api/lists/${createTestUuid(1)}`, {
         method: 'DELETE',
       });
 
@@ -417,11 +424,11 @@ describe('useListMutations', () => {
       expect(result.current.isDeleting).toBe(false);
       expect(result.current.deleteError).toBeNull();
 
-      act(() => result.current.deleteList(1));
+      act(() => result.current.deleteList(createTestUuid(1)));
 
       await waitFor(() => expect(result.current.deleteError).toBeInstanceOf(Error));
 
-      expect(fetch).toHaveBeenCalledWith('/api/lists/1', {
+      expect(fetch).toHaveBeenCalledWith(`/api/lists/${createTestUuid(1)}`, {
         method: 'DELETE',
       });
 

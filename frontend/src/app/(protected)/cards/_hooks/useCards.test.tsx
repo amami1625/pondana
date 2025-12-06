@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { renderHook, waitFor } from '@testing-library/react';
-import { createProvider } from '@/test/helpers';
+import { createProvider, createTestUuid } from '@/test/helpers';
 import { createMockCard } from '@/test/factories';
 import { useCards } from './useCards';
 import { fetchCards } from '@/app/(protected)/cards/_lib/fetchCards';
@@ -19,8 +19,8 @@ describe('useCards', () => {
       const mockCardList: CardList = {
         books: [
           {
-            book: { id: 1, title: 'テスト本A' },
-            cards: [createMockCard({ id: 1, book_id: 1 })],
+            book: { id: createTestUuid(1), title: 'テスト本A' },
+            cards: [createMockCard({ id: createTestUuid(1), book_id: createTestUuid(1) })],
           },
         ],
       };

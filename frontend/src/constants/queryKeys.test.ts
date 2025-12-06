@@ -20,11 +20,11 @@ describe('queryKeys', () => {
     });
 
     it('lists.detail が正しいキーを返す', () => {
-      expect(queryKeys.lists.detail(1)).toEqual(['lists', 'detail', 1]);
+      expect(queryKeys.lists.detail('1')).toEqual(['lists', 'detail', '1']);
     });
 
     it('lists.detail が異なるIDで正しいキーを返す', () => {
-      expect(queryKeys.lists.detail(999)).toEqual(['lists', 'detail', 999]);
+      expect(queryKeys.lists.detail('999')).toEqual(['lists', 'detail', '999']);
     });
   });
 
@@ -34,11 +34,11 @@ describe('queryKeys', () => {
     });
 
     it('books.detail が正しいキーを返す', () => {
-      expect(queryKeys.books.detail(1)).toEqual(['books', 'detail', 1]);
+      expect(queryKeys.books.detail('1')).toEqual(['books', 'detail', '1']);
     });
 
     it('books.detail が異なるIDで正しいキーを返す', () => {
-      expect(queryKeys.books.detail(999)).toEqual(['books', 'detail', 999]);
+      expect(queryKeys.books.detail('999')).toEqual(['books', 'detail', '999']);
     });
   });
 
@@ -48,11 +48,11 @@ describe('queryKeys', () => {
     });
 
     it('cards.detail が正しいキーを返す', () => {
-      expect(queryKeys.cards.detail(1)).toEqual(['cards', 'detail', 1]);
+      expect(queryKeys.cards.detail('1')).toEqual(['cards', 'detail', '1']);
     });
 
     it('cards.detail が異なるIDで正しいキーを返す', () => {
-      expect(queryKeys.cards.detail(999)).toEqual(['cards', 'detail', 999]);
+      expect(queryKeys.cards.detail('999')).toEqual(['cards', 'detail', '999']);
     });
   });
 
