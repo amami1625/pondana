@@ -2,7 +2,7 @@ class Api::TopController < Api::ApplicationController
   def index
     # 最新の本（5件）
     recent_books = current_user.books
-                               .includes(:category, :tags, :authors)
+                               .includes(:category, :tags)
                                .order(created_at: :desc)
                                .limit(5)
 
@@ -22,7 +22,7 @@ class Api::TopController < Api::ApplicationController
                        .limit(5)
 
     render json: {
-      recent_books: recent_books.as_json(include: [:category, :tags, :authors]),
+      recent_books: recent_books.as_json(include: [:category, :tags]),
       recent_lists: recent_lists,
       recent_cards: recent_cards.as_json(include: [:book])
     }
