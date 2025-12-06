@@ -3,7 +3,7 @@ import { useListBookMutations } from '@/app/(protected)/listBooks/_hooks/useList
 import Button from '@/components/buttons/Button';
 
 interface BookItemProps {
-  listId: number;
+  listId: string;
   book: Book;
   isAdded: boolean;
 }
