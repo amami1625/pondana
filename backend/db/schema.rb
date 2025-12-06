@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_12_06_022342) do
+ActiveRecord::Schema[7.1].define(version: 2025_12_06_215843) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -51,7 +51,13 @@ ActiveRecord::Schema[7.1].define(version: 2025_12_06_022342) do
     t.boolean "public", default: false, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "google_books_id"
+    t.string "isbn"
+    t.text "subtitle"
+    t.string "thumbnail"
+    t.jsonb "authors", default: []
     t.index ["category_id"], name: "index_books_on_category_id"
+    t.index ["user_id", "google_books_id"], name: "index_books_on_user_id_and_google_books_id", unique: true, where: "(google_books_id IS NOT NULL)"
     t.index ["user_id"], name: "index_books_on_user_id"
   end
 
