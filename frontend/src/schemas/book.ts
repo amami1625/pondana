@@ -1,13 +1,13 @@
 import { z } from 'zod';
-import { categorySchema } from './category';
-import { tagSchema } from './tag';
-import { authorSchema } from './author';
+import { categorySchema } from '@/schemas/category';
+import { tagSchema } from '@/schemas/tag';
+import { authorSchema } from '@/schemas/author';
 import { listBookSchema } from '@/app/(protected)/listBooks/_types';
 import { cardSchema } from '@/app/(protected)/cards/_types';
 
 // Bookベーススキーマ
 export const bookBaseSchema = z.object({
-  id: z.number(),
+  id: z.uuid(),
   title: z.string(),
   description: z.string().nullable(),
   user_id: z.number(),
@@ -37,7 +37,7 @@ export const bookSchema = bookBaseSchema.extend({
 export const bookDetailSchema = bookSchema.extend({
   lists: z.array(
     z.object({
-      id: z.number(),
+      id: z.uuid(),
       name: z.string(),
       public: z.boolean(),
     }),
