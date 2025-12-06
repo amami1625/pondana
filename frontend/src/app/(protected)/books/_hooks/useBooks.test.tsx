@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { renderHook, waitFor } from '@testing-library/react';
-import { createProvider } from '@/test/helpers';
+import { createProvider, createTestUuid } from '@/test/helpers';
 import { createMockBook } from '@/test/factories';
 import { useBooks } from './useBooks';
 import { fetchBooks } from '@/app/(protected)/books/_lib/fetchBooks';
@@ -17,8 +17,8 @@ describe('useBooks', () => {
   describe('成功時', () => {
     it('fetchBooksを呼び出してデータを取得する', async () => {
       const mockBooks: Book[] = [
-        createMockBook({ id: 1, title: 'テスト本A' }),
-        createMockBook({ id: 2, title: 'テスト本B' }),
+        createMockBook({ id: createTestUuid(1), title: 'テスト本A' }),
+        createMockBook({ id: createTestUuid(2), title: 'テスト本B' }),
       ];
 
       vi.mocked(fetchBooks).mockResolvedValue(mockBooks);

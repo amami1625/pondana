@@ -5,6 +5,7 @@ import { createMockBook, createMockAuthor, createMockCategory } from '@/test/fac
 import { mockUseBookMutations, mockUseModal } from '@/test/mocks';
 import { useBookDetailView } from './useBookDetailView';
 import { createMockTag } from '@/test/factories/tag';
+import { createTestUuid } from '@/test/helpers';
 
 // モックの設定
 vi.mock('@/hooks/useModal');
@@ -30,12 +31,12 @@ describe('useBookDetailView', () => {
       // 確認ダイアログを偽物にして、falseを返す
       const confirmSpy = vi.spyOn(window, 'confirm').mockReturnValue(false);
 
-      const book = createMockBook({ id: 1 });
+      const book = createMockBook({ id: createTestUuid(1) });
 
       const { result } = renderHook(() => useBookDetailView(book));
 
       // 削除を実行
-      result.current.handleDelete(1);
+      result.current.handleDelete(createTestUuid(1));
 
       // 確認ダイアログが表示されたことを確認
       expect(confirmSpy).toHaveBeenCalledWith('本当に削除しますか？');
@@ -48,18 +49,18 @@ describe('useBookDetailView', () => {
       // 確認ダイアログを偽物にして、trueを返す
       const confirmSpy = vi.spyOn(window, 'confirm').mockReturnValue(true);
 
-      const book = createMockBook({ id: 1 });
+      const book = createMockBook({ id: createTestUuid(1) });
 
       const { result } = renderHook(() => useBookDetailView(book));
 
       // 削除を実行
-      result.current.handleDelete(1);
+      result.current.handleDelete(createTestUuid(1));
 
       // 確認ダイアログが表示されたことを確認
       expect(confirmSpy).toHaveBeenCalledWith('本当に削除しますか？');
 
       // 削除関数が正しい引数で呼ばれたことを確認
-      expect(mockDeleteBook).toHaveBeenCalledWith(1);
+      expect(mockDeleteBook).toHaveBeenCalledWith(createTestUuid(1));
     });
   });
 
