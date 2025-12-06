@@ -12,7 +12,7 @@ export function useBookDetailView(book: BookDetail) {
   const addListModal = useModal();
   const cardModal = useModal();
 
-  const handleDelete = (id: number) => {
+  const handleDelete = (id: string) => {
     if (!confirm('本当に削除しますか？')) {
       return;
     }

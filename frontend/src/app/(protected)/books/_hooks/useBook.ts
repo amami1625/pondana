@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { queryKeys } from '@/constants/queryKeys';
 import { fetchBook } from '@/app/(protected)/books/_lib/fetchBook';
 
-export function useBook(id: number) {
+export function useBook(id: string) {
   return useQuery({
     queryKey: queryKeys.books.detail(id),
     queryFn: () => fetchBook(id),
