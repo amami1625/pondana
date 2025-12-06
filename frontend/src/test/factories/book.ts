@@ -1,4 +1,5 @@
 import { BookDetail } from '@/app/(protected)/books/_types';
+import { createTestUuid } from '@/test/helpers';
 
 /**
  * テスト用のBookDetailオブジェクトを作成するファクトリー関数
@@ -6,7 +7,7 @@ import { BookDetail } from '@/app/(protected)/books/_types';
  * @returns BookDetail型のモックオブジェクト
  */
 export const createMockBook = (overrides?: Partial<BookDetail>): BookDetail => ({
-  id: 1,
+  id: createTestUuid(1),
   title: 'テスト本',
   description: 'テスト説明',
   user_id: 1,

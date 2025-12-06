@@ -1,4 +1,5 @@
 import { ListBook } from '@/schemas/listBooks';
+import { createTestUuid } from '@/test/helpers';
 
 /**
  * テスト用のListBookオブジェクトを作成するファクトリー関数
@@ -7,7 +8,7 @@ import { ListBook } from '@/schemas/listBooks';
  */
 export const createMockListBook = (overrides?: Partial<ListBook>): ListBook => ({
   id: 1,
-  list_id: 1,
-  book_id: 1,
+  list_id: createTestUuid(1),
+  book_id: createTestUuid(1),
   ...overrides,
 });
