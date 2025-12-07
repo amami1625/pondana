@@ -27,7 +27,7 @@ export default function ListDetailView({ list }: ListDetailProps) {
       <DetailContainer breadcrumbItems={breadcrumbItems}>
         <DetailCard>
           <DetailHeader title={list.name} badges={badges} />
-          <DetailDescription>{list.description || '説明が登録されていません。'}</DetailDescription>
+          <DetailDescription description={list.description} />
           <DetailMetadata createdAt={list.created_at} updatedAt={list.updated_at} />
           <ListActions
             onEdit={updateModal.open}
