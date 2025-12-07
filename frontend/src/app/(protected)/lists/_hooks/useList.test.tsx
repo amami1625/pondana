@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { renderHook, waitFor } from '@testing-library/react';
 import { createProvider, createTestUuid } from '@/test/helpers';
-import { createMockList, createMockBook, createMockAuthor } from '@/test/factories';
+import { createMockList, createMockBook } from '@/test/factories';
 import { useList } from './useList';
 import { fetchList } from '@/app/(protected)/lists/_lib/fetchList';
 import type { ListDetail } from '@/app/(protected)/lists/_types';
@@ -23,7 +23,7 @@ describe('useList', () => {
           createMockBook({
             id: createTestUuid(1),
             title: 'テスト本',
-            authors: [createMockAuthor({ id: 1, name: 'テスト著者' })],
+            authors: ['テスト著者'],
           }),
         ],
         list_books: [{ id: 1, list_id: createTestUuid(1), book_id: createTestUuid(1) }],

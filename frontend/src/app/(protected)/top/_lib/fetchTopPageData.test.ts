@@ -16,7 +16,9 @@ describe('fetchTopPageData', () => {
   describe('成功時', () => {
     it('トップページデータを正しく取得できる', async () => {
       const mockApiResponse = createMockTopPageData({
-        recent_books: [createMockBook({ id: createTestUuid(1), title: 'テスト本' })],
+        recent_books: [
+          createMockBook({ id: createTestUuid(1), title: 'テスト本', authors: ['テスト著者'] }),
+        ],
         recent_lists: [createMockList({ id: createTestUuid(1), name: 'テストリスト' })],
         recent_cards: [
           {
@@ -55,9 +57,13 @@ describe('fetchTopPageData', () => {
         rating: 5,
         reading_status: 'completed',
         public: true,
+        google_books_id: 'aaaaaaaaaa',
+        isbn: '999999999',
+        subtitle: null,
+        thumbnail: null,
+        authors: ['テスト著者'],
         created_at: expectedDate,
         updated_at: expectedDate,
-        authors: expect.any(Array),
       });
 
       expect(fetch).toHaveBeenCalledWith('/api/top');
