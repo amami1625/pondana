@@ -26,11 +26,14 @@ export default function BookDetailView({ book }: BookDetailProps) {
   return (
     <>
       <DetailContainer breadcrumbItems={breadcrumbItems}>
-        <DetailCard>
+        <DetailCard
+          thumbnail={book.thumbnail ? { src: book.thumbnail, alt: book.title } : undefined}
+        >
           <DetailHeader
             title={book.title}
             subtitle={book.subtitle ?? ''}
             authors={book.authors}
+            rating={book.rating ?? undefined}
             badges={badges}
           />
           <DetailDescription description={book.description} />

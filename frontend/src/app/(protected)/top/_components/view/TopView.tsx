@@ -49,6 +49,7 @@ export default function TopView({ books, lists, cards }: TopViewProps) {
                 title={book.title}
                 authors={book.authors}
                 category={book.category}
+                thumbnail={book.thumbnail}
               />
             ))}
           </div>

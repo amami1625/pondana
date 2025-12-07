@@ -22,7 +22,7 @@ export default function AddedBooks({ books, listBooks }: AddedBooksProps) {
       {books.length === 0 ? (
         <EmptyState element="本" context="detail" />
       ) : (
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <div className="flex flex-col gap-4">
           {books.map((book) => {
             const listBook = listBooks.find((lb) => lb.book_id === book.id);
             if (!listBook) return null;
