@@ -3,7 +3,7 @@ import BookForm from '@/app/(protected)/books/_components/forms';
 import BaseModal from '@/components/modals/BaseModal';
 
 interface BookFormModalProps {
-  book?: BookDetail;
+  book: BookDetail;
   isOpen: boolean;
   onClose: () => void;
 }

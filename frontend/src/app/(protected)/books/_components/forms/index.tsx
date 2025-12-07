@@ -6,26 +6,23 @@ import { BookDetail } from '@/app/(protected)/books/_types';
 import { STATUS_OPTIONS, RATING_OPTIONS } from '@/app/(protected)/books/_constants';
 import AuthorModal from '@/app/(protected)/authors/_components/modal';
 import CategoryModal from '@/app/(protected)/categories/_components/modal';
-import FormInput from '@/components/forms/FormInput';
 import FormCheckbox from '@/components/forms/FormCheckbox';
 import FormTextarea from '@/components/forms/FormTextarea';
 import FormSelect from '@/components/forms/FormSelect';
 import Button from '@/components/buttons/Button';
 import { useBookForm } from '@/app/(protected)/books/_hooks/useBookForm';
 import { useModal } from '@/hooks/useModal';
-import { useAuthors } from '@/app/(protected)/authors/_hooks/useAuthors';
 import { useCategories } from '@/app/(protected)/categories/_hooks/useCategories';
 import { useTags } from '@/app/(protected)/tags/_hooks/useTags';
 import TagModal from '@/app/(protected)/tags/_components/modal';
 
 interface BookFormProps {
-  book?: BookDetail;
+  book: BookDetail;
   submitLabel: string;
   cancel: () => void;
 }
 
 export default function BookForm({ book, submitLabel, cancel }: BookFormProps) {
-  const { data: authors } = useAuthors();
   const { data: categories } = useCategories();
   const { data: tags } = useTags();
   const { register, control, handleSubmit, errors, onSubmit, isSubmitting } = useBookForm({
@@ -43,56 +40,6 @@ export default function BookForm({ book, submitLabel, cancel }: BookFormProps) {
         onSubmit={handleSubmit(onSubmit)}
       >
         <div className="grid gap-4 md:grid-cols-2">
-          {/* タイトル */}
-          <FormInput
-            name="title"
-            label="タイトル"
-            type="text"
-            placeholder="タイトルを入力"
-            error={errors.title?.message}
-            register={register}
-          />
-          {/* 著者 */}
-          <div className="flex flex-col gap-2 text-sm">
-            <div className="flex items-center justify-between">
-              <label htmlFor="book-authors" className="font-semibold text-gray-700">
-                著者
-              </label>
-              <button
-                type="button"
-                onClick={authorModal.open}
-                className="text-sm text-blue-600 hover:text-blue-700"
-              >
-                + 著者を追加
-              </button>
-            </div>
-            <Controller
-              name="author_ids"
-              control={control}
-              render={({ field: { onChange, value, ref } }) => {
-                const options = (authors || []).map((a) => ({
-                  value: a.id,
-                  label: a.name,
-                }));
-                return (
-                  <Select
-                    ref={ref}
-                    instanceId="book-authors"
-                    inputId="book-authors"
-                    isMulti
-                    options={options}
-                    value={options.filter((c) => value?.includes(c.value))}
-                    onChange={(val) => onChange(val.map((c) => c.value))}
-                    placeholder="著者を検索・選択"
-                    className="text-sm"
-                  />
-                );
-              }}
-            />
-            {errors.author_ids && (
-              <p className="mt-1 text-sm text-red-600">{errors.author_ids.message}</p>
-            )}
-          </div>
           {/* ステータス */}
           <FormSelect
             name="reading_status"
