@@ -4,7 +4,6 @@ import Select from 'react-select';
 import { Controller } from 'react-hook-form';
 import { BookDetail } from '@/app/(protected)/books/_types';
 import { STATUS_OPTIONS, RATING_OPTIONS } from '@/app/(protected)/books/_constants';
-import AuthorModal from '@/app/(protected)/authors/_components/modal';
 import CategoryModal from '@/app/(protected)/categories/_components/modal';
 import FormCheckbox from '@/components/forms/FormCheckbox';
 import FormTextarea from '@/components/forms/FormTextarea';
@@ -158,7 +157,6 @@ export default function BookForm({ book, submitLabel, cancel }: BookFormProps) {
       </form>
 
       {/* モーダル */}
-      <AuthorModal isOpen={authorModal.isOpen} onClose={authorModal.close} />
       <CategoryModal isOpen={categoryModal.isOpen} onClose={categoryModal.close} />
       <TagModal isOpen={tagModal.isOpen} onClose={tagModal.close} />
     </>

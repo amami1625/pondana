@@ -5,9 +5,6 @@ export const queryKeys = {
   tags: {
     all: ['tags'] as const, // 一覧取得用
   },
-  authors: {
-    all: ['authors'] as const, // 一覧取得用
-  },
   lists: {
     all: ['lists'] as const, // 一覧取得用
     detail: (id: string) => ['lists', 'detail', id] as const, // 詳細取得用

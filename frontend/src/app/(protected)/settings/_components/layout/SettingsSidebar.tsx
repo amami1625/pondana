@@ -5,7 +5,6 @@ import { usePathname } from 'next/navigation';
 
 const NAV_ITEMS = [
   { href: '/settings', label: 'プロフィール' },
-  { href: '/settings/authors', label: '著者' },
   { href: '/settings/categories', label: 'カテゴリー' },
   { href: '/settings/tags', label: 'タグ' },
 ] as const;
