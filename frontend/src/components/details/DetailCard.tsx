@@ -20,9 +20,7 @@ export default function DetailCard({ thumbnail, children }: DetailCardProps) {
           className="w-32 h-44 shrink-0 object-cover rounded-lg"
         />
       )}
-      <div className="flex flex-1 flex-col gap-6">
-        {children}
-      </div>
+      <div className="flex flex-1 flex-col gap-6">{children}</div>
     </div>
   );
 }

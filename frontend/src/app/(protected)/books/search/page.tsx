@@ -1,10 +1,14 @@
 'use client';
 
-import { BookSearchAutocomplete, SelectedBookDetail, UsageGuide } from './_components';
-import { useBookSelection } from './_hooks/useBookSelection';
+import {
+  BookSearchAutocomplete,
+  SelectedBookDetail,
+  UsageGuide,
+} from '@/app/(protected)/books/search/_components';
+import { useBookSearchPage } from '@/app/(protected)/books/search/_hooks/useBookSearchPage';
 
 export default function BookSearchPage() {
-  const { selectedBook, handleSelectBook, handleClearSelection } = useBookSelection();
+  const { selectedBook, handleSelectBook, handleClearSelection } = useBookSearchPage();
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-4xl">

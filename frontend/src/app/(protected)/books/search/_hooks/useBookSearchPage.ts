@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import type { GoogleBooksVolume } from '../../_types';
+import type { GoogleBooksVolume } from '@/app/(protected)/books/_types';
 
-export function useBookSelection() {
+export function useBookSearchPage() {
   const [selectedBook, setSelectedBook] = useState<GoogleBooksVolume | null>(null);
 
   const handleSelectBook = (book: GoogleBooksVolume) => {

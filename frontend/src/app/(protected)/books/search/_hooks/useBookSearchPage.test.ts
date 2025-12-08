@@ -1,47 +1,26 @@
 import { describe, it, expect } from 'vitest';
 import { renderHook, act } from '@testing-library/react';
-import { useBookSelection } from './useBookSelection';
-import type { GoogleBooksVolume } from '../../_types';
 import { createMockGoogleBooksVolume } from '@/test/factories';
+import { useBookSearchPage } from './useBookSearchPage';
 
-describe('useBookSelection', () => {
-  // const mockBook: GoogleBooksVolume = {
-  //   id: 'test-book-id',
-  //   volumeInfo: {
-  //     title: 'テスト書籍',
-  //     subtitle: 'サブタイトル',
-  //     authors: ['テスト著者'],
-  //     publishedDate: '2024-01-01',
-  //     description: 'テスト用の説明',
-  //     industryIdentifiers: [
-  //       {
-  //         type: 'ISBN_13',
-  //         identifier: '9784873117836',
-  //       },
-  //     ],
-  //     imageLinks: {
-  //       thumbnail: 'http://example.com/image.jpg',
-  //     },
-  //   },
-  // };
-
+describe('useBookSearchPage', () => {
   const mockBook = createMockGoogleBooksVolume();
 
   describe('初期状態', () => {
     it('selectedBook が nullである', () => {
-      const { result } = renderHook(() => useBookSelection());
+      const { result } = renderHook(() => useBookSearchPage());
 
       expect(result.current.selectedBook).toBeNull();
     });
 
     it('handleSelectBook が提供される', () => {
-      const { result } = renderHook(() => useBookSelection());
+      const { result } = renderHook(() => useBookSearchPage());
 
       expect(typeof result.current.handleSelectBook).toBe('function');
     });
 
     it('handleClearSelection が提供される', () => {
-      const { result } = renderHook(() => useBookSelection());
+      const { result } = renderHook(() => useBookSearchPage());
 
       expect(typeof result.current.handleClearSelection).toBe('function');
     });
@@ -49,7 +28,7 @@ describe('useBookSelection', () => {
 
   describe('handleSelectBook', () => {
     it('書籍を選択できる', () => {
-      const { result } = renderHook(() => useBookSelection());
+      const { result } = renderHook(() => useBookSearchPage());
 
       act(() => {
         result.current.handleSelectBook(mockBook);
@@ -59,7 +38,7 @@ describe('useBookSelection', () => {
     });
 
     it('選択済みの書籍を別の書籍に変更できる', () => {
-      const { result } = renderHook(() => useBookSelection());
+      const { result } = renderHook(() => useBookSearchPage());
 
       const anotherBook = createMockGoogleBooksVolume({
         id: 'another-book-id',
@@ -86,7 +65,7 @@ describe('useBookSelection', () => {
 
   describe('handleClearSelection', () => {
     it('選択された書籍をクリアできる', () => {
-      const { result } = renderHook(() => useBookSelection());
+      const { result } = renderHook(() => useBookSearchPage());
 
       // まず書籍を選択
       act(() => {
@@ -104,7 +83,7 @@ describe('useBookSelection', () => {
     });
 
     it('selectedBook が null の状態でクリアしてもエラーにならない', () => {
-      const { result } = renderHook(() => useBookSelection());
+      const { result } = renderHook(() => useBookSearchPage());
 
       expect(result.current.selectedBook).toBeNull();
 
@@ -115,5 +94,4 @@ describe('useBookSelection', () => {
       expect(result.current.selectedBook).toBeNull();
     });
   });
-
 });
