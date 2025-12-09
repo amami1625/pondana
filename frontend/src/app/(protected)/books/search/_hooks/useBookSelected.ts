@@ -1,8 +1,8 @@
-import type { GoogleBooksVolume, BookCreateData } from '../../_types';
+import type { GoogleBooksVolume, BookCreateData } from '@/app/(protected)/books/_types';
 import { getIsbn } from '@/lib/googleBooksApi';
-import { useBookMutations } from '../../_hooks/useBookMutations';
+import { useBookMutations } from '@/app/(protected)/books/_hooks/useBookMutations';
 
-export function useBookRegistration() {
+export function useBookSelected() {
   const { createBook, isCreating } = useBookMutations();
 
   const registerBook = (book: GoogleBooksVolume) => {

@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { renderHook, act } from '@testing-library/react';
 import { createMockGoogleBooksVolume } from '@/test/factories';
-import { useBookSearchPage } from './useBookSearchPage';
+import { useBookSearchPage } from '@/app/(protected)/books/search/_hooks/useBookSearchPage';
 
 describe('useBookSearchPage', () => {
   const mockBook = createMockGoogleBooksVolume();
