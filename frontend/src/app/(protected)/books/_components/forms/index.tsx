@@ -28,7 +28,6 @@ export default function BookForm({ book, submitLabel, cancel }: BookFormProps) {
     book,
     cancel,
   });
-  const authorModal = useModal();
   const categoryModal = useModal();
   const tagModal = useModal();
 
