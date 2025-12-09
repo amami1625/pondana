@@ -30,13 +30,15 @@ export default function BookSelected({ book, onClear }: SelectedBookDetailProps)
         {/* 書籍画像 */}
         <div className="flex-shrink-0">
           {book.volumeInfo.imageLinks?.thumbnail ? (
-            <Image
-              src={book.volumeInfo.imageLinks.thumbnail}
-              alt={book.volumeInfo.title}
-              width={160}
-              height={240}
-              className="rounded object-cover shadow-md"
-            />
+            <div className="relative w-40 h-60">
+              <Image
+                className="rounded object-cover shadow-md"
+                src={book.volumeInfo.imageLinks.thumbnail}
+                alt={book.volumeInfo.title}
+                sizes="160px"
+                fill
+              />
+            </div>
           ) : (
             <div className="w-40 h-60 bg-gray-200 rounded flex items-center justify-center text-gray-400">
               画像なし
