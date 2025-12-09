@@ -3,19 +3,15 @@
 import Image from 'next/image';
 import { getIsbn } from '@/lib/googleBooksApi';
 import type { GoogleBooksVolume } from '@/app/(protected)/books/_types';
-import { useBookRegistration } from '../_hooks/useBookRegistration';
+import { useBookSelected } from '@/app/(protected)/books/search/_hooks/useBookSelected';
 
 interface SelectedBookDetailProps {
   book: GoogleBooksVolume;
   onClear: () => void;
 }
 
-export function SelectedBookDetail({ book, onClear }: SelectedBookDetailProps) {
-  const { registerBook, isRegistering } = useBookRegistration();
-
-  const handleRegister = () => {
-    registerBook(book);
-  };
+export default function BookSelected({ book, onClear }: SelectedBookDetailProps) {
+  const { registerBook, isRegistering } = useBookSelected();
 
   return (
     <div className="mt-6 border border-gray-200 rounded-lg p-6 bg-white shadow-sm">
@@ -78,7 +74,7 @@ export function SelectedBookDetail({ book, onClear }: SelectedBookDetailProps) {
 
           {/* 登録ボタン */}
           <button
-            onClick={handleRegister}
+            onClick={() => registerBook(book)}
             disabled={isRegistering}
             className="px-6 py-3 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
           >
