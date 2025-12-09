@@ -1,7 +1,9 @@
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { renderHook, act } from '@testing-library/react';
 import { createMockGoogleBooksVolume } from '@/test/factories';
 import { useBookSelected } from '@/app/(protected)/books/search/_hooks/useBookSelected';
+import { useBooks } from '@/app/(protected)/books/_hooks/useBooks';
+import { Book } from '@/schemas/book';
 
 // useBookMutations をモック
 const mockCreateBook = vi.fn();
@@ -13,6 +15,19 @@ vi.mock('@/app/(protected)/books/_hooks/useBookMutations', () => ({
     isCreating: mockIsCreating,
   }),
 }));
+
+// useBooks をモック
+vi.mock('@/app/(protected)/books/_hooks/useBooks');
+
+beforeEach(() => {
+  vi.mocked(useBooks).mockReturnValue({
+    data: [],
+    isLoading: false,
+    isError: false,
+    error: null,
+    isSuccess: true,
+  } as unknown as ReturnType<typeof useBooks>);
+});
 
 describe('useBookSelected', () => {
   describe('registerBook', () => {
@@ -174,6 +189,41 @@ describe('useBookSelected', () => {
       const { result } = renderHook(() => useBookSelected());
 
       expect(result.current.isRegistering).toBe(mockIsCreating);
+    });
+  });
+
+  describe('isAlreadyRegistered', () => {
+    it('登録済みの本の場合 true を返す', () => {
+      vi.mocked(useBooks).mockReturnValue({
+        data: [{ id: '1', google_books_id: 'google-book-123', title: 'Test Book' }] as Book[],
+        isLoading: false,
+      } as ReturnType<typeof useBooks>);
+
+      const { result } = renderHook(() => useBookSelected());
+
+      expect(result.current.isAlreadyRegistered('google-book-123')).toBe(true);
+    });
+
+    it('未登録の本の場合 false を返す', () => {
+      vi.mocked(useBooks).mockReturnValue({
+        data: [{ id: '1', google_books_id: 'google-book-123', title: 'Test Book' }] as Book[],
+        isLoading: false,
+      } as ReturnType<typeof useBooks>);
+
+      const { result } = renderHook(() => useBookSelected());
+
+      expect(result.current.isAlreadyRegistered('google-book-999')).toBe(false);
+    });
+
+    it('books が undefined の場合 false を返す', () => {
+      vi.mocked(useBooks).mockReturnValue({
+        data: undefined,
+        isLoading: false,
+      } as ReturnType<typeof useBooks>);
+
+      const { result } = renderHook(() => useBookSelected());
+
+      expect(result.current.isAlreadyRegistered('google-book-123')).toBe(false);
     });
   });
 });

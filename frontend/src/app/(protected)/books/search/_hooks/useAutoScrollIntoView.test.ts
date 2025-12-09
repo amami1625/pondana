@@ -1,7 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { renderHook } from '@testing-library/react';
 import { useAutoScrollIntoView } from '@/app/(protected)/books/search/_hooks/useAutoScrollIntoView';
-import { useRef } from 'react';
 
 describe('useAutoScrollIntoView', () => {
   let mockScrollIntoView: ReturnType<typeof vi.fn>;

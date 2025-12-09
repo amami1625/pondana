@@ -11,7 +11,8 @@ interface SelectedBookDetailProps {
 }
 
 export default function BookSelected({ book, onClear }: SelectedBookDetailProps) {
-  const { registerBook, isRegistering } = useBookSelected();
+  const { registerBook, isRegistering, isAlreadyRegistered } = useBookSelected();
+  const alreadyRegistered = isAlreadyRegistered(book.id);
 
   return (
     <div className="mt-6 border border-gray-200 rounded-lg p-6 bg-white shadow-sm">
@@ -75,13 +76,23 @@ export default function BookSelected({ book, onClear }: SelectedBookDetailProps)
           )}
 
           {/* 登録ボタン */}
-          <button
-            onClick={() => registerBook(book)}
-            disabled={isRegistering}
-            className="px-6 py-3 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
-          >
-            {isRegistering ? '登録中...' : 'この本を登録'}
-          </button>
+          {alreadyRegistered ? (
+            <button
+              onClick={() => registerBook(book)}
+              disabled={true}
+              className="w-40 px-6 py-3 bg-gray-200 text-gray-700 font-semibold rounded-md disabled:cursor-not-allowed transition-colors"
+            >
+              ✓ 登録済み
+            </button>
+          ) : (
+            <button
+              onClick={() => registerBook(book)}
+              disabled={isRegistering}
+              className="w-40 px-6 py-3 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-700 hover:cursor-pointer disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
+            >
+              この本を登録
+            </button>
+          )}
         </div>
       </div>
     </div>

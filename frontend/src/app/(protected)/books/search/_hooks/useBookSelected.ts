@@ -1,9 +1,11 @@
 import type { GoogleBooksVolume, BookCreateData } from '@/app/(protected)/books/_types';
 import { getIsbn } from '@/lib/googleBooksApi';
 import { useBookMutations } from '@/app/(protected)/books/_hooks/useBookMutations';
+import { useBooks } from '@/app/(protected)/books/_hooks/useBooks';
 
 export function useBookSelected() {
   const { createBook, isCreating } = useBookMutations();
+  const { data: books } = useBooks();
 
   const registerBook = (book: GoogleBooksVolume) => {
     const bookData: BookCreateData = {
@@ -24,8 +26,14 @@ export function useBookSelected() {
     createBook(bookData);
   };
 
+  const isAlreadyRegistered = (googleBooksId: string) => {
+    if (!books) return false;
+    return books.some((book) => book.google_books_id === googleBooksId);
+  };
+
   return {
     registerBook,
     isRegistering: isCreating,
+    isAlreadyRegistered,
   };
 }
