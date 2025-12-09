@@ -1,8 +1,6 @@
 class Book < ApplicationRecord
   belongs_to :user
   belongs_to :category, optional: true
-  has_many :book_authors, dependent: :destroy
-  has_many :authors, through: :book_authors
   has_many :list_books, dependent: :destroy
   has_many :lists, through: :list_books
   has_many :cards, dependent: :destroy

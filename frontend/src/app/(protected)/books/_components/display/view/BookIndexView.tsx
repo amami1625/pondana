@@ -3,19 +3,16 @@
 import { useState, useMemo } from 'react';
 import { Plus } from 'lucide-react';
 import { Book } from '@/app/(protected)/books/_types';
-import { useModal } from '@/hooks/useModal';
 import BookListCard from '@/app/(protected)/books/_components/display/BookListCard';
 import CategoryFilter from '@/app/(protected)/books/_components/filters/CategoryFilter';
-import CreateBookFormModal from '@/app/(protected)/books/_components/modal';
-import Button from '@/components/buttons/Button';
 import EmptyState from '@/components/feedback/EmptyState';
+import Link from 'next/link';
 
 interface BookIndexViewProps {
   books: Book[];
 }
 
 export default function BookIndexView({ books }: BookIndexViewProps) {
-  const createModal = useModal();
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
   // ユニークなカテゴリ一覧を取得
@@ -51,9 +48,13 @@ export default function BookIndexView({ books }: BookIndexViewProps) {
             </p>
           </div>
           <div className="flex items-end">
-            <Button variant="create" onClick={createModal.open} icon={<Plus className="h-4 w-4" />}>
+            <Link
+              href="/books/search"
+              className="flex min-w-[84px] items-center justify-center overflow-hidden rounded-lg h-10 px-4 text-sm font-bold transition-colors cursor-pointer gap-2 bg-primary text-white hover:bg-primary/90"
+            >
+              <Plus className="h-4 w-4" />
               本を追加
-            </Button>
+            </Link>
           </div>
         </div>
       </header>
@@ -82,8 +83,6 @@ export default function BookIndexView({ books }: BookIndexViewProps) {
           </div>
         </>
       )}
-
-      <CreateBookFormModal isOpen={createModal.isOpen} onClose={createModal.close} />
     </div>
   );
 }

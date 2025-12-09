@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { createMockBook, createMockAuthor } from '@/test/factories';
+import { createMockBook } from '@/test/factories';
 import { createTestUuid } from '@/test/helpers';
 import { fetchBook } from './fetchBook';
 
@@ -13,7 +13,7 @@ describe('fetchBook', () => {
       const mockApiResponse = createMockBook({
         id: createTestUuid(1),
         title: 'テスト本',
-        authors: [createMockAuthor()],
+        authors: ['テスト著者'],
       });
 
       vi.stubGlobal(

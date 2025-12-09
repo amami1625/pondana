@@ -8,12 +8,6 @@ describe('queryKeys', () => {
     });
   });
 
-  describe('authors', () => {
-    it('authors.all が正しいキーを返す', () => {
-      expect(queryKeys.authors.all).toEqual(['authors']);
-    });
-  });
-
   describe('lists', () => {
     it('lists.all が正しいキーを返す', () => {
       expect(queryKeys.lists.all).toEqual(['lists']);

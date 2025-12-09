@@ -1,7 +1,6 @@
 import { z } from 'zod';
 import { categorySchema } from '@/schemas/category';
 import { tagSchema } from '@/schemas/tag';
-import { authorSchema } from '@/schemas/author';
 import { listBookSchema } from '@/app/(protected)/listBooks/_types';
 import { cardSchema } from '@/app/(protected)/cards/_types';
 
@@ -10,6 +9,11 @@ export const bookBaseSchema = z.object({
   id: z.uuid(),
   title: z.string(),
   description: z.string().nullable(),
+  google_books_id: z.string().nullable(),
+  isbn: z.string().nullable(),
+  subtitle: z.string().nullable(),
+  thumbnail: z.string().nullable(),
+  authors: z.array(z.string()),
   user_id: z.number(),
   category: categorySchema.optional(),
   tags: z.array(tagSchema),
@@ -29,9 +33,7 @@ export const bookBaseSchema = z.object({
 });
 
 // Book一覧データのバリデーションスキーマ(APIレスポンス用)
-export const bookSchema = bookBaseSchema.extend({
-  authors: authorSchema.array(),
-});
+export const bookSchema = bookBaseSchema;
 
 // Book詳細データのバリデーションスキーマ(APIレスポンス用)
 export const bookDetailSchema = bookSchema.extend({
@@ -46,15 +48,26 @@ export const bookDetailSchema = bookSchema.extend({
   cards: z.array(cardSchema),
 });
 
-// Bookのバリデーションスキーマ(フォーム用)
-export const bookFormSchema = z.object({
-  title: z
-    .string()
-    .trim()
-    .min(1, { message: 'タイトルを入力してください' })
-    .max(255, { message: 'タイトルは255文字以内で入力してください' }),
+// Bookの作成用バリデーションスキーマ（Google Books APIからの登録用）
+export const bookCreateSchema = z.object({
+  google_books_id: z.string().optional(),
+  isbn: z.string().optional(),
+  title: z.string().trim().min(1, { message: 'タイトルを入力してください' }),
+  subtitle: z.string().optional(),
+  thumbnail: z.string().optional(),
+  authors: z.array(z.string()).optional(),
   description: z.string().optional(),
-  author_ids: z.number().array().min(1, { message: '著者を1人以上選択してください' }),
+  category_id: z.number().optional(),
+  tag_ids: z.number().array().optional(),
+  rating: z.number().int().min(1).max(5).optional(),
+  reading_status: z.enum(['unread', 'reading', 'completed']),
+  public: z.boolean(),
+});
+
+// Bookの更新用バリデーションスキーマ（ユーザーが編集可能なフィールドのみ）
+export const bookUpdateSchema = z.object({
+  id: z.string(),
+  description: z.string().optional(),
   category_id: z.number().optional(),
   tag_ids: z.number().array().optional(),
   rating: z.number().int().min(1).max(5).optional(),
@@ -65,7 +78,8 @@ export const bookFormSchema = z.object({
 export type BookBase = z.infer<typeof bookBaseSchema>;
 export type Book = z.infer<typeof bookSchema>;
 export type BookDetail = z.infer<typeof bookDetailSchema>;
-export type BookFormData = z.infer<typeof bookFormSchema>;
+export type BookCreateData = z.infer<typeof bookCreateSchema>;
+export type BookUpdateData = z.infer<typeof bookUpdateSchema>;
 
 // 本に追加されたリストの型
 export type AddedList = BookDetail['lists'][number];

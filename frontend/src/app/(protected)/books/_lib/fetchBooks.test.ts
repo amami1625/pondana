@@ -12,7 +12,7 @@ describe('fetchBooks', () => {
     it('書籍データを正しく取得できる', async () => {
       const mockApiResponse = [
         createMockBook({ id: createTestUuid(1), title: 'テスト本A' }),
-        createMockBook({ id: createTestUuid(2), title: 'テスト本B' }),
+        createMockBook({ id: createTestUuid(2), title: 'テスト本B', authors: ['テスト著者'] }),
       ];
 
       vi.stubGlobal(
@@ -41,15 +41,11 @@ describe('fetchBooks', () => {
         public: true,
         created_at: expectedDate,
         updated_at: expectedDate,
-        authors: [
-          {
-            id: 1,
-            name: 'テスト著者',
-            user_id: 1,
-            created_at: expectedDate,
-            updated_at: expectedDate,
-          },
-        ],
+        google_books_id: 'aaaaaaaaaa',
+        isbn: '999999999',
+        subtitle: null,
+        thumbnail: null,
+        authors: [],
       });
 
       expect(result[1]).toEqual({
@@ -64,15 +60,11 @@ describe('fetchBooks', () => {
         public: true,
         created_at: expectedDate,
         updated_at: expectedDate,
-        authors: [
-          {
-            id: 1,
-            name: 'テスト著者',
-            user_id: 1,
-            created_at: expectedDate,
-            updated_at: expectedDate,
-          },
-        ],
+        google_books_id: 'aaaaaaaaaa',
+        isbn: '999999999',
+        subtitle: null,
+        thumbnail: null,
+        authors: ['テスト著者'],
       });
 
       expect(fetch).toHaveBeenCalledWith('/api/books');

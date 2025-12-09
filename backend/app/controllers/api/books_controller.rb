@@ -1,7 +1,7 @@
 class Api::BooksController < Api::ApplicationController
   def index
-    books = current_user.books.includes(:category, :tags, :authors).order(created_at: :desc)
-    render json: books, include: [:category, :tags, :authors]
+    books = current_user.books.includes(:category, :tags).order(created_at: :desc)
+    render json: books, include: [:category, :tags]
   end
 
   def create
@@ -23,12 +23,11 @@ class Api::BooksController < Api::ApplicationController
   end
 
   def show
-    book = current_user.books.includes(:category, :tags, :authors, :lists, :list_books, :cards).find(params[:id])
+    book = current_user.books.includes(:category, :tags, :lists, :list_books, :cards).find(params[:id])
     render json: book,
            include: {
              category: {},
              tags: {},
-             authors: {},
              lists: {},
              list_books: { only: [:id, :book_id, :list_id] },
              cards: {}
@@ -47,6 +46,10 @@ class Api::BooksController < Api::ApplicationController
   private
 
   def book_params
-    params.require(:book).permit(:title, :description, :rating, :reading_status, :category_id, :public, author_ids: [], tag_ids: [])
+    params.require(:book).permit(
+      :title, :description, :google_books_id, :isbn, :subtitle, :thumbnail,
+      :rating, :reading_status, :category_id, :public,
+      authors: [], tag_ids: []
+    )
   end
 end

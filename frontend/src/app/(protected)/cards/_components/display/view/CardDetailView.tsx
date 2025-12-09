@@ -24,7 +24,7 @@ export default function CardDetailView({ card }: CardDetailViewProps) {
       <DetailContainer breadcrumbItems={breadcrumbItems}>
         <DetailCard>
           <DetailHeader title={card.title} subtitle={subtitle} />
-          <DetailDescription>{card.content}</DetailDescription>
+          <DetailDescription description={card.content} />
           <DetailMetadata createdAt={card.created_at} updatedAt={card.updated_at} />
           <CardActions
             onEdit={updateModal.open}

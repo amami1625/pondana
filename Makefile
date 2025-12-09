@@ -61,6 +61,10 @@ fix:
 fmt:
 	docker compose exec web npm run format
 
+# 型チェックを実行
+type:
+	docker compose exec web npx tsc --noEmit
+
 # Vitestを実行
 test:
 	docker compose exec web npm run test:run

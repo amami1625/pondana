@@ -56,8 +56,12 @@ describe('useBookMutations', () => {
       // ミューテーション実行
       act(() => {
         result.current.createBook({
+          google_books_id: 'abc123',
+          isbn: '9784873117836',
           title: 'テスト本',
-          author_ids: [1],
+          subtitle: 'サブタイトル',
+          thumbnail: 'http://example.com/image.jpg',
+          authors: ['テスト著者'],
           reading_status: 'completed',
           public: true,
         });
@@ -73,8 +77,12 @@ describe('useBookMutations', () => {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
+            google_books_id: 'abc123',
+            isbn: '9784873117836',
             title: 'テスト本',
-            author_ids: [1],
+            subtitle: 'サブタイトル',
+            thumbnail: 'http://example.com/image.jpg',
+            authors: ['テスト著者'],
             reading_status: 'completed',
             public: true,
           }),
@@ -82,7 +90,7 @@ describe('useBookMutations', () => {
       );
 
       // トーストが表示されることを確認
-      expect(toast.success).toHaveBeenCalledWith('本を作成しました');
+      expect(toast.success).toHaveBeenCalledWith('本を登録しました');
 
       // キャッシュが無効化されることを確認
       const booksQueryState = queryClient.getQueryState(['books']);
@@ -92,7 +100,7 @@ describe('useBookMutations', () => {
     });
 
     it('本の作成が失敗する', async () => {
-      const errorMessage = '本の作成に失敗しました';
+      const errorMessage = '本の登録に失敗しました';
 
       vi.stubGlobal(
         'fetch',
@@ -114,7 +122,6 @@ describe('useBookMutations', () => {
       act(() => {
         result.current.createBook({
           title: 'テスト本',
-          author_ids: [1],
           reading_status: 'completed',
           public: true,
         });
@@ -146,7 +153,6 @@ describe('useBookMutations', () => {
       act(() => {
         result.current.createBook({
           title: 'テスト本',
-          author_ids: [1],
           reading_status: 'completed',
           public: true,
         });
@@ -194,8 +200,8 @@ describe('useBookMutations', () => {
       act(() => {
         result.current.updateBook({
           id: createTestUuid(1),
-          title: '更新された本',
-          author_ids: [1],
+          description: '更新された説明',
+          rating: 4,
           reading_status: 'reading',
           public: false,
         });
@@ -212,8 +218,8 @@ describe('useBookMutations', () => {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             id: createTestUuid(1),
-            title: '更新された本',
-            author_ids: [1],
+            description: '更新された説明',
+            rating: 4,
             reading_status: 'reading',
             public: false,
           }),
@@ -255,8 +261,6 @@ describe('useBookMutations', () => {
       act(() => {
         result.current.updateBook({
           id: createTestUuid(1),
-          title: '更新された本',
-          author_ids: [1],
           reading_status: 'reading',
           public: false,
         });
@@ -288,8 +292,6 @@ describe('useBookMutations', () => {
       act(() => {
         result.current.updateBook({
           id: createTestUuid(1),
-          title: '更新された本',
-          author_ids: [1],
           reading_status: 'reading',
           public: false,
         });

@@ -10,27 +10,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_12_06_022342) do
+ActiveRecord::Schema[7.1].define(version: 2025_12_08_040354) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
-
-  create_table "authors", force: :cascade do |t|
-    t.string "name", null: false
-    t.bigint "user_id", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["user_id"], name: "index_authors_on_user_id"
-  end
-
-  create_table "book_authors", force: :cascade do |t|
-    t.bigint "author_id", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.uuid "book_id", null: false
-    t.index ["author_id"], name: "index_book_authors_on_author_id"
-    t.index ["book_id"], name: "index_book_authors_on_book_id"
-  end
 
   create_table "book_tags", force: :cascade do |t|
     t.bigint "tag_id", null: false
@@ -51,7 +34,13 @@ ActiveRecord::Schema[7.1].define(version: 2025_12_06_022342) do
     t.boolean "public", default: false, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "google_books_id"
+    t.string "isbn"
+    t.text "subtitle"
+    t.string "thumbnail"
+    t.jsonb "authors", default: []
     t.index ["category_id"], name: "index_books_on_category_id"
+    t.index ["user_id", "google_books_id"], name: "index_books_on_user_id_and_google_books_id", unique: true, where: "(google_books_id IS NOT NULL)"
     t.index ["user_id"], name: "index_books_on_user_id"
   end
 
@@ -108,9 +97,6 @@ ActiveRecord::Schema[7.1].define(version: 2025_12_06_022342) do
     t.index ["supabase_uid"], name: "index_users_on_supabase_uid", unique: true
   end
 
-  add_foreign_key "authors", "users"
-  add_foreign_key "book_authors", "authors"
-  add_foreign_key "book_authors", "books"
   add_foreign_key "book_tags", "books"
   add_foreign_key "book_tags", "tags"
   add_foreign_key "books", "categories"
