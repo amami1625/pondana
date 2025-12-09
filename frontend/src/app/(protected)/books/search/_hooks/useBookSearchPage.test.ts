@@ -12,18 +12,6 @@ describe('useBookSearchPage', () => {
 
       expect(result.current.selectedBook).toBeNull();
     });
-
-    it('handleSelectBook が提供される', () => {
-      const { result } = renderHook(() => useBookSearchPage());
-
-      expect(typeof result.current.handleSelectBook).toBe('function');
-    });
-
-    it('handleClearSelection が提供される', () => {
-      const { result } = renderHook(() => useBookSearchPage());
-
-      expect(typeof result.current.handleClearSelection).toBe('function');
-    });
   });
 
   describe('handleSelectBook', () => {
@@ -52,14 +40,13 @@ describe('useBookSearchPage', () => {
         result.current.handleSelectBook(mockBook);
       });
 
-      expect(result.current.selectedBook?.id).toBe('test-book-id');
+      expect(result.current.selectedBook).toEqual(mockBook);
 
       act(() => {
         result.current.handleSelectBook(anotherBook);
       });
 
-      expect(result.current.selectedBook?.id).toBe('another-book-id');
-      expect(result.current.selectedBook?.volumeInfo.title).toBe('別の書籍');
+      expect(result.current.selectedBook).toEqual(anotherBook);
     });
   });
 
