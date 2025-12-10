@@ -11,7 +11,8 @@ export const cardSchema = z.object({
       id: z.number(),
       name: z.string(),
     })
-    .optional(),
+    .optional()
+    .nullable(),
   created_at: z.string().transform((str) => {
     return new Date(str).toLocaleString('ja-JP', {
       timeZone: 'Asia/Tokyo',
