@@ -3,7 +3,7 @@ import { ReactNode } from 'react';
 interface BaseBadgeProps {
   icon: ReactNode;
   label: string;
-  variant: 'category' | 'tag' | 'public' | 'private';
+  variant: 'category' | 'tag' | 'public' | 'private' | 'status';
 }
 
 const BADGE_STYLES = {
@@ -11,6 +11,7 @@ const BADGE_STYLES = {
   tag: 'bg-slate-200 text-slate-700',
   public: 'bg-green-500/10 text-green-600',
   private: 'bg-slate-200 text-slate-700',
+  status: 'bg-blue-500/10 text-blue-600',
 };
 
 export default function BaseBadge({ icon, label, variant }: BaseBadgeProps) {
