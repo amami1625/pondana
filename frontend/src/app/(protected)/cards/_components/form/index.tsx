@@ -7,6 +7,8 @@ import Button from '@/components/buttons/Button';
 import FormInput from '@/components/forms/FormInput';
 import FormTextarea from '@/components/forms/FormTextarea';
 import FormSelect from '@/components/forms/FormSelect';
+import { useModal } from '@/hooks/useModal';
+import StatusModal from '@/app/(protected)/statuses/_components/modal';
 
 interface CardFormProps {
   card?: Card;
@@ -22,60 +24,76 @@ export default function CardForm({ card, bookId, onClose, submitLabel }: CardFor
     bookId,
   });
   const { data: statuses } = useStatuses();
+  const statusModal = useModal();
 
   return (
-    <form
-      className="flex flex-col gap-6 rounded-2xl border border-gray-200 bg-white p-6 shadow-sm"
-      onSubmit={handleSubmit(onSubmit)}
-    >
-      <div className="grid gap-4 md:grid-cols-2">
-        {/* タイトル */}
-        <FormInput
-          name="title"
-          label="タイトル"
-          type="text"
-          placeholder="タイトルを入力"
-          error={errors.title?.message}
+    <>
+      <form
+        className="flex flex-col gap-6 rounded-2xl border border-gray-200 bg-white p-6 shadow-sm"
+        onSubmit={handleSubmit(onSubmit)}
+      >
+        <div className="grid gap-4 md:grid-cols-2">
+          {/* タイトル */}
+          <FormInput
+            name="title"
+            label="タイトル"
+            type="text"
+            placeholder="タイトルを入力"
+            error={errors.title?.message}
+            register={register}
+          />
+        </div>
+
+        {/* 本文 */}
+        <FormTextarea
+          name="content"
+          label="本文"
+          placeholder="カードの本文を入力"
+          error={errors.content?.message}
           register={register}
         />
-      </div>
 
-      {/* 本文 */}
-      <FormTextarea
-        name="content"
-        label="本文"
-        placeholder="カードの本文を入力"
-        error={errors.content?.message}
-        register={register}
-      />
+        {/* ステータス */}
+        <FormSelect
+          name="status_id"
+          label="ステータス"
+          options={(statuses || []).map((s) => ({ value: s.id, label: s.name }))}
+          defaultValue=""
+          defaultLabel="ステータスなし"
+          error={errors.status_id?.message}
+          register={register}
+          registerOptions={{
+            setValueAs: (v) => (v === '' ? undefined : Number(v)),
+          }}
+          button={
+            <button
+              type="button"
+              onClick={statusModal.open}
+              className="text-sm text-blue-600 hover:text-blue-700 hover: cursor-pointer"
+            >
+              + ステータスを追加
+            </button>
+          }
+        />
 
-      {/* ステータス */}
-      <FormSelect
-        name="status_id"
-        label="ステータス"
-        options={(statuses || []).map((s) => ({ value: s.id, label: s.name }))}
-        defaultValue=""
-        defaultLabel="ステータスなし"
-        error={errors.status_id?.message}
-        register={register}
-        registerOptions={{
-          setValueAs: (v) => (v === '' ? undefined : Number(v)),
-        }}
-      />
-
-      <div className="flex justify-end gap-3">
-        <Button variant="cancel" onClick={onClose}>
-          キャンセル
-        </Button>
-        <Button
-          type="submit"
-          variant="primary"
-          disabled={isSubmitting}
-          loadingLabel={`${submitLabel}中...`}
-        >
-          {submitLabel}
-        </Button>
-      </div>
-    </form>
+        <div className="flex justify-end gap-3">
+          <Button variant="cancel" onClick={onClose}>
+            キャンセル
+          </Button>
+          <Button
+            type="submit"
+            variant="primary"
+            disabled={isSubmitting}
+            loadingLabel={`${submitLabel}中...`}
+          >
+            {submitLabel}
+          </Button>
+        </div>
+      </form>
+      {/* ステータスモーダル */}
+      {statusModal.isOpen && (
+        <StatusModal isOpen={statusModal.isOpen} onClose={statusModal.close} />
+      )}
+    </>
   );
 }

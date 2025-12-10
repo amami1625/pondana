@@ -27,12 +27,8 @@ export function useCardDetailView(card: CardDetail) {
   // パンくずリストのアイテム
   const breadcrumbItems = getCardDetailBreadcrumbs(card.title);
 
-  // 書籍名のサブタイトル
-  const subtitle = `書籍名: ${card.book.title}`;
-
   return {
     breadcrumbItems,
-    subtitle,
     handleDelete,
     updateModal,
   };
