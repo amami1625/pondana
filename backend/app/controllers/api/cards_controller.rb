@@ -8,7 +8,7 @@ class Api::CardsController < Api::ApplicationController
     book = current_user.books.find(params[:book_id])
     card = book.cards.build(card_params)
     if card.save
-      render json: card, status: :created
+      render json: card, include: [:status], status: :created
     else
       render json: { errors: card.errors }, status: :unprocessable_entity
     end
@@ -18,16 +18,16 @@ class Api::CardsController < Api::ApplicationController
     book = current_user.books.find(params[:book_id])
     card = book.cards.find(params[:id])
     if card.update(card_params)
-      render json: card, status: :ok
+      render json: card, include: [:status], status: :ok
     else
       render json: { errors: card.errors }, status: :unprocessable_entity
     end
   end
 
   def show
-    card = Card.joins(:book).includes(:book).find_by(id: params[:id], books: { user_id: current_user.id })
+    card = Card.joins(:book).includes(:book, :status).find_by(id: params[:id], books: { user_id: current_user.id })
     if card
-      render json: card, include: [:book]
+      render json: card, include: [:book, :status]
     else
       render json: { error: 'Card not found' }, status: :not_found
     end

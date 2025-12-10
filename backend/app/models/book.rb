@@ -15,7 +15,7 @@ class Book < ApplicationRecord
   enum reading_status: { unread: 0, reading: 1, completed: 2 }
 
   def self.as_cards_list(user)
-    user.books.includes(:cards).map do |book|
+    user.books.includes(cards: :status).map do |book|
       {
         book: {
           id: book.id,
@@ -27,6 +27,7 @@ class Book < ApplicationRecord
             title: card.title,
             content: card.content,
             book_id: card.book_id,
+            status: card.status,
             created_at: card.created_at,
             updated_at: card.updated_at
           }
