@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_12_08_040354) do
+ActiveRecord::Schema[7.1].define(version: 2025_12_10_060017) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -50,7 +50,9 @@ ActiveRecord::Schema[7.1].define(version: 2025_12_08_040354) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.uuid "book_id", null: false
+    t.bigint "status_id"
     t.index ["book_id"], name: "index_cards_on_book_id"
+    t.index ["status_id"], name: "index_cards_on_status_id"
   end
 
   create_table "categories", force: :cascade do |t|
@@ -80,6 +82,14 @@ ActiveRecord::Schema[7.1].define(version: 2025_12_08_040354) do
     t.index ["user_id"], name: "index_lists_on_user_id"
   end
 
+  create_table "statuses", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.string "name", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_statuses_on_user_id"
+  end
+
   create_table "tags", force: :cascade do |t|
     t.string "name", null: false
     t.bigint "user_id", null: false
@@ -102,9 +112,11 @@ ActiveRecord::Schema[7.1].define(version: 2025_12_08_040354) do
   add_foreign_key "books", "categories"
   add_foreign_key "books", "users"
   add_foreign_key "cards", "books"
+  add_foreign_key "cards", "statuses"
   add_foreign_key "categories", "users"
   add_foreign_key "list_books", "books"
   add_foreign_key "list_books", "lists"
   add_foreign_key "lists", "users"
+  add_foreign_key "statuses", "users"
   add_foreign_key "tags", "users"
 end
