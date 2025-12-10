@@ -2,9 +2,11 @@
 
 import { Card } from '@/app/(protected)/cards/_types';
 import { useCardForm } from '@/app/(protected)/cards/_hooks/useCardForm';
+import { useStatuses } from '@/app/(protected)/statuses/_hooks/useStatuses';
 import Button from '@/components/buttons/Button';
 import FormInput from '@/components/forms/FormInput';
 import FormTextarea from '@/components/forms/FormTextarea';
+import FormSelect from '@/components/forms/FormSelect';
 
 interface CardFormProps {
   card?: Card;
@@ -19,6 +21,7 @@ export default function CardForm({ card, bookId, onClose, submitLabel }: CardFor
     cancel: onClose,
     bookId,
   });
+  const { data: statuses } = useStatuses();
 
   return (
     <form
@@ -44,6 +47,20 @@ export default function CardForm({ card, bookId, onClose, submitLabel }: CardFor
         placeholder="カードの本文を入力"
         error={errors.content?.message}
         register={register}
+      />
+
+      {/* ステータス */}
+      <FormSelect
+        name="status_id"
+        label="ステータス"
+        options={(statuses || []).map((s) => ({ value: s.id, label: s.name }))}
+        defaultValue=""
+        defaultLabel="ステータスなし"
+        error={errors.status_id?.message}
+        register={register}
+        registerOptions={{
+          setValueAs: (v) => (v === '' ? undefined : Number(v)),
+        }}
       />
 
       <div className="flex justify-end gap-3">
