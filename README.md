@@ -140,4 +140,111 @@ IT 系イベントや勉強会でアプリを紹介。また、影響力のあ�
 
 ### ER 図
 
-- https://drive.google.com/file/d/1mipgxJDwLkmNNUxJPsCMqBkDPfSW_GCm/view?usp=drive_link
+```mermaid
+erDiagram
+    users ||--o{ books : "has many"
+    users ||--o{ categories : "has many"
+    users ||--o{ tags : "has many"
+    users ||--o{ lists : "has many"
+    users ||--o{ statuses : "has many"
+
+    books ||--o{ cards : "has many"
+    books }o--o| categories : "belongs to"
+    books }o--o{ tags : "many-to-many"
+    books }o--o{ lists : "many-to-many"
+
+    cards }o--o| statuses : "belongs to"
+
+    book_tags }o--|| books : "belongs to"
+    book_tags }o--|| tags : "belongs to"
+
+    list_books }o--|| books : "belongs to"
+    list_books }o--|| lists : "belongs to"
+
+    users {
+        bigint id PK
+        string supabase_uid UK "NOT NULL"
+        string name "NOT NULL"
+        string avatar_url
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    books {
+        uuid id PK
+        string title "NOT NULL"
+        text description
+        bigint user_id FK "NOT NULL"
+        bigint category_id FK
+        integer rating
+        integer reading_status "DEFAULT 0, NOT NULL"
+        boolean public "DEFAULT false, NOT NULL"
+        string google_books_id
+        string isbn
+        text subtitle
+        string thumbnail
+        jsonb authors "DEFAULT []"
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    cards {
+        uuid id PK
+        string title "NOT NULL"
+        text content "NOT NULL"
+        uuid book_id FK "NOT NULL"
+        bigint status_id FK
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    categories {
+        bigint id PK
+        string name "NOT NULL"
+        bigint user_id FK "NOT NULL"
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    tags {
+        bigint id PK
+        string name "NOT NULL"
+        bigint user_id FK "NOT NULL"
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    lists {
+        uuid id PK
+        string name
+        text description
+        bigint user_id FK "NOT NULL"
+        boolean public
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    statuses {
+        bigint id PK
+        string name "NOT NULL"
+        bigint user_id FK "NOT NULL"
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    book_tags {
+        bigint id PK
+        uuid book_id FK "NOT NULL"
+        bigint tag_id FK "NOT NULL"
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    list_books {
+        bigint id PK
+        uuid book_id FK "NOT NULL"
+        uuid list_id FK "NOT NULL"
+        timestamp created_at
+        timestamp updated_at
+    }
+```
