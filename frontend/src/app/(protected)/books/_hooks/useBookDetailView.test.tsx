@@ -1,10 +1,11 @@
 import React from 'react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { renderHook } from '@testing-library/react';
-import { createMockBook, createMockAuthor, createMockCategory } from '@/test/factories';
+import { createMockBook, createMockCategory } from '@/test/factories';
 import { mockUseBookMutations, mockUseModal } from '@/test/mocks';
 import { useBookDetailView } from './useBookDetailView';
 import { createMockTag } from '@/test/factories/tag';
+import { createTestUuid } from '@/test/helpers';
 
 // モックの設定
 vi.mock('@/hooks/useModal');
@@ -30,12 +31,12 @@ describe('useBookDetailView', () => {
       // 確認ダイアログを偽物にして、falseを返す
       const confirmSpy = vi.spyOn(window, 'confirm').mockReturnValue(false);
 
-      const book = createMockBook({ id: 1 });
+      const book = createMockBook({ id: createTestUuid(1) });
 
       const { result } = renderHook(() => useBookDetailView(book));
 
       // 削除を実行
-      result.current.handleDelete(1);
+      result.current.handleDelete(createTestUuid(1));
 
       // 確認ダイアログが表示されたことを確認
       expect(confirmSpy).toHaveBeenCalledWith('本当に削除しますか？');
@@ -48,18 +49,18 @@ describe('useBookDetailView', () => {
       // 確認ダイアログを偽物にして、trueを返す
       const confirmSpy = vi.spyOn(window, 'confirm').mockReturnValue(true);
 
-      const book = createMockBook({ id: 1 });
+      const book = createMockBook({ id: createTestUuid(1) });
 
       const { result } = renderHook(() => useBookDetailView(book));
 
       // 削除を実行
-      result.current.handleDelete(1);
+      result.current.handleDelete(createTestUuid(1));
 
       // 確認ダイアログが表示されたことを確認
       expect(confirmSpy).toHaveBeenCalledWith('本当に削除しますか？');
 
       // 削除関数が正しい引数で呼ばれたことを確認
-      expect(mockDeleteBook).toHaveBeenCalledWith(1);
+      expect(mockDeleteBook).toHaveBeenCalledWith(createTestUuid(1));
     });
   });
 
@@ -71,32 +72,6 @@ describe('useBookDetailView', () => {
 
       expect(result.current.breadcrumbItems).toHaveLength(3);
       expect(result.current.breadcrumbItems[2].label).toBe('テスト本');
-    });
-  });
-
-  describe('subtitle', () => {
-    it('1人の著者の場合、著者名が表示される', () => {
-      const book = createMockBook({
-        authors: [createMockAuthor({ name: '著者A' })],
-      });
-
-      const { result } = renderHook(() => useBookDetailView(book));
-
-      expect(result.current.subtitle).toBe('著者: 著者A');
-    });
-
-    it('複数の著者がいる場合、カンマ区切りで表示される', () => {
-      const book = createMockBook({
-        authors: [
-          createMockAuthor({ id: 1, name: '著者A' }),
-          createMockAuthor({ id: 2, name: '著者B' }),
-          createMockAuthor({ id: 3, name: '著者C' }),
-        ],
-      });
-
-      const { result } = renderHook(() => useBookDetailView(book));
-
-      expect(result.current.subtitle).toBe('著者: 著者A, 著者B, 著者C');
     });
   });
 

@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { createMockCard } from '@/test/factories';
+import { createTestUuid } from '@/test/helpers';
 import { fetchCard } from './fetchCard';
 
 describe('fetchCard', () => {
@@ -10,7 +11,7 @@ describe('fetchCard', () => {
   describe('成功時', () => {
     it('カード詳細データを正しく取得できる', async () => {
       const mockApiResponse = createMockCard({
-        id: 1,
+        id: createTestUuid(1),
         title: 'テストカード',
       });
 
@@ -22,17 +23,17 @@ describe('fetchCard', () => {
         }),
       );
 
-      const result = await fetchCard(1);
+      const result = await fetchCard(createTestUuid(1));
 
-      expect(result.id).toBe(1);
+      expect(result.id).toBe(createTestUuid(1));
       expect(result.title).toBe('テストカード');
 
-      expect(fetch).toHaveBeenCalledWith('/api/cards/1');
+      expect(fetch).toHaveBeenCalledWith(`/api/cards/${createTestUuid(1)}`);
       expect(fetch).toHaveBeenCalledTimes(1);
     });
 
     it('異なるIDで正しくリクエストできる', async () => {
-      const mockApiResponse = createMockCard({ id: 42, title: '別のカード' });
+      const mockApiResponse = createMockCard({ id: createTestUuid(42), title: '別のカード' });
 
       vi.stubGlobal(
         'fetch',
@@ -42,11 +43,11 @@ describe('fetchCard', () => {
         }),
       );
 
-      const result = await fetchCard(42);
+      const result = await fetchCard(createTestUuid(42));
 
-      expect(result.id).toBe(42);
+      expect(result.id).toBe(createTestUuid(42));
       expect(result.title).toBe('別のカード');
-      expect(fetch).toHaveBeenCalledWith('/api/cards/42');
+      expect(fetch).toHaveBeenCalledWith(`/api/cards/${createTestUuid(42)}`);
     });
   });
 
@@ -60,7 +61,7 @@ describe('fetchCard', () => {
         }),
       );
 
-      await expect(fetchCard(1)).rejects.toThrow('カード詳細の取得に失敗しました');
+      await expect(fetchCard(createTestUuid(1))).rejects.toThrow('カード詳細の取得に失敗しました');
     });
 
     it('エラーメッセージがない場合、デフォルトメッセージを使用する', async () => {
@@ -72,13 +73,13 @@ describe('fetchCard', () => {
         }),
       );
 
-      await expect(fetchCard(1)).rejects.toThrow('カード詳細の取得に失敗しました');
+      await expect(fetchCard(createTestUuid(1))).rejects.toThrow('カード詳細の取得に失敗しました');
     });
 
     it('ネットワークエラー時にエラーをスローする', async () => {
       vi.stubGlobal('fetch', vi.fn().mockRejectedValue(new Error('Network error')));
 
-      await expect(fetchCard(1)).rejects.toThrow('Network error');
+      await expect(fetchCard(createTestUuid(1))).rejects.toThrow('Network error');
     });
   });
 
@@ -92,7 +93,7 @@ describe('fetchCard', () => {
         }),
       );
 
-      await expect(fetchCard(1)).rejects.toThrow();
+      await expect(fetchCard(createTestUuid(1))).rejects.toThrow();
     });
   });
 });

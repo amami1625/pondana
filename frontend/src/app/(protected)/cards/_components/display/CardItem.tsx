@@ -4,6 +4,7 @@ import { Card } from '@/app/(protected)/cards/_types';
 import Button from '@/components/buttons/Button';
 import { DetailLink } from '@/components/links';
 import { useCardMutations } from '@/app/(protected)/cards/_hooks/useCardMutations';
+import StatusBadge from '@/components/badges/StatusBadge';
 import { useRouter } from 'next/navigation';
 
 interface CardItemProps {
@@ -35,8 +36,11 @@ export default function CardItem({ card }: CardItemProps) {
     <div className="border-b border-gray-200 p-4 last:border-b-0">
       <div className="flex items-center justify-between gap-4">
         <div className="flex-1 min-w-0">
-          {/* タイトル */}
-          <h3 className="text-base font-semibold text-gray-900 mb-2 truncate">{card.title}</h3>
+          {/* タイトルとステータス */}
+          <div className="flex items-center gap-2 mb-2">
+            <h3 className="text-base font-semibold text-gray-900 truncate">{card.title}</h3>
+            {card.status && <StatusBadge label={card.status.name} />}
+          </div>
 
           {/* 本文 */}
           <p className="text-sm text-gray-600 whitespace-pre-wrap">{card.content}</p>

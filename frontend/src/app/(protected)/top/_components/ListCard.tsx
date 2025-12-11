@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { BookOpen } from 'lucide-react';
 
 interface ListCardProps {
-  id: number;
+  id: string;
   name: string;
   description?: string;
   bookCount?: number;

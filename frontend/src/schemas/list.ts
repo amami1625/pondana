@@ -1,11 +1,10 @@
 import { z } from 'zod';
-import { listBookSchema } from './listBooks';
-import { bookBaseSchema } from './book';
-import { authorSchema } from './author';
+import { listBookSchema } from '@/schemas/listBooks';
+import { bookBaseSchema } from '@/schemas/book';
 
 // Listベーススキーマ
 export const listBaseSchema = z.object({
-  id: z.number(),
+  id: z.uuid(),
   name: z.string(),
   description: z.string().nullable(),
   user_id: z.number(),
@@ -31,7 +30,6 @@ export const listDetailSchema = listSchema.extend({
   books: z.array(
     z.object({
       ...bookBaseSchema.shape,
-      authors: authorSchema.array(),
     }),
   ),
   list_books: z.array(listBookSchema),

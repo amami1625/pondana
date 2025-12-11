@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { createMockBook, createMockAuthor } from '@/test/factories';
+import { createMockBook } from '@/test/factories';
+import { createTestUuid } from '@/test/helpers';
 import { fetchBook } from './fetchBook';
 
 describe('fetchBook', () => {
@@ -10,9 +11,9 @@ describe('fetchBook', () => {
   describe('成功時', () => {
     it('書籍詳細データを正しく取得できる', async () => {
       const mockApiResponse = createMockBook({
-        id: 1,
+        id: createTestUuid(1),
         title: 'テスト本',
-        authors: [createMockAuthor()],
+        authors: ['テスト著者'],
       });
 
       vi.stubGlobal(
@@ -23,18 +24,18 @@ describe('fetchBook', () => {
         }),
       );
 
-      const result = await fetchBook(1);
+      const result = await fetchBook(createTestUuid(1));
 
-      expect(result.id).toBe(1);
+      expect(result.id).toBe(createTestUuid(1));
       expect(result.title).toBe('テスト本');
       expect(result.authors).toHaveLength(1);
 
-      expect(fetch).toHaveBeenCalledWith('/api/books/1');
+      expect(fetch).toHaveBeenCalledWith(`/api/books/${createTestUuid(1)}`);
       expect(fetch).toHaveBeenCalledTimes(1);
     });
 
     it('異なるIDで正しくリクエストできる', async () => {
-      const mockApiResponse = createMockBook({ id: 42, title: '別の本' });
+      const mockApiResponse = createMockBook({ id: createTestUuid(42), title: '別の本' });
 
       vi.stubGlobal(
         'fetch',
@@ -44,11 +45,11 @@ describe('fetchBook', () => {
         }),
       );
 
-      const result = await fetchBook(42);
+      const result = await fetchBook(createTestUuid(42));
 
-      expect(result.id).toBe(42);
+      expect(result.id).toBe(createTestUuid(42));
       expect(result.title).toBe('別の本');
-      expect(fetch).toHaveBeenCalledWith('/api/books/42');
+      expect(fetch).toHaveBeenCalledWith(`/api/books/${createTestUuid(42)}`);
     });
   });
 
@@ -62,7 +63,7 @@ describe('fetchBook', () => {
         }),
       );
 
-      await expect(fetchBook(1)).rejects.toThrow('書籍詳細の取得に失敗しました');
+      await expect(fetchBook(createTestUuid(1))).rejects.toThrow('書籍詳細の取得に失敗しました');
     });
 
     it('エラーメッセージがない場合、デフォルトメッセージを使用する', async () => {
@@ -74,13 +75,13 @@ describe('fetchBook', () => {
         }),
       );
 
-      await expect(fetchBook(1)).rejects.toThrow('書籍詳細の取得に失敗しました');
+      await expect(fetchBook(createTestUuid(1))).rejects.toThrow('書籍詳細の取得に失敗しました');
     });
 
     it('ネットワークエラー時にエラーをスローする', async () => {
       vi.stubGlobal('fetch', vi.fn().mockRejectedValue(new Error('Network error')));
 
-      await expect(fetchBook(1)).rejects.toThrow('Network error');
+      await expect(fetchBook(createTestUuid(1))).rejects.toThrow('Network error');
     });
   });
 
@@ -94,7 +95,7 @@ describe('fetchBook', () => {
         }),
       );
 
-      await expect(fetchBook(1)).rejects.toThrow();
+      await expect(fetchBook(createTestUuid(1))).rejects.toThrow();
     });
   });
 });

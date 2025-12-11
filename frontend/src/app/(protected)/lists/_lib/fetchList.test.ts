@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { createMockList } from '@/test/factories';
+import { createTestUuid } from '@/test/helpers';
 import { fetchList } from './fetchList';
 
 describe('fetchList', () => {
@@ -10,7 +11,7 @@ describe('fetchList', () => {
   describe('成功時', () => {
     it('リスト詳細データを正しく取得できる', async () => {
       const mockApiResponse = createMockList({
-        id: 1,
+        id: createTestUuid(1),
         name: 'テストリスト',
       });
 
@@ -22,17 +23,17 @@ describe('fetchList', () => {
         }),
       );
 
-      const result = await fetchList(1);
+      const result = await fetchList(createTestUuid(1));
 
-      expect(result.id).toBe(1);
+      expect(result.id).toBe(createTestUuid(1));
       expect(result.name).toBe('テストリスト');
 
-      expect(fetch).toHaveBeenCalledWith('/api/lists/1');
+      expect(fetch).toHaveBeenCalledWith(`/api/lists/${createTestUuid(1)}`);
       expect(fetch).toHaveBeenCalledTimes(1);
     });
 
     it('異なるIDで正しくリクエストできる', async () => {
-      const mockApiResponse = createMockList({ id: 42, name: '別のリスト' });
+      const mockApiResponse = createMockList({ id: createTestUuid(42), name: '別のリスト' });
 
       vi.stubGlobal(
         'fetch',
@@ -42,11 +43,11 @@ describe('fetchList', () => {
         }),
       );
 
-      const result = await fetchList(42);
+      const result = await fetchList(createTestUuid(42));
 
-      expect(result.id).toBe(42);
+      expect(result.id).toBe(createTestUuid(42));
       expect(result.name).toBe('別のリスト');
-      expect(fetch).toHaveBeenCalledWith('/api/lists/42');
+      expect(fetch).toHaveBeenCalledWith(`/api/lists/${createTestUuid(42)}`);
     });
   });
 
@@ -60,7 +61,7 @@ describe('fetchList', () => {
         }),
       );
 
-      await expect(fetchList(1)).rejects.toThrow('リスト詳細の取得に失敗しました');
+      await expect(fetchList(createTestUuid(1))).rejects.toThrow('リスト詳細の取得に失敗しました');
     });
 
     it('エラーメッセージがない場合、デフォルトメッセージを使用する', async () => {
@@ -72,13 +73,13 @@ describe('fetchList', () => {
         }),
       );
 
-      await expect(fetchList(1)).rejects.toThrow('リスト詳細の取得に失敗しました');
+      await expect(fetchList(createTestUuid(1))).rejects.toThrow('リスト詳細の取得に失敗しました');
     });
 
     it('ネットワークエラー時にエラーをスローする', async () => {
       vi.stubGlobal('fetch', vi.fn().mockRejectedValue(new Error('Network error')));
 
-      await expect(fetchList(1)).rejects.toThrow('Network error');
+      await expect(fetchList(createTestUuid(1))).rejects.toThrow('Network error');
     });
   });
 
@@ -92,7 +93,7 @@ describe('fetchList', () => {
         }),
       );
 
-      await expect(fetchList(1)).rejects.toThrow();
+      await expect(fetchList(createTestUuid(1))).rejects.toThrow();
     });
   });
 });

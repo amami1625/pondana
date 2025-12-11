@@ -1,4 +1,5 @@
 import { CardDetail } from '@/schemas/card';
+import { createTestUuid } from '@/test/helpers';
 
 /**
  * テスト用のCardDetailオブジェクトを作成するファクトリー関数
@@ -6,10 +7,10 @@ import { CardDetail } from '@/schemas/card';
  * @returns CardDetail型のモックオブジェクト
  */
 export const createMockCard = (overrides?: Partial<CardDetail>): CardDetail => ({
-  id: 1,
+  id: createTestUuid(1),
   title: 'テストカード',
   content: 'テスト本文',
-  book_id: 1,
+  book_id: createTestUuid(1),
   created_at: '2025-01-01T00:00:00Z',
   updated_at: '2025-01-01T00:00:00Z',
   book: {

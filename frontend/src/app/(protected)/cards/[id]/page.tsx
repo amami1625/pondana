@@ -11,21 +11,20 @@ type Props = {
 
 export default async function CardPage({ params }: Props) {
   const { id } = await params;
-  const cardId = Number(id);
 
   const queryClient = createServerQueryClient();
 
   await queryClient.prefetchQuery({
-    queryKey: queryKeys.cards.detail(cardId),
+    queryKey: queryKeys.cards.detail(id),
     queryFn: async () => {
-      const data = await authenticatedRequest(`/cards/${cardId}`);
+      const data = await authenticatedRequest(`/cards/${id}`);
       return cardDetailSchema.parse(data);
     },
   });
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      <CardDetailClient id={cardId} />
+      <CardDetailClient id={id} />
     </HydrationBoundary>
   );
 }

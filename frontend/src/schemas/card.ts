@@ -2,10 +2,17 @@ import { z } from 'zod';
 
 // Cardのバリデーションスキーマ(APIレスポンス用)
 export const cardSchema = z.object({
-  id: z.number(),
+  id: z.uuid(),
   title: z.string(),
   content: z.string(),
-  book_id: z.number(),
+  book_id: z.uuid(),
+  status: z
+    .object({
+      id: z.number(),
+      name: z.string(),
+    })
+    .optional()
+    .nullable(),
   created_at: z.string().transform((str) => {
     return new Date(str).toLocaleString('ja-JP', {
       timeZone: 'Asia/Tokyo',
@@ -23,7 +30,7 @@ export const cardListSchema = z.object({
   books: z.array(
     z.object({
       book: z.object({
-        id: z.number(),
+        id: z.uuid(),
         title: z.string(),
       }),
       cards: z.array(cardSchema),
@@ -39,7 +46,7 @@ export const cardDetailSchema = cardSchema.extend({
 
 // Cardのバリデーションスキーマ(フォーム用)
 export const cardFormSchema = z.object({
-  book_id: z.number().int().positive(),
+  book_id: z.uuid(),
   title: z
     .string()
     .trim()
@@ -50,6 +57,7 @@ export const cardFormSchema = z.object({
     .trim()
     .min(1, { message: '本文を入力してください' })
     .max(10000, { message: '本文は10000文字以内で入力してください' }),
+  status_id: z.number().optional(),
 });
 
 export type Card = z.infer<typeof cardSchema>;

@@ -6,7 +6,7 @@ import ErrorMessage from '@/components/feedback/ErrorMessage';
 import LoadingState from '@/components/feedback/LoadingState';
 
 type Props = {
-  id: number;
+  id: string;
 };
 
 export default function ListDetailClient({ id }: Props) {

@@ -3,6 +3,7 @@ import { renderHook } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { useCardDetailView } from './useCardDetailView';
 import { mockUseCardMutations, mockUseModal } from '@/test/mocks';
+import { createTestUuid } from '@/test/helpers';
 
 // モックの設定
 vi.mock('@/hooks/useModal');
@@ -33,7 +34,7 @@ describe('useCardDetailView', () => {
       // 確認ダイアログを偽物にして、falseを返す
       const confirmSpy = vi.spyOn(window, 'confirm').mockReturnValue(false);
 
-      const card = createMockCard({ id: 1, book_id: 1 });
+      const card = createMockCard({ id: createTestUuid(1), book_id: createTestUuid(1) });
 
       const { result } = renderHook(() => useCardDetailView(card));
 
@@ -51,7 +52,7 @@ describe('useCardDetailView', () => {
       // 確認ダイアログを偽物にして、trueを返す
       const confirmSpy = vi.spyOn(window, 'confirm').mockReturnValue(true);
 
-      const card = createMockCard({ id: 1, book_id: 1 });
+      const card = createMockCard({ id: createTestUuid(1), book_id: createTestUuid(1) });
 
       const { result } = renderHook(() => useCardDetailView(card));
 
@@ -63,7 +64,7 @@ describe('useCardDetailView', () => {
 
       // 削除関数が正しい引数で呼ばれたことを確認
       expect(mockDeleteCard).toHaveBeenCalledWith(
-        { bookId: 1, cardId: 1 },
+        { bookId: createTestUuid(1), cardId: createTestUuid(1) },
         expect.objectContaining({
           onSuccess: expect.any(Function),
         }),
@@ -79,16 +80,6 @@ describe('useCardDetailView', () => {
 
       expect(result.current.breadcrumbItems).toHaveLength(3);
       expect(result.current.breadcrumbItems[2].label).toBe('テストカード');
-    });
-  });
-
-  describe('subtitle', () => {
-    it('サブタイトルに書籍名が含まれている', () => {
-      const card = createMockCard({ book: { title: 'テスト本' } });
-
-      const { result } = renderHook(() => useCardDetailView(card));
-
-      expect(result.current.subtitle).toBe('書籍名: テスト本');
     });
   });
 

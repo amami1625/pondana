@@ -3,8 +3,8 @@ import ListItem from '@/app/(protected)/listBooks/_components/display/ListItem';
 import { useLists } from '@/app/(protected)/lists/_hooks/useLists';
 
 interface AddListModalProps {
-  bookId: number;
-  listIds: number[];
+  bookId: string;
+  listIds: string[];
   isOpen: boolean;
   onClose: () => void;
 }

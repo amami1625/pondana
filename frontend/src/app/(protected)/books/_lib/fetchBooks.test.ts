@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { createMockBook } from '@/test/factories';
-import { toJapaneseLocaleString } from '@/test/helpers';
+import { toJapaneseLocaleString, createTestUuid } from '@/test/helpers';
 import { fetchBooks } from './fetchBooks';
 
 describe('fetchBooks', () => {
@@ -11,8 +11,8 @@ describe('fetchBooks', () => {
   describe('成功時', () => {
     it('書籍データを正しく取得できる', async () => {
       const mockApiResponse = [
-        createMockBook({ id: 1, title: 'テスト本A' }),
-        createMockBook({ id: 2, title: 'テスト本B' }),
+        createMockBook({ id: createTestUuid(1), title: 'テスト本A' }),
+        createMockBook({ id: createTestUuid(2), title: 'テスト本B', authors: ['テスト著者'] }),
       ];
 
       vi.stubGlobal(
@@ -30,7 +30,7 @@ describe('fetchBooks', () => {
       const expectedDate = toJapaneseLocaleString('2025-01-01T00:00:00Z');
 
       expect(result[0]).toEqual({
-        id: 1,
+        id: createTestUuid(1),
         title: 'テスト本A',
         description: 'テスト説明',
         user_id: 1,
@@ -41,19 +41,15 @@ describe('fetchBooks', () => {
         public: true,
         created_at: expectedDate,
         updated_at: expectedDate,
-        authors: [
-          {
-            id: 1,
-            name: 'テスト著者',
-            user_id: 1,
-            created_at: expectedDate,
-            updated_at: expectedDate,
-          },
-        ],
+        google_books_id: 'aaaaaaaaaa',
+        isbn: '999999999',
+        subtitle: null,
+        thumbnail: null,
+        authors: [],
       });
 
       expect(result[1]).toEqual({
-        id: 2,
+        id: createTestUuid(2),
         title: 'テスト本B',
         description: 'テスト説明',
         user_id: 1,
@@ -64,15 +60,11 @@ describe('fetchBooks', () => {
         public: true,
         created_at: expectedDate,
         updated_at: expectedDate,
-        authors: [
-          {
-            id: 1,
-            name: 'テスト著者',
-            user_id: 1,
-            created_at: expectedDate,
-            updated_at: expectedDate,
-          },
-        ],
+        google_books_id: 'aaaaaaaaaa',
+        isbn: '999999999',
+        subtitle: null,
+        thumbnail: null,
+        authors: ['テスト著者'],
       });
 
       expect(fetch).toHaveBeenCalledWith('/api/books');

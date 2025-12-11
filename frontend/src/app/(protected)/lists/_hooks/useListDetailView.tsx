@@ -9,7 +9,7 @@ export function useListDetailView(list: ListDetail) {
   const updateModal = useModal();
   const addBookModal = useModal();
 
-  const handleDelete = (id: number) => {
+  const handleDelete = (id: string) => {
     if (!confirm('本当に削除しますか？')) {
       return;
     }

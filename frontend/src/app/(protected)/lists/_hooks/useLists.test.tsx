@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { renderHook, waitFor } from '@testing-library/react';
-import { createProvider } from '@/test/helpers';
+import { createProvider, createTestUuid } from '@/test/helpers';
 import { createMockList } from '@/test/factories';
 import { useLists } from './useLists';
 import { fetchLists } from '@/app/(protected)/lists/_lib/fetchLists';
@@ -17,8 +17,8 @@ describe('useLists', () => {
   describe('成功時', () => {
     it('fetchListsを呼び出してデータを取得する', async () => {
       const mockLists: List[] = [
-        createMockList({ id: 1, name: 'テストリストA' }),
-        createMockList({ id: 2, name: 'テストリストB' }),
+        createMockList({ id: createTestUuid(1), name: 'テストリストA' }),
+        createMockList({ id: createTestUuid(2), name: 'テストリストB' }),
       ];
 
       vi.mocked(fetchLists).mockResolvedValue(mockLists);

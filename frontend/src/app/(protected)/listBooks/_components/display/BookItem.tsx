@@ -3,7 +3,7 @@ import { useListBookMutations } from '@/app/(protected)/listBooks/_hooks/useList
 import Button from '@/components/buttons/Button';
 
 interface BookItemProps {
-  listId: number;
+  listId: string;
   book: Book;
   isAdded: boolean;
 }
@@ -23,7 +23,7 @@ export default function BookItem({ listId, book, isAdded }: BookItemProps) {
             <div className="flex items-center gap-1 mb-1">
               <span className="text-xs text-gray-500">著者:</span>
               <p className="text-sm text-gray-700">
-                {book.authors.map((author) => author.name).join(', ')}
+                {book.authors.map((author) => author).join(', ')}
               </p>
             </div>
           )}

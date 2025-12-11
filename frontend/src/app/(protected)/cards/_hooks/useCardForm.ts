@@ -5,7 +5,7 @@ import { useCardMutations } from '@/app/(protected)/cards/_hooks/useCardMutation
 
 interface UseCardFormProps {
   card?: Card;
-  bookId: number;
+  bookId: string;
   cancel: () => void;
 }
 
@@ -16,6 +16,7 @@ export const useCardForm = ({ card, bookId, cancel }: UseCardFormProps) => {
     book_id: card ? card.book_id : bookId,
     title: card ? card.title : '',
     content: card ? card.content : '',
+    status_id: card ? card.status?.id : undefined,
   };
 
   const {

@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { renderHook, waitFor, act } from '@testing-library/react';
-import { createProvider, createTestQueryClient } from '@/test/helpers';
+import { createProvider, createTestQueryClient, createTestUuid } from '@/test/helpers';
 import { createMockBook, createMockTopPageData } from '@/test/factories';
 import { useBookMutations } from './useBookMutations';
 import toast from 'react-hot-toast';
@@ -34,7 +34,7 @@ describe('useBookMutations', () => {
       const queryClient = createTestQueryClient();
 
       // 事前にbooksリストとtopページのデータをキャッシュに追加
-      queryClient.setQueryData(['books'], [createMockBook({ id: 1 })]);
+      queryClient.setQueryData(['books'], [createMockBook()]);
       queryClient.setQueryData(['top'], createMockTopPageData());
 
       vi.stubGlobal(
@@ -56,8 +56,12 @@ describe('useBookMutations', () => {
       // ミューテーション実行
       act(() => {
         result.current.createBook({
+          google_books_id: 'abc123',
+          isbn: '9784873117836',
           title: 'テスト本',
-          author_ids: [1],
+          subtitle: 'サブタイトル',
+          thumbnail: 'http://example.com/image.jpg',
+          authors: ['テスト著者'],
           reading_status: 'completed',
           public: true,
         });
@@ -73,8 +77,12 @@ describe('useBookMutations', () => {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
+            google_books_id: 'abc123',
+            isbn: '9784873117836',
             title: 'テスト本',
-            author_ids: [1],
+            subtitle: 'サブタイトル',
+            thumbnail: 'http://example.com/image.jpg',
+            authors: ['テスト著者'],
             reading_status: 'completed',
             public: true,
           }),
@@ -82,7 +90,7 @@ describe('useBookMutations', () => {
       );
 
       // トーストが表示されることを確認
-      expect(toast.success).toHaveBeenCalledWith('本を作成しました');
+      expect(toast.success).toHaveBeenCalledWith('本を登録しました');
 
       // キャッシュが無効化されることを確認
       const booksQueryState = queryClient.getQueryState(['books']);
@@ -92,7 +100,7 @@ describe('useBookMutations', () => {
     });
 
     it('本の作成が失敗する', async () => {
-      const errorMessage = '本の作成に失敗しました';
+      const errorMessage = '本の登録に失敗しました';
 
       vi.stubGlobal(
         'fetch',
@@ -114,7 +122,6 @@ describe('useBookMutations', () => {
       act(() => {
         result.current.createBook({
           title: 'テスト本',
-          author_ids: [1],
           reading_status: 'completed',
           public: true,
         });
@@ -146,7 +153,6 @@ describe('useBookMutations', () => {
       act(() => {
         result.current.createBook({
           title: 'テスト本',
-          author_ids: [1],
           reading_status: 'completed',
           public: true,
         });
@@ -163,12 +169,15 @@ describe('useBookMutations', () => {
 
   describe('updateBook', () => {
     it('本の更新が成功する', async () => {
-      const mockBook = createMockBook({ id: 1, title: '更新された本' });
+      const mockBook = createMockBook({ id: createTestUuid(1), title: '更新された本' });
       const queryClient = createTestQueryClient();
 
       // 事前にbooksとtopページのデータをキャッシュに追加
-      queryClient.setQueryData(['books'], [createMockBook({ id: 1 })]);
-      queryClient.setQueryData(['books', 'detail', 1], [createMockBook({ id: 1 })]);
+      queryClient.setQueryData(['books'], [createMockBook()]);
+      queryClient.setQueryData(
+        ['books', 'detail', createTestUuid(1)],
+        [createMockBook({ id: createTestUuid(1) })],
+      );
       queryClient.setQueryData(['top'], createMockTopPageData());
 
       vi.stubGlobal(
@@ -190,9 +199,9 @@ describe('useBookMutations', () => {
       // ミューテーション実行
       act(() => {
         result.current.updateBook({
-          id: 1,
-          title: '更新された本',
-          author_ids: [1],
+          id: createTestUuid(1),
+          description: '更新された説明',
+          rating: 4,
           reading_status: 'reading',
           public: false,
         });
@@ -203,14 +212,14 @@ describe('useBookMutations', () => {
 
       // fetchが正しく呼ばれたことを確認
       expect(fetch).toHaveBeenCalledWith(
-        '/api/books/1',
+        `/api/books/${createTestUuid(1)}`,
         expect.objectContaining({
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            id: 1,
-            title: '更新された本',
-            author_ids: [1],
+            id: createTestUuid(1),
+            description: '更新された説明',
+            rating: 4,
             reading_status: 'reading',
             public: false,
           }),
@@ -222,7 +231,7 @@ describe('useBookMutations', () => {
 
       // キャッシュが無効化されることを確認
       const booksQueryState = queryClient.getQueryState(['books']);
-      const bookDetailState = queryClient.getQueryState(['books', 'detail', 1]);
+      const bookDetailState = queryClient.getQueryState(['books', 'detail', createTestUuid(1)]);
       const topQueryState = queryClient.getQueryState(['top']);
       expect(booksQueryState?.isInvalidated).toBe(true);
       expect(bookDetailState?.isInvalidated).toBe(true);
@@ -251,9 +260,7 @@ describe('useBookMutations', () => {
       // ミューテーション実行
       act(() => {
         result.current.updateBook({
-          id: 1,
-          title: '更新された本',
-          author_ids: [1],
+          id: createTestUuid(1),
           reading_status: 'reading',
           public: false,
         });
@@ -284,9 +291,7 @@ describe('useBookMutations', () => {
       // ミューテーション実行
       act(() => {
         result.current.updateBook({
-          id: 1,
-          title: '更新された本',
-          author_ids: [1],
+          id: createTestUuid(1),
           reading_status: 'reading',
           public: false,
         });
@@ -309,14 +314,14 @@ describe('useBookMutations', () => {
       const queryClient = createTestQueryClient();
 
       // 事前にbooksとtopページのデータをキャッシュに追加
-      queryClient.setQueryData(['books'], [createMockBook({ id: 1 })]);
+      queryClient.setQueryData(['books'], [createMockBook({ id: createTestUuid(1) })]);
       queryClient.setQueryData(['top'], createMockTopPageData());
 
       vi.stubGlobal(
         'fetch',
         vi.fn().mockResolvedValue({
           ok: true,
-          json: async () => ({ id: 1 }),
+          json: async () => ({ id: createTestUuid(1) }),
         }),
       );
 
@@ -330,7 +335,7 @@ describe('useBookMutations', () => {
 
       // ミューテーション実行
       act(() => {
-        result.current.deleteBook(1);
+        result.current.deleteBook(createTestUuid(1));
       });
 
       // 完了を待つ
@@ -338,7 +343,7 @@ describe('useBookMutations', () => {
 
       // fetchが正しく呼ばれたことを確認
       expect(fetch).toHaveBeenCalledWith(
-        '/api/books/1',
+        `/api/books/${createTestUuid(1)}`,
         expect.objectContaining({
           method: 'DELETE',
         }),
@@ -378,7 +383,7 @@ describe('useBookMutations', () => {
 
       // ミューテーション実行
       act(() => {
-        result.current.deleteBook(1);
+        result.current.deleteBook(createTestUuid(1));
       });
 
       // エラーを待つ
@@ -405,7 +410,7 @@ describe('useBookMutations', () => {
 
       // ミューテーション実行
       act(() => {
-        result.current.deleteBook(1);
+        result.current.deleteBook(createTestUuid(1));
       });
 
       // エラーを待つ

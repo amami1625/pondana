@@ -1,7 +1,11 @@
 interface DetailDescriptionProps {
-  children: React.ReactNode;
+  description: string | null;
 }
 
-export default function DetailDescription({ children }: DetailDescriptionProps) {
-  return <p className="text-slate-600 text-base font-normal leading-relaxed">{children}</p>;
+export default function DetailDescription({ description }: DetailDescriptionProps) {
+  return (
+    <p className="text-slate-600 text-base font-normal leading-relaxed">
+      {description ?? '説明が登録されていません'}
+    </p>
+  );
 }

@@ -4,7 +4,7 @@ import { Card, CardFormData } from '@/app/(protected)/cards/_types';
 import toast from 'react-hot-toast';
 
 // 更新用の型
-type UpdateCardData = CardFormData & { id: number };
+type UpdateCardData = CardFormData & { id: string };
 
 export function useCardMutations() {
   const queryClient = useQueryClient();
@@ -69,7 +69,7 @@ export function useCardMutations() {
 
   // 削除
   const deleteMutation = useMutation({
-    mutationFn: async ({ bookId, cardId }: { bookId: number; cardId: number }) => {
+    mutationFn: async ({ bookId, cardId }: { bookId: string; cardId: string }) => {
       const response = await fetch(`/api/books/${bookId}/cards/${cardId}`, {
         method: 'DELETE',
       });

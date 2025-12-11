@@ -1,11 +1,8 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { queryKeys } from '@/constants/queryKeys';
-import { BookBase, BookFormData } from '@/app/(protected)/books/_types';
+import { BookBase, BookCreateData, BookUpdateData } from '@/app/(protected)/books/_types';
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
-
-// 更新用の型
-type UpdateBookData = BookFormData & { id: number };
 
 export function useBookMutations() {
   const queryClient = useQueryClient();
@@ -13,7 +10,7 @@ export function useBookMutations() {
 
   // 作成
   const createMutation = useMutation({
-    mutationFn: async (data: BookFormData) => {
+    mutationFn: async (data: BookCreateData) => {
       const response = await fetch('/api/books', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -22,13 +19,13 @@ export function useBookMutations() {
 
       if (!response.ok) {
         const error = await response.json();
-        throw new Error(error.error || '本の作成に失敗しました');
+        throw new Error(error.error || '本の登録に失敗しました');
       }
 
       return response.json() as Promise<BookBase>;
     },
     onSuccess: () => {
-      toast.success('本を作成しました');
+      toast.success('本を登録しました');
       // 書籍一覧を再取得
       queryClient.invalidateQueries({ queryKey: queryKeys.books.all });
       // トップページのキャッシュを無効化
@@ -39,7 +36,7 @@ export function useBookMutations() {
 
   // 更新
   const updateMutation = useMutation({
-    mutationFn: async (data: UpdateBookData) => {
+    mutationFn: async (data: BookUpdateData) => {
       const response = await fetch(`/api/books/${data.id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
@@ -67,7 +64,7 @@ export function useBookMutations() {
 
   // 削除
   const deleteMutation = useMutation({
-    mutationFn: async (id: number) => {
+    mutationFn: async (id: string) => {
       const response = await fetch(`/api/books/${id}`, { method: 'DELETE' });
 
       if (!response.ok) {

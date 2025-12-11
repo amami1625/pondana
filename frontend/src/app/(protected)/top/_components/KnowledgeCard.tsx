@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { BookOpen } from 'lucide-react';
 
 interface KnowledgeCardProps {
-  id: number;
+  id: string;
   title: string;
   content: string;
   bookTitle: string;

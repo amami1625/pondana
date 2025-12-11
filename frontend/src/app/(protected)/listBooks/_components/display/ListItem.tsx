@@ -4,7 +4,7 @@ import Button from '@/components/buttons/Button';
 
 interface ListItemProps {
   list: List;
-  bookId: number;
+  bookId: string;
   isAdded: boolean;
 }
 

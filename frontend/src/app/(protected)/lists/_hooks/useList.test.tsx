@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { renderHook, waitFor } from '@testing-library/react';
-import { createProvider } from '@/test/helpers';
-import { createMockList, createMockBook, createMockAuthor } from '@/test/factories';
+import { createProvider, createTestUuid } from '@/test/helpers';
+import { createMockList, createMockBook } from '@/test/factories';
 import { useList } from './useList';
 import { fetchList } from '@/app/(protected)/lists/_lib/fetchList';
 import type { ListDetail } from '@/app/(protected)/lists/_types';
@@ -17,21 +17,21 @@ describe('useList', () => {
   describe('成功時', () => {
     it('fetchListを呼び出してデータを取得する', async () => {
       const mockList: ListDetail = createMockList({
-        id: 1,
+        id: createTestUuid(1),
         name: 'テストリスト',
         books: [
           createMockBook({
-            id: 1,
+            id: createTestUuid(1),
             title: 'テスト本',
-            authors: [createMockAuthor({ id: 1, name: 'テスト著者' })],
+            authors: ['テスト著者'],
           }),
         ],
-        list_books: [{ id: 1, list_id: 1, book_id: 1 }],
+        list_books: [{ id: 1, list_id: createTestUuid(1), book_id: createTestUuid(1) }],
       });
 
       vi.mocked(fetchList).mockResolvedValue(mockList);
 
-      const { result } = renderHook(() => useList(1), {
+      const { result } = renderHook(() => useList(createTestUuid(1)), {
         wrapper: createProvider(),
       });
 
@@ -49,12 +49,12 @@ describe('useList', () => {
       expect(result.current.data).toEqual(mockList);
 
       // fetchListが正しい引数で呼ばれたことを確認
-      expect(fetchList).toHaveBeenCalledWith(1);
+      expect(fetchList).toHaveBeenCalledWith(createTestUuid(1));
       expect(fetchList).toHaveBeenCalledTimes(1);
     });
 
-    it('idが0の時、クエリを実行しない', () => {
-      const { result } = renderHook(() => useList(0), {
+    it('idが空文字列の時、クエリを実行しない', () => {
+      const { result } = renderHook(() => useList(''), {
         wrapper: createProvider(),
       });
 
@@ -72,7 +72,7 @@ describe('useList', () => {
     it('fetchListがエラーをスローした場合、エラー状態になる', async () => {
       vi.mocked(fetchList).mockRejectedValue(new Error('リスト詳細の取得に失敗しました'));
 
-      const { result } = renderHook(() => useList(1), {
+      const { result } = renderHook(() => useList(createTestUuid(1)), {
         wrapper: createProvider(),
       });
 
@@ -94,14 +94,14 @@ describe('useList', () => {
     it('正しいqueryKeyを使用する', async () => {
       vi.mocked(fetchList).mockResolvedValue(createMockList());
 
-      const { result } = renderHook(() => useList(42), {
+      const { result } = renderHook(() => useList(createTestUuid(1)), {
         wrapper: createProvider(),
       });
 
       await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
       // fetchListが正しいidで呼ばれたことを確認
-      expect(fetchList).toHaveBeenCalledWith(42);
+      expect(fetchList).toHaveBeenCalledWith(createTestUuid(1));
     });
   });
 });

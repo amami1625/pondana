@@ -12,7 +12,7 @@ export function useBookDetailView(book: BookDetail) {
   const addListModal = useModal();
   const cardModal = useModal();
 
-  const handleDelete = (id: number) => {
+  const handleDelete = (id: string) => {
     if (!confirm('本当に削除しますか？')) {
       return;
     }
@@ -21,9 +21,6 @@ export function useBookDetailView(book: BookDetail) {
 
   // パンくずリストのアイテム
   const breadcrumbItems = getBookDetailBreadcrumbs(book.title);
-
-  // 著者情報のサブタイトル
-  const subtitle = `著者: ${book.authors.map((author) => author.name).join(', ')}`;
 
   // バッジ
   const badges = (
@@ -38,7 +35,6 @@ export function useBookDetailView(book: BookDetail) {
 
   return {
     breadcrumbItems,
-    subtitle,
     badges,
     handleDelete,
     updateModal,

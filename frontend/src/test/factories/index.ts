@@ -1,5 +1,4 @@
-export { createMockBook } from './book';
-export { createMockAuthor } from './author';
+export { createMockBook, createMockGoogleBooksVolume } from './book';
 export { createMockCategory } from './category';
 export { createMockList } from './list';
 export { createMockListBook } from './listBook';
