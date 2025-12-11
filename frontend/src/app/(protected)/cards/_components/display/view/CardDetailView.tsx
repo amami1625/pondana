@@ -11,19 +11,24 @@ import {
   DetailMetadata,
 } from '@/components/details';
 import CardActions from '@/app/(protected)/cards/_components/detail/CardActions';
+import StatusBadge from '@/components/badges/StatusBadge';
 
 interface CardDetailViewProps {
   card: CardDetail;
 }
 
 export default function CardDetailView({ card }: CardDetailViewProps) {
-  const { breadcrumbItems, subtitle, handleDelete, updateModal } = useCardDetailView(card);
+  const { breadcrumbItems, handleDelete, updateModal } = useCardDetailView(card);
 
   return (
     <>
       <DetailContainer breadcrumbItems={breadcrumbItems}>
         <DetailCard>
-          <DetailHeader title={card.title} subtitle={subtitle} />
+          <DetailHeader
+            title={card.title}
+            subtitle={card.book.title}
+            badges={card.status && <StatusBadge label={card.status.name} />}
+          />
           <DetailDescription description={card.content} />
           <DetailMetadata createdAt={card.created_at} updatedAt={card.updated_at} />
           <CardActions

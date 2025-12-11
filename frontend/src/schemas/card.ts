@@ -6,6 +6,13 @@ export const cardSchema = z.object({
   title: z.string(),
   content: z.string(),
   book_id: z.uuid(),
+  status: z
+    .object({
+      id: z.number(),
+      name: z.string(),
+    })
+    .optional()
+    .nullable(),
   created_at: z.string().transform((str) => {
     return new Date(str).toLocaleString('ja-JP', {
       timeZone: 'Asia/Tokyo',
@@ -50,6 +57,7 @@ export const cardFormSchema = z.object({
     .trim()
     .min(1, { message: '本文を入力してください' })
     .max(10000, { message: '本文は10000文字以内で入力してください' }),
+  status_id: z.number().optional(),
 });
 
 export type Card = z.infer<typeof cardSchema>;

@@ -83,16 +83,6 @@ describe('useCardDetailView', () => {
     });
   });
 
-  describe('subtitle', () => {
-    it('サブタイトルに書籍名が含まれている', () => {
-      const card = createMockCard({ book: { title: 'テスト本' } });
-
-      const { result } = renderHook(() => useCardDetailView(card));
-
-      expect(result.current.subtitle).toBe('書籍名: テスト本');
-    });
-  });
-
   describe('モーダル', () => {
     it('updateModal が返される', () => {
       mockUseModal();

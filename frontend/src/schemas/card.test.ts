@@ -191,6 +191,59 @@ describe('cardFormSchema', () => {
     });
   });
 
+  describe('status_id フィールドのテスト', () => {
+    it('status_id を省略してもカードを作成できる', () => {
+      const validData = {
+        book_id: createTestUuid(1),
+        title: 'テストカード',
+        content: 'テストコンテンツ',
+      };
+
+      const result = cardFormSchema.parse(validData);
+
+      expect(result).toEqual(validData);
+      expect(result.status_id).toBeUndefined();
+    });
+
+    it('status_id に有効な数値を指定できる', () => {
+      const validData = {
+        book_id: createTestUuid(1),
+        title: 'テストカード',
+        content: 'テストコンテンツ',
+        status_id: 1,
+      };
+
+      const result = cardFormSchema.parse(validData);
+
+      expect(result).toEqual(validData);
+      expect(result.status_id).toBe(1);
+    });
+
+    it('status_id が undefined の場合も受け入れられる', () => {
+      const validData = {
+        book_id: createTestUuid(1),
+        title: 'テストカード',
+        content: 'テストコンテンツ',
+        status_id: undefined,
+      };
+
+      const result = cardFormSchema.parse(validData);
+
+      expect(result.status_id).toBeUndefined();
+    });
+
+    it('status_id に文字列を指定するとエラーを返す', () => {
+      const invalidData = {
+        book_id: createTestUuid(1),
+        title: 'テストカード',
+        content: 'テストコンテンツ',
+        status_id: 'invalid',
+      };
+
+      expect(() => cardFormSchema.parse(invalidData)).toThrow(ZodError);
+    });
+  });
+
   describe('エラーメッセージの検証', () => {
     it('title が空の場合、適切なエラーメッセージを返す', () => {
       const invalidData = {

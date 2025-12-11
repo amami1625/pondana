@@ -7,6 +7,7 @@ const NAV_ITEMS = [
   { href: '/settings', label: 'プロフィール' },
   { href: '/settings/categories', label: 'カテゴリー' },
   { href: '/settings/tags', label: 'タグ' },
+  { href: '/settings/statuses', label: 'ステータス' },
 ] as const;
 
 export default function SettingsSidebar() {

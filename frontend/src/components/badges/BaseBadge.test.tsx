@@ -43,4 +43,11 @@ describe('BaseBadge', () => {
 
     expect(div).toHaveClass('bg-slate-200 text-slate-700');
   });
+
+  it('status 用のスタイルが適用できる', () => {
+    const { container } = render(<BaseBadge icon={<BookOpen />} label="テスト" variant="status" />);
+    const div = container.querySelector('div');
+
+    expect(div).toHaveClass('bg-blue-500/10 text-blue-600');
+  });
 });

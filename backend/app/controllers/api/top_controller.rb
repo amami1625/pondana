@@ -16,7 +16,7 @@ class Api::TopController < Api::ApplicationController
 
     # 最新のカード（5件）
     recent_cards = Card.joins(:book)
-                       .includes(:book)
+                       .includes(:book, :status)
                        .where(books: { user_id: current_user.id })
                        .order(created_at: :desc)
                        .limit(5)
@@ -24,7 +24,7 @@ class Api::TopController < Api::ApplicationController
     render json: {
       recent_books: recent_books.as_json(include: [:category, :tags]),
       recent_lists: recent_lists,
-      recent_cards: recent_cards.as_json(include: [:book])
+      recent_cards: recent_cards.as_json(include: [:book, :status])
     }
   end
 end
