@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { userFormSchema } from './user';
+import { userFormSchema, userStatsSchema, userWithStatsSchema } from './user';
 import { ZodError } from 'zod';
 
 describe('userFormSchema', () => {
@@ -128,6 +128,156 @@ describe('userFormSchema', () => {
       const result = userFormSchema.parse(validData);
 
       expect(result.avatar_url).toBe('');
+    });
+  });
+});
+
+describe('userStatsSchema', () => {
+  describe('正常系: 有効なデータを受け入れる', () => {
+    it('統計情報を正しくパースできる', () => {
+      const validData = {
+        public_books: 10,
+        public_lists: 5,
+      };
+
+      const result = userStatsSchema.parse(validData);
+
+      expect(result).toEqual(validData);
+    });
+
+    it('統計情報が0の場合も正しくパースできる', () => {
+      const validData = {
+        public_books: 0,
+        public_lists: 0,
+      };
+
+      const result = userStatsSchema.parse(validData);
+
+      expect(result).toEqual(validData);
+    });
+  });
+
+  describe('異常系: 無効なデータを拒否する', () => {
+    it('public_books が文字列の場合エラーを返す', () => {
+      const invalidData = {
+        public_books: '10',
+        public_lists: 5,
+      };
+
+      expect(() => userStatsSchema.parse(invalidData)).toThrow(ZodError);
+    });
+
+    it('public_lists が欠落している場合エラーを返す', () => {
+      const invalidData = {
+        public_books: 10,
+      };
+
+      expect(() => userStatsSchema.parse(invalidData)).toThrow(ZodError);
+    });
+
+    it('public_books が負の数の場合も受け入れる（バリデーションなし）', () => {
+      const data = {
+        public_books: -1,
+        public_lists: 5,
+      };
+
+      const result = userStatsSchema.parse(data);
+
+      expect(result.public_books).toBe(-1);
+    });
+  });
+});
+
+describe('userWithStatsSchema', () => {
+  describe('正常系: 有効なデータを受け入れる', () => {
+    it('ユーザー情報と統計情報を正しくパースできる', () => {
+      const validData = {
+        id: 1,
+        supabase_uid: 'test-uid-123',
+        name: 'テストユーザー',
+        avatar_url: null,
+        created_at: '2025-01-01T00:00:00.000+09:00',
+        updated_at: '2025-01-01T00:00:00.000+09:00',
+        stats: {
+          public_books: 10,
+          public_lists: 5,
+        },
+      };
+
+      const result = userWithStatsSchema.parse(validData);
+
+      expect(result.id).toBe(1);
+      expect(result.name).toBe('テストユーザー');
+      expect(result.stats.public_books).toBe(10);
+      expect(result.stats.public_lists).toBe(5);
+    });
+
+    it('avatar_url がnullの場合も正しくパースできる', () => {
+      const validData = {
+        id: 1,
+        supabase_uid: 'test-uid-123',
+        name: 'テストユーザー',
+        avatar_url: null,
+        created_at: '2025-01-01T00:00:00.000+09:00',
+        updated_at: '2025-01-01T00:00:00.000+09:00',
+        stats: {
+          public_books: 0,
+          public_lists: 0,
+        },
+      };
+
+      const result = userWithStatsSchema.parse(validData);
+
+      expect(result.avatar_url).toBeNull();
+      expect(result.stats.public_books).toBe(0);
+    });
+  });
+
+  describe('異常系: 無効なデータを拒否する', () => {
+    it('stats が欠落している場合エラーを返す', () => {
+      const invalidData = {
+        id: 1,
+        supabase_uid: 'test-uid-123',
+        name: 'テストユーザー',
+        avatar_url: null,
+        created_at: '2025-01-01T00:00:00.000+09:00',
+        updated_at: '2025-01-01T00:00:00.000+09:00',
+      };
+
+      expect(() => userWithStatsSchema.parse(invalidData)).toThrow(ZodError);
+    });
+
+    it('stats.public_books が欠落している場合エラーを返す', () => {
+      const invalidData = {
+        id: 1,
+        supabase_uid: 'test-uid-123',
+        name: 'テストユーザー',
+        avatar_url: null,
+        created_at: '2025-01-01T00:00:00.000+09:00',
+        updated_at: '2025-01-01T00:00:00.000+09:00',
+        stats: {
+          public_lists: 5,
+        },
+      };
+
+      expect(() => userWithStatsSchema.parse(invalidData)).toThrow(ZodError);
+    });
+
+    it('id が文字列の場合エラーを返す', () => {
+      const invalidData = {
+        id: '1',
+        supabase_uid: 'test-uid-123',
+        name: 'テストユーザー',
+        avatar_url: null,
+        created_at: '2025-01-01T00:00:00.000+09:00',
+        updated_at: '2025-01-01T00:00:00.000+09:00',
+        stats: {
+          public_books: 10,
+          public_lists: 5,
+        },
+      };
+
+      expect(() => userWithStatsSchema.parse(invalidData)).toThrow(ZodError);
     });
   });
 });

@@ -17,6 +17,17 @@ export const userSchema = z.object({
   }),
 });
 
+// ユーザー統計情報のスキーマ
+export const userStatsSchema = z.object({
+  public_books: z.number(),
+  public_lists: z.number(),
+});
+
+// 統計情報を含むユーザー情報のスキーマ
+export const userWithStatsSchema = userSchema.extend({
+  stats: userStatsSchema,
+});
+
 // Userのバリデーションスキーマ(フォーム用)
 export const userFormSchema = z.object({
   name: z
@@ -28,4 +39,6 @@ export const userFormSchema = z.object({
 });
 
 export type User = z.infer<typeof userSchema>;
+export type UserStats = z.infer<typeof userStatsSchema>;
+export type UserWithStats = z.infer<typeof userWithStatsSchema>;
 export type UserFormData = z.infer<typeof userFormSchema>;
