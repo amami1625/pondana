@@ -14,6 +14,7 @@ import {
 } from '@/components/details';
 import BookActions from '@/app/(protected)/books/_components/detail/BookActions';
 import BookDetailTabs from '@/app/(protected)/books/_components/detail/tab/BookDetailTabs';
+import { useProfile } from '@/hooks/useProfile';
 
 interface BookDetailProps {
   book: BookDetail;
@@ -22,6 +23,10 @@ interface BookDetailProps {
 export default function BookDetailView({ book }: BookDetailProps) {
   const { breadcrumbItems, badges, handleDelete, updateModal, addListModal, cardModal } =
     useBookDetailView(book);
+  const { data: profile } = useProfile();
+
+  // ログインユーザーが本の所有者かどうかを判定
+  const isOwner = profile?.id === book.user_id;
 
   return (
     <>
@@ -38,12 +43,15 @@ export default function BookDetailView({ book }: BookDetailProps) {
           />
           <DetailDescription description={book.description} />
           <DetailMetadata createdAt={book.created_at} updatedAt={book.updated_at} />
-          <BookActions
-            onEdit={updateModal.open}
-            onAddToList={addListModal.open}
-            onCreateCard={cardModal.open}
-            onDelete={() => handleDelete(book.id)}
-          />
+          {/* 所有者の場合のみ編集・削除ボタンを表示 */}
+          {isOwner && (
+            <BookActions
+              onEdit={updateModal.open}
+              onAddToList={addListModal.open}
+              onCreateCard={cardModal.open}
+              onDelete={() => handleDelete(book.id)}
+            />
+          )}
         </DetailCard>
 
         {/* タブ切り替え */}
