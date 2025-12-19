@@ -1,5 +1,4 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { createMockList } from '@/test/factories';
 import { createTestUuid } from '@/test/helpers';
 import { fetchUserLists } from './fetchUserLists';
 
@@ -11,16 +10,26 @@ describe('fetchUserLists', () => {
   describe('成功時', () => {
     it('ユーザーの公開リスト一覧を正しく取得できる', async () => {
       const mockApiResponse = [
-        createMockList({
+        {
           id: createTestUuid(1),
           name: 'テストリスト1',
+          description: 'テスト説明1',
+          user_id: 1,
           public: true,
-        }),
-        createMockList({
+          books_count: 3,
+          created_at: '2025-01-01T00:00:00Z',
+          updated_at: '2025-01-01T00:00:00Z',
+        },
+        {
           id: createTestUuid(2),
           name: 'テストリスト2',
+          description: 'テスト説明2',
+          user_id: 1,
           public: true,
-        }),
+          books_count: 5,
+          created_at: '2025-01-01T00:00:00Z',
+          updated_at: '2025-01-01T00:00:00Z',
+        },
       ];
 
       vi.stubGlobal(
@@ -57,7 +66,18 @@ describe('fetchUserLists', () => {
     });
 
     it('異なるIDで正しくリクエストできる', async () => {
-      const mockApiResponse = [createMockList({ id: createTestUuid(1) })];
+      const mockApiResponse = [
+        {
+          id: createTestUuid(1),
+          name: 'テストリスト',
+          description: 'テスト説明',
+          user_id: 42,
+          public: true,
+          books_count: 0,
+          created_at: '2025-01-01T00:00:00Z',
+          updated_at: '2025-01-01T00:00:00Z',
+        },
+      ];
 
       vi.stubGlobal(
         'fetch',

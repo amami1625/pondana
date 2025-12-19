@@ -33,6 +33,10 @@ export const listDetailSchema = listSchema.extend({
     }),
   ),
   list_books: z.array(listBookSchema),
+  user: z.object({
+    id: z.number(),
+    name: z.string(),
+  }),
 });
 
 // Listのバリデーションスキーマ(フォーム用)

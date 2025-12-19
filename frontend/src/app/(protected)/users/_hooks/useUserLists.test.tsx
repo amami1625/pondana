@@ -1,9 +1,9 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { renderHook, waitFor } from '@testing-library/react';
 import { createProvider, createTestUuid } from '@/test/helpers';
-import { createMockList } from '@/test/factories';
 import { useUserLists } from './useUserLists';
 import { fetchUserLists } from '@/app/(protected)/users/_lib/fetchUserLists';
+import { List } from '@/schemas/list';
 
 // fetchUserListsをモック化
 vi.mock('@/app/(protected)/users/_lib/fetchUserLists');
@@ -15,17 +15,27 @@ describe('useUserLists', () => {
 
   describe('成功時', () => {
     it('fetchUserListsを呼び出してデータを取得する', async () => {
-      const mockLists = [
-        createMockList({
+      const mockLists: List[] = [
+        {
           id: createTestUuid(1),
           name: 'テストリスト1',
+          description: 'テスト説明1',
+          user_id: 1,
           public: true,
-        }),
-        createMockList({
+          books_count: 3,
+          created_at: '2025-01-01T00:00:00Z',
+          updated_at: '2025-01-01T00:00:00Z',
+        },
+        {
           id: createTestUuid(2),
           name: 'テストリスト2',
+          description: 'テスト説明2',
+          user_id: 1,
           public: true,
-        }),
+          books_count: 5,
+          created_at: '2025-01-01T00:00:00Z',
+          updated_at: '2025-01-01T00:00:00Z',
+        },
       ];
 
       vi.mocked(fetchUserLists).mockResolvedValue(mockLists);

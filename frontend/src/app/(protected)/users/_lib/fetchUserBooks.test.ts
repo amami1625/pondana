@@ -84,9 +84,7 @@ describe('fetchUserBooks', () => {
         }),
       );
 
-      await expect(fetchUserBooks('1')).rejects.toThrow(
-        'ユーザーの公開本一覧の取得に失敗しました',
-      );
+      await expect(fetchUserBooks('1')).rejects.toThrow('ユーザーの公開本一覧の取得に失敗しました');
     });
 
     it('エラーメッセージがない場合、デフォルトメッセージを使用する', async () => {
@@ -98,9 +96,7 @@ describe('fetchUserBooks', () => {
         }),
       );
 
-      await expect(fetchUserBooks('1')).rejects.toThrow(
-        'ユーザーの公開本一覧の取得に失敗しました',
-      );
+      await expect(fetchUserBooks('1')).rejects.toThrow('ユーザーの公開本一覧の取得に失敗しました');
     });
 
     it('ネットワークエラー時にエラーをスローする', async () => {

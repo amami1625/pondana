@@ -3,10 +3,7 @@ import { userWithStatsSchema } from '@/schemas/user';
 import { NextRequest, NextResponse } from 'next/server';
 
 // GET - ユーザー情報取得
-export async function GET(
-  _request: NextRequest,
-  { params }: { params: Promise<{ id: string }> },
-) {
+export async function GET(_request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const { id } = await params;
     const data = await authenticatedRequest(`/users/${id}`);

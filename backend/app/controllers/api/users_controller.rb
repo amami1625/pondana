@@ -14,15 +14,13 @@ class Api::UsersController < Api::ApplicationController
 
   def lists
     user = User.find(params[:id])
-    lists = user.lists.where(public: true).includes(:books).order(created_at: :desc)
-
-    # リスト内の本も公開本のみにフィルタリング
-    lists_json = lists.as_json(include: :books)
-    lists_json.each do |list|
-      list['books'] = list['books'].select { |book| book['public'] == true }
-    end
-
-    render json: lists_json
+    lists = user.lists
+                .where(public: true)
+                .left_joins(list_books: :book)
+                .select('lists.*, COUNT(CASE WHEN books.public = true THEN 1 END) as books_count')
+                .group('lists.id')
+                .order(created_at: :desc)
+    render json: lists
   end
 
   private

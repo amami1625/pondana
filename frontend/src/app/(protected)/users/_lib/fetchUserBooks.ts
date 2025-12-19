@@ -1,5 +1,4 @@
 import { bookSchema, type Book } from '@/schemas/book';
-import { z } from 'zod';
 
 /**
  * ユーザーの公開本一覧を取得する
@@ -14,5 +13,5 @@ export async function fetchUserBooks(id: string): Promise<Book[]> {
   }
 
   const data = await response.json();
-  return z.array(bookSchema).parse(data);
+  return bookSchema.array().parse(data);
 }

@@ -1,11 +1,10 @@
-import { listDetailSchema, type ListDetail } from '@/schemas/list';
-import { z } from 'zod';
+import { listSchema, type List } from '@/schemas/list';
 
 /**
  * ユーザーの公開リスト一覧を取得する
  * クライアントコンポーネント（useQuery）で使用
  */
-export async function fetchUserLists(id: string): Promise<ListDetail[]> {
+export async function fetchUserLists(id: string): Promise<List[]> {
   const response = await fetch(`/api/users/${id}/lists`);
 
   if (!response.ok) {
@@ -14,5 +13,5 @@ export async function fetchUserLists(id: string): Promise<ListDetail[]> {
   }
 
   const data = await response.json();
-  return z.array(listDetailSchema).parse(data);
+  return listSchema.array().parse(data);
 }

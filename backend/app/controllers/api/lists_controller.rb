@@ -27,12 +27,31 @@ class Api::ListsController < Api::ApplicationController
   end
 
   def show
-    list = current_user.lists.includes({ books: [:category, :tags] }, :list_books).find(params[:id])
-    render json: list,
-           include: {
-             books: { include: [:category, :tags] },
-             list_books: { only: [:id, :book_id, :list_id] }
-           }
+    list = List.includes({ books: [:category, :tags] }, :list_books, :user).find(params[:id])
+
+    # 非公開もしくは所有者でない場合はエラー
+    unless list.public || list.user_id == current_user.id
+      render json: { error: '権限がありません' }, status: :forbidden
+      return
+    end
+
+    # 公開リストでも、非公開の本はフィルタリング（所有者以外には見せない）
+    filtered_books = if list.user_id != current_user.id
+                       list.books.select { |book| book.public }
+                     else
+                       list.books
+                     end
+
+    # JSONレスポンスを明示的に構築
+    list_json = list.as_json(
+      include: {
+        list_books: { only: [:id, :book_id, :list_id] },
+        user: { only: [:id, :name] }
+      }
+    )
+    list_json['books'] = filtered_books.as_json(include: [:category, :tags])
+
+    render json: list_json
   end
 
   def destroy
