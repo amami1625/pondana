@@ -10,9 +10,10 @@ import { useListBookMutations } from '@/app/(protected)/listBooks/_hooks/useList
 interface AddedBookProps {
   book: AddedBook;
   listBookId: number;
+  isOwner?: boolean;
 }
 
-export default function AddedBookItem({ book, listBookId }: AddedBookProps) {
+export default function AddedBookItem({ book, listBookId, isOwner = false }: AddedBookProps) {
   const { removeListBook } = useListBookMutations();
 
   return (
@@ -50,13 +51,16 @@ export default function AddedBookItem({ book, listBookId }: AddedBookProps) {
               </p>
             )}
           </div>
-          <Button
-            variant="danger"
-            onClick={() => removeListBook({ id: listBookId })}
-            icon={<Trash2 size={18} />}
-          >
-            リストから削除
-          </Button>
+          {/* 所有者の場合のみ削除ボタンを表示 */}
+          {isOwner && (
+            <Button
+              variant="danger"
+              onClick={() => removeListBook({ id: listBookId })}
+              icon={<Trash2 size={18} />}
+            >
+              リストから削除
+            </Button>
+          )}
         </div>
 
         {/* 評価（星） */}
@@ -71,15 +75,17 @@ export default function AddedBookItem({ book, listBookId }: AddedBookProps) {
         {/* 説明 */}
         {book.description && <p className="text-sm text-slate-700 flex-1">{book.description}</p>}
 
-        {/* 詳細ページへのリンク */}
-        <div className="mt-4 flex justify-between items-center">
-          <Link
-            href={`/books/${book.id}`}
-            className="text-sm font-semibold text-primary hover:underline"
-          >
-            詳細を見る
-          </Link>
-        </div>
+        {/* 詳細ページへのリンク（所有者のみ） */}
+        {isOwner && (
+          <div className="mt-4 flex justify-between items-center">
+            <Link
+              href={`/books/${book.id}`}
+              className="text-sm font-semibold text-primary hover:underline"
+            >
+              詳細を見る
+            </Link>
+          </div>
+        )}
       </div>
     </div>
   );

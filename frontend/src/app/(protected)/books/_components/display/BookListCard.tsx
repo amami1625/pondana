@@ -2,13 +2,27 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Book } from '@/app/(protected)/books/_types';
 import { CategoryBadge, TagBadge } from '@/components/badges';
+import { ChevronRight } from 'lucide-react';
 
-export default function BookListCard({ book }: { book: Book }) {
+interface BookListCardProps {
+  book: Book;
+  showDetailLink?: boolean;
+}
+
+export default function BookListCard({ book, showDetailLink = true }: BookListCardProps) {
   return (
-    <Link
-      href={`/books/${book.id}`}
-      className="block p-4 bg-white rounded-xl border border-slate-200 hover:shadow-lg hover:-translate-y-1 transition-all"
-    >
+    <div className="relative p-4 bg-white rounded-xl border border-slate-200 hover:shadow-lg transition-all">
+      {/* 詳細ページへのリンク */}
+      {showDetailLink && (
+        <Link
+          href={`/books/${book.id}`}
+          className="absolute top-4 right-4 p-2 rounded-lg bg-slate-100 hover:bg-slate-200 transition-colors"
+          aria-label="書籍の詳細を表示"
+        >
+          <ChevronRight className="w-5 h-5 text-slate-600" />
+        </Link>
+      )}
+
       <div className="flex items-stretch justify-between gap-6">
         {/* 書籍カバー画像 */}
         {book.thumbnail ? (
@@ -68,6 +82,6 @@ export default function BookListCard({ book }: { book: Book }) {
           )}
         </div>
       </div>
-    </Link>
+    </div>
   );
 }
