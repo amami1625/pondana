@@ -28,6 +28,13 @@ export const userWithStatsSchema = userSchema.extend({
   stats: userStatsSchema,
 });
 
+// ユーザー検索結果のスキーマ
+export const userSearchResultSchema = z.object({
+  id: z.number(),
+  name: z.string(),
+  avatar_url: z.string().nullable(),
+});
+
 // Userのバリデーションスキーマ(フォーム用)
 export const userFormSchema = z.object({
   name: z
@@ -42,3 +49,4 @@ export type User = z.infer<typeof userSchema>;
 export type UserStats = z.infer<typeof userStatsSchema>;
 export type UserWithStats = z.infer<typeof userWithStatsSchema>;
 export type UserFormData = z.infer<typeof userFormSchema>;
+export type UserSearchResult = z.infer<typeof userSearchResultSchema>;
