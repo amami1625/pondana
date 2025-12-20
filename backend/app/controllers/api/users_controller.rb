@@ -1,6 +1,23 @@
 class Api::UsersController < Api::ApplicationController
   rescue_from ActiveRecord::RecordNotFound, with: :record_not_found
 
+  def index
+    query = params[:q].to_s.strip
+
+    if query.blank?
+      render json: []
+      return
+    end
+
+    # 現在のユーザーを除外してユーザー名で部分一致検索
+    users = User.where('name ILIKE ?', "%#{query}%")
+                .where.not(id: current_user.id)
+                .limit(20)
+                .order(:name)
+
+    render json: users
+  end
+
   def show
     user = User.find(params[:id])
     render json: user.as_json.merge(stats: user.stats)
