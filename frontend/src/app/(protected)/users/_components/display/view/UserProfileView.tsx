@@ -3,7 +3,6 @@
 import Image from 'next/image';
 import { BookOpen, List } from 'lucide-react';
 import { UserWithStats } from '@/app/(protected)/users/_types';
-import PageTitle from '@/components/layout/PageTitle';
 
 interface UserProfileViewProps {
   user: UserWithStats;
@@ -12,8 +11,6 @@ interface UserProfileViewProps {
 export default function UserProfileView({ user }: UserProfileViewProps) {
   return (
     <div className="space-y-6">
-      <PageTitle title={user.name} />
-
       {/* ユーザープロフィールカード */}
       <div className="bg-white rounded-lg border border-slate-200 p-8">
         <div className="flex flex-col items-center">
@@ -28,7 +25,7 @@ export default function UserProfileView({ user }: UserProfileViewProps) {
             />
           ) : (
             <div className="flex items-center justify-center w-32 h-32 rounded-full bg-primary text-white text-5xl font-bold mb-4">
-              {user.name.charAt(0).toUpperCase()}
+              <span data-testid="initial">{user.name.charAt(0).toUpperCase()}</span>
             </div>
           )}
 
