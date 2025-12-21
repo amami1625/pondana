@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { queryKeys } from '@/constants/queryKeys';
-import { fetchFollowers } from '@/app/(protected)/users/_lib/fetchFollowers';
+import { fetchFollowers } from '@/app/(protected)/users/_lib/query/fetchFollowers';
 
 export function useFollowers(userId: string) {
   return useQuery({

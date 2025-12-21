@@ -1,39 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { queryKeys } from '@/constants/queryKeys';
-
-interface FollowResponse {
-  message: string;
-}
-
-interface FollowError {
-  error: string | string[];
-}
-
-async function followUser(userId: string): Promise<FollowResponse> {
-  const response = await fetch(`/api/users/${userId}/follow`, {
-    method: 'POST',
-  });
-
-  if (!response.ok) {
-    const error: FollowError = await response.json();
-    throw new Error(Array.isArray(error.error) ? error.error.join(', ') : error.error);
-  }
-
-  return response.json();
-}
-
-async function unfollowUser(userId: string): Promise<FollowResponse> {
-  const response = await fetch(`/api/users/${userId}/follow`, {
-    method: 'DELETE',
-  });
-
-  if (!response.ok) {
-    const error: FollowError = await response.json();
-    throw new Error(Array.isArray(error.error) ? error.error.join(', ') : error.error);
-  }
-
-  return response.json();
-}
+import { followUser } from '@/app/(protected)/users/_lib/mutation/followUser';
+import { unfollowUser } from '@/app/(protected)/users/_lib/mutation/unfollowUser';
 
 export function useFollowMutations(userId: string) {
   const queryClient = useQueryClient();
