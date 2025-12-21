@@ -1,5 +1,8 @@
+'use client';
+
 import Link from 'next/link';
 import { UserSearchResult } from '@/app/(protected)/users/_types';
+import FollowButton from '@/app/(protected)/users/_components/actions/FollowButton';
 
 interface UserSearchResultsProps {
   query: string;
@@ -33,24 +36,30 @@ export default function UserSearchResults({
         </p>
         <div className="space-y-2">
           {suggestions.map((user) => (
-            <Link
+            <div
               key={user.id}
-              href={`/users/${user.id}`}
-              className="block p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
+              className="p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
             >
               <div className="flex items-center gap-3">
                 {/* TODO: ユーザー画像変更機能実装後に画像を表示するように変更 */}
-                <div
-                  className="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center text-white font-medium"
-                  data-testid="initial"
-                >
-                  {user.name.charAt(0).toUpperCase()}
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="font-medium text-gray-900 truncate">{user.name}</div>
+                <Link href={`/users/${user.id}`}>
+                  <div
+                    className="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center text-white font-medium cursor-pointer"
+                    data-testid="initial"
+                  >
+                    {user.name.charAt(0).toUpperCase()}
+                  </div>
+                </Link>
+                <Link href={`/users/${user.id}`} className="flex-1 min-w-0">
+                  <div className="font-medium text-gray-900 truncate hover:underline">
+                    {user.name}
+                  </div>
+                </Link>
+                <div className="flex-shrink-0">
+                  <FollowButton userId={user.id.toString()} />
                 </div>
               </div>
-            </Link>
+            </div>
           ))}
         </div>
       </div>

@@ -4,14 +4,14 @@ import { queryKeys } from '@/constants/queryKeys';
 import UserDetailClient from '@/app/(protected)/users/_components/clients/UserDetailClient';
 import { authenticatedRequest } from '@/supabase/dal';
 import { userWithStatsSchema } from '@/app/(protected)/users/_types';
-import { bookSchema } from '@/schemas/book';
-import { listSchema } from '@/schemas/list';
+import { bookSchema } from '@/app/(protected)/books/_types';
+import { listSchema } from '@/app/(protected)/lists/_types';
 
-type Props = {
+interface UserPageProps {
   params: Promise<{ id: string }>;
-};
+}
 
-export default async function UserPage({ params }: Props) {
+export default async function UserPage({ params }: UserPageProps) {
   const { id } = await params;
   const queryClient = createServerQueryClient();
 
