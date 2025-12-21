@@ -23,6 +23,11 @@ Rails.application.routes.draw do
       member do
         get :books
         get :lists
+        post :follow
+        delete :follow, action: :unfollow
+        get :following
+        get :followers
+        get :follow_status
       end
     end
   end
