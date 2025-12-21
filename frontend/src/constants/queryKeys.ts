@@ -30,5 +30,8 @@ export const queryKeys = {
     detail: (id: string) => ['users', 'detail', id] as const, // ユーザー詳細取得用
     books: (id: string) => ['users', 'books', id] as const, // ユーザーの公開本一覧取得用
     lists: (id: string) => ['users', 'lists', id] as const, // ユーザーの公開リスト一覧取得用
+    followStatus: (id: string) => ['users', 'followStatus', id] as const, // フォロー状態取得用
+    following: (id: string) => ['users', 'following', id] as const, // フォロー中一覧取得用
+    followers: (id: string) => ['users', 'followers', id] as const, // フォロワー一覧取得用
   },
 } as const;

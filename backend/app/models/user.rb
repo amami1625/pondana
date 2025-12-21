@@ -29,7 +29,9 @@ class User < ApplicationRecord
   def stats
     {
       public_books: books.where(public: true).count,
-      public_lists: lists.where(public: true).count
+      public_lists: lists.where(public: true).count,
+      following_count: following.count,
+      followers_count: followers.count
     }
   end
 

@@ -21,6 +21,8 @@ export const userSchema = z.object({
 export const userStatsSchema = z.object({
   public_books: z.number(),
   public_lists: z.number(),
+  following_count: z.number(),
+  followers_count: z.number(),
 });
 
 // 統計情報を含むユーザー情報のスキーマ
