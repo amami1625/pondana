@@ -3,10 +3,10 @@ import { renderHook, waitFor } from '@testing-library/react';
 import { createProvider } from '@/test/helpers';
 import { createMockUserWithStats } from '@/test/factories';
 import { useUser } from './useUser';
-import { fetchUser } from '@/app/(protected)/users/_lib/fetchUser';
+import { fetchUser } from '@/app/(protected)/users/_lib/query/fetchUser';
 
 // fetchUserをモック化
-vi.mock('@/app/(protected)/users/_lib/fetchUser');
+vi.mock('@/app/(protected)/users/_lib/query/fetchUser');
 
 describe('useUser', () => {
   beforeEach(() => {
@@ -21,6 +21,8 @@ describe('useUser', () => {
         stats: {
           public_books: 10,
           public_lists: 5,
+          following_count: 3,
+          followers_count: 7,
         },
       });
 

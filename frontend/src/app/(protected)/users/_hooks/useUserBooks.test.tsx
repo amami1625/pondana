@@ -3,10 +3,10 @@ import { renderHook, waitFor } from '@testing-library/react';
 import { createProvider, createTestUuid } from '@/test/helpers';
 import { createMockBook } from '@/test/factories';
 import { useUserBooks } from './useUserBooks';
-import { fetchUserBooks } from '@/app/(protected)/users/_lib/fetchUserBooks';
+import { fetchUserBooks } from '@/app/(protected)/users/_lib/query/fetchUserBooks';
 
 // fetchUserBooksをモック化
-vi.mock('@/app/(protected)/users/_lib/fetchUserBooks');
+vi.mock('@/app/(protected)/users/_lib/query/fetchUserBooks');
 
 describe('useUserBooks', () => {
   beforeEach(() => {

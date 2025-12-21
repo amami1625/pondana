@@ -8,11 +8,11 @@ import {
 } from '@/app/(protected)/users/_components/display/view';
 import { ErrorMessage, LoadingState } from '@/components/feedback';
 
-type Props = {
+interface UserDetailClientProps {
   id: string;
-};
+}
 
-export default function UserDetailClient({ id }: Props) {
+export default function UserDetailClient({ id }: UserDetailClientProps) {
   const { data: user, error: userError, isLoading: isUserLoading } = useUser(id);
   const { data: books, error: booksError, isLoading: isBooksLoading } = useUserBooks(id);
   const { data: lists, error: listsError, isLoading: isListsLoading } = useUserLists(id);
