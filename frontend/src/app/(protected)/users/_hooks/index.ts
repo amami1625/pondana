@@ -1,3 +1,7 @@
-export { useUser } from '@/app/(protected)/users/_hooks/useUser';
-export { useUserBooks } from '@/app/(protected)/users/_hooks/useUserBooks';
-export { useUserLists } from '@/app/(protected)/users/_hooks/useUserLists';
+export { useUser } from './useUser';
+export { useUserBooks } from './useUserBooks';
+export { useUserLists } from './useUserLists';
+export { useFollowStatus } from './useFollowStatus';
+export { useFollowing } from './useFollowing';
+export { useFollowers } from './useFollowers';
+export { useFollowMutations } from './useFollowMutations';
