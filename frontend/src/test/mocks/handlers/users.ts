@@ -1,0 +1,68 @@
+import { http, HttpResponse } from 'msw';
+
+/**
+ * ユーザー関連のAPIモックハンドラー
+ * 
+ * エラーレスポンスの形式:
+ * - code: アプリケーション固有のエラーコード（例: "FOLLOW_SELF_ERROR"）
+ * - message: エラーメッセージ（例: "Cannot follow yourself"）
+ */
+export const usersHandlers = [
+  // フォローリクエスト（成功）
+  http.post('/api/users/:id/follow', ({ params }) => {
+    const { id } = params;
+    return HttpResponse.json({ message: 'Followed successfully' }, { status: 201 });
+  }),
+
+  // アンフォローリクエスト（成功）
+  http.delete('/api/users/:id/follow', ({ params }) => {
+    const { id } = params;
+    return HttpResponse.json({ message: 'Unfollowed successfully' }, { status: 200 });
+  }),
+
+  // フォロー状態取得（アンダースコア版）
+  http.get('/api/users/:id/follow_status', ({ params }) => {
+    const { id } = params;
+    return HttpResponse.json({
+      is_following: false,
+    });
+  }),
+
+  // フォロー状態取得（ハイフン版）
+  http.get('/api/users/:id/follow-status', ({ params }) => {
+    const { id } = params;
+    return HttpResponse.json({
+      is_following: false,
+    });
+  }),
+
+  // フォロー中一覧
+  http.get('/api/users/:id/following', ({ params }) => {
+    const { id } = params;
+    return HttpResponse.json([
+      {
+        id: 2,
+        name: 'Following User',
+        email: 'following@example.com',
+        avatar_url: null,
+        following_count: 5,
+        followers_count: 10,
+      },
+    ]);
+  }),
+
+  // フォロワー一覧
+  http.get('/api/users/:id/followers', ({ params }) => {
+    const { id } = params;
+    return HttpResponse.json([
+      {
+        id: 3,
+        name: 'Follower User',
+        email: 'follower@example.com',
+        avatar_url: null,
+        following_count: 3,
+        followers_count: 7,
+      },
+    ]);
+  }),
+];
