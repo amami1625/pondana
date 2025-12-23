@@ -1,3 +1,4 @@
+import { createMockUser } from '@/test/factories';
 import { http, HttpResponse } from 'msw';
 
 /**
@@ -25,36 +26,19 @@ export const usersHandlers = [
     const { id } = params;
     return HttpResponse.json({
       is_following: false,
+      is_followed_by: true,
     });
   }),
 
   // フォロー中一覧
   http.get('/api/users/:id/following', ({ params }) => {
     const { id } = params;
-    return HttpResponse.json([
-      {
-        id: 2,
-        name: 'Following User',
-        email: 'following@example.com',
-        avatar_url: null,
-        following_count: 5,
-        followers_count: 10,
-      },
-    ]);
+    return HttpResponse.json([createMockUser()]);
   }),
 
   // フォロワー一覧
   http.get('/api/users/:id/followers', ({ params }) => {
     const { id } = params;
-    return HttpResponse.json([
-      {
-        id: 3,
-        name: 'Follower User',
-        email: 'follower@example.com',
-        avatar_url: null,
-        following_count: 3,
-        followers_count: 7,
-      },
-    ]);
+    return HttpResponse.json([createMockUser()]);
   }),
 ];
