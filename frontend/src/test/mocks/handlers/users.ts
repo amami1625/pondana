@@ -2,7 +2,7 @@ import { http, HttpResponse } from 'msw';
 
 /**
  * ユーザー関連のAPIモックハンドラー
- * 
+ *
  * エラーレスポンスの形式:
  * - code: アプリケーション固有のエラーコード（例: "FOLLOW_SELF_ERROR"）
  * - message: エラーメッセージ（例: "Cannot follow yourself"）
@@ -20,15 +20,7 @@ export const usersHandlers = [
     return HttpResponse.json({ message: 'Unfollowed successfully' }, { status: 200 });
   }),
 
-  // フォロー状態取得（アンダースコア版）
-  http.get('/api/users/:id/follow_status', ({ params }) => {
-    const { id } = params;
-    return HttpResponse.json({
-      is_following: false,
-    });
-  }),
-
-  // フォロー状態取得（ハイフン版）
+  // フォロー状態取得
   http.get('/api/users/:id/follow-status', ({ params }) => {
     const { id } = params;
     return HttpResponse.json({

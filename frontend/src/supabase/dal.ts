@@ -6,10 +6,10 @@ import { ApiError } from '@/lib/errors/ApiError';
 
 /**
  * セッションを検証し、認証済みユーザーの情報を取得する
- * 
+ *
  * この関数はキャッシュされており、同じリクエスト内では結果が再利用される。
  * 認証されていない場合は自動的にログインページにリダイレクトする。
- * 
+ *
  * @returns ユーザー情報とセッション情報を含むオブジェクト
  * @throws {Error} ログインページへのリダイレクト（未認証時）
  */
@@ -34,24 +34,24 @@ export const verifySession = cache(async () => {
 
 /**
  * 認証付きでバックエンドAPIにリクエストを送信する
- * 
+ *
  * この関数は以下の処理を自動的に行う：
  * - セッション検証とアクセストークンの取得
  * - 認証ヘッダー（Authorization）の付与
  * - エラーレスポンスの正規化とApiErrorへの変換
  * - 404エラー時の専用ページ表示
- * 
+ *
  * @param endpoint - APIエンドポイントのパス（例: "/users/1/follow"）
  *                   完全なURLを指定することも可能（例: "https://example.com/api/test"）
  * @param options - fetchのオプション（method, body, headersなど）
  * @returns APIからのレスポンスデータ（JSON）、またはundefined
  * @throws {ApiError} APIエラー時（ステータスコード、エラーコード、メッセージを含む）
  * @throws {Error} セッションが無効な場合
- * 
+ *
  * @example
  * // GETリクエスト
  * const users = await authenticatedRequest('/users');
- * 
+ *
  * @example
  * // POSTリクエスト
  * const result = await authenticatedRequest('/users/1/follow', {

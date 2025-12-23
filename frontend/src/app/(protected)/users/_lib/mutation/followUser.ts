@@ -26,12 +26,12 @@ export async function followUser(userId: string): Promise<FollowResponse> {
         });
       }
 
-      // エラーコードがあればユーザーフレンドリーなメッセージにマッピング
+      // エラーコードがある場合はマッピング
       if (errorData.code && errorData.code in FOLLOW_ERROR_MESSAGES) {
         throw new Error(FOLLOW_ERROR_MESSAGES[errorData.code as FollowErrorCode]);
       }
 
-      // デフォルトのエラーメッセージ
+      // エラーコードが無い場合はデフォルトのエラーメッセージ
       throw new Error(FOLLOW_ERROR_MESSAGES.UNKNOWN_ERROR);
     }
 
