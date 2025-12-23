@@ -37,6 +37,11 @@ export const userSearchResultSchema = z.object({
   avatar_url: z.string().nullable(),
 });
 
+export const followStatusSchema = z.object({
+  is_following: z.boolean(),
+  is_followed_by: z.boolean(),
+});
+
 // Userのバリデーションスキーマ(フォーム用)
 export const userFormSchema = z.object({
   name: z
@@ -52,3 +57,4 @@ export type UserStats = z.infer<typeof userStatsSchema>;
 export type UserWithStats = z.infer<typeof userWithStatsSchema>;
 export type UserFormData = z.infer<typeof userFormSchema>;
 export type UserSearchResult = z.infer<typeof userSearchResultSchema>;
+export type FollowStatus = z.infer<typeof followStatusSchema>;
