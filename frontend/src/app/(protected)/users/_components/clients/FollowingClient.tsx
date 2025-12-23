@@ -9,16 +9,31 @@ interface FollowingClientProps {
 }
 
 export default function FollowingClient({ id }: FollowingClientProps) {
-  const { data: user, isLoading: isUserLoading, isError: userError } = useUser(id);
+  const {
+    data: user,
+    isLoading: isUserLoading,
+    isError: userError,
+    error: userErrObj,
+  } = useUser(id);
   const {
     data: following,
     isLoading: isFollowingLoading,
     isError: followingError,
+    error: followingErrObj,
   } = useFollowing(id);
 
   // ローディング状態
   if (isUserLoading || isFollowingLoading) {
     return <LoadingState message="フォロー中のユーザーを読み込んでいます..." />;
+  }
+
+  // エラー状態
+  if (userError) {
+    return <ErrorMessage message={userErrObj.message} />;
+  }
+
+  if (followingError) {
+    return <ErrorMessage message={followingErrObj.message} />;
   }
 
   // エラー状態

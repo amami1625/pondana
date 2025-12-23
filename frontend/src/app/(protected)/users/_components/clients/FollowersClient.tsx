@@ -9,11 +9,17 @@ interface FollowersClientProps {
 }
 
 export default function FollowersClient({ id }: FollowersClientProps) {
-  const { data: user, isLoading: isUserLoading, isError: userError } = useUser(id);
+  const {
+    data: user,
+    isLoading: isUserLoading,
+    isError: userError,
+    error: userErrObj,
+  } = useUser(id);
   const {
     data: followers,
     isLoading: isFollowersLoading,
     isError: followersError,
+    error: followersErrObj,
   } = useFollowers(id);
 
   // ローディング状態
@@ -22,8 +28,12 @@ export default function FollowersClient({ id }: FollowersClientProps) {
   }
 
   // エラー状態
-  if (userError || followersError) {
-    return <ErrorMessage message="エラーが発生しました" />;
+  if (userError) {
+    return <ErrorMessage message={userErrObj.message} />;
+  }
+
+  if (followersError) {
+    return <ErrorMessage message={followersErrObj.message} />;
   }
 
   // prefetchされているのでデータは存在するはず
