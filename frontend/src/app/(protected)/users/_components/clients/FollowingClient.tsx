@@ -36,11 +36,6 @@ export default function FollowingClient({ id }: FollowingClientProps) {
     return <ErrorMessage message={followingErrObj.message} />;
   }
 
-  // エラー状態
-  if (userError || followingError) {
-    return <ErrorMessage message="エラーが発生しました" />;
-  }
-
   // prefetchされているのでデータは存在するはず
   if (!user || !following) {
     return <ErrorMessage message="データの取得に失敗しました" />;

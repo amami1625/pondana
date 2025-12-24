@@ -1,6 +1,6 @@
 'use client';
 
-import { UserPlus, UserMinus } from 'lucide-react';
+import { UserPlus, UserMinus, User } from 'lucide-react';
 import { useFollowMutations } from '@/app/(protected)/users/_hooks/useFollowMutations';
 import { useFollowStatus } from '@/app/(protected)/users/_hooks/useFollowStatus';
 import { useProfile } from '@/hooks/useProfile';
@@ -11,8 +11,25 @@ interface FollowButtonProps {
 
 export default function FollowButton({ userId }: FollowButtonProps) {
   const { data: profile } = useProfile();
-  const { data: followStatus, isLoading: isStatusLoading } = useFollowStatus(userId);
+  const {
+    data: followStatus,
+    isLoading: isStatusLoading,
+    isError: statusError,
+    error: statusErrObj,
+  } = useFollowStatus(userId);
   const { follow, unfollow, isLoading: isMutating } = useFollowMutations(userId);
+
+  if (statusError) {
+    return (
+      <button
+        className="flex items-center gap-2 px-4 py-2 rounded-lg font-medium opacity-50 cursor-not-allowed"
+        disabled
+      >
+        <User className="w-4 h-4" />
+        {statusErrObj.message}
+      </button>
+    );
+  }
 
   // 自分自身のプロフィールの場合はボタンを表示しない
   if (profile?.id.toString() === userId) {
