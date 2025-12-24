@@ -1,4 +1,4 @@
-import { User } from '@/schemas/user';
+import { User, UserWithStats } from '@/schemas/user';
 
 /**
  * テスト用のUserオブジェクトを作成するファクトリー関数
@@ -12,5 +12,26 @@ export const createMockUser = (overrides?: Partial<User>): User => ({
   avatar_url: null,
   created_at: '2025-01-01T00:00:00Z',
   updated_at: '2025-01-01T00:00:00Z',
+  ...overrides,
+});
+
+/**
+ * テスト用のUserWithStatsオブジェクトを作成するファクトリー関数
+ * @param overrides - デフォルト値を上書きするプロパティ
+ * @returns UserWithStats型のモックオブジェクト
+ */
+export const createMockUserWithStats = (overrides?: Partial<UserWithStats>): UserWithStats => ({
+  id: 1,
+  supabase_uid: '1',
+  name: 'テストユーザー',
+  avatar_url: null,
+  created_at: '2025-01-01T00:00:00Z',
+  updated_at: '2025-01-01T00:00:00Z',
+  stats: {
+    public_books: 5,
+    public_lists: 2,
+    following_count: 0,
+    followers_count: 0,
+  },
   ...overrides,
 });

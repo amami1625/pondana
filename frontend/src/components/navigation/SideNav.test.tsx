@@ -86,6 +86,8 @@ describe('SideNav', () => {
     render(<SideNav />);
 
     expect(screen.getByText('ホーム')).toBeInTheDocument();
+    expect(screen.getByText('ユーザーを検索')).toBeInTheDocument();
+    expect(screen.getByText('本を検索')).toBeInTheDocument();
     expect(screen.getByText('本棚')).toBeInTheDocument();
     expect(screen.getByText('リスト')).toBeInTheDocument();
     expect(screen.getByText('カード')).toBeInTheDocument();
@@ -109,7 +111,8 @@ describe('SideNav', () => {
 
     const links = screen.getAllByRole('link');
 
-    expect(links[0]).toHaveClass('bg-primary/10 text-primary');
-    expect(links[1]).toHaveClass('hover:bg-slate-100 text-slate-800');
+    // links[0]はユーザープロフィールへのリンク、links[1]以降がナビゲーション項目
+    expect(links[1]).toHaveClass('bg-primary/10 text-primary');
+    expect(links[2]).toHaveClass('hover:bg-slate-100 text-slate-800');
   });
 });

@@ -8,9 +8,10 @@ import EmptyState from '@/components/feedback/EmptyState';
 interface AddedBooksProps {
   books: AddedBook[];
   listBooks: ListBook[];
+  isOwner?: boolean;
 }
 
-export default function AddedBooks({ books, listBooks }: AddedBooksProps) {
+export default function AddedBooks({ books, listBooks, isOwner = false }: AddedBooksProps) {
   return (
     <section className="space-y-4">
       {/* 見出し */}
@@ -27,7 +28,9 @@ export default function AddedBooks({ books, listBooks }: AddedBooksProps) {
             const listBook = listBooks.find((lb) => lb.book_id === book.id);
             if (!listBook) return null;
 
-            return <AddedBookItem key={book.id} book={book} listBookId={listBook.id} />;
+            return (
+              <AddedBookItem key={book.id} book={book} listBookId={listBook.id} isOwner={isOwner} />
+            );
           })}
         </div>
       )}

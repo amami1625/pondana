@@ -17,5 +17,9 @@ export const createMockList = (overrides?: Partial<ListDetail>): ListDetail => (
   updated_at: '2025-01-01T00:00:00Z',
   books: [],
   list_books: [],
+  user: {
+    id: 1,
+    name: 'テストユーザー',
+  },
   ...overrides,
 });

@@ -48,6 +48,7 @@
     "eslint-plugin-prettier": "^5.5.4",
     "eslint-plugin-unused-imports": "^4.3.0",
     "jsdom": "^27.1.0",
+    "msw": "^2.12.4",
     "prettier": "^3.6.2",
     "tailwindcss": "^4",
     "typescript": "^5",

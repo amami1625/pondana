@@ -20,6 +20,37 @@ You can start editing the page by modifying `app/page.tsx`. The page auto-update
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
+## Tech Stack
+
+### Core
+
+- [Next.js](https://nextjs.org/) - React framework
+- [React](https://react.dev/) - UI library
+- [TypeScript](https://www.typescriptlang.org/) - Type safety
+
+### State Management & Data Fetching
+
+- [TanStack Query (React Query)](https://tanstack.com/query/latest) - Server state management
+
+### Styling
+
+- [Tailwind CSS](https://tailwindcss.com/) - Utility-first CSS framework
+
+### Form & Validation
+
+- [Zod](https://zod.dev/) - Schema validation
+
+### UI Components
+
+- [Lucide React](https://lucide.dev/) - Icon library
+- [React Hot Toast](https://react-hot-toast.com/) - Toast notifications
+
+### Testing
+
+- [Vitest](https://vitest.dev/) - Unit test framework
+- [React Testing Library](https://testing-library.com/react) - Component testing
+- [MSW (Mock Service Worker)](https://mswjs.io/) - API mocking for tests
+
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:

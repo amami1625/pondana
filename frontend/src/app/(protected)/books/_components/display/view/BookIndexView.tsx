@@ -1,38 +1,20 @@
 'use client';
 
-import { useState, useMemo } from 'react';
 import { Plus } from 'lucide-react';
 import { Book } from '@/app/(protected)/books/_types';
 import BookListCard from '@/app/(protected)/books/_components/display/BookListCard';
-import CategoryFilter from '@/app/(protected)/books/_components/filters/CategoryFilter';
+import Filter from '@/components/filters/Filter';
 import EmptyState from '@/components/feedback/EmptyState';
 import Link from 'next/link';
+import { useBookIndexView } from '@/app/(protected)/books/_hooks/useBookIndexView';
 
 interface BookIndexViewProps {
   books: Book[];
 }
 
 export default function BookIndexView({ books }: BookIndexViewProps) {
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-
-  // ユニークなカテゴリ一覧を取得
-  const categories = useMemo(() => {
-    const categorySet = new Set<string>();
-    books.forEach((book) => {
-      if (book.category?.name) {
-        categorySet.add(book.category.name);
-      }
-    });
-    return Array.from(categorySet).sort();
-  }, [books]);
-
-  // フィルタリングされた書籍リスト
-  const filteredBooks = useMemo(() => {
-    if (!selectedCategory) {
-      return books;
-    }
-    return books.filter((book) => book.category?.name === selectedCategory);
-  }, [books, selectedCategory]);
+  const { selectedCategory, setSelectedCategory, categories, filteredBooks } =
+    useBookIndexView(books);
 
   return (
     <div className="max-w-4xl mx-auto">
@@ -65,10 +47,10 @@ export default function BookIndexView({ books }: BookIndexViewProps) {
       ) : (
         <>
           {/* カテゴリフィルター */}
-          <CategoryFilter
-            categories={categories}
-            selectedCategory={selectedCategory}
-            onSelectCategory={setSelectedCategory}
+          <Filter
+            items={categories}
+            selectedItem={selectedCategory}
+            onSelectItem={setSelectedCategory}
           />
 
           {/* 本のリスト表示 */}

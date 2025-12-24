@@ -19,6 +19,17 @@ Rails.application.routes.draw do
     resources :tags, only: %i[index create update destroy]
     resources :statuses, only: %i[index create update destroy]
     resource :profile, only: %i[show update]
+    resources :users, only: %i[index show] do
+      member do
+        get :books
+        get :lists
+        post :follow
+        delete :follow, action: :unfollow
+        get :following
+        get :followers
+        get :follow_status
+      end
+    end
   end
 
   # Defines the root path route ("/")
