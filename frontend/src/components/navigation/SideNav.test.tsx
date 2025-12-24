@@ -111,7 +111,8 @@ describe('SideNav', () => {
 
     const links = screen.getAllByRole('link');
 
-    expect(links[0]).toHaveClass('bg-primary/10 text-primary');
-    expect(links[1]).toHaveClass('hover:bg-slate-100 text-slate-800');
+    // links[0]はユーザープロフィールへのリンク、links[1]以降がナビゲーション項目
+    expect(links[1]).toHaveClass('bg-primary/10 text-primary');
+    expect(links[2]).toHaveClass('hover:bg-slate-100 text-slate-800');
   });
 });

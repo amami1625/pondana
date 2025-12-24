@@ -2,11 +2,11 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { renderHook, waitFor } from '@testing-library/react';
 import { createProvider, createTestUuid } from '@/test/helpers';
 import { useUserLists } from './useUserLists';
-import { fetchUserLists } from '@/app/(protected)/users/_lib/fetchUserLists';
+import { fetchUserLists } from '@/app/(protected)/users/_lib/query/fetchUserLists';
 import { List } from '@/schemas/list';
 
 // fetchUserListsをモック化
-vi.mock('@/app/(protected)/users/_lib/fetchUserLists');
+vi.mock('@/app/(protected)/users/_lib/query/fetchUserLists');
 
 describe('useUserLists', () => {
   beforeEach(() => {

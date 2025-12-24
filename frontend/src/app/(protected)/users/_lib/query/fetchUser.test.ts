@@ -15,6 +15,8 @@ describe('fetchUser', () => {
         stats: {
           public_books: 10,
           public_lists: 5,
+          following_count: 3,
+          followers_count: 7,
         },
       });
 

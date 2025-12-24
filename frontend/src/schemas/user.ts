@@ -21,6 +21,8 @@ export const userSchema = z.object({
 export const userStatsSchema = z.object({
   public_books: z.number(),
   public_lists: z.number(),
+  following_count: z.number(),
+  followers_count: z.number(),
 });
 
 // 統計情報を含むユーザー情報のスキーマ
@@ -33,6 +35,11 @@ export const userSearchResultSchema = z.object({
   id: z.number(),
   name: z.string(),
   avatar_url: z.string().nullable(),
+});
+
+export const followStatusSchema = z.object({
+  is_following: z.boolean(),
+  is_followed_by: z.boolean(),
 });
 
 // Userのバリデーションスキーマ(フォーム用)
@@ -50,3 +57,4 @@ export type UserStats = z.infer<typeof userStatsSchema>;
 export type UserWithStats = z.infer<typeof userWithStatsSchema>;
 export type UserFormData = z.infer<typeof userFormSchema>;
 export type UserSearchResult = z.infer<typeof userSearchResultSchema>;
+export type FollowStatus = z.infer<typeof followStatusSchema>;

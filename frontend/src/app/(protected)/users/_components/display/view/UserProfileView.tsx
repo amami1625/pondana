@@ -1,8 +1,10 @@
 'use client';
 
 import Image from 'next/image';
-import { BookOpen, List } from 'lucide-react';
+import Link from 'next/link';
+import { BookOpen, List, Users, UserCheck } from 'lucide-react';
 import { UserWithStats } from '@/app/(protected)/users/_types';
+import FollowButton from '@/app/(protected)/users/_components/actions/FollowButton';
 
 interface UserProfileViewProps {
   user: UserWithStats;
@@ -30,10 +32,43 @@ export default function UserProfileView({ user }: UserProfileViewProps) {
           )}
 
           {/* ユーザー名 */}
-          <h2 className="text-2xl font-bold text-slate-900 mb-6">{user.name}</h2>
+          <h2 className="text-2xl font-bold text-slate-900 mb-4">{user.name}</h2>
+
+          {/* フォローボタン */}
+          <div className="mb-6">
+            <FollowButton userId={user.id.toString()} />
+          </div>
 
           {/* 統計情報 */}
           <div className="flex gap-8">
+            {/* フォロー中 */}
+            <Link
+              href={`/users/${user.id}/following`}
+              className="flex flex-col items-center hover:opacity-70 transition-opacity"
+            >
+              <div className="flex items-center gap-2 mb-1">
+                <UserCheck className="w-5 h-5 text-slate-600" />
+                <span className="text-2xl font-bold text-slate-900">
+                  {user.stats.following_count}
+                </span>
+              </div>
+              <span className="text-sm text-slate-600">フォロー中</span>
+            </Link>
+
+            {/* フォロワー */}
+            <Link
+              href={`/users/${user.id}/followers`}
+              className="flex flex-col items-center hover:opacity-70 transition-opacity"
+            >
+              <div className="flex items-center gap-2 mb-1">
+                <Users className="w-5 h-5 text-slate-600" />
+                <span className="text-2xl font-bold text-slate-900">
+                  {user.stats.followers_count}
+                </span>
+              </div>
+              <span className="text-sm text-slate-600">フォロワー</span>
+            </Link>
+
             {/* 公開している本 */}
             <div className="flex flex-col items-center">
               <div className="flex items-center gap-2 mb-1">

@@ -19,7 +19,7 @@ export default function SideNav() {
           </div>
           <div className="flex flex-col">
             <h1 className="text-slate-900 text-base font-medium leading-normal">
-              {profile?.name || 'ロード中...'}
+              <Link href={`/users/${profile?.id}`}>{profile?.name || 'ロード中...'}</Link>
             </h1>
           </div>
         </div>

@@ -138,6 +138,8 @@ describe('userStatsSchema', () => {
       const validData = {
         public_books: 10,
         public_lists: 5,
+        following_count: 3,
+        followers_count: 7,
       };
 
       const result = userStatsSchema.parse(validData);
@@ -149,6 +151,8 @@ describe('userStatsSchema', () => {
       const validData = {
         public_books: 0,
         public_lists: 0,
+        following_count: 0,
+        followers_count: 0,
       };
 
       const result = userStatsSchema.parse(validData);
@@ -179,6 +183,8 @@ describe('userStatsSchema', () => {
       const data = {
         public_books: -1,
         public_lists: 5,
+        following_count: 0,
+        followers_count: 0,
       };
 
       const result = userStatsSchema.parse(data);
@@ -201,6 +207,8 @@ describe('userWithStatsSchema', () => {
         stats: {
           public_books: 10,
           public_lists: 5,
+          following_count: 3,
+          followers_count: 7,
         },
       };
 
@@ -223,6 +231,8 @@ describe('userWithStatsSchema', () => {
         stats: {
           public_books: 0,
           public_lists: 0,
+          following_count: 0,
+          followers_count: 0,
         },
       };
 

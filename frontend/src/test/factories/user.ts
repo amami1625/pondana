@@ -30,6 +30,8 @@ export const createMockUserWithStats = (overrides?: Partial<UserWithStats>): Use
   stats: {
     public_books: 5,
     public_lists: 2,
+    following_count: 0,
+    followers_count: 0,
   },
   ...overrides,
 });

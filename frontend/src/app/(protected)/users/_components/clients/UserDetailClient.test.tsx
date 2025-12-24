@@ -3,6 +3,11 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { useUser, useUserBooks, useUserLists } from '@/app/(protected)/users/_hooks';
 import UserDetailClient from './UserDetailClient';
 import { createMockBook, createMockList, createMockUserWithStats } from '@/test/factories';
+import { createProvider } from '@/test/helpers';
+import { useProfile } from '@/hooks/useProfile';
+
+// useProfileをモック化
+vi.mock('@/hooks/useProfile');
 
 vi.mock('@/app/(protected)/users/_hooks', () => ({
   useUser: vi.fn(),
@@ -13,6 +18,12 @@ vi.mock('@/app/(protected)/users/_hooks', () => ({
 describe('UserDetailClient', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    // デフォルトでuseProfileがnullを返すようにモック
+    vi.mocked(useProfile).mockReturnValue({
+      data: null,
+      isLoading: false,
+      error: null,
+    } as unknown as ReturnType<typeof useProfile>);
   });
 
   describe('ユーザープロフィール', () => {
@@ -67,7 +78,7 @@ describe('UserDetailClient', () => {
       vi.mocked(useUserBooks).mockReturnValue({} as unknown as ReturnType<typeof useUserBooks>);
       vi.mocked(useUserLists).mockReturnValue({} as unknown as ReturnType<typeof useUserLists>);
 
-      render(<UserDetailClient id="1" />);
+      render(<UserDetailClient id="1" />, { wrapper: createProvider() });
 
       expect(screen.getByText('テストユーザー')).toBeInTheDocument();
     });

@@ -40,6 +40,67 @@ class Api::UsersController < Api::ApplicationController
     render json: lists
   end
 
+  def follow
+    user = User.find(params[:id])
+
+    if current_user.id == user.id
+      render json: { 
+        code: 'FOLLOW_SELF_ERROR',
+        message: 'Cannot follow yourself' 
+      }, status: :unprocessable_entity
+      return
+    end
+
+    follow = current_user.active_follows.build(followed_id: user.id)
+
+    if follow.save
+      render json: { message: 'Followed successfully' }, status: :created
+    else
+      render json: { 
+        code: 'ALREADY_FOLLOWING',
+        message: follow.errors.full_messages.join(', ')
+      }, status: :unprocessable_entity
+    end
+  end
+
+  def unfollow
+    user = User.find(params[:id])
+    follow = current_user.active_follows.find_by(followed_id: user.id)
+
+    if follow
+      follow.destroy
+      render json: { message: 'Unfollowed successfully' }, status: :ok
+    else
+      render json: { 
+        code: 'NOT_FOLLOWING',
+        message: 'Not following this user' 
+      }, status: :not_found
+    end
+  end
+
+  def following
+    user = User.find(params[:id])
+    following_users = user.following.order(created_at: :desc)
+    render json: following_users
+  end
+
+  def followers
+    user = User.find(params[:id])
+    follower_users = user.followers.order(created_at: :desc)
+    render json: follower_users
+  end
+
+  def follow_status
+    user = User.find(params[:id])
+    is_following = current_user.following.exists?(user.id)
+    is_followed_by = current_user.followers.exists?(user.id)
+
+    render json: {
+      is_following: is_following,
+      is_followed_by: is_followed_by
+    }
+  end
+
   private
 
   def record_not_found
