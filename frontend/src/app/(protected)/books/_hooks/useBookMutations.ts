@@ -1,7 +1,8 @@
+import { useRouter } from 'next/navigation';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { queryKeys } from '@/constants/queryKeys';
-import { BookBase, BookCreateData, BookUpdateData } from '@/app/(protected)/books/_types';
-import { useRouter } from 'next/navigation';
+import { BookCreateData, BookUpdateData } from '@/app/(protected)/books/_types';
+import { createBook, deleteBook, updateBook } from '../_lib/mutation';
 import toast from 'react-hot-toast';
 
 export function useBookMutations() {
@@ -10,20 +11,7 @@ export function useBookMutations() {
 
   // 作成
   const createMutation = useMutation({
-    mutationFn: async (data: BookCreateData) => {
-      const response = await fetch('/api/books', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
-      });
-
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.error || '本の登録に失敗しました');
-      }
-
-      return response.json() as Promise<BookBase>;
-    },
+    mutationFn: (data: BookCreateData) => createBook(data),
     onSuccess: () => {
       toast.success('本を登録しました');
       // 書籍一覧を再取得
@@ -36,20 +24,7 @@ export function useBookMutations() {
 
   // 更新
   const updateMutation = useMutation({
-    mutationFn: async (data: BookUpdateData) => {
-      const response = await fetch(`/api/books/${data.id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
-      });
-
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.error || '本の更新に失敗しました');
-      }
-
-      return response.json() as Promise<BookBase>;
-    },
+    mutationFn: (data: BookUpdateData) => updateBook(data),
     onSuccess: (_, { id }) => {
       toast.success('本を更新しました');
       // 書籍一覧のキャッシュを無効化
@@ -64,16 +39,7 @@ export function useBookMutations() {
 
   // 削除
   const deleteMutation = useMutation({
-    mutationFn: async (id: string) => {
-      const response = await fetch(`/api/books/${id}`, { method: 'DELETE' });
-
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.error || '本の削除に失敗しました');
-      }
-
-      return response.json();
-    },
+    mutationFn: (id: string) => deleteBook(id),
     onSuccess: () => {
       toast.success('本を削除しました');
       // 一覧ページにリダイレクト
