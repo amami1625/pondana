@@ -3,11 +3,11 @@ import { renderHook, waitFor } from '@testing-library/react';
 import { createProvider, createTestUuid } from '@/test/helpers';
 import { createMockBook } from '@/test/factories';
 import { useBooks } from './useBooks';
-import { fetchBooks } from '@/app/(protected)/books/_lib/fetchBooks';
+import { fetchBooks } from '@/app/(protected)/books/_lib/query/fetchBooks';
 import type { Book } from '@/app/(protected)/books/_types';
 
 // fetchBooksをモック化
-vi.mock('@/app/(protected)/books/_lib/fetchBooks');
+vi.mock('@/app/(protected)/books/_lib/query/fetchBooks');
 
 describe('useBooks', () => {
   beforeEach(() => {

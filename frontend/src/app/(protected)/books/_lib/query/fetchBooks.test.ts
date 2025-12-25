@@ -2,6 +2,9 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { createMockBook } from '@/test/factories';
 import { toJapaneseLocaleString, createTestUuid } from '@/test/helpers';
 import { fetchBooks } from './fetchBooks';
+import { server } from '@/test/mocks/server';
+import { http, HttpResponse } from 'msw';
+import { BOOKS_ERROR_MESSAGES } from '../constants/errorMessages';
 
 describe('fetchBooks', () => {
   beforeEach(() => {
@@ -10,19 +13,6 @@ describe('fetchBooks', () => {
 
   describe('成功時', () => {
     it('書籍データを正しく取得できる', async () => {
-      const mockApiResponse = [
-        createMockBook({ id: createTestUuid(1), title: 'テスト本A' }),
-        createMockBook({ id: createTestUuid(2), title: 'テスト本B', authors: ['テスト著者'] }),
-      ];
-
-      vi.stubGlobal(
-        'fetch',
-        vi.fn().mockResolvedValue({
-          ok: true,
-          json: async () => mockApiResponse,
-        }),
-      );
-
       const result = await fetchBooks();
 
       expect(result).toHaveLength(2);
@@ -45,7 +35,7 @@ describe('fetchBooks', () => {
         isbn: '999999999',
         subtitle: null,
         thumbnail: null,
-        authors: [],
+        authors: ['テスト著者A'],
       });
 
       expect(result[1]).toEqual({
@@ -64,69 +54,62 @@ describe('fetchBooks', () => {
         isbn: '999999999',
         subtitle: null,
         thumbnail: null,
-        authors: ['テスト著者'],
+        authors: ['テスト著者B'],
       });
-
-      expect(fetch).toHaveBeenCalledWith('/api/books');
-      expect(fetch).toHaveBeenCalledTimes(1);
     });
 
     it('データが存在しない場合、空配列を返す', async () => {
-      vi.stubGlobal(
-        'fetch',
-        vi.fn().mockResolvedValue({
-          ok: true,
-          json: async () => [],
+      server.use(
+        http.get('/api/books', () => {
+          return HttpResponse.json([]);
         }),
       );
 
       const result = await fetchBooks();
 
       expect(result).toEqual([]);
-      expect(fetch).toHaveBeenCalledWith('/api/books');
-      expect(fetch).toHaveBeenCalledTimes(1);
     });
   });
 
   describe('エラー時', () => {
-    it('APIエラー時にエラーをスローする', async () => {
-      vi.stubGlobal(
-        'fetch',
-        vi.fn().mockResolvedValue({
-          ok: false,
-          json: async () => ({ error: '書籍一覧の取得に失敗しました' }),
+    it('404エラー時に適切なエラーメッセージをスローする', async () => {
+      server.use(
+        http.get('/api/books', () => {
+          return HttpResponse.json({ error: 'Not found' }, { status: 404 });
         }),
       );
 
-      await expect(fetchBooks()).rejects.toThrow('書籍一覧の取得に失敗しました');
+      await expect(fetchBooks()).rejects.toThrow(BOOKS_ERROR_MESSAGES.NOT_FOUND);
     });
 
-    it('エラーメッセージがない場合、デフォルトメッセージを使用する', async () => {
-      vi.stubGlobal(
-        'fetch',
-        vi.fn().mockResolvedValue({
-          ok: false,
-          json: async () => ({}),
+    it('500エラー時にデフォルトエラーメッセージをスローする', async () => {
+      server.use(
+        http.get('/api/books', () => {
+          return HttpResponse.json({ error: 'Internal server error' }, { status: 500 });
         }),
       );
 
-      await expect(fetchBooks()).rejects.toThrow('書籍一覧の取得に失敗しました');
+      await expect(fetchBooks()).rejects.toThrow(BOOKS_ERROR_MESSAGES.UNKNOWN_ERROR);
     });
 
-    it('ネットワークエラー時にエラーをスローする', async () => {
-      vi.stubGlobal('fetch', vi.fn().mockRejectedValue(new Error('Network error')));
+    it('ネットワークエラー時に適切なエラーメッセージをスローする', async () => {
+      server.use(
+        http.get('/api/books', () => {
+          return HttpResponse.error();
+        }),
+      );
 
-      await expect(fetchBooks()).rejects.toThrow('Network error');
+      await expect(fetchBooks()).rejects.toThrow(BOOKS_ERROR_MESSAGES.NETWORK_ERROR);
     });
   });
 
   describe('Zodバリデーション', () => {
     it('不正なデータ形式の場合、Zodエラーをスローする', async () => {
-      vi.stubGlobal(
-        'fetch',
-        vi.fn().mockResolvedValue({
-          ok: true,
-          json: async () => [{ invalid: 'data' }],
+      server.use(
+        http.get('/api/books', () => {
+          return HttpResponse.json({
+            invalid: 'invalid-data',
+          });
         }),
       );
 
