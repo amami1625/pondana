@@ -3,7 +3,7 @@ import { renderHook, waitFor } from '@testing-library/react';
 import { createProvider, createTestUuid } from '@/test/helpers';
 import { createMockBook, createMockCard, createMockList } from '@/test/factories';
 import { useBook } from './useBook';
-import { fetchBook } from '@/app/(protected)/books/_lib/fetchBook';
+import { fetchBook } from '@/app/(protected)/books/_lib/query/fetchBook';
 import type { BookDetail } from '@/app/(protected)/books/_types';
 
 // fetchBookをモック化
