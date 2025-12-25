@@ -39,18 +39,24 @@ export const verifySession = cache(async () => {
  * - セッション検証とアクセストークンの取得
  * - 認証ヘッダー（Authorization）の付与
  * - エラーレスポンスの正規化とApiErrorへの変換
- * - 404エラー時の専用ページ表示
+ * - 404エラー時の専用ページ表示（Server Componentの場合）
  *
  * @param endpoint - APIエンドポイントのパス（例: "/users/1/follow"）
  *                   完全なURLを指定することも可能（例: "https://example.com/api/test"）
  * @param options - fetchのオプション（method, body, headersなど）
+ * @param throwOn404 - 404エラーをnotFound()で処理するか（デフォルト: true）
+ *                     API Routeでは false を指定してApiErrorとしてスロー
  * @returns APIからのレスポンスデータ（JSON）、またはundefined
  * @throws {ApiError} APIエラー時（ステータスコード、エラーコード、メッセージを含む）
  * @throws {Error} セッションが無効な場合
  *
  * @example
- * // GETリクエスト
+ * // Server Componentでの使用（404でnotFound()を呼ぶ）
  * const users = await authenticatedRequest('/users');
+ *
+ * @example
+ * // API Routeでの使用（404をApiErrorとしてスロー）
+ * const users = await authenticatedRequest('/users', {}, false);
  *
  * @example
  * // POSTリクエスト
@@ -62,6 +68,7 @@ export const verifySession = cache(async () => {
 export async function authenticatedRequest(
   endpoint: string,
   options: RequestInit = {},
+  throwOn404 = true,
 ): Promise<unknown> {
   const { session } = await verifySession();
 
@@ -84,11 +91,12 @@ export async function authenticatedRequest(
     cache: 'no-store',
   });
 
-  if (response.status === 404) {
-    notFound();
-  }
-
   if (!response.ok) {
+    // 404エラーの処理
+    if (response.status === 404 && throwOn404) {
+      notFound(); // Server Componentで404ページを表示
+    }
+
     const errorData = await response.json().catch(() => ({}));
 
     // エラーメッセージの正規化（配列の場合は結合、文字列の場合はそのまま）
