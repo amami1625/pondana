@@ -1,4 +1,5 @@
 import { authenticatedRequest } from '@/supabase/dal';
+import { ApiError } from '@/lib/errors/ApiError';
 import { listBookSchema } from '@/schemas/listBooks';
 import { NextRequest, NextResponse } from 'next/server';
 
@@ -15,6 +16,9 @@ export async function POST(request: NextRequest) {
     const listBook = listBookSchema.parse(data);
     return NextResponse.json(listBook);
   } catch (error) {
+    if (error instanceof ApiError) {
+      return NextResponse.json({ error: error.message, code: error.code }, { status: error.statusCode });
+    }
     if (error instanceof Error) {
       return NextResponse.json({ error: error.message }, { status: 500 });
     }

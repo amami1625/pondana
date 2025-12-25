@@ -6,7 +6,7 @@ import { NextRequest, NextResponse } from 'next/server';
 export async function GET(_request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const { id } = await params;
-    const data = await authenticatedRequest(`/users/${id}/follow_status`);
+    const data = await authenticatedRequest(`/users/${id}/follow_status`, {}, false);
     return NextResponse.json(data);
   } catch (error) {
     // ApiErrorの場合はステータスコードとエラーコードを保持

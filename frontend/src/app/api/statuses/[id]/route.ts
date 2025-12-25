@@ -1,4 +1,5 @@
 import { authenticatedRequest } from '@/supabase/dal';
+import { ApiError } from '@/lib/errors/ApiError';
 import { statusSchema } from '@/app/(protected)/statuses/_types';
 import { NextRequest, NextResponse } from 'next/server';
 
@@ -8,13 +9,20 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
     const { id } = await params;
     const body = await request.json();
 
-    const data = await authenticatedRequest(`/statuses/${id}`, {
-      method: 'PUT',
-      body: JSON.stringify({ status: body }),
-    });
+    const data = await authenticatedRequest(
+      `/statuses/${id}`,
+      {
+        method: 'PUT',
+        body: JSON.stringify({ status: body }),
+      },
+      false,
+    );
     const status = statusSchema.parse(data);
     return NextResponse.json(status);
   } catch (error) {
+    if (error instanceof ApiError) {
+      return NextResponse.json({ error: error.message, code: error.code }, { status: error.statusCode });
+    }
     if (error instanceof Error) {
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
@@ -32,10 +40,13 @@ export async function DELETE(
 
     await authenticatedRequest(`/statuses/${id}`, {
       method: 'DELETE',
-    });
+    }, false);
 
     return NextResponse.json({ success: true });
   } catch (error) {
+    if (error instanceof ApiError) {
+      return NextResponse.json({ error: error.message, code: error.code }, { status: error.statusCode });
+    }
     if (error instanceof Error) {
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
