@@ -2,12 +2,12 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { renderHook, waitFor } from '@testing-library/react';
 import { createProvider, createTestUuid } from '@/test/helpers';
 import { createMockCard } from '@/test/factories';
-import { useCards } from './useCards';
-import { fetchCards } from '@/app/(protected)/cards/_lib/fetchCards';
 import type { CardList } from '@/app/(protected)/cards/_types';
+import { fetchCards } from '@/app/(protected)/cards/_lib/query/fetchCards';
+import { useCards } from './useCards';
 
 // fetchCardsをモック化
-vi.mock('@/app/(protected)/cards/_lib/fetchCards');
+vi.mock('@/app/(protected)/cards/_lib/query/fetchCards');
 
 describe('useCards', () => {
   beforeEach(() => {

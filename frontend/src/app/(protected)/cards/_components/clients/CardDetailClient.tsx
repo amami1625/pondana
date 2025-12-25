@@ -17,7 +17,7 @@ export default function CardDetailClient({ id }: Props) {
   }
 
   if (cardError) {
-    return <ErrorMessage message={cardError?.message || 'エラーが発生しました'} />;
+    return <ErrorMessage message={cardError?.message} />;
   }
 
   if (!card) {
