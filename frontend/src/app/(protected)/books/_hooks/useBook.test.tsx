@@ -7,7 +7,7 @@ import { fetchBook } from '@/app/(protected)/books/_lib/query/fetchBook';
 import type { BookDetail } from '@/app/(protected)/books/_types';
 
 // fetchBookをモック化
-vi.mock('@/app/(protected)/books/_lib/fetchBook');
+vi.mock('@/app/(protected)/books/_lib/query/fetchBook');
 
 describe('useBook', () => {
   beforeEach(() => {
