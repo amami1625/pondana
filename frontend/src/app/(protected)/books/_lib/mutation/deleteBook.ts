@@ -5,7 +5,7 @@ interface ApiErrorResponse {
   error?: string;
 }
 
-export async function deleteBook(id: string): Promise<void> {
+export async function deleteBook({ id }: { id: string }): Promise<void> {
   try {
     const response = await fetch(`/api/books/${id}`, {
       method: 'DELETE',

@@ -65,7 +65,10 @@ describe('useBookMutations', () => {
       await waitFor(() => expect(result.current.isCreating).toBe(false));
 
       // createBook関数が正しく呼ばれたことを確認
-      expect(mutations.createBook).toHaveBeenCalledWith(createData);
+      expect(mutations.createBook).toHaveBeenCalledWith(
+        createData,
+        expect.anything(), // React Queryが渡すコンテキスト
+      );
 
       // トーストが表示されることを確認
       expect(toast.success).toHaveBeenCalledWith('本を登録しました');
@@ -101,7 +104,10 @@ describe('useBookMutations', () => {
       await waitFor(() => expect(result.current.createError).toBeInstanceOf(Error));
 
       // createBook関数が正しく呼ばれたことを確認
-      expect(mutations.createBook).toHaveBeenCalledWith(createData);
+      expect(mutations.createBook).toHaveBeenCalledWith(
+        createData,
+        expect.anything(), // React Queryが渡すコンテキスト
+      );
 
       // トーストが表示されることを確認
       expect(toast.error).toHaveBeenCalledWith(errorMessage);
@@ -144,7 +150,10 @@ describe('useBookMutations', () => {
       await waitFor(() => expect(result.current.isUpdating).toBe(false));
 
       // updateBook関数が正しく呼ばれたことを確認
-      expect(mutations.updateBook).toHaveBeenCalledWith(updateData);
+      expect(mutations.updateBook).toHaveBeenCalledWith(
+        updateData,
+        expect.anything(), // React Queryが渡すコンテキスト
+      );
 
       // トーストが表示されることを確認
       expect(toast.success).toHaveBeenCalledWith('本を更新しました');
@@ -182,7 +191,10 @@ describe('useBookMutations', () => {
       await waitFor(() => expect(result.current.updateError).toBeInstanceOf(Error));
 
       // updateBook関数が正しく呼ばれたことを確認
-      expect(mutations.updateBook).toHaveBeenCalledWith(updateData);
+      expect(mutations.updateBook).toHaveBeenCalledWith(
+        updateData,
+        expect.anything(), // React Queryが渡すコンテキスト
+      );
 
       // トーストが表示されることを確認
       expect(toast.error).toHaveBeenCalledWith(errorMessage);
@@ -207,14 +219,17 @@ describe('useBookMutations', () => {
 
       // ミューテーション実行
       act(() => {
-        result.current.deleteBook(bookId);
+        result.current.deleteBook({ id: bookId });
       });
 
       // 完了を待つ
       await waitFor(() => expect(result.current.isDeleting).toBe(false));
 
       // deleteBook関数が正しく呼ばれたことを確認
-      expect(mutations.deleteBook).toHaveBeenCalledWith(bookId);
+      expect(mutations.deleteBook).toHaveBeenCalledWith(
+        { id: bookId },
+        expect.anything(), // React Queryが渡すコンテキスト
+      );
 
       // リダイレクトが動作していることを確認
       expect(mockPush).toHaveBeenCalledWith('/books');
@@ -242,14 +257,17 @@ describe('useBookMutations', () => {
 
       // ミューテーション実行
       act(() => {
-        result.current.deleteBook(bookId);
+        result.current.deleteBook({ id: bookId });
       });
 
       // エラーを待つ
       await waitFor(() => expect(result.current.deleteError).toBeInstanceOf(Error));
 
       // deleteBook関数が正しく呼ばれたことを確認
-      expect(mutations.deleteBook).toHaveBeenCalledWith(bookId);
+      expect(mutations.deleteBook).toHaveBeenCalledWith(
+        { id: bookId },
+        expect.anything(), // React Queryが渡すコンテキスト
+      );
 
       // トーストが表示されることを確認
       expect(toast.error).toHaveBeenCalledWith(errorMessage);

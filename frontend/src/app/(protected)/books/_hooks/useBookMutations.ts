@@ -11,7 +11,7 @@ export function useBookMutations() {
 
   // 作成
   const createMutation = useMutation({
-    mutationFn: (data: BookCreateData) => createBook(data),
+    mutationFn: createBook,
     onSuccess: () => {
       toast.success('本を登録しました');
       // 書籍一覧を再取得
@@ -24,7 +24,7 @@ export function useBookMutations() {
 
   // 更新
   const updateMutation = useMutation({
-    mutationFn: (data: BookUpdateData) => updateBook(data),
+    mutationFn: updateBook,
     onSuccess: (_, { id }) => {
       toast.success('本を更新しました');
       // 書籍一覧のキャッシュを無効化
@@ -39,7 +39,7 @@ export function useBookMutations() {
 
   // 削除
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => deleteBook(id),
+    mutationFn: deleteBook,
     onSuccess: () => {
       toast.success('本を削除しました');
       // 一覧ページにリダイレクト

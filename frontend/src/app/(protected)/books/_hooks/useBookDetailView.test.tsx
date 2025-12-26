@@ -60,7 +60,7 @@ describe('useBookDetailView', () => {
       expect(confirmSpy).toHaveBeenCalledWith('本当に削除しますか？');
 
       // 削除関数が正しい引数で呼ばれたことを確認
-      expect(mockDeleteBook).toHaveBeenCalledWith(createTestUuid(1));
+      expect(mockDeleteBook).toHaveBeenCalledWith({ id: createTestUuid(1) });
     });
   });
 

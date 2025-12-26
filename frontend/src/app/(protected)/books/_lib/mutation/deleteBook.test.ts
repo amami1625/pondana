@@ -14,7 +14,7 @@ describe('deleteBook', () => {
 
   describe('成功時', () => {
     it('書籍データを削除できる', async () => {
-      await expect(deleteBook(bookId)).resolves.toBeUndefined();
+      await expect(deleteBook({ id: bookId })).resolves.toBeUndefined();
     });
   });
 
@@ -26,7 +26,7 @@ describe('deleteBook', () => {
         }),
       );
 
-      await expect(deleteBook(bookId)).rejects.toThrow(BOOKS_ERROR_MESSAGES.NOT_FOUND);
+      await expect(deleteBook({ id: bookId })).rejects.toThrow(BOOKS_ERROR_MESSAGES.NOT_FOUND);
     });
 
     it('500エラー時にデフォルトエラーメッセージをスローする', async () => {
@@ -36,7 +36,7 @@ describe('deleteBook', () => {
         }),
       );
 
-      await expect(deleteBook(bookId)).rejects.toThrow(BOOKS_ERROR_MESSAGES.UNKNOWN_ERROR);
+      await expect(deleteBook({ id: bookId })).rejects.toThrow(BOOKS_ERROR_MESSAGES.UNKNOWN_ERROR);
     });
 
     it('ネットワークエラー時に適切なエラーメッセージをスローする', async () => {
@@ -46,7 +46,7 @@ describe('deleteBook', () => {
         }),
       );
 
-      await expect(deleteBook(bookId)).rejects.toThrow(BOOKS_ERROR_MESSAGES.NETWORK_ERROR);
+      await expect(deleteBook({ id: bookId })).rejects.toThrow(BOOKS_ERROR_MESSAGES.NETWORK_ERROR);
     });
   });
 });
