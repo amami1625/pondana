@@ -2,11 +2,11 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { renderHook, waitFor } from '@testing-library/react';
 import { createProvider } from '@/test/helpers';
 import { createMockCategory } from '@/test/factories';
-import { fetchCategories } from '@/app/(protected)/categories/_lib/fetchCategories';
+import { fetchCategories } from '@/app/(protected)/categories/_lib/query/fetchCategories';
 import { useCategories } from './useCategories';
 
 // fetchCategories をモック化
-vi.mock('@/app/(protected)/categories/_lib/fetchCategories');
+vi.mock('@/app/(protected)/categories/_lib/query/fetchCategories');
 
 describe('useCategories', () => {
   beforeEach(() => {
