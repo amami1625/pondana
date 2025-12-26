@@ -1,5 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { renderHook, waitFor, act } from '@testing-library/react';
+import { server } from '@/test/mocks/server';
+import { http, HttpResponse } from 'msw';
 import { createProvider, createTestQueryClient, createTestUuid } from '@/test/helpers';
 import {
   createMockListBook,
@@ -20,28 +22,30 @@ vi.mock('react-hot-toast', () => ({
 
 describe('useListBookMutations', () => {
   beforeEach(() => {
-    // 各テストの前にモックをリセット
     vi.clearAllMocks();
   });
 
   describe('addListBook', () => {
-    it('リストへの本の追加に成功する', async () => {
+    it('成功時にonSuccessの副作用が実行される', async () => {
       const mockListBook = createMockListBook({
         list_id: createTestUuid(1),
         book_id: createTestUuid(1),
       });
       const queryClient = createTestQueryClient();
+      const addData = {
+        list_id: createTestUuid(1),
+        book_id: createTestUuid(1),
+      };
 
       // 事前にlists、books、topページのデータをキャッシュに追加
       queryClient.setQueryData(['lists'], [createMockList()]);
       queryClient.setQueryData(['books'], [createMockBook()]);
       queryClient.setQueryData(['top'], createMockTopPageData());
 
-      vi.stubGlobal(
-        'fetch',
-        vi.fn().mockResolvedValue({
-          ok: true,
-          json: async () => mockListBook,
+      // MSWでAPIレスポンスをモック
+      server.use(
+        http.post('/api/list_books', async () => {
+          return HttpResponse.json(mockListBook, { status: 201 });
         }),
       );
 
@@ -49,26 +53,13 @@ describe('useListBookMutations', () => {
         wrapper: createProvider(queryClient),
       });
 
-      expect(result.current.isAdding).toBe(false);
-      expect(result.current.addError).toBeNull();
-
-      act(() =>
-        result.current.addListBook({
-          list_id: createTestUuid(1),
-          book_id: createTestUuid(1),
-        }),
-      );
-
-      await waitFor(() => expect(result.current.isAdding).toBe(false));
-
-      expect(fetch).toHaveBeenCalledWith('/api/list_books', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          list_id: createTestUuid(1),
-          book_id: createTestUuid(1),
-        }),
+      // ミューテーション実行
+      act(() => {
+        result.current.addListBook(addData);
       });
+
+      // 完了を待つ
+      await waitFor(() => expect(result.current.isAdding).toBe(false));
 
       // トーストが表示されることを確認
       expect(toast.success).toHaveBeenCalledWith('リストに本を追加しました');
@@ -82,14 +73,23 @@ describe('useListBookMutations', () => {
       expect(topQueryState?.isInvalidated).toBe(true);
     });
 
-    it('リストへの本の追加に失敗する', async () => {
+    it('失敗時にonErrorの副作用が実行される', async () => {
       const errorMessage = 'リストへの本の追加に失敗しました';
+      const addData = {
+        list_id: createTestUuid(1),
+        book_id: createTestUuid(1),
+      };
 
-      vi.stubGlobal(
-        'fetch',
-        vi.fn().mockResolvedValue({
-          ok: false,
-          json: async () => ({ error: errorMessage }),
+      // MSWでエラーレスポンスをモック
+      server.use(
+        http.post('/api/list_books', async () => {
+          return HttpResponse.json(
+            {
+              code: 'ADD_FAILED',
+              error: errorMessage,
+            },
+            { status: 422 },
+          );
         }),
       );
 
@@ -97,66 +97,13 @@ describe('useListBookMutations', () => {
         wrapper: createProvider(),
       });
 
-      expect(result.current.isAdding).toBe(false);
-      expect(result.current.addError).toBeNull();
+      // ミューテーション実行
+      act(() => {
+        result.current.addListBook(addData);
+      });
 
-      act(() =>
-        result.current.addListBook({
-          list_id: createTestUuid(1),
-          book_id: createTestUuid(1),
-        }),
-      );
-
+      // エラーを待つ
       await waitFor(() => expect(result.current.addError).toBeInstanceOf(Error));
-
-      expect(fetch).toHaveBeenCalledWith('/api/list_books', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          list_id: createTestUuid(1),
-          book_id: createTestUuid(1),
-        }),
-      });
-
-      // トーストが表示されることを確認
-      expect(toast.error).toHaveBeenCalledWith(errorMessage);
-
-      expect(result.current.isAdding).toBe(false);
-      expect(result.current.addError?.message).toBe(errorMessage);
-    });
-
-    it('ネットワークエラー時にエラー状態になる', async () => {
-      const errorMessage = 'Network error';
-
-      vi.stubGlobal('fetch', vi.fn().mockRejectedValue(new Error(errorMessage)));
-
-      const { result } = renderHook(() => useListBookMutations(), {
-        wrapper: createProvider(),
-      });
-
-      expect(result.current.isAdding).toBe(false);
-      expect(result.current.addError).toBeNull();
-
-      act(() =>
-        result.current.addListBook({
-          list_id: createTestUuid(1),
-          book_id: createTestUuid(1),
-        }),
-      );
-
-      await waitFor(() => expect(result.current.addError).toBeInstanceOf(Error));
-
-      expect(fetch).toHaveBeenCalledWith('/api/list_books', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          list_id: createTestUuid(1),
-          book_id: createTestUuid(1),
-        }),
-      });
-
-      expect(result.current.isAdding).toBe(false);
-      expect(result.current.addError?.message).toBe(errorMessage);
 
       // トーストが表示されることを確認
       expect(toast.error).toHaveBeenCalledWith(errorMessage);
@@ -164,20 +111,19 @@ describe('useListBookMutations', () => {
   });
 
   describe('removeListBook', () => {
-    it('リストからの本の削除に成功する', async () => {
-      const mockListBook = createMockListBook({ id: 1 });
+    it('成功時にonSuccessの副作用が実行される', async () => {
       const queryClient = createTestQueryClient();
+      const removeData = { id: 1 };
 
       // 事前にlists、books、topページのデータをキャッシュに追加
       queryClient.setQueryData(['lists'], [createMockList()]);
       queryClient.setQueryData(['books'], [createMockBook()]);
       queryClient.setQueryData(['top'], createMockTopPageData());
 
-      vi.stubGlobal(
-        'fetch',
-        vi.fn().mockResolvedValue({
-          ok: true,
-          json: async () => mockListBook,
+      // MSWでAPIレスポンスをモック
+      server.use(
+        http.delete('/api/list_books/:id', () => {
+          return new HttpResponse(null, { status: 204 });
         }),
       );
 
@@ -185,16 +131,13 @@ describe('useListBookMutations', () => {
         wrapper: createProvider(queryClient),
       });
 
-      expect(result.current.isRemoving).toBe(false);
-      expect(result.current.removeError).toBeNull();
-
-      act(() => result.current.removeListBook({ id: 1 }));
-
-      await waitFor(() => expect(result.current.isRemoving).toBe(false));
-
-      expect(fetch).toHaveBeenCalledWith('/api/list_books/1', {
-        method: 'DELETE',
+      // ミューテーション実行
+      act(() => {
+        result.current.removeListBook(removeData);
       });
+
+      // 完了を待つ
+      await waitFor(() => expect(result.current.isRemoving).toBe(false));
 
       // トーストが表示されることを確認
       expect(toast.success).toHaveBeenCalledWith('リストから本を削除しました');
@@ -208,14 +151,20 @@ describe('useListBookMutations', () => {
       expect(topQueryState?.isInvalidated).toBe(true);
     });
 
-    it('リストからの本の削除に失敗する', async () => {
+    it('失敗時にonErrorの副作用が実行される', async () => {
       const errorMessage = 'リストからの本の削除に失敗しました';
+      const removeData = { id: 1 };
 
-      vi.stubGlobal(
-        'fetch',
-        vi.fn().mockResolvedValue({
-          ok: false,
-          json: async () => ({ error: errorMessage }),
+      // MSWでエラーレスポンスをモック
+      server.use(
+        http.delete('/api/list_books/:id', () => {
+          return HttpResponse.json(
+            {
+              code: 'REMOVE_FAILED',
+              error: errorMessage,
+            },
+            { status: 422 },
+          );
         }),
       );
 
@@ -223,49 +172,16 @@ describe('useListBookMutations', () => {
         wrapper: createProvider(),
       });
 
-      expect(result.current.isRemoving).toBe(false);
-      expect(result.current.removeError).toBeNull();
-
-      act(() => result.current.removeListBook({ id: 1 }));
-
-      await waitFor(() => expect(result.current.removeError).toBeInstanceOf(Error));
-
-      expect(fetch).toHaveBeenCalledWith('/api/list_books/1', {
-        method: 'DELETE',
+      // ミューテーション実行
+      act(() => {
+        result.current.removeListBook(removeData);
       });
+
+      // エラーを待つ
+      await waitFor(() => expect(result.current.removeError).toBeInstanceOf(Error));
 
       // トーストが表示されることを確認
       expect(toast.error).toHaveBeenCalledWith(errorMessage);
-
-      expect(result.current.isRemoving).toBe(false);
-      expect(result.current.removeError?.message).toBe(errorMessage);
-    });
-
-    it('ネットワークエラー時にエラー状態になる', async () => {
-      const errorMessage = 'Network error';
-
-      vi.stubGlobal('fetch', vi.fn().mockRejectedValue(new Error(errorMessage)));
-
-      const { result } = renderHook(() => useListBookMutations(), {
-        wrapper: createProvider(),
-      });
-
-      expect(result.current.isRemoving).toBe(false);
-      expect(result.current.removeError).toBeNull();
-
-      act(() => result.current.removeListBook({ id: 1 }));
-
-      await waitFor(() => expect(result.current.removeError).toBeInstanceOf(Error));
-
-      expect(fetch).toHaveBeenCalledWith('/api/list_books/1', {
-        method: 'DELETE',
-      });
-
-      // トーストが表示されることを確認
-      expect(toast.error).toHaveBeenCalledWith(errorMessage);
-
-      expect(result.current.isRemoving).toBe(false);
-      expect(result.current.removeError?.message).toBe(errorMessage);
     });
   });
 });

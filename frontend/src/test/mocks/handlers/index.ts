@@ -1,6 +1,7 @@
 import { booksHandlers } from './books';
 import { cardsHandlers } from './cards';
 import { categoryHandlers } from './category';
+import { listBooksHandlers } from './listBooks';
 import { listsHandlers } from './lists';
 import { usersHandlers } from './users';
 
@@ -13,6 +14,7 @@ export const handlers = [
   ...booksHandlers,
   ...cardsHandlers,
   ...categoryHandlers,
+  ...listBooksHandlers,
   ...listsHandlers,
   // 他のハンドラーをここに追加
 ];
