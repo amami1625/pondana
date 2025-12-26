@@ -1,11 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { queryKeys } from '@/constants/queryKeys';
-import { CardFormData } from '@/app/(protected)/cards/_types';
 import toast from 'react-hot-toast';
 import { createCard, updateCard, deleteCard } from '../_lib/mutation';
-
-// 更新用の型
-type UpdateCardData = CardFormData & { id: string };
 
 export function useCardMutations() {
   const queryClient = useQueryClient();

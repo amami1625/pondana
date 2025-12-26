@@ -37,7 +37,9 @@ describe('deleteCard', () => {
         }),
       );
 
-      await expect(deleteCard({ bookId, cardId })).rejects.toThrow(CARDS_ERROR_MESSAGES.UNKNOWN_ERROR);
+      await expect(deleteCard({ bookId, cardId })).rejects.toThrow(
+        CARDS_ERROR_MESSAGES.UNKNOWN_ERROR,
+      );
     });
 
     it('ネットワークエラー時に適切なエラーメッセージをスローする', async () => {
@@ -47,7 +49,9 @@ describe('deleteCard', () => {
         }),
       );
 
-      await expect(deleteCard({ bookId, cardId })).rejects.toThrow(CARDS_ERROR_MESSAGES.NETWORK_ERROR);
+      await expect(deleteCard({ bookId, cardId })).rejects.toThrow(
+        CARDS_ERROR_MESSAGES.NETWORK_ERROR,
+      );
     });
   });
 });

@@ -7,6 +7,8 @@ export const BOOKS_ERROR_MESSAGES = {
   CREATE_FAILED: '本の作成に失敗しました',
   UPDATE_FAILED: '本の更新に失敗しました',
   DELETE_FAILED: '本の削除に失敗しました',
+  ADD_FAILED: 'リストへの追加に失敗しました',
+  REMOVE_FAILED: 'リストからの削除に失敗しました',
   NETWORK_ERROR: 'ネットワークエラーが発生しました',
   UNKNOWN_ERROR: 'エラーが発生しました。もう一度お試しください',
 } as const;

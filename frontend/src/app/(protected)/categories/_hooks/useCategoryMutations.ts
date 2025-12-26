@@ -1,6 +1,5 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { queryKeys } from '@/constants/queryKeys';
-import { CategoryFormData } from '@/app/(protected)/categories/_types';
 import toast from 'react-hot-toast';
 import { createCategory, updateCategory, deleteCategory } from '../_lib/mutation';
 

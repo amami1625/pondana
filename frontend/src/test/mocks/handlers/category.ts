@@ -24,10 +24,9 @@ export const categoryHandlers = [
   http.put('/api/categories/:id', ({ params }) => {
     const { id } = params;
     // CategoryのIDは数値型なので、Number()で変換
-    return HttpResponse.json(
-      createMockCategory({ id: Number(id), name: '更新されたカテゴリ' }),
-      { status: 200 },
-    );
+    return HttpResponse.json(createMockCategory({ id: Number(id), name: '更新されたカテゴリ' }), {
+      status: 200,
+    });
   }),
 
   // DELETE - カテゴリ削除（成功）

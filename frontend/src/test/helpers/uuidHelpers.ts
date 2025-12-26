@@ -27,26 +27,25 @@ export const extractSeedFromParamId = (paramId: string | readonly string[]): num
 
 /**
  * テスト用のUUID生成ヘルパー関数
- * 
+ *
  * @param seedOrParamId - seed番号、またはMSWのparams.id（UUID/数値文字列）
  * @returns テスト用のUUID文字列
- * 
+ *
  * @example
  * // seed番号から生成
  * createTestUuid(1) // "00000000-0000-4000-a000-000000000001"
- * 
+ *
  * // params.id（数値文字列）から生成
  * createTestUuid("1") // "00000000-0000-4000-a000-000000000001"
- * 
+ *
  * // params.id（UUID文字列）から生成
  * createTestUuid("00000000-0000-4000-a000-000000000001") // "00000000-0000-4000-a000-000000000001"
  */
 export const createTestUuid = (seedOrParamId: number | string | readonly string[] = 1): string => {
   // 文字列や配列が渡された場合は、extractSeedFromParamIdでseedを抽出
-  const seed = typeof seedOrParamId === 'number' 
-    ? seedOrParamId 
-    : extractSeedFromParamId(seedOrParamId);
-  
+  const seed =
+    typeof seedOrParamId === 'number' ? seedOrParamId : extractSeedFromParamId(seedOrParamId);
+
   // テスト用の決定的なUUIDを生成（実際のUUIDv4形式）
   const hex = seed.toString(16).padStart(32, '0');
   return `${hex.substring(0, 8)}-${hex.substring(8, 12)}-4${hex.substring(13, 16)}-a${hex.substring(17, 20)}-${hex.substring(20, 32)}`;
