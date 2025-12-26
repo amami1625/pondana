@@ -1,5 +1,5 @@
 /**
- * 本情報取得APIのエラーメッセージ定義
+ * カテゴリ情報取得APIのエラーメッセージ定義
  * APIから返されるエラーコードをユーザーフレンドリーな日本語メッセージにマッピング
  */
 export const CATEGORIES_ERROR_MESSAGES = {

@@ -21,7 +21,10 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
     return NextResponse.json(status);
   } catch (error) {
     if (error instanceof ApiError) {
-      return NextResponse.json({ error: error.message, code: error.code }, { status: error.statusCode });
+      return NextResponse.json(
+        { error: error.message, code: error.code },
+        { status: error.statusCode },
+      );
     }
     if (error instanceof Error) {
       return NextResponse.json({ error: error.message }, { status: 500 });
@@ -38,14 +41,21 @@ export async function DELETE(
   try {
     const { id } = await params;
 
-    await authenticatedRequest(`/statuses/${id}`, {
-      method: 'DELETE',
-    }, false);
+    await authenticatedRequest(
+      `/statuses/${id}`,
+      {
+        method: 'DELETE',
+      },
+      false,
+    );
 
     return NextResponse.json({ success: true });
   } catch (error) {
     if (error instanceof ApiError) {
-      return NextResponse.json({ error: error.message, code: error.code }, { status: error.statusCode });
+      return NextResponse.json(
+        { error: error.message, code: error.code },
+        { status: error.statusCode },
+      );
     }
     if (error instanceof Error) {
       return NextResponse.json({ error: error.message }, { status: 500 });

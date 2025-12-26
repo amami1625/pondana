@@ -11,7 +11,10 @@ export async function GET() {
     return NextResponse.json(categories);
   } catch (error) {
     if (error instanceof ApiError) {
-      return NextResponse.json({ error: error.message, code: error.code }, { status: error.statusCode });
+      return NextResponse.json(
+        { error: error.message, code: error.code },
+        { status: error.statusCode },
+      );
     }
     if (error instanceof Error) {
       return NextResponse.json({ error: error.message }, { status: 500 });
@@ -36,7 +39,10 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(category);
   } catch (error) {
     if (error instanceof ApiError) {
-      return NextResponse.json({ error: error.message, code: error.code }, { status: error.statusCode });
+      return NextResponse.json(
+        { error: error.message, code: error.code },
+        { status: error.statusCode },
+      );
     }
     if (error instanceof Error) {
       return NextResponse.json({ error: error.message }, { status: 500 });

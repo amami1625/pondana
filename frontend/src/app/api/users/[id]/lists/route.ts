@@ -13,7 +13,10 @@ export async function GET(_request: NextRequest, { params }: { params: Promise<{
     return NextResponse.json(lists);
   } catch (error) {
     if (error instanceof ApiError) {
-      return NextResponse.json({ error: error.message, code: error.code }, { status: error.statusCode });
+      return NextResponse.json(
+        { error: error.message, code: error.code },
+        { status: error.statusCode },
+      );
     }
     if (error instanceof Error) {
       return NextResponse.json({ error: error.message }, { status: 500 });

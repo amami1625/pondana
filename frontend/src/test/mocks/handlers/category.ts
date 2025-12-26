@@ -21,10 +21,13 @@ export const categoryHandlers = [
   }),
 
   // PUT - カテゴリ更新（成功）
-  http.put('/api/categories/:id', () => {
-    return HttpResponse.json(createMockCategory({ id: 1, name: '更新されたカテゴリ' }), {
-      status: 200,
-    });
+  http.put('/api/categories/:id', ({ params }) => {
+    const { id } = params;
+    // CategoryのIDは数値型なので、Number()で変換
+    return HttpResponse.json(
+      createMockCategory({ id: Number(id), name: '更新されたカテゴリ' }),
+      { status: 200 },
+    );
   }),
 
   // DELETE - カテゴリ削除（成功）

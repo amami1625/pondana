@@ -25,7 +25,10 @@ export async function PUT(
     return NextResponse.json(card);
   } catch (error) {
     if (error instanceof ApiError) {
-      return NextResponse.json({ error: error.message, code: error.code }, { status: error.statusCode });
+      return NextResponse.json(
+        { error: error.message, code: error.code },
+        { status: error.statusCode },
+      );
     }
     if (error instanceof Error) {
       return NextResponse.json({ error: error.message }, { status: 500 });
@@ -40,13 +43,20 @@ export async function DELETE(
 ) {
   try {
     const { bookId, cardId } = await params;
-    await authenticatedRequest(`/books/${bookId}/cards/${cardId}`, {
-      method: 'DELETE',
-    }, false);
+    await authenticatedRequest(
+      `/books/${bookId}/cards/${cardId}`,
+      {
+        method: 'DELETE',
+      },
+      false,
+    );
     return NextResponse.json({ success: true });
   } catch (error) {
     if (error instanceof ApiError) {
-      return NextResponse.json({ error: error.message, code: error.code }, { status: error.statusCode });
+      return NextResponse.json(
+        { error: error.message, code: error.code },
+        { status: error.statusCode },
+      );
     }
     if (error instanceof Error) {
       return NextResponse.json({ error: error.message }, { status: 500 });
