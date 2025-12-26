@@ -12,7 +12,7 @@ export function useCardMutations() {
 
   // 作成
   const createMutation = useMutation({
-    mutationFn: (data: CardFormData) => createCard(data),
+    mutationFn: createCard,
     onSuccess: (_, { book_id }) => {
       toast.success('カードを作成しました');
       // カード一覧のキャッシュを無効化
@@ -27,7 +27,7 @@ export function useCardMutations() {
 
   // 更新
   const updateMutation = useMutation({
-    mutationFn: (data: UpdateCardData) => updateCard(data),
+    mutationFn: updateCard,
     onSuccess: (_, { id, book_id }) => {
       toast.success('カードを更新しました');
       // カード一覧のキャッシュを無効化
@@ -44,8 +44,7 @@ export function useCardMutations() {
 
   // 削除
   const deleteMutation = useMutation({
-    mutationFn: ({ bookId, cardId }: { bookId: string; cardId: string }) =>
-      deleteCard(bookId, cardId),
+    mutationFn: deleteCard,
     onSuccess: (_, { bookId }) => {
       toast.success('カードを削除しました');
       // カード一覧のキャッシュを無効化

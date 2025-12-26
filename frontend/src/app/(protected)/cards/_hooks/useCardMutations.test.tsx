@@ -64,7 +64,10 @@ describe('useCardMutations', () => {
       await waitFor(() => expect(result.current.isCreating).toBe(false));
 
       // createCard関数が正しく呼ばれたことを確認
-      expect(mutations.createCard).toHaveBeenCalledWith(createData);
+      expect(mutations.createCard).toHaveBeenCalledWith(
+        createData,
+        expect.anything(), // React Queryが渡すコンテキスト
+      );
 
       // トーストが表示されることを確認
       expect(toast.success).toHaveBeenCalledWith('カードを作成しました');
@@ -102,7 +105,10 @@ describe('useCardMutations', () => {
       await waitFor(() => expect(result.current.createError).toBeInstanceOf(Error));
 
       // createCard関数が正しく呼ばれたことを確認
-      expect(mutations.createCard).toHaveBeenCalledWith(createData);
+      expect(mutations.createCard).toHaveBeenCalledWith(
+        createData,
+        expect.anything(), // React Queryが渡すコンテキスト
+      );
 
       // トーストが表示されることを確認
       expect(toast.error).toHaveBeenCalledWith(errorMessage);
@@ -153,7 +159,10 @@ describe('useCardMutations', () => {
       await waitFor(() => expect(result.current.isUpdating).toBe(false));
 
       // updateCard関数が正しく呼ばれたことを確認
-      expect(mutations.updateCard).toHaveBeenCalledWith(updateData);
+      expect(mutations.updateCard).toHaveBeenCalledWith(
+        updateData,
+        expect.anything(), // React Queryが渡すコンテキスト
+      );
 
       // トーストが表示されることを確認
       expect(toast.success).toHaveBeenCalledWith('カードを更新しました');
@@ -198,7 +207,10 @@ describe('useCardMutations', () => {
       await waitFor(() => expect(result.current.updateError).toBeInstanceOf(Error));
 
       // updateCard関数が正しく呼ばれたことを確認
-      expect(mutations.updateCard).toHaveBeenCalledWith(updateData);
+      expect(mutations.updateCard).toHaveBeenCalledWith(
+        updateData,
+        expect.anything(), // React Queryが渡すコンテキスト
+      );
 
       // トーストが表示されることを確認
       expect(toast.error).toHaveBeenCalledWith(errorMessage);
@@ -232,7 +244,10 @@ describe('useCardMutations', () => {
       await waitFor(() => expect(result.current.isDeleting).toBe(false));
 
       // deleteCard関数が正しく呼ばれたことを確認
-      expect(mutations.deleteCard).toHaveBeenCalledWith(bookId, cardId);
+      expect(mutations.deleteCard).toHaveBeenCalledWith(
+        { bookId, cardId },
+        expect.anything(), // React Queryが渡すコンテキスト
+      );
 
       // トーストが表示されることを確認
       expect(toast.success).toHaveBeenCalledWith('カードを削除しました');
@@ -267,7 +282,10 @@ describe('useCardMutations', () => {
       await waitFor(() => expect(result.current.deleteError).toBeInstanceOf(Error));
 
       // deleteCard関数が正しく呼ばれたことを確認
-      expect(mutations.deleteCard).toHaveBeenCalledWith(bookId, cardId);
+      expect(mutations.deleteCard).toHaveBeenCalledWith(
+        { bookId, cardId },
+        expect.anything(), // React Queryが渡すコンテキスト
+      );
 
       // トーストが表示されることを確認
       expect(toast.error).toHaveBeenCalledWith(errorMessage);

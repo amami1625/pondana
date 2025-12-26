@@ -15,7 +15,7 @@ describe('deleteCard', () => {
 
   describe('成功時', () => {
     it('カードを削除できる', async () => {
-      await expect(deleteCard(bookId, cardId)).resolves.toBeUndefined();
+      await expect(deleteCard({ bookId, cardId })).resolves.toBeUndefined();
     });
   });
 
@@ -27,7 +27,7 @@ describe('deleteCard', () => {
         }),
       );
 
-      await expect(deleteCard(bookId, cardId)).rejects.toThrow(CARDS_ERROR_MESSAGES.NOT_FOUND);
+      await expect(deleteCard({ bookId, cardId })).rejects.toThrow(CARDS_ERROR_MESSAGES.NOT_FOUND);
     });
 
     it('500エラー時にデフォルトエラーメッセージをスローする', async () => {
@@ -37,7 +37,7 @@ describe('deleteCard', () => {
         }),
       );
 
-      await expect(deleteCard(bookId, cardId)).rejects.toThrow(CARDS_ERROR_MESSAGES.UNKNOWN_ERROR);
+      await expect(deleteCard({ bookId, cardId })).rejects.toThrow(CARDS_ERROR_MESSAGES.UNKNOWN_ERROR);
     });
 
     it('ネットワークエラー時に適切なエラーメッセージをスローする', async () => {
@@ -47,7 +47,7 @@ describe('deleteCard', () => {
         }),
       );
 
-      await expect(deleteCard(bookId, cardId)).rejects.toThrow(CARDS_ERROR_MESSAGES.NETWORK_ERROR);
+      await expect(deleteCard({ bookId, cardId })).rejects.toThrow(CARDS_ERROR_MESSAGES.NETWORK_ERROR);
     });
   });
 });
