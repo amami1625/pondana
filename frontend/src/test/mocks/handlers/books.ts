@@ -8,7 +8,7 @@ export const booksHandlers = [
     const { id } = params;
     return HttpResponse.json(
       createMockBook({
-        id: createTestUuid(Number(id)),
+        id: createTestUuid(id),
         title: 'テスト本',
         authors: ['テスト著者'],
       }),
@@ -44,10 +44,11 @@ export const booksHandlers = [
   }),
 
   // PUT - 書籍更新（成功）
-  http.put('/api/books/:id', () => {
+  http.put('/api/books/:id', ({ params }) => {
+    const { id } = params;
     return HttpResponse.json(
       createMockBook({
-        id: createTestUuid(Number(1)),
+        id: createTestUuid(id),
         title: 'テスト本',
         authors: ['テスト著者'],
       }),
@@ -55,8 +56,8 @@ export const booksHandlers = [
     );
   }),
 
-  // DELETE - 書籍削除（成功）
+  // DELETE - 書籍削除（Rails destroyアクションに対応 - 204 No Content）
   http.delete('/api/books/:id', () => {
-    return HttpResponse.json({}, { status: 200 });
+    return new HttpResponse(null, { status: 204 });
   }),
 ];

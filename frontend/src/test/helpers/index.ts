@@ -5,4 +5,4 @@ export { createTestQueryClient, createProvider } from './queryHelpers';
 export { toJapaneseLocaleString } from './dateHelpers';
 
 // UUID生成のヘルパー
-export { createTestUuid } from './uuidHelpers';
+export { createTestUuid, extractSeedFromParamId } from './uuidHelpers';

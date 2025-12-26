@@ -7,7 +7,10 @@ export const cardsHandlers = [
   http.get('/api/cards/:id', ({ params }) => {
     const { id } = params;
     return HttpResponse.json(
-      createMockCard({ id: createTestUuid(Number(id)), title: 'テストカード' }),
+      createMockCard({
+        id: createTestUuid(id),
+        title: 'テストカード',
+      }),
     );
   }),
 
@@ -48,13 +51,14 @@ export const cardsHandlers = [
   }),
 
   // PUT - カード更新（成功）
-  http.put('/api/books/:bookId/cards/:cardId', () => {
+  http.put('/api/books/:bookId/cards/:cardId', ({ params }) => {
+    const { bookId, cardId } = params;
     return HttpResponse.json(
       createMockCard({
-        book_id: createTestUuid(1),
+        book_id: createTestUuid(bookId),
         title: 'テストカード',
         content: 'テスト詳細',
-        id: createTestUuid(2),
+        id: createTestUuid(cardId),
       }),
       { status: 200 },
     );
