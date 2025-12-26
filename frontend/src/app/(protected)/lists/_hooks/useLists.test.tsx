@@ -3,11 +3,11 @@ import { renderHook, waitFor } from '@testing-library/react';
 import { createProvider, createTestUuid } from '@/test/helpers';
 import { createMockList } from '@/test/factories';
 import { useLists } from './useLists';
-import { fetchLists } from '@/app/(protected)/lists/_lib/fetchLists';
+import { fetchLists } from '@/app/(protected)/lists/_lib/query/fetchLists';
 import type { List } from '@/app/(protected)/lists/_types';
 
 // fetchListsをモック化
-vi.mock('@/app/(protected)/lists/_lib/fetchLists');
+vi.mock('@/app/(protected)/lists/_lib/query/fetchLists');
 
 describe('useLists', () => {
   beforeEach(() => {

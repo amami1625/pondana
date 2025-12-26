@@ -3,11 +3,11 @@ import { renderHook, waitFor } from '@testing-library/react';
 import { createProvider, createTestUuid } from '@/test/helpers';
 import { createMockList, createMockBook } from '@/test/factories';
 import { useList } from './useList';
-import { fetchList } from '@/app/(protected)/lists/_lib/fetchList';
+import { fetchList } from '@/app/(protected)/lists/_lib/query/fetchList';
 import type { ListDetail } from '@/app/(protected)/lists/_types';
 
 // fetchListをモック化
-vi.mock('@/app/(protected)/lists/_lib/fetchList');
+vi.mock('@/app/(protected)/lists/_lib/query/fetchList');
 
 describe('useList', () => {
   beforeEach(() => {
@@ -31,7 +31,7 @@ describe('useList', () => {
 
       vi.mocked(fetchList).mockResolvedValue(mockList);
 
-      const { result } = renderHook(() => useList(createTestUuid(1)), {
+      const { result } = renderHook(() => useList('1'), {
         wrapper: createProvider(),
       });
 
@@ -49,7 +49,7 @@ describe('useList', () => {
       expect(result.current.data).toEqual(mockList);
 
       // fetchListが正しい引数で呼ばれたことを確認
-      expect(fetchList).toHaveBeenCalledWith(createTestUuid(1));
+      expect(fetchList).toHaveBeenCalledWith('1');
       expect(fetchList).toHaveBeenCalledTimes(1);
     });
 
@@ -72,7 +72,7 @@ describe('useList', () => {
     it('fetchListがエラーをスローした場合、エラー状態になる', async () => {
       vi.mocked(fetchList).mockRejectedValue(new Error('リスト詳細の取得に失敗しました'));
 
-      const { result } = renderHook(() => useList(createTestUuid(1)), {
+      const { result } = renderHook(() => useList('1'), {
         wrapper: createProvider(),
       });
 
@@ -94,14 +94,14 @@ describe('useList', () => {
     it('正しいqueryKeyを使用する', async () => {
       vi.mocked(fetchList).mockResolvedValue(createMockList());
 
-      const { result } = renderHook(() => useList(createTestUuid(1)), {
+      const { result } = renderHook(() => useList('1'), {
         wrapper: createProvider(),
       });
 
       await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
       // fetchListが正しいidで呼ばれたことを確認
-      expect(fetchList).toHaveBeenCalledWith(createTestUuid(1));
+      expect(fetchList).toHaveBeenCalledWith('1');
     });
   });
 });
