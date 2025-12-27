@@ -2,11 +2,11 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { renderHook, waitFor } from '@testing-library/react';
 import { createProvider } from '@/test/helpers';
 import { createMockStatus } from '@/test/factories/status';
-import { fetchStatuses } from '@/app/(protected)/statuses/_lib/fetchStatuses';
+import { fetchStatuses } from '@/app/(protected)/statuses/_lib/query/fetchStatuses';
 import { useStatuses } from './useStatuses';
 
 // fetchStatuses をモック化
-vi.mock('@/app/(protected)/statuses/_lib/fetchStatuses');
+vi.mock('@/app/(protected)/statuses/_lib/query/fetchStatuses');
 
 describe('useStatuses', () => {
   beforeEach(() => {
