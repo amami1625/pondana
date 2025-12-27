@@ -17,14 +17,12 @@ describe('deleteTag', () => {
             code: 'DELETE_FAILED',
             error: 'タグの削除に失敗しました',
           },
-          { status: 422 }
+          { status: 422 },
         );
-      })
+      }),
     );
 
-    await expect(deleteTag({ id: 1 })).rejects.toThrow(
-      TAGS_ERROR_MESSAGES.DELETE_FAILED
-    );
+    await expect(deleteTag({ id: 1 })).rejects.toThrow(TAGS_ERROR_MESSAGES.DELETE_FAILED);
   });
 
   it('404エラー時にNOT_FOUNDエラーを返す', async () => {
@@ -35,26 +33,22 @@ describe('deleteTag', () => {
             code: 'NOT_FOUND',
             error: 'タグが見つかりませんでした',
           },
-          { status: 404 }
+          { status: 404 },
         );
-      })
+      }),
     );
 
-    await expect(deleteTag({ id: 1 })).rejects.toThrow(
-      TAGS_ERROR_MESSAGES.NOT_FOUND
-    );
+    await expect(deleteTag({ id: 1 })).rejects.toThrow(TAGS_ERROR_MESSAGES.NOT_FOUND);
   });
 
   it('ネットワークエラー時にNETWORK_ERRORを返す', async () => {
     server.use(
       http.delete('/api/tags/:id', () => {
         return HttpResponse.error();
-      })
+      }),
     );
 
-    await expect(deleteTag({ id: 1 })).rejects.toThrow(
-      TAGS_ERROR_MESSAGES.NETWORK_ERROR
-    );
+    await expect(deleteTag({ id: 1 })).rejects.toThrow(TAGS_ERROR_MESSAGES.NETWORK_ERROR);
   });
 
   it('不明なエラーコードの場合はUNKNOWN_ERRORを返す', async () => {
@@ -65,13 +59,11 @@ describe('deleteTag', () => {
             code: 'SOME_UNKNOWN_ERROR',
             error: 'Some unknown error',
           },
-          { status: 500 }
+          { status: 500 },
         );
-      })
+      }),
     );
 
-    await expect(deleteTag({ id: 1 })).rejects.toThrow(
-      TAGS_ERROR_MESSAGES.UNKNOWN_ERROR
-    );
+    await expect(deleteTag({ id: 1 })).rejects.toThrow(TAGS_ERROR_MESSAGES.UNKNOWN_ERROR);
   });
 });

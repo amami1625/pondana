@@ -25,14 +25,12 @@ describe('updateTag', () => {
             code: 'UPDATE_FAILED',
             error: 'タグの更新に失敗しました',
           },
-          { status: 422 }
+          { status: 422 },
         );
-      })
+      }),
     );
 
-    await expect(updateTag(mockUpdateData)).rejects.toThrow(
-      TAGS_ERROR_MESSAGES.UPDATE_FAILED
-    );
+    await expect(updateTag(mockUpdateData)).rejects.toThrow(TAGS_ERROR_MESSAGES.UPDATE_FAILED);
   });
 
   it('404エラー時にNOT_FOUNDエラーを返す', async () => {
@@ -43,26 +41,22 @@ describe('updateTag', () => {
             code: 'NOT_FOUND',
             error: 'タグが見つかりませんでした',
           },
-          { status: 404 }
+          { status: 404 },
         );
-      })
+      }),
     );
 
-    await expect(updateTag(mockUpdateData)).rejects.toThrow(
-      TAGS_ERROR_MESSAGES.NOT_FOUND
-    );
+    await expect(updateTag(mockUpdateData)).rejects.toThrow(TAGS_ERROR_MESSAGES.NOT_FOUND);
   });
 
   it('ネットワークエラー時にNETWORK_ERRORを返す', async () => {
     server.use(
       http.put('/api/tags/:id', () => {
         return HttpResponse.error();
-      })
+      }),
     );
 
-    await expect(updateTag(mockUpdateData)).rejects.toThrow(
-      TAGS_ERROR_MESSAGES.NETWORK_ERROR
-    );
+    await expect(updateTag(mockUpdateData)).rejects.toThrow(TAGS_ERROR_MESSAGES.NETWORK_ERROR);
   });
 
   it('不明なエラーコードの場合はUNKNOWN_ERRORを返す', async () => {
@@ -73,13 +67,11 @@ describe('updateTag', () => {
             code: 'SOME_UNKNOWN_ERROR',
             error: 'Some unknown error',
           },
-          { status: 500 }
+          { status: 500 },
         );
-      })
+      }),
     );
 
-    await expect(updateTag(mockUpdateData)).rejects.toThrow(
-      TAGS_ERROR_MESSAGES.UNKNOWN_ERROR
-    );
+    await expect(updateTag(mockUpdateData)).rejects.toThrow(TAGS_ERROR_MESSAGES.UNKNOWN_ERROR);
   });
 });

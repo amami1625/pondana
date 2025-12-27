@@ -2,11 +2,11 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { renderHook, waitFor } from '@testing-library/react';
 import { createProvider } from '@/test/helpers';
 import { createMockTag } from '@/test/factories/tag';
-import { fetchTags } from '@/app/(protected)/tags/_lib/fetchTags';
 import { useTags } from './useTags';
+import { fetchTags } from '@/app/(protected)/tags/_lib/query/fetchTags';
 
-// fetchTags をモック化
-vi.mock('@/app/(protected)/tags/_lib/fetchTags');
+// fetchTagsをモック化
+vi.mock('@/app/(protected)/tags/_lib/query/fetchTags');
 
 describe('useTags', () => {
   beforeEach(() => {

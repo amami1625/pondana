@@ -20,7 +20,7 @@ export const tagsHandlers = [
         id: 1,
         name,
       }),
-      { status: 201 }
+      { status: 201 },
     );
   }),
 
@@ -34,7 +34,7 @@ export const tagsHandlers = [
       createMockTag({
         id: Number(id),
         name,
-      })
+      }),
     );
   }),
 
