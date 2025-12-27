@@ -117,7 +117,7 @@ describe('unfollowUser', () => {
 
       await expect(unfollowUser('1')).rejects.toThrow();
 
-      expect(consoleErrorSpy).toHaveBeenCalledWith('Unfollow API Error:', {
+      expect(consoleErrorSpy).toHaveBeenCalledWith('Users API Error:', {
         status: 404,
         data: {
           code: 'NOT_FOLLOWING',

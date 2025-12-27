@@ -80,7 +80,10 @@ describe('fetchUserBooks', () => {
         'fetch',
         vi.fn().mockResolvedValue({
           ok: false,
-          json: async () => ({ error: 'ユーザーの公開本一覧の取得に失敗しました' }),
+          json: async () => ({
+            code: 'FETCH_USER_BOOKS_FAILED',
+            error: 'ユーザーの公開本一覧の取得に失敗しました',
+          }),
         }),
       );
 
@@ -96,7 +99,9 @@ describe('fetchUserBooks', () => {
         }),
       );
 
-      await expect(fetchUserBooks('1')).rejects.toThrow('ユーザーの公開本一覧の取得に失敗しました');
+      await expect(fetchUserBooks('1')).rejects.toThrow(
+        'エラーが発生しました。もう一度お試しください',
+      );
     });
 
     it('ネットワークエラー時にエラーをスローする', async () => {

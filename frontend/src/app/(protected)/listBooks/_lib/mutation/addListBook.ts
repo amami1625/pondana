@@ -1,10 +1,6 @@
 import { ListBook, ListBookFormData, listBookSchema } from '@/app/(protected)/listBooks/_types';
-import { LIST_BOOKS_ERROR_MESSAGES, ListBooksErrorCode } from '../constants/errorMessages';
-
-interface ApiErrorResponse {
-  code?: string;
-  error?: string;
-}
+import { LIST_BOOKS_ERROR_MESSAGES } from '../constants/errorMessages';
+import { handleApiError, handleNetworkError } from '@/lib/api/handleApiError';
 
 export async function addListBook(data: ListBookFormData): Promise<ListBook> {
   try {
@@ -15,41 +11,12 @@ export async function addListBook(data: ListBookFormData): Promise<ListBook> {
     });
 
     if (!response.ok) {
-      const errorData: ApiErrorResponse = await response.json();
-
-      // 開発環境でAPIエラーの詳細をログ出力
-      if (process.env.NODE_ENV === 'development') {
-        console.error('ListBooks API Error:', {
-          status: response.status,
-          data: errorData,
-        });
-      }
-
-      // 404は明確に区別
-      if (response.status === 404) {
-        throw new Error(LIST_BOOKS_ERROR_MESSAGES.NOT_FOUND);
-      }
-
-      // エラーコードがある場合はマッピング
-      if (errorData.code && errorData.code in LIST_BOOKS_ERROR_MESSAGES) {
-        throw new Error(LIST_BOOKS_ERROR_MESSAGES[errorData.code as ListBooksErrorCode]);
-      }
-
-      // それ以外はUNKNOWN_ERROR
-      throw new Error(LIST_BOOKS_ERROR_MESSAGES.UNKNOWN_ERROR);
+      await handleApiError(response, LIST_BOOKS_ERROR_MESSAGES, 'ListBooks');
     }
 
     const res = await response.json();
     return listBookSchema.parse(res);
   } catch (error) {
-    // ネットワークエラー（ブラウザ → Next.js API Route 間の通信失敗）
-    // 例: オフライン、DNSエラー、接続タイムアウトなど
-    if (error instanceof TypeError) {
-      throw new Error(LIST_BOOKS_ERROR_MESSAGES.NETWORK_ERROR);
-    }
-
-    // 既に適切なエラーメッセージが設定されている場合（try ブロックで throw したもの）
-    // または予期しないエラーの場合はそのまま再throw
-    throw error;
+    handleNetworkError(error, LIST_BOOKS_ERROR_MESSAGES);
   }
 }

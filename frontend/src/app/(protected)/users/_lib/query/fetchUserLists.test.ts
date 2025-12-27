@@ -100,7 +100,10 @@ describe('fetchUserLists', () => {
         'fetch',
         vi.fn().mockResolvedValue({
           ok: false,
-          json: async () => ({ error: 'ユーザーの公開リスト一覧の取得に失敗しました' }),
+          json: async () => ({
+            code: 'FETCH_USER_LISTS_FAILED',
+            error: 'ユーザーの公開リスト一覧の取得に失敗しました',
+          }),
         }),
       );
 
@@ -119,7 +122,7 @@ describe('fetchUserLists', () => {
       );
 
       await expect(fetchUserLists('1')).rejects.toThrow(
-        'ユーザーの公開リスト一覧の取得に失敗しました',
+        'エラーが発生しました。もう一度お試しください',
       );
     });
 

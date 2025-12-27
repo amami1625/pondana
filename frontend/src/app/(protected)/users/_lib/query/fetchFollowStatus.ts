@@ -1,46 +1,18 @@
-import { FOLLOW_ERROR_MESSAGES, type FollowErrorCode } from '../constants/errorMessages';
+import { FOLLOW_ERROR_MESSAGES } from '../constants/errorMessages';
 import { FollowStatus, followStatusSchema } from '@/app/(protected)/users/_types';
-
-interface ApiErrorResponse {
-  code?: string;
-  error?: string;
-}
+import { handleApiError, handleNetworkError } from '@/lib/api/handleApiError';
 
 export async function fetchFollowStatus(userId: string): Promise<FollowStatus> {
   try {
     const response = await fetch(`/api/users/${userId}/follow-status`);
 
     if (!response.ok) {
-      const errorData: ApiErrorResponse = await response.json();
-
-      // 開発環境でAPIエラーの詳細をログ出力
-      if (process.env.NODE_ENV === 'development') {
-        console.error('Follow API Error:', {
-          status: response.status,
-          data: errorData,
-        });
-      }
-
-      // エラーコードがある場合はマッピング
-      if (errorData.code && errorData.code in FOLLOW_ERROR_MESSAGES) {
-        throw new Error(FOLLOW_ERROR_MESSAGES[errorData.code as FollowErrorCode]);
-      }
-
-      // エラーコードが無い場合はデフォルトのエラーメッセージ
-      throw new Error(FOLLOW_ERROR_MESSAGES.UNKNOWN_ERROR);
+      await handleApiError(response, FOLLOW_ERROR_MESSAGES, 'Users');
     }
 
     const data = await response.json();
     return followStatusSchema.parse(data);
   } catch (error) {
-    // ネットワークエラー（ブラウザ → Next.js API Route 間の通信失敗）
-    // 例: オフライン、DNSエラー、接続タイムアウトなど
-    if (error instanceof TypeError) {
-      throw new Error(FOLLOW_ERROR_MESSAGES.NETWORK_ERROR);
-    }
-
-    // 既に適切なエラーメッセージが設定されている場合（try ブロックで throw したもの）
-    // または予期しないエラーの場合はそのまま再throw
-    throw error;
+    handleNetworkError(error, FOLLOW_ERROR_MESSAGES);
   }
 }

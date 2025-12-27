@@ -110,7 +110,7 @@ describe('fetchFollowers', () => {
 
       await expect(fetchFollowers('1')).rejects.toThrow();
 
-      expect(consoleErrorSpy).toHaveBeenCalledWith('Follow API Error:', {
+      expect(consoleErrorSpy).toHaveBeenCalledWith('Users API Error:', {
         status: 422,
         data: {
           code: 'UNKNOWN_ERROR',

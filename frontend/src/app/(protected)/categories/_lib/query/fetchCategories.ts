@@ -1,10 +1,6 @@
 import { categorySchema, type Category } from '@/app/(protected)/categories/_types';
-import { CATEGORIES_ERROR_MESSAGES, CategoriesErrorCode } from '../constants/errorMessages';
-
-interface ApiErrorResponse {
-  code?: string;
-  error?: string;
-}
+import { CATEGORIES_ERROR_MESSAGES } from '../constants/errorMessages';
+import { handleApiError, handleNetworkError } from '@/lib/api/handleApiError';
 
 /**
  * カテゴリ一覧を取得する
@@ -15,41 +11,12 @@ export async function fetchCategories(): Promise<Category[]> {
     const response = await fetch('/api/categories');
 
     if (!response.ok) {
-      const errorData: ApiErrorResponse = await response.json();
-
-      // 開発環境でAPIエラーの詳細をログ出力
-      if (process.env.NODE_ENV === 'development') {
-        console.error('Categories API Error:', {
-          status: response.status,
-          data: errorData,
-        });
-      }
-
-      // 404は明確に区別
-      if (response.status === 404) {
-        throw new Error(CATEGORIES_ERROR_MESSAGES.NOT_FOUND);
-      }
-
-      // エラーコードがある場合はマッピング
-      if (errorData.code && errorData.code in CATEGORIES_ERROR_MESSAGES) {
-        throw new Error(CATEGORIES_ERROR_MESSAGES[errorData.code as CategoriesErrorCode]);
-      }
-
-      // それ以外はUNKNOWN_ERROR
-      throw new Error(CATEGORIES_ERROR_MESSAGES.UNKNOWN_ERROR);
+      await handleApiError(response, CATEGORIES_ERROR_MESSAGES, 'Categories');
     }
 
     const data = await response.json();
     return categorySchema.array().parse(data);
   } catch (error) {
-    // ネットワークエラー（ブラウザ → Next.js API Route 間の通信失敗）
-    // 例: オフライン、DNSエラー、接続タイムアウトなど
-    if (error instanceof TypeError) {
-      throw new Error(CATEGORIES_ERROR_MESSAGES.NETWORK_ERROR);
-    }
-
-    // 既に適切なエラーメッセージが設定されている場合（try ブロックで throw したもの）
-    // または予期しないエラーの場合はそのまま再throw
-    throw error;
+    handleNetworkError(error, CATEGORIES_ERROR_MESSAGES);
   }
 }
