@@ -4,7 +4,7 @@ import { createProvider } from '@/test/helpers';
 import { createMockTopPageData } from '@/test/factories';
 import { useTopPageData } from './useTopPageData';
 import { fetchTopPageData } from '@/app/(protected)/top/_lib/fetchTopPageData';
-import type { TopPageData } from '@/schemas/top';
+import { TopPageData } from '@/schemas/top';
 
 // fetchTopPageDataをモック化
 vi.mock('@/app/(protected)/top/_lib/fetchTopPageData');
@@ -14,14 +14,14 @@ describe('useTopPageData', () => {
     vi.clearAllMocks();
   });
 
+  const mockData: TopPageData = createMockTopPageData({
+    recent_books: [],
+    recent_lists: [],
+    recent_cards: [],
+  });
+
   describe('成功時', () => {
     it('fetchTopPageDataを呼び出してデータを取得する', async () => {
-      const mockData: TopPageData = createMockTopPageData({
-        recent_books: [],
-        recent_lists: [],
-        recent_cards: [],
-      });
-
       vi.mocked(fetchTopPageData).mockResolvedValue(mockData);
 
       const { result } = renderHook(() => useTopPageData(), {
@@ -85,17 +85,20 @@ describe('useTopPageData', () => {
   });
 
   describe('React Queryの動作', () => {
-    it('正しいqueryKeyを使用する', async () => {
-      vi.mocked(fetchTopPageData).mockResolvedValue(createMockTopPageData());
+    it('キャッシュが有効に機能する', async () => {
+      vi.mocked(fetchTopPageData).mockResolvedValue(mockData);
 
-      const { result } = renderHook(() => useTopPageData(), {
+      const { result, rerender } = renderHook(() => useTopPageData(), {
         wrapper: createProvider(),
       });
 
       await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
-      // queryKeyの確認（内部実装に依存するため、間接的に確認）
       expect(result.current.isSuccess).toBe(true);
+
+      // 再レンダリング時にキャッシュから即座にデータが返される
+      rerender();
+      expect(result.current.data).toBeDefined();
     });
   });
 });

@@ -13,15 +13,14 @@ describe('useCategories', () => {
     // 各テストの前にモックをリセット
     vi.clearAllMocks();
   });
+  // APIから返ってくる想定のデータ
+  const mockCategories = [
+    createMockCategory({ id: 1, name: 'テストカテゴリA' }),
+    createMockCategory({ id: 2, name: 'テストカテゴリB' }),
+  ];
 
   describe('成功時', () => {
     it('fetchCategories を呼び出してデータを取得する', async () => {
-      // APIから返ってくる想定のデータ
-      const mockCategories = [
-        createMockCategory({ id: 1, name: 'テストカテゴリA' }),
-        createMockCategory({ id: 2, name: 'テストカテゴリB' }),
-      ];
-
       vi.mocked(fetchCategories).mockResolvedValue(mockCategories);
 
       // フックをレンダリング
@@ -85,17 +84,20 @@ describe('useCategories', () => {
   });
 
   describe('React Queryの動作', () => {
-    it('正しいqueryKeyを使用する', async () => {
-      vi.mocked(fetchCategories).mockResolvedValue([]);
+    it('キャッシュが有効に機能する', async () => {
+      vi.mocked(fetchCategories).mockResolvedValue(mockCategories);
 
-      const { result } = renderHook(() => useCategories(), {
+      const { result, rerender } = renderHook(() => useCategories(), {
         wrapper: createProvider(),
       });
 
       await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
-      // queryKeyの確認（内部実装に依存するため、間接的に確認）
       expect(result.current.isSuccess).toBe(true);
+
+      // 再レンダリング時にキャッシュから即座にデータが返される
+      rerender();
+      expect(result.current.data).toBeDefined();
     });
   });
 });

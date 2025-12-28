@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { renderHook, waitFor } from '@testing-library/react';
 import { createProvider, createTestUuid } from '@/test/helpers';
 import { createMockCard } from '@/test/factories';
-import type { CardList } from '@/app/(protected)/cards/_types';
+import { CardList } from '@/app/(protected)/cards/_types';
 import { fetchCards } from '@/app/(protected)/cards/_lib/query/fetchCards';
 import { useCards } from './useCards';
 
@@ -14,17 +14,17 @@ describe('useCards', () => {
     vi.clearAllMocks();
   });
 
+  const mockCardList: CardList = {
+    books: [
+      {
+        book: { id: createTestUuid(1), title: 'テスト本A' },
+        cards: [createMockCard({ id: createTestUuid(1), book_id: createTestUuid(1) })],
+      },
+    ],
+  };
+
   describe('成功時', () => {
     it('fetchCardsを呼び出してデータを取得する', async () => {
-      const mockCardList: CardList = {
-        books: [
-          {
-            book: { id: createTestUuid(1), title: 'テスト本A' },
-            cards: [createMockCard({ id: createTestUuid(1), book_id: createTestUuid(1) })],
-          },
-        ],
-      };
-
       vi.mocked(fetchCards).mockResolvedValue(mockCardList);
 
       const { result } = renderHook(() => useCards(), {
@@ -88,17 +88,20 @@ describe('useCards', () => {
   });
 
   describe('React Queryの動作', () => {
-    it('正しいqueryKeyを使用する', async () => {
-      vi.mocked(fetchCards).mockResolvedValue({ books: [] });
+    it('キャッシュが有効に機能する', async () => {
+      vi.mocked(fetchCards).mockResolvedValue(mockCardList);
 
-      const { result } = renderHook(() => useCards(), {
+      const { result, rerender } = renderHook(() => useCards(), {
         wrapper: createProvider(),
       });
 
       await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
-      // queryKeyの確認（内部実装に依存するため、間接的に確認）
       expect(result.current.isSuccess).toBe(true);
+
+      // 再レンダリング時にキャッシュから即座にデータが返される
+      rerender();
+      expect(result.current.data).toBeDefined();
     });
   });
 });

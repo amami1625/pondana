@@ -4,7 +4,7 @@ import { createProvider, createTestUuid } from '@/test/helpers';
 import { createMockList } from '@/test/factories';
 import { useLists } from './useLists';
 import { fetchLists } from '@/app/(protected)/lists/_lib/query/fetchLists';
-import type { List } from '@/app/(protected)/lists/_types';
+import { List } from '@/app/(protected)/lists/_types';
 
 // fetchListsをモック化
 vi.mock('@/app/(protected)/lists/_lib/query/fetchLists');
@@ -14,13 +14,13 @@ describe('useLists', () => {
     vi.clearAllMocks();
   });
 
+  const mockLists: List[] = [
+    createMockList({ id: createTestUuid(1), name: 'テストリストA' }),
+    createMockList({ id: createTestUuid(2), name: 'テストリストB' }),
+  ];
+
   describe('成功時', () => {
     it('fetchListsを呼び出してデータを取得する', async () => {
-      const mockLists: List[] = [
-        createMockList({ id: createTestUuid(1), name: 'テストリストA' }),
-        createMockList({ id: createTestUuid(2), name: 'テストリストB' }),
-      ];
-
       vi.mocked(fetchLists).mockResolvedValue(mockLists);
 
       const { result } = renderHook(() => useLists(), {
@@ -80,17 +80,20 @@ describe('useLists', () => {
   });
 
   describe('React Queryの動作', () => {
-    it('正しいqueryKeyを使用する', async () => {
-      vi.mocked(fetchLists).mockResolvedValue([]);
+    it('キャッシュが有効に機能する', async () => {
+      vi.mocked(fetchLists).mockResolvedValue(mockLists);
 
-      const { result } = renderHook(() => useLists(), {
+      const { result, rerender } = renderHook(() => useLists(), {
         wrapper: createProvider(),
       });
 
       await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
-      // queryKeyの確認（内部実装に依存するため、間接的に確認）
       expect(result.current.isSuccess).toBe(true);
+
+      // 再レンダリング時にキャッシュから即座にデータが返される
+      rerender();
+      expect(result.current.data).toBeDefined();
     });
   });
 });

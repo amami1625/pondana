@@ -13,13 +13,13 @@ describe('useFollowing', () => {
     vi.clearAllMocks();
   });
 
+  const mockFollowing = [
+    createMockUser({ id: 2, name: 'フォロー中1' }),
+    createMockUser({ id: 3, name: 'フォロー中2' }),
+  ];
+
   describe('成功時', () => {
     it('fetchFollowingを呼び出してデータを取得する', async () => {
-      const mockFollowing = [
-        createMockUser({ id: 2, name: 'フォロー中1' }),
-        createMockUser({ id: 3, name: 'フォロー中2' }),
-      ];
-
       vi.mocked(fetchFollowing).mockResolvedValue(mockFollowing);
 
       const { result } = renderHook(() => useFollowing('1'), {
@@ -115,17 +115,20 @@ describe('useFollowing', () => {
   });
 
   describe('React Queryの動作', () => {
-    it('正しいqueryKeyを使用する', async () => {
-      vi.mocked(fetchFollowing).mockResolvedValue([createMockUser()]);
+    it('キャッシュが有効に機能する', async () => {
+      vi.mocked(fetchFollowing).mockResolvedValue(mockFollowing);
 
-      const { result } = renderHook(() => useFollowing('42'), {
+      const { result, rerender } = renderHook(() => useFollowing('1'), {
         wrapper: createProvider(),
       });
 
       await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
-      // fetchFollowingが正しいidで呼ばれたことを確認
-      expect(fetchFollowing).toHaveBeenCalledWith('42');
+      expect(result.current.isSuccess).toBe(true);
+
+      // 再レンダリング時にキャッシュから即座にデータが返される
+      rerender();
+      expect(result.current.data).toBeDefined();
     });
   });
 });

@@ -13,9 +13,10 @@ describe('useProfile', () => {
     vi.clearAllMocks();
   });
 
+  const mockUser = createMockUser();
+
   describe('成功時', () => {
     it('fetchProfileを呼び出してデータを取得する', async () => {
-      const mockUser = createMockUser();
       vi.mocked(fetchProfile).mockResolvedValue(mockUser);
 
       const { result } = renderHook(() => useProfile(), {
@@ -42,9 +43,7 @@ describe('useProfile', () => {
 
   describe('エラー時', () => {
     it('APIエラー時にエラー状態になる', async () => {
-      vi.mocked(fetchProfile).mockRejectedValue(
-        new Error('プロフィール情報の取得に失敗しました'),
-      );
+      vi.mocked(fetchProfile).mockRejectedValue(new Error('プロフィール情報の取得に失敗しました'));
 
       const { result } = renderHook(() => useProfile(), {
         wrapper: createProvider(),
@@ -69,7 +68,6 @@ describe('useProfile', () => {
 
   describe('React Queryの動作', () => {
     it('キャッシュが有効に機能する', async () => {
-      const mockUser = createMockUser();
       vi.mocked(fetchProfile).mockResolvedValue(mockUser);
 
       const { result, rerender } = renderHook(() => useProfile(), {

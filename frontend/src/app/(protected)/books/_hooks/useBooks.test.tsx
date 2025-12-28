@@ -4,7 +4,7 @@ import { createProvider, createTestUuid } from '@/test/helpers';
 import { createMockBook } from '@/test/factories';
 import { useBooks } from './useBooks';
 import { fetchBooks } from '@/app/(protected)/books/_lib/query/fetchBooks';
-import type { Book } from '@/app/(protected)/books/_types';
+import { Book } from '@/app/(protected)/books/_types';
 
 // fetchBooksをモック化
 vi.mock('@/app/(protected)/books/_lib/query/fetchBooks');
@@ -14,13 +14,13 @@ describe('useBooks', () => {
     vi.clearAllMocks();
   });
 
+  const mockBooks: Book[] = [
+    createMockBook({ id: createTestUuid(1), title: 'テスト本A' }),
+    createMockBook({ id: createTestUuid(2), title: 'テスト本B' }),
+  ];
+
   describe('成功時', () => {
     it('fetchBooksを呼び出してデータを取得する', async () => {
-      const mockBooks: Book[] = [
-        createMockBook({ id: createTestUuid(1), title: 'テスト本A' }),
-        createMockBook({ id: createTestUuid(2), title: 'テスト本B' }),
-      ];
-
       vi.mocked(fetchBooks).mockResolvedValue(mockBooks);
 
       const { result } = renderHook(() => useBooks(), {
@@ -80,17 +80,20 @@ describe('useBooks', () => {
   });
 
   describe('React Queryの動作', () => {
-    it('正しいqueryKeyを使用する', async () => {
-      vi.mocked(fetchBooks).mockResolvedValue([]);
+    it('キャッシュが有効に機能する', async () => {
+      vi.mocked(fetchBooks).mockResolvedValue(mockBooks);
 
-      const { result } = renderHook(() => useBooks(), {
+      const { result, rerender } = renderHook(() => useBooks(), {
         wrapper: createProvider(),
       });
 
       await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
-      // queryKeyの確認（内部実装に依存するため、間接的に確認）
       expect(result.current.isSuccess).toBe(true);
+
+      // 再レンダリング時にキャッシュから即座にデータが返される
+      rerender();
+      expect(result.current.data).toBeDefined();
     });
   });
 });

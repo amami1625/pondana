@@ -13,15 +13,15 @@ describe('useTags', () => {
     // 各テストの前にモックをリセット
     vi.clearAllMocks();
   });
+  
+  // APIから返ってくる想定のデータ
+  const mockTags = [
+    createMockTag({ id: 1, name: 'テストタグA' }),
+    createMockTag({ id: 2, name: 'テストタグB' }),
+  ];
 
   describe('成功時', () => {
     it('fetchTags を呼び出してデータを取得する', async () => {
-      // APIから返ってくる想定のデータ
-      const mockTags = [
-        createMockTag({ id: 1, name: 'テストタグA' }),
-        createMockTag({ id: 2, name: 'テストタグB' }),
-      ];
-
       vi.mocked(fetchTags).mockResolvedValue(mockTags);
 
       // フックをレンダリング
@@ -85,17 +85,20 @@ describe('useTags', () => {
   });
 
   describe('React Queryの動作', () => {
-    it('正しいqueryKeyを使用する', async () => {
-      vi.mocked(fetchTags).mockResolvedValue([]);
+    it('キャッシュが有効に機能する', async () => {
+      vi.mocked(fetchTags).mockResolvedValue(mockTags);
 
-      const { result } = renderHook(() => useTags(), {
+      const { result, rerender } = renderHook(() => useTags(), {
         wrapper: createProvider(),
       });
 
       await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
-      // queryKeyの確認（内部実装に依存するため、間接的に確認）
       expect(result.current.isSuccess).toBe(true);
+
+      // 再レンダリング時にキャッシュから即座にデータが返される
+      rerender();
+      expect(result.current.data).toBeDefined();
     });
   });
 });

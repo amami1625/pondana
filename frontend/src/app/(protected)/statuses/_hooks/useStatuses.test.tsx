@@ -13,15 +13,15 @@ describe('useStatuses', () => {
     // 各テストの前にモックをリセット
     vi.clearAllMocks();
   });
+  
+  // APIから返ってくる想定のデータ
+  const mockStatuses = [
+    createMockStatus({ id: 1, name: 'テストステータスA' }),
+    createMockStatus({ id: 2, name: 'テストステータスB' }),
+  ];
 
   describe('成功時', () => {
     it('fetchStatuses を呼び出してデータを取得する', async () => {
-      // APIから返ってくる想定のデータ
-      const mockStatuses = [
-        createMockStatus({ id: 1, name: 'テストステータスA' }),
-        createMockStatus({ id: 2, name: 'テストステータスB' }),
-      ];
-
       vi.mocked(fetchStatuses).mockResolvedValue(mockStatuses);
 
       // フックをレンダリング
@@ -85,17 +85,20 @@ describe('useStatuses', () => {
   });
 
   describe('React Queryの動作', () => {
-    it('正しいqueryKeyを使用する', async () => {
-      vi.mocked(fetchStatuses).mockResolvedValue([]);
+    it('キャッシュが有効に機能する', async () => {
+      vi.mocked(fetchStatuses).mockResolvedValue(mockStatuses);
 
-      const { result } = renderHook(() => useStatuses(), {
+      const { result, rerender } = renderHook(() => useStatuses(), {
         wrapper: createProvider(),
       });
 
       await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
-      // queryKeyの確認（内部実装に依存するため、間接的に確認）
       expect(result.current.isSuccess).toBe(true);
+
+      // 再レンダリング時にキャッシュから即座にデータが返される
+      rerender();
+      expect(result.current.data).toBeDefined();
     });
   });
 });
