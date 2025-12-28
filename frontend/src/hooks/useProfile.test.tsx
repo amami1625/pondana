@@ -4,7 +4,6 @@ import { createProvider } from '@/test/helpers';
 import { createMockUser } from '@/test/factories';
 import { useProfile } from './useProfile';
 import { fetchProfile } from '@/lib/fetchProfile';
-import type { User } from '@/schemas/user';
 
 // fetchProfileをモック化
 vi.mock('@/lib/fetchProfile');
@@ -14,10 +13,10 @@ describe('useProfile', () => {
     vi.clearAllMocks();
   });
 
+  const mockUser = createMockUser();
+
   describe('成功時', () => {
     it('fetchProfileを呼び出してデータを取得する', async () => {
-      const mockUser: User = createMockUser();
-
       vi.mocked(fetchProfile).mockResolvedValue(mockUser);
 
       const { result } = renderHook(() => useProfile(), {
@@ -43,7 +42,7 @@ describe('useProfile', () => {
   });
 
   describe('エラー時', () => {
-    it('fetchProfileがエラーをスローした場合、エラー状態になる', async () => {
+    it('APIエラー時にエラー状態になる', async () => {
       vi.mocked(fetchProfile).mockRejectedValue(new Error('プロフィール情報の取得に失敗しました'));
 
       const { result } = renderHook(() => useProfile(), {
@@ -61,20 +60,27 @@ describe('useProfile', () => {
       expect(result.current.data).toBeUndefined();
       expect(result.current.error).toBeInstanceOf(Error);
       expect(result.current.error?.message).toBe('プロフィール情報の取得に失敗しました');
+
+      // fetchProfileが呼ばれたことを確認
+      expect(fetchProfile).toHaveBeenCalledTimes(1);
     });
   });
 
   describe('React Queryの動作', () => {
-    it('正しいqueryKeyを使用する', async () => {
-      vi.mocked(fetchProfile).mockResolvedValue(createMockUser());
+    it('キャッシュが有効に機能する', async () => {
+      vi.mocked(fetchProfile).mockResolvedValue(mockUser);
 
-      const { result } = renderHook(() => useProfile(), {
+      const { result, rerender } = renderHook(() => useProfile(), {
         wrapper: createProvider(),
       });
 
       await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
       expect(result.current.isSuccess).toBe(true);
+
+      // 再レンダリング時にキャッシュから即座にデータが返される
+      rerender();
+      expect(result.current.data).toBeDefined();
     });
   });
 });

@@ -24,7 +24,7 @@ export function useSettingTag() {
       return;
     }
 
-    deleteTag(id);
+    deleteTag({ id });
   };
 
   return {

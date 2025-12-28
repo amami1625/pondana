@@ -15,7 +15,7 @@ export default function BooksClient() {
 
   // エラー状態
   if (bookError) {
-    return <ErrorMessage message={bookError?.message || 'エラーが発生しました'} />;
+    return <ErrorMessage message={bookError?.message} />;
   }
 
   // prefetchされているのでデータは存在するはず

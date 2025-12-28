@@ -1,12 +1,8 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { createTestUuid } from '@/test/helpers';
 import { fetchUserLists } from './fetchUserLists';
 
 describe('fetchUserLists', () => {
-  beforeEach(() => {
-    vi.clearAllMocks();
-  });
-
   describe('成功時', () => {
     it('ユーザーの公開リスト一覧を正しく取得できる', async () => {
       const mockApiResponse = [
@@ -100,7 +96,10 @@ describe('fetchUserLists', () => {
         'fetch',
         vi.fn().mockResolvedValue({
           ok: false,
-          json: async () => ({ error: 'ユーザーの公開リスト一覧の取得に失敗しました' }),
+          json: async () => ({
+            code: 'FETCH_USER_LISTS_FAILED',
+            error: 'ユーザーの公開リスト一覧の取得に失敗しました',
+          }),
         }),
       );
 
@@ -119,7 +118,7 @@ describe('fetchUserLists', () => {
       );
 
       await expect(fetchUserLists('1')).rejects.toThrow(
-        'ユーザーの公開リスト一覧の取得に失敗しました',
+        'エラーが発生しました。もう一度お試しください',
       );
     });
 

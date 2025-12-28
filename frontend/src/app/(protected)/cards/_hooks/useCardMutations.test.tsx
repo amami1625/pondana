@@ -4,6 +4,7 @@ import { createProvider, createTestQueryClient, createTestUuid } from '@/test/he
 import { createMockBook, createMockCard, createMockTopPageData } from '@/test/factories';
 import { useCardMutations } from './useCardMutations';
 import toast from 'react-hot-toast';
+import * as mutations from '../_lib/mutation';
 
 // react-hot-toastをモック
 vi.mock('react-hot-toast', () => ({
@@ -13,20 +14,31 @@ vi.mock('react-hot-toast', () => ({
   },
 }));
 
+// ミューテーション関数をモック
+vi.mock('../_lib/mutation', () => ({
+  createCard: vi.fn(),
+  updateCard: vi.fn(),
+  deleteCard: vi.fn(),
+}));
+
 describe('useCardMutations', () => {
   beforeEach(() => {
-    // 各テストの前にモックをリセット
     vi.clearAllMocks();
   });
 
   describe('createCard', () => {
-    it('カードの作成が成功する', async () => {
+    it('成功時にonSuccessの副作用が実行される', async () => {
       const mockCard = createMockCard({
         title: 'テストカード',
         content: 'テスト本文',
         book_id: createTestUuid(1),
       });
       const queryClient = createTestQueryClient();
+      const createData = {
+        book_id: createTestUuid(1),
+        title: 'テストカード',
+        content: 'テスト本文',
+      };
 
       // 事前にcardsとbooks, topページのデータをキャッシュに追加
       queryClient.setQueryData(['cards'], [createMockCard({ id: createTestUuid(1) })]);
@@ -36,43 +48,26 @@ describe('useCardMutations', () => {
       );
       queryClient.setQueryData(['top'], createMockTopPageData());
 
-      vi.stubGlobal(
-        'fetch',
-        vi.fn().mockResolvedValue({
-          ok: true,
-          json: async () => mockCard,
-        }),
-      );
+      // createCard関数をモック
+      vi.mocked(mutations.createCard).mockResolvedValue(mockCard);
 
       const { result } = renderHook(() => useCardMutations(), {
         wrapper: createProvider(queryClient),
       });
 
-      // 初期状態
-      expect(result.current.isCreating).toBe(false);
-      expect(result.current.createError).toBeNull();
-
       // ミューテーション実行
-      act(() =>
-        result.current.createCard({
-          book_id: createTestUuid(1),
-          title: 'テストカード',
-          content: 'テスト本文',
-        }),
-      );
+      act(() => {
+        result.current.createCard(createData);
+      });
 
       // 完了を待つ
       await waitFor(() => expect(result.current.isCreating).toBe(false));
 
-      expect(fetch).toHaveBeenCalledWith(`/api/books/${createTestUuid(1)}/cards`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          book_id: createTestUuid(1),
-          title: 'テストカード',
-          content: 'テスト本文',
-        }),
-      });
+      // createCard関数が正しく呼ばれたことを確認
+      expect(mutations.createCard).toHaveBeenCalledWith(
+        createData,
+        expect.anything(), // React Queryが渡すコンテキスト
+      );
 
       // トーストが表示されることを確認
       expect(toast.success).toHaveBeenCalledWith('カードを作成しました');
@@ -86,99 +81,42 @@ describe('useCardMutations', () => {
       expect(topQueryState?.isInvalidated).toBe(true);
     });
 
-    it('カードの作成が失敗する', async () => {
+    it('失敗時にonErrorの副作用が実行される', async () => {
       const errorMessage = 'カードの作成に失敗しました';
+      const createData = {
+        book_id: createTestUuid(1),
+        title: 'テストカード',
+        content: 'テスト本文',
+      };
 
-      vi.stubGlobal(
-        'fetch',
-        vi.fn().mockResolvedValue({
-          ok: false,
-          json: async () => ({ error: errorMessage }),
-        }),
-      );
+      // createCard関数をエラーをスローするようにモック
+      vi.mocked(mutations.createCard).mockRejectedValue(new Error(errorMessage));
 
       const { result } = renderHook(() => useCardMutations(), {
         wrapper: createProvider(),
       });
 
-      // 初期状態
-      expect(result.current.isCreating).toBe(false);
-      expect(result.current.createError).toBeNull();
-
       // ミューテーション実行
-      act(() =>
-        result.current.createCard({
-          book_id: createTestUuid(1),
-          title: 'テストカード',
-          content: 'テスト本文',
-        }),
-      );
+      act(() => {
+        result.current.createCard(createData);
+      });
 
       // エラーを待つ
       await waitFor(() => expect(result.current.createError).toBeInstanceOf(Error));
 
-      expect(fetch).toHaveBeenCalledWith(`/api/books/${createTestUuid(1)}/cards`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          book_id: createTestUuid(1),
-          title: 'テストカード',
-          content: 'テスト本文',
-        }),
-      });
-
-      // エラー状態を確認
-      expect(result.current.isCreating).toBe(false);
-      expect(result.current.createError?.message).toBe(errorMessage);
+      // createCard関数が正しく呼ばれたことを確認
+      expect(mutations.createCard).toHaveBeenCalledWith(
+        createData,
+        expect.anything(), // React Queryが渡すコンテキスト
+      );
 
       // トーストが表示されることを確認
       expect(toast.error).toHaveBeenCalledWith(errorMessage);
     });
-
-    it('ネットワークエラー時にエラー状態になる', async () => {
-      vi.stubGlobal('fetch', vi.fn().mockRejectedValue(new Error('Network error')));
-
-      const { result } = renderHook(() => useCardMutations(), {
-        wrapper: createProvider(),
-      });
-
-      // 初期状態
-      expect(result.current.isCreating).toBe(false);
-      expect(result.current.createError).toBeNull();
-
-      // ミューテーション実行
-      act(() =>
-        result.current.createCard({
-          book_id: createTestUuid(1),
-          title: 'テストカード',
-          content: 'テスト本文',
-        }),
-      );
-
-      // エラーを待つ
-      await waitFor(() => expect(result.current.createError).toBeInstanceOf(Error));
-
-      expect(fetch).toHaveBeenCalledWith(`/api/books/${createTestUuid(1)}/cards`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          book_id: createTestUuid(1),
-          title: 'テストカード',
-          content: 'テスト本文',
-        }),
-      });
-
-      // エラー状態を確認
-      expect(result.current.isCreating).toBe(false);
-      expect(result.current.createError?.message).toBe('Network error');
-
-      // トーストが表示されることを確認
-      expect(toast.error).toHaveBeenCalledWith('Network error');
-    });
   });
 
   describe('updateCard', () => {
-    it('カードの更新が成功する', async () => {
+    it('成功時にonSuccessの副作用が実行される', async () => {
       const mockCard = createMockCard({
         id: createTestUuid(1),
         title: 'テストカード',
@@ -186,6 +124,12 @@ describe('useCardMutations', () => {
         book_id: createTestUuid(1),
       });
       const queryClient = createTestQueryClient();
+      const updateData = {
+        id: createTestUuid(1),
+        title: 'テストカード',
+        content: 'テスト本文',
+        book_id: createTestUuid(1),
+      };
 
       // 事前にcardsとbooks, topページのデータをキャッシュに追加
       queryClient.setQueryData(['cards'], [createMockCard({ id: createTestUuid(1) })]);
@@ -199,47 +143,25 @@ describe('useCardMutations', () => {
       );
       queryClient.setQueryData(['top'], createMockTopPageData());
 
-      vi.stubGlobal(
-        'fetch',
-        vi.fn().mockResolvedValue({
-          ok: true,
-          json: async () => mockCard,
-        }),
-      );
+      // updateCard関数をモック
+      vi.mocked(mutations.updateCard).mockResolvedValue(mockCard);
 
       const { result } = renderHook(() => useCardMutations(), {
         wrapper: createProvider(queryClient),
       });
 
-      // 初期状態
-      expect(result.current.isUpdating).toBe(false);
-      expect(result.current.updateError).toBeNull();
-
       // ミューテーション実行
-      act(() =>
-        result.current.updateCard({
-          id: createTestUuid(1),
-          title: 'テストカード',
-          content: 'テスト本文',
-          book_id: createTestUuid(1),
-        }),
-      );
+      act(() => {
+        result.current.updateCard(updateData);
+      });
 
       // 完了を待つ
       await waitFor(() => expect(result.current.isUpdating).toBe(false));
 
-      expect(fetch).toHaveBeenCalledWith(
-        `/api/books/${createTestUuid(1)}/cards/${createTestUuid(1)}`,
-        {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            id: createTestUuid(1),
-            title: 'テストカード',
-            content: 'テスト本文',
-            book_id: createTestUuid(1),
-          }),
-        },
+      // updateCard関数が正しく呼ばれたことを確認
+      expect(mutations.updateCard).toHaveBeenCalledWith(
+        updateData,
+        expect.anything(), // React Queryが渡すコンテキスト
       );
 
       // トーストが表示されることを確認
@@ -260,157 +182,71 @@ describe('useCardMutations', () => {
       expect(topQueryState?.isInvalidated).toBe(true);
     });
 
-    it('カードの更新が失敗する', async () => {
+    it('失敗時にonErrorの副作用が実行される', async () => {
       const errorMessage = 'カードの更新に失敗しました';
-
-      vi.stubGlobal(
-        'fetch',
-        vi.fn().mockResolvedValue({
-          ok: false,
-          json: async () => ({ error: errorMessage }),
-        }),
-      );
-
-      const { result } = renderHook(() => useCardMutations(), {
-        wrapper: createProvider(),
-      });
-
-      // 初期状態
-      expect(result.current.isUpdating).toBe(false);
-      expect(result.current.updateError).toBeNull();
-
-      // ミューテーション実行
-      act(() =>
-        result.current.updateCard({
-          id: createTestUuid(1),
-          title: 'テストカード',
-          content: 'テスト本文',
-          book_id: createTestUuid(1),
-        }),
-      );
-
-      // エラーを待つ
-      await waitFor(() => expect(result.current.updateError).toBeInstanceOf(Error));
-
-      expect(fetch).toHaveBeenCalledWith(
-        `/api/books/${createTestUuid(1)}/cards/${createTestUuid(1)}`,
-        {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            id: createTestUuid(1),
-            title: 'テストカード',
-            content: 'テスト本文',
-            book_id: createTestUuid(1),
-          }),
-        },
-      );
-
-      // エラー状態を確認
-      expect(result.current.isUpdating).toBe(false);
-      expect(result.current.updateError?.message).toBe(errorMessage);
-
-      // トーストが表示されることを確認
-      expect(toast.error).toHaveBeenCalledWith(errorMessage);
-    });
-
-    it('ネットワークエラー時にエラー状態になる', async () => {
-      vi.stubGlobal('fetch', vi.fn().mockRejectedValue(new Error('Network error')));
-
-      const { result } = renderHook(() => useCardMutations(), {
-        wrapper: createProvider(),
-      });
-
-      // 初期状態
-      expect(result.current.isUpdating).toBe(false);
-      expect(result.current.updateError).toBeNull();
-
-      // ミューテーション実行
-      act(() =>
-        result.current.updateCard({
-          id: createTestUuid(1),
-          title: 'テストカード',
-          content: 'テスト本文',
-          book_id: createTestUuid(1),
-        }),
-      );
-
-      // エラーを待つ
-      await waitFor(() => expect(result.current.updateError).toBeInstanceOf(Error));
-
-      expect(fetch).toHaveBeenCalledWith(
-        `/api/books/${createTestUuid(1)}/cards/${createTestUuid(1)}`,
-        {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            id: createTestUuid(1),
-            title: 'テストカード',
-            content: 'テスト本文',
-            book_id: createTestUuid(1),
-          }),
-        },
-      );
-
-      // エラー状態を確認
-      expect(result.current.isUpdating).toBe(false);
-      expect(result.current.updateError?.message).toBe('Network error');
-
-      // トーストが表示されることを確認
-      expect(toast.error).toHaveBeenCalledWith('Network error');
-    });
-  });
-
-  describe('deleteCard', () => {
-    it('カードの削除が成功する', async () => {
-      const mockCard = createMockCard({
+      const updateData = {
         id: createTestUuid(1),
         title: 'テストカード',
         content: 'テスト本文',
         book_id: createTestUuid(1),
+      };
+
+      // updateCard関数をエラーをスローするようにモック
+      vi.mocked(mutations.updateCard).mockRejectedValue(new Error(errorMessage));
+
+      const { result } = renderHook(() => useCardMutations(), {
+        wrapper: createProvider(),
       });
+
+      // ミューテーション実行
+      act(() => {
+        result.current.updateCard(updateData);
+      });
+
+      // エラーを待つ
+      await waitFor(() => expect(result.current.updateError).toBeInstanceOf(Error));
+
+      // updateCard関数が正しく呼ばれたことを確認
+      expect(mutations.updateCard).toHaveBeenCalledWith(
+        updateData,
+        expect.anything(), // React Queryが渡すコンテキスト
+      );
+
+      // トーストが表示されることを確認
+      expect(toast.error).toHaveBeenCalledWith(errorMessage);
+    });
+  });
+
+  describe('deleteCard', () => {
+    it('成功時にonSuccessの副作用が実行される', async () => {
       const queryClient = createTestQueryClient();
+      const bookId = createTestUuid(1);
+      const cardId = createTestUuid(2);
 
       // 事前にcardsとbooks, topページのデータをキャッシュに追加
-      queryClient.setQueryData(['cards'], [createMockCard({ id: createTestUuid(1) })]);
-      queryClient.setQueryData(
-        ['books', 'detail', createTestUuid(1)],
-        createMockBook({ id: createTestUuid(1) }),
-      );
+      queryClient.setQueryData(['cards'], [createMockCard({ id: cardId })]);
+      queryClient.setQueryData(['books', 'detail', bookId], createMockBook({ id: bookId }));
       queryClient.setQueryData(['top'], createMockTopPageData());
 
-      vi.stubGlobal(
-        'fetch',
-        vi.fn().mockResolvedValue({
-          ok: true,
-          json: async () => mockCard,
-        }),
-      );
+      // deleteCard関数をモック
+      vi.mocked(mutations.deleteCard).mockResolvedValue(undefined);
 
       const { result } = renderHook(() => useCardMutations(), {
         wrapper: createProvider(queryClient),
       });
 
-      // 初期状態
-      expect(result.current.isDeleting).toBe(false);
-      expect(result.current.deleteError).toBeNull();
-
       // ミューテーション実行
-      act(() =>
-        result.current.deleteCard({
-          cardId: createTestUuid(1),
-          bookId: createTestUuid(1),
-        }),
-      );
+      act(() => {
+        result.current.deleteCard({ cardId, bookId });
+      });
 
       // 完了を待つ
       await waitFor(() => expect(result.current.isDeleting).toBe(false));
 
-      expect(fetch).toHaveBeenCalledWith(
-        `/api/books/${createTestUuid(1)}/cards/${createTestUuid(1)}`,
-        {
-          method: 'DELETE',
-        },
+      // deleteCard関数が正しく呼ばれたことを確認
+      expect(mutations.deleteCard).toHaveBeenCalledWith(
+        { bookId, cardId },
+        expect.anything(), // React Queryが渡すコンテキスト
       );
 
       // トーストが表示されることを確認
@@ -418,93 +254,41 @@ describe('useCardMutations', () => {
 
       // キャッシュが無効化されることを確認
       const cardsQueryState = queryClient.getQueryState(['cards']);
-      const bookQueryState = queryClient.getQueryState(['books', 'detail', createTestUuid(1)]);
+      const bookQueryState = queryClient.getQueryState(['books', 'detail', bookId]);
       const topQueryState = queryClient.getQueryState(['top']);
       expect(cardsQueryState?.isInvalidated).toBe(true);
       expect(bookQueryState?.isInvalidated).toBe(true);
       expect(topQueryState?.isInvalidated).toBe(true);
     });
 
-    it('カードの削除が失敗する', async () => {
+    it('失敗時にonErrorの副作用が実行される', async () => {
       const errorMessage = 'カードの削除に失敗しました';
+      const bookId = createTestUuid(1);
+      const cardId = createTestUuid(2);
 
-      vi.stubGlobal(
-        'fetch',
-        vi.fn().mockResolvedValue({
-          ok: false,
-          json: async () => ({ error: errorMessage }),
-        }),
-      );
+      // deleteCard関数をエラーをスローするようにモック
+      vi.mocked(mutations.deleteCard).mockRejectedValue(new Error(errorMessage));
 
       const { result } = renderHook(() => useCardMutations(), {
         wrapper: createProvider(),
       });
 
-      // 初期状態
-      expect(result.current.isDeleting).toBe(false);
-      expect(result.current.deleteError).toBeNull();
-
       // ミューテーション実行
-      act(() =>
-        result.current.deleteCard({
-          cardId: createTestUuid(1),
-          bookId: createTestUuid(1),
-        }),
-      );
+      act(() => {
+        result.current.deleteCard({ cardId, bookId });
+      });
 
       // エラーを待つ
       await waitFor(() => expect(result.current.deleteError).toBeInstanceOf(Error));
 
-      expect(fetch).toHaveBeenCalledWith(
-        `/api/books/${createTestUuid(1)}/cards/${createTestUuid(1)}`,
-        {
-          method: 'DELETE',
-        },
+      // deleteCard関数が正しく呼ばれたことを確認
+      expect(mutations.deleteCard).toHaveBeenCalledWith(
+        { bookId, cardId },
+        expect.anything(), // React Queryが渡すコンテキスト
       );
-
-      // エラー状態を確認
-      expect(result.current.isDeleting).toBe(false);
-      expect(result.current.deleteError?.message).toBe(errorMessage);
 
       // トーストが表示されることを確認
       expect(toast.error).toHaveBeenCalledWith(errorMessage);
-    });
-
-    it('ネットワークエラー時にエラー状態になる', async () => {
-      vi.stubGlobal('fetch', vi.fn().mockRejectedValue(new Error('Network error')));
-
-      const { result } = renderHook(() => useCardMutations(), {
-        wrapper: createProvider(),
-      });
-
-      // 初期状態
-      expect(result.current.isDeleting).toBe(false);
-      expect(result.current.deleteError).toBeNull();
-
-      // ミューテーション実行
-      act(() =>
-        result.current.deleteCard({
-          cardId: createTestUuid(1),
-          bookId: createTestUuid(1),
-        }),
-      );
-
-      // エラーを待つ
-      await waitFor(() => expect(result.current.deleteError).toBeInstanceOf(Error));
-
-      expect(fetch).toHaveBeenCalledWith(
-        `/api/books/${createTestUuid(1)}/cards/${createTestUuid(1)}`,
-        {
-          method: 'DELETE',
-        },
-      );
-
-      // エラー状態を確認
-      expect(result.current.isDeleting).toBe(false);
-      expect(result.current.deleteError?.message).toBe('Network error');
-
-      // トーストが表示されることを確認
-      expect(toast.error).toHaveBeenCalledWith('Network error');
     });
   });
 });

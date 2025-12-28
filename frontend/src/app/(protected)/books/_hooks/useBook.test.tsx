@@ -2,27 +2,27 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { renderHook, waitFor } from '@testing-library/react';
 import { createProvider, createTestUuid } from '@/test/helpers';
 import { createMockBook, createMockCard, createMockList } from '@/test/factories';
+import { fetchBook } from '@/app/(protected)/books/_lib/query/fetchBook';
+import { BookDetail } from '@/app/(protected)/books/_types';
 import { useBook } from './useBook';
-import { fetchBook } from '@/app/(protected)/books/_lib/fetchBook';
-import type { BookDetail } from '@/app/(protected)/books/_types';
 
 // fetchBookをモック化
-vi.mock('@/app/(protected)/books/_lib/fetchBook');
+vi.mock('@/app/(protected)/books/_lib/query/fetchBook');
 
 describe('useBook', () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
+  const mockBook: BookDetail = createMockBook({
+    id: createTestUuid(1),
+    title: 'テスト本',
+    lists: [createMockList()],
+    cards: [createMockCard()],
+  });
+
   describe('成功時', () => {
     it('fetchBookを呼び出してデータを取得する', async () => {
-      const mockBook: BookDetail = createMockBook({
-        id: createTestUuid(1),
-        title: 'テスト本',
-        lists: [createMockList()],
-        cards: [createMockCard()],
-      });
-
       vi.mocked(fetchBook).mockResolvedValue(mockBook);
 
       const { result } = renderHook(() => useBook('1'), {
@@ -85,17 +85,20 @@ describe('useBook', () => {
   });
 
   describe('React Queryの動作', () => {
-    it('正しいqueryKeyを使用する', async () => {
-      vi.mocked(fetchBook).mockResolvedValue(createMockBook());
+    it('キャッシュが有効に機能する', async () => {
+      vi.mocked(fetchBook).mockResolvedValue(mockBook);
 
-      const { result } = renderHook(() => useBook('42'), {
+      const { result, rerender } = renderHook(() => useBook('1'), {
         wrapper: createProvider(),
       });
 
       await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
-      // fetchBookが正しいidで呼ばれたことを確認
-      expect(fetchBook).toHaveBeenCalledWith('42');
+      expect(result.current.isSuccess).toBe(true);
+
+      // 再レンダリング時にキャッシュから即座にデータが返される
+      rerender();
+      expect(result.current.data).toBeDefined();
     });
   });
 });

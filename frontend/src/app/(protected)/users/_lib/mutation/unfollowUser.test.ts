@@ -1,14 +1,10 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { server } from '@/test/mocks/server';
 import { http, HttpResponse } from 'msw';
-import { FOLLOW_ERROR_MESSAGES } from '../constants/errorMessages';
+import { FOLLOW_ERROR_MESSAGES } from '@/constants/errorMessages';
 import { unfollowUser } from './unfollowUser';
 
 describe('unfollowUser', () => {
-  beforeEach(() => {
-    vi.clearAllMocks();
-  });
-
   describe('正常系', () => {
     it('アンフォローリクエストが成功する', async () => {
       const result = await unfollowUser('1');
@@ -117,7 +113,7 @@ describe('unfollowUser', () => {
 
       await expect(unfollowUser('1')).rejects.toThrow();
 
-      expect(consoleErrorSpy).toHaveBeenCalledWith('Unfollow API Error:', {
+      expect(consoleErrorSpy).toHaveBeenCalledWith('Users API Error:', {
         status: 404,
         data: {
           code: 'NOT_FOLLOWING',

@@ -17,7 +17,7 @@ export default function ListDetailClient({ id }: Props) {
   }
 
   if (listError) {
-    return <ErrorMessage message={listError?.message || 'エラーが発生しました'} />;
+    return <ErrorMessage message={listError?.message} />;
   }
 
   if (!list) {

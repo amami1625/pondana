@@ -4,6 +4,7 @@ import { createProvider, createTestQueryClient } from '@/test/helpers';
 import { createMockBook, createMockCategory, createMockTopPageData } from '@/test/factories';
 import toast from 'react-hot-toast';
 import { useCategoryMutations } from './useCategoryMutations';
+import * as mutations from '../_lib/mutation';
 
 // react-hot-toastをモック
 vi.mock('react-hot-toast', () => ({
@@ -13,6 +14,13 @@ vi.mock('react-hot-toast', () => ({
   },
 }));
 
+// ミューテーション関数をモック
+vi.mock('../_lib/mutation', () => ({
+  createCategory: vi.fn(),
+  updateCategory: vi.fn(),
+  deleteCategory: vi.fn(),
+}));
+
 describe('useCategoryMutations', () => {
   beforeEach(() => {
     // 各テストの前にモックをリセット
@@ -20,43 +28,35 @@ describe('useCategoryMutations', () => {
   });
 
   describe('createCategory', () => {
-    it('カテゴリの作成に成功する', async () => {
+    it('成功時にonSuccessの副作用が実行される', async () => {
       const mockCategory = createMockCategory({ name: 'テストカテゴリ' });
       const queryClient = createTestQueryClient();
+      const createData = { name: 'テストカテゴリ' };
 
       // 事前にcategoryのデータをキャッシュに追加
       queryClient.setQueryData(['categories'], [createMockCategory()]);
 
-      vi.stubGlobal(
-        'fetch',
-        vi.fn().mockResolvedValue({
-          ok: true,
-          json: async () => mockCategory,
-        }),
-      );
+      // createCategory関数をモック
+      vi.mocked(mutations.createCategory).mockResolvedValue(mockCategory);
 
       const { result } = renderHook(() => useCategoryMutations(), {
         wrapper: createProvider(queryClient),
       });
 
-      expect(result.current.isCreating).toBe(false);
-      expect(result.current.createError).toBeNull();
+      // ミューテーション実行
+      act(() => {
+        result.current.createCategory(createData);
+      });
 
-      act(() =>
-        result.current.createCategory({
-          name: 'テストカテゴリ',
-        }),
-      );
-
+      // 完了を待つ
       await waitFor(() => expect(result.current.isCreating).toBe(false));
 
-      expect(fetch).toHaveBeenCalledWith('/api/categories', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          name: 'テストカテゴリ',
-        }),
-      });
+      // createCategory関数が正しく呼ばれたことを確認
+      expect(mutations.createCategory).toHaveBeenCalled();
+      expect(mutations.createCategory).toHaveBeenCalledWith(
+        createData,
+        expect.anything(), // React Queryが渡すコンテキスト
+      );
 
       // トーストが表示されることを確認
       expect(toast.success).toHaveBeenCalledWith('カテゴリを作成しました');
@@ -66,115 +66,60 @@ describe('useCategoryMutations', () => {
       expect(categoriesQueryState?.isInvalidated).toBe(true);
     });
 
-    it('カテゴリの作成に失敗する', async () => {
+    it('失敗時にonErrorの副作用が実行される', async () => {
       const errorMessage = 'カテゴリの作成に失敗しました';
 
-      vi.stubGlobal(
-        'fetch',
-        vi.fn().mockResolvedValue({
-          ok: false,
-          json: async () => ({ error: errorMessage }),
-        }),
-      );
+      vi.mocked(mutations.createCategory).mockRejectedValue(new Error(errorMessage));
 
       const { result } = renderHook(() => useCategoryMutations(), {
         wrapper: createProvider(),
       });
 
-      expect(result.current.isCreating).toBe(false);
-      expect(result.current.createError).toBeNull();
-
-      act(() =>
-        result.current.createCategory({
-          name: 'テストカテゴリ',
-        }),
-      );
+      act(() => {
+        result.current.createCategory({ name: 'テストカテゴリ' });
+      });
 
       await waitFor(() => expect(result.current.createError).toBeInstanceOf(Error));
-
-      expect(fetch).toHaveBeenCalledWith('/api/categories', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          name: 'テストカテゴリ',
-        }),
-      });
 
       // トーストが表示されることを確認
       expect(toast.error).toHaveBeenCalledWith(errorMessage);
 
-      expect(result.current.isCreating).toBe(false);
       expect(result.current.createError?.message).toBe(errorMessage);
-    });
-
-    it('ネットワークエラー時にエラー状態になる', async () => {
-      vi.stubGlobal('fetch', vi.fn().mockRejectedValue(new Error('Network error')));
-
-      const { result } = renderHook(() => useCategoryMutations(), {
-        wrapper: createProvider(),
-      });
-
-      expect(result.current.isCreating).toBe(false);
-      expect(result.current.createError).toBeNull();
-
-      act(() =>
-        result.current.createCategory({
-          name: 'テストカテゴリ',
-        }),
-      );
-
-      await waitFor(() => expect(result.current.createError).toBeInstanceOf(Error));
-
-      expect(fetch).toHaveBeenCalledWith('/api/categories', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          name: 'テストカテゴリ',
-        }),
-      });
-
-      expect(result.current.isCreating).toBe(false);
-      expect(result.current.createError?.message).toBe('Network error');
-
-      // トーストが表示されることを確認
-      expect(toast.error).toHaveBeenCalledWith('Network error');
     });
   });
 
   describe('updateCategory', () => {
-    it('カテゴリの更新に成功する', async () => {
-      const mockCategory = createMockCategory({ id: 1, name: 'テストカテゴリ' });
+    it('成功時にonSuccessの副作用が実行される', async () => {
+      const mockCategory = createMockCategory({ id: 1, name: '更新されたカテゴリ' });
       const queryClient = createTestQueryClient();
+      const updateData = { id: 1, name: '更新されたカテゴリ' };
 
       // 事前にcategoryとbook、topページのデータをキャッシュに追加
       queryClient.setQueryData(['categories'], [createMockCategory()]);
       queryClient.setQueryData(['books'], [createMockBook()]);
       queryClient.setQueryData(['top'], createMockTopPageData());
 
-      vi.stubGlobal(
-        'fetch',
-        vi.fn().mockResolvedValue({
-          ok: true,
-          json: async () => mockCategory,
-        }),
-      );
+      // updateCategory関数をモック
+      vi.mocked(mutations.updateCategory).mockResolvedValue(mockCategory);
 
       const { result } = renderHook(() => useCategoryMutations(), {
         wrapper: createProvider(queryClient),
       });
 
-      expect(result.current.isUpdating).toBe(false);
-      expect(result.current.updateError).toBeNull();
+      // ミューテーション実行
+      act(() => {
+        result.current.updateCategory(updateData);
+      });
 
-      act(() => result.current.updateCategory({ id: 1, name: 'テストカテゴリ' }));
-
+      // 完了を待つ
       await waitFor(() => expect(result.current.isUpdating).toBe(false));
 
-      expect(fetch).toHaveBeenCalledWith('/api/categories/1', {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name: 'テストカテゴリ' }),
-      });
+      // updateCategory関数が正しく呼ばれたことを確認
+      expect(mutations.updateCategory).toHaveBeenCalled();
+      expect(mutations.updateCategory).toHaveBeenCalledWith(
+        updateData,
+        expect.anything(), // React Queryが渡すコンテキスト
+      );
 
       // トーストが表示されることを確認
       expect(toast.success).toHaveBeenCalledWith('カテゴリを更新しました');
@@ -188,74 +133,30 @@ describe('useCategoryMutations', () => {
       expect(topQueryState?.isInvalidated).toBe(true);
     });
 
-    it('カテゴリの更新に失敗する', async () => {
+    it('失敗時にonErrorの副作用が実行される', async () => {
       const errorMessage = 'カテゴリの更新に失敗しました';
 
-      vi.stubGlobal(
-        'fetch',
-        vi.fn().mockResolvedValue({
-          ok: false,
-          json: async () => ({ error: errorMessage }),
-        }),
-      );
+      vi.mocked(mutations.updateCategory).mockRejectedValue(new Error(errorMessage));
 
       const { result } = renderHook(() => useCategoryMutations(), {
         wrapper: createProvider(),
       });
 
-      expect(result.current.isUpdating).toBe(false);
-      expect(result.current.updateError).toBeNull();
-
-      act(() => result.current.updateCategory({ id: 1, name: 'テストカテゴリ' }));
+      act(() => {
+        result.current.updateCategory({ id: 1, name: 'テストカテゴリ' });
+      });
 
       await waitFor(() => expect(result.current.updateError).toBeInstanceOf(Error));
-
-      expect(fetch).toHaveBeenCalledWith('/api/categories/1', {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name: 'テストカテゴリ' }),
-      });
 
       // トーストが表示されることを確認
       expect(toast.error).toHaveBeenCalledWith(errorMessage);
 
-      expect(result.current.isUpdating).toBe(false);
-      expect(result.current.updateError?.message).toBe(errorMessage);
-    });
-
-    it('ネットワークエラー時にエラー状態になる', async () => {
-      const errorMessage = 'Network error';
-
-      vi.stubGlobal('fetch', vi.fn().mockRejectedValue(new Error(errorMessage)));
-
-      const { result } = renderHook(() => useCategoryMutations(), {
-        wrapper: createProvider(),
-      });
-
-      expect(result.current.isUpdating).toBe(false);
-      expect(result.current.updateError).toBeNull();
-
-      act(() => result.current.updateCategory({ id: 1, name: 'テストカテゴリ' }));
-
-      await waitFor(() => expect(result.current.updateError).toBeInstanceOf(Error));
-
-      expect(fetch).toHaveBeenCalledWith('/api/categories/1', {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name: 'テストカテゴリ' }),
-      });
-
-      // トーストが表示されることを確認
-      expect(toast.error).toHaveBeenCalledWith(errorMessage);
-
-      expect(result.current.isUpdating).toBe(false);
       expect(result.current.updateError?.message).toBe(errorMessage);
     });
   });
 
   describe('deleteCategory', () => {
-    it('カテゴリの削除に成功する', async () => {
-      const mockCategory = createMockCategory({ id: 1 });
+    it('成功時にonSuccessの副作用が実行される', async () => {
       const queryClient = createTestQueryClient();
 
       // 事前にcategoryとbook、topページのデータをキャッシュに追加
@@ -263,28 +164,27 @@ describe('useCategoryMutations', () => {
       queryClient.setQueryData(['books'], [createMockBook()]);
       queryClient.setQueryData(['top'], createMockTopPageData());
 
-      vi.stubGlobal(
-        'fetch',
-        vi.fn().mockResolvedValue({
-          ok: true,
-          json: async () => mockCategory,
-        }),
-      );
+      // deleteCategory関数をモック
+      vi.mocked(mutations.deleteCategory).mockResolvedValue(undefined);
 
       const { result } = renderHook(() => useCategoryMutations(), {
         wrapper: createProvider(queryClient),
       });
 
-      expect(result.current.isDeleting).toBe(false);
-      expect(result.current.deleteError).toBeNull();
+      // ミューテーション実行
+      act(() => {
+        result.current.deleteCategory(1);
+      });
 
-      act(() => result.current.deleteCategory(1));
-
+      // 完了を待つ
       await waitFor(() => expect(result.current.isDeleting).toBe(false));
 
-      expect(fetch).toHaveBeenCalledWith('/api/categories/1', {
-        method: 'DELETE',
-      });
+      // deleteCategory関数が正しく呼ばれたことを確認
+      expect(mutations.deleteCategory).toHaveBeenCalled();
+      expect(mutations.deleteCategory).toHaveBeenCalledWith(
+        1,
+        expect.anything(), // React Queryが渡すコンテキスト
+      );
 
       // トーストが表示されることを確認
       expect(toast.success).toHaveBeenCalledWith('カテゴリを削除しました');
@@ -298,63 +198,24 @@ describe('useCategoryMutations', () => {
       expect(topQueryState?.isInvalidated).toBe(true);
     });
 
-    it('カテゴリの削除に失敗する', async () => {
+    it('失敗時にonErrorの副作用が実行される', async () => {
       const errorMessage = 'カテゴリの削除に失敗しました';
 
-      vi.stubGlobal(
-        'fetch',
-        vi.fn().mockResolvedValue({
-          ok: false,
-          json: async () => ({ error: errorMessage }),
-        }),
-      );
+      vi.mocked(mutations.deleteCategory).mockRejectedValue(new Error(errorMessage));
 
       const { result } = renderHook(() => useCategoryMutations(), {
         wrapper: createProvider(),
       });
 
-      expect(result.current.isDeleting).toBe(false);
-      expect(result.current.deleteError).toBeNull();
-
-      act(() => result.current.deleteCategory(1));
+      act(() => {
+        result.current.deleteCategory(1);
+      });
 
       await waitFor(() => expect(result.current.deleteError).toBeInstanceOf(Error));
-
-      expect(fetch).toHaveBeenCalledWith('/api/categories/1', {
-        method: 'DELETE',
-      });
 
       // トーストが表示されることを確認
       expect(toast.error).toHaveBeenCalledWith(errorMessage);
 
-      expect(result.current.isDeleting).toBe(false);
-      expect(result.current.deleteError?.message).toBe(errorMessage);
-    });
-
-    it('ネットワークエラー時にエラー状態になる', async () => {
-      const errorMessage = 'Network error';
-
-      vi.stubGlobal('fetch', vi.fn().mockRejectedValue(new Error(errorMessage)));
-
-      const { result } = renderHook(() => useCategoryMutations(), {
-        wrapper: createProvider(),
-      });
-
-      expect(result.current.isDeleting).toBe(false);
-      expect(result.current.deleteError).toBeNull();
-
-      act(() => result.current.deleteCategory(1));
-
-      await waitFor(() => expect(result.current.deleteError).toBeInstanceOf(Error));
-
-      expect(fetch).toHaveBeenCalledWith('/api/categories/1', {
-        method: 'DELETE',
-      });
-
-      // トーストが表示されることを確認
-      expect(toast.error).toHaveBeenCalledWith(errorMessage);
-
-      expect(result.current.isDeleting).toBe(false);
       expect(result.current.deleteError?.message).toBe(errorMessage);
     });
   });

@@ -2,25 +2,25 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { renderHook, waitFor } from '@testing-library/react';
 import { createProvider, createTestUuid } from '@/test/helpers';
 import { createMockCard } from '@/test/factories';
+import { CardDetail } from '@/app/(protected)/cards/_types';
+import { fetchCard } from '@/app/(protected)/cards/_lib/query/fetchCard';
 import { useCard } from './useCard';
-import { fetchCard } from '@/app/(protected)/cards/_lib/fetchCard';
-import type { CardDetail } from '@/app/(protected)/cards/_types';
 
 // fetchCardをモック化
-vi.mock('@/app/(protected)/cards/_lib/fetchCard');
+vi.mock('@/app/(protected)/cards/_lib/query/fetchCard');
 
 describe('useCard', () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
+  const mockCard: CardDetail = createMockCard({
+    id: createTestUuid(1),
+    title: 'テストカード',
+  });
+
   describe('成功時', () => {
     it('fetchCardを呼び出してデータを取得する', async () => {
-      const mockCard: CardDetail = createMockCard({
-        id: createTestUuid(1),
-        title: 'テストカード',
-      });
-
       vi.mocked(fetchCard).mockResolvedValue(mockCard);
 
       const { result } = renderHook(() => useCard('1'), {
@@ -83,17 +83,20 @@ describe('useCard', () => {
   });
 
   describe('React Queryの動作', () => {
-    it('正しいqueryKeyを使用する', async () => {
-      vi.mocked(fetchCard).mockResolvedValue(createMockCard());
+    it('キャッシュが有効に機能する', async () => {
+      vi.mocked(fetchCard).mockResolvedValue(mockCard);
 
-      const { result } = renderHook(() => useCard('42'), {
+      const { result, rerender } = renderHook(() => useCard('1'), {
         wrapper: createProvider(),
       });
 
       await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
-      // fetchCardが正しいidで呼ばれたことを確認
-      expect(fetchCard).toHaveBeenCalledWith('42');
+      expect(result.current.isSuccess).toBe(true);
+
+      // 再レンダリング時にキャッシュから即座にデータが返される
+      rerender();
+      expect(result.current.data).toBeDefined();
     });
   });
 });

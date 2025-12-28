@@ -2,27 +2,13 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { queryKeys } from '@/constants/queryKeys';
 import { UserFormData } from '@/schemas/user';
 import toast from 'react-hot-toast';
+import { updateProfile } from '@/app/(protected)/settings/_lib/mutation/updateProfile';
 
 export function useProfileMutations() {
   const queryClient = useQueryClient();
 
   const updateMutation = useMutation({
-    mutationFn: async (data: UserFormData) => {
-      const response = await fetch('/api/profiles', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
-      });
-
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.error || 'プロフィールの更新に失敗しました');
-      }
-
-      return response.json();
-    },
+    mutationFn: (data: UserFormData) => updateProfile(data),
     onSuccess: () => {
       toast.success('プロフィールを更新しました');
       // プロフィール情報のキャッシュを無効化

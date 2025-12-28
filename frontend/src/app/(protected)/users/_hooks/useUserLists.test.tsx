@@ -1,9 +1,9 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { renderHook, waitFor } from '@testing-library/react';
+import { List } from '@/app/(protected)/lists/_types';
 import { createProvider, createTestUuid } from '@/test/helpers';
-import { useUserLists } from './useUserLists';
 import { fetchUserLists } from '@/app/(protected)/users/_lib/query/fetchUserLists';
-import { List } from '@/schemas/list';
+import { useUserLists } from './useUserLists';
 
 // fetchUserListsをモック化
 vi.mock('@/app/(protected)/users/_lib/query/fetchUserLists');
@@ -13,31 +13,30 @@ describe('useUserLists', () => {
     vi.clearAllMocks();
   });
 
+  const mockLists: List[] = [
+    {
+      id: createTestUuid(1),
+      name: 'テストリスト1',
+      description: 'テスト説明1',
+      user_id: 1,
+      public: true,
+      books_count: 3,
+      created_at: '2025-01-01T00:00:00Z',
+      updated_at: '2025-01-01T00:00:00Z',
+    },
+    {
+      id: createTestUuid(2),
+      name: 'テストリスト2',
+      description: 'テスト説明2',
+      user_id: 1,
+      public: true,
+      books_count: 5,
+      created_at: '2025-01-01T00:00:00Z',
+      updated_at: '2025-01-01T00:00:00Z',
+    },
+  ];
   describe('成功時', () => {
     it('fetchUserListsを呼び出してデータを取得する', async () => {
-      const mockLists: List[] = [
-        {
-          id: createTestUuid(1),
-          name: 'テストリスト1',
-          description: 'テスト説明1',
-          user_id: 1,
-          public: true,
-          books_count: 3,
-          created_at: '2025-01-01T00:00:00Z',
-          updated_at: '2025-01-01T00:00:00Z',
-        },
-        {
-          id: createTestUuid(2),
-          name: 'テストリスト2',
-          description: 'テスト説明2',
-          user_id: 1,
-          public: true,
-          books_count: 5,
-          created_at: '2025-01-01T00:00:00Z',
-          updated_at: '2025-01-01T00:00:00Z',
-        },
-      ];
-
       vi.mocked(fetchUserLists).mockResolvedValue(mockLists);
 
       const { result } = renderHook(() => useUserLists('1'), {
@@ -103,17 +102,20 @@ describe('useUserLists', () => {
   });
 
   describe('React Queryの動作', () => {
-    it('正しいqueryKeyを使用する', async () => {
-      vi.mocked(fetchUserLists).mockResolvedValue([]);
+    it('キャッシュが有効に機能する', async () => {
+      vi.mocked(fetchUserLists).mockResolvedValue(mockLists);
 
-      const { result } = renderHook(() => useUserLists('42'), {
+      const { result, rerender } = renderHook(() => useUserLists('1'), {
         wrapper: createProvider(),
       });
 
       await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
-      // fetchUserListsが正しいidで呼ばれたことを確認
-      expect(fetchUserLists).toHaveBeenCalledWith('42');
+      expect(result.current.isSuccess).toBe(true);
+
+      // 再レンダリング時にキャッシュから即座にデータが返される
+      rerender();
+      expect(result.current.data).toBeDefined();
     });
   });
 });

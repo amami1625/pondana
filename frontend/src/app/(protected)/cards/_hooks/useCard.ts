@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { queryKeys } from '@/constants/queryKeys';
-import { fetchCard } from '@/app/(protected)/cards/_lib/fetchCard';
+import { fetchCard } from '@/app/(protected)/cards/_lib/query/fetchCard';
 
 export function useCard(id: string) {
   return useQuery({

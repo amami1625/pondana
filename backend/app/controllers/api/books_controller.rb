@@ -1,4 +1,6 @@
 class Api::BooksController < Api::ApplicationController
+  rescue_from ActiveRecord::RecordNotFound, with: :record_not_found
+
   def index
     books = current_user.books.includes(:category, :tags).order(created_at: :desc)
     render json: books, include: [:category, :tags]
@@ -51,5 +53,9 @@ class Api::BooksController < Api::ApplicationController
       :rating, :reading_status, :category_id, :public,
       authors: [], tag_ids: []
     )
+  end
+
+  def record_not_found
+    render json: { error: 'Book not found' }, status: :not_found
   end
 end

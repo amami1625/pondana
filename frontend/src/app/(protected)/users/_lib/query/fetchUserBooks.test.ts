@@ -1,13 +1,9 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { createMockBook } from '@/test/factories';
 import { createTestUuid } from '@/test/helpers';
 import { fetchUserBooks } from './fetchUserBooks';
 
 describe('fetchUserBooks', () => {
-  beforeEach(() => {
-    vi.clearAllMocks();
-  });
-
   describe('成功時', () => {
     it('ユーザーの公開本一覧を正しく取得できる', async () => {
       const mockApiResponse = [
@@ -80,7 +76,10 @@ describe('fetchUserBooks', () => {
         'fetch',
         vi.fn().mockResolvedValue({
           ok: false,
-          json: async () => ({ error: 'ユーザーの公開本一覧の取得に失敗しました' }),
+          json: async () => ({
+            code: 'FETCH_USER_BOOKS_FAILED',
+            error: 'ユーザーの公開本一覧の取得に失敗しました',
+          }),
         }),
       );
 
@@ -96,7 +95,9 @@ describe('fetchUserBooks', () => {
         }),
       );
 
-      await expect(fetchUserBooks('1')).rejects.toThrow('ユーザーの公開本一覧の取得に失敗しました');
+      await expect(fetchUserBooks('1')).rejects.toThrow(
+        'エラーが発生しました。もう一度お試しください',
+      );
     });
 
     it('ネットワークエラー時にエラーをスローする', async () => {

@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { queryKeys } from '@/constants/queryKeys';
-import { fetchList } from '@/app/(protected)/lists/_lib/fetchList';
+import { fetchList } from '@/app/(protected)/lists/_lib/query/fetchList';
 
 export function useList(id: string) {
   return useQuery({

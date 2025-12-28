@@ -1,14 +1,10 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { server } from '@/test/mocks/server';
 import { http, HttpResponse } from 'msw';
-import { FOLLOW_ERROR_MESSAGES } from '../constants/errorMessages';
+import { FOLLOW_ERROR_MESSAGES } from '@/constants/errorMessages';
 import { fetchFollowStatus } from './fetchFollowStatus';
 
 describe('fetchFollowStatus', () => {
-  beforeEach(() => {
-    vi.clearAllMocks();
-  });
-
   describe('正常系', () => {
     it('フォローの状態を取得できる', async () => {
       const result = await fetchFollowStatus('1');
@@ -104,7 +100,7 @@ describe('fetchFollowStatus', () => {
 
       await expect(fetchFollowStatus('1')).rejects.toThrow();
 
-      expect(consoleErrorSpy).toHaveBeenCalledWith('Follow API Error:', {
+      expect(consoleErrorSpy).toHaveBeenCalledWith('Users API Error:', {
         status: 422,
         data: {
           code: 'UNKNOWN_ERROR',

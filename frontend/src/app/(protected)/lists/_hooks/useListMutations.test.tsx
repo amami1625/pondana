@@ -4,6 +4,7 @@ import { createProvider, createTestQueryClient, createTestUuid } from '@/test/he
 import { createMockList, createMockBook, createMockTopPageData } from '@/test/factories';
 import toast from 'react-hot-toast';
 import { useListMutations } from './useListMutations';
+import { createList, updateList, deleteList } from '../_lib/mutation';
 
 // react-hot-toastをモック
 vi.mock('react-hot-toast', () => ({
@@ -21,14 +22,16 @@ vi.mock('next/navigation', () => ({
   }),
 }));
 
+// ミューテーション関数をモック
+vi.mock('../_lib/mutation');
+
 describe('useListMutations', () => {
   beforeEach(() => {
-    // 各テストの前にモックをリセット
     vi.clearAllMocks();
   });
 
   describe('createList', () => {
-    it('リストの作成に成功する', async () => {
+    it('リストの作成に成功し、適切な副作用が実行される', async () => {
       const mockList = createMockList({ name: 'テストリスト', description: 'テスト説明' });
       const queryClient = createTestQueryClient();
 
@@ -36,20 +39,13 @@ describe('useListMutations', () => {
       queryClient.setQueryData(['lists'], [createMockList()]);
       queryClient.setQueryData(['top'], createMockTopPageData());
 
-      vi.stubGlobal(
-        'fetch',
-        vi.fn().mockResolvedValue({
-          ok: true,
-          json: async () => mockList,
-        }),
-      );
+      vi.mocked(createList).mockResolvedValue(mockList);
 
       const { result } = renderHook(() => useListMutations(), {
         wrapper: createProvider(queryClient),
       });
 
       expect(result.current.isCreating).toBe(false);
-      expect(result.current.createError).toBeNull();
 
       act(() =>
         result.current.createList({
@@ -61,15 +57,15 @@ describe('useListMutations', () => {
 
       await waitFor(() => expect(result.current.isCreating).toBe(false));
 
-      expect(fetch).toHaveBeenCalledWith('/api/lists', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
+      // createListが正しい引数で呼ばれたことを確認
+      expect(createList).toHaveBeenCalledWith(
+        {
           name: 'テストリスト',
           description: 'テスト説明',
           public: true,
-        }),
-      });
+        },
+        expect.any(Object),
+      );
 
       // トーストが表示されることを確認
       expect(toast.success).toHaveBeenCalledWith('リストを作成しました');
@@ -81,23 +77,15 @@ describe('useListMutations', () => {
       expect(topQueryState?.isInvalidated).toBe(true);
     });
 
-    it('リストの作成に失敗する', async () => {
+    it('リストの作成に失敗し、エラートーストが表示される', async () => {
       const errorMessage = 'リストの作成に失敗しました';
-
-      vi.stubGlobal(
-        'fetch',
-        vi.fn().mockResolvedValue({
-          ok: false,
-          json: async () => ({ error: errorMessage }),
-        }),
-      );
+      vi.mocked(createList).mockRejectedValue(new Error(errorMessage));
 
       const { result } = renderHook(() => useListMutations(), {
         wrapper: createProvider(),
       });
 
       expect(result.current.isCreating).toBe(false);
-      expect(result.current.createError).toBeNull();
 
       act(() =>
         result.current.createList({
@@ -109,65 +97,25 @@ describe('useListMutations', () => {
 
       await waitFor(() => expect(result.current.createError).toBeInstanceOf(Error));
 
-      expect(fetch).toHaveBeenCalledWith('/api/lists', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
+      expect(createList).toHaveBeenCalledWith(
+        {
           name: 'テストリスト',
           description: 'テスト説明',
           public: true,
-        }),
-      });
-
-      // トーストが表示されることを確認
-      expect(toast.error).toHaveBeenCalledWith(errorMessage);
-
-      expect(result.current.isCreating).toBe(false);
-      expect(result.current.createError?.message).toBe(errorMessage);
-    });
-
-    it('ネットワークエラー時にエラー状態になる', async () => {
-      const errorMessage = 'Network error';
-
-      vi.stubGlobal('fetch', vi.fn().mockRejectedValue(new Error(errorMessage)));
-
-      const { result } = renderHook(() => useListMutations(), {
-        wrapper: createProvider(),
-      });
-
-      expect(result.current.isCreating).toBe(false);
-      expect(result.current.createError).toBeNull();
-
-      act(() =>
-        result.current.createList({
-          name: 'テストリスト',
-          description: 'テスト説明',
-          public: true,
-        }),
+        },
+        expect.any(Object),
       );
 
-      await waitFor(() => expect(result.current.createError).toBeInstanceOf(Error));
-
-      expect(fetch).toHaveBeenCalledWith('/api/lists', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          name: 'テストリスト',
-          description: 'テスト説明',
-          public: true,
-        }),
-      });
+      // トーストが表示されることを確認
+      expect(toast.error).toHaveBeenCalledWith(errorMessage);
 
       expect(result.current.isCreating).toBe(false);
       expect(result.current.createError?.message).toBe(errorMessage);
-
-      // トーストが表示されることを確認
-      expect(toast.error).toHaveBeenCalledWith(errorMessage);
     });
   });
 
   describe('updateList', () => {
-    it('リストの更新に成功する', async () => {
+    it('リストの更新に成功し、適切な副作用が実行される', async () => {
       const mockList = createMockList({
         id: createTestUuid(1),
         name: '更新されたリスト',
@@ -184,20 +132,13 @@ describe('useListMutations', () => {
       queryClient.setQueryData(['books'], [createMockBook()]);
       queryClient.setQueryData(['top'], createMockTopPageData());
 
-      vi.stubGlobal(
-        'fetch',
-        vi.fn().mockResolvedValue({
-          ok: true,
-          json: async () => mockList,
-        }),
-      );
+      vi.mocked(updateList).mockResolvedValue(mockList);
 
       const { result } = renderHook(() => useListMutations(), {
         wrapper: createProvider(queryClient),
       });
 
       expect(result.current.isUpdating).toBe(false);
-      expect(result.current.updateError).toBeNull();
 
       act(() =>
         result.current.updateList({
@@ -210,16 +151,16 @@ describe('useListMutations', () => {
 
       await waitFor(() => expect(result.current.isUpdating).toBe(false));
 
-      expect(fetch).toHaveBeenCalledWith(`/api/lists/${createTestUuid(1)}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
+      // updateListが正しい引数で呼ばれたことを確認
+      expect(updateList).toHaveBeenCalledWith(
+        {
           id: createTestUuid(1),
           name: '更新されたリスト',
           description: '更新された説明',
           public: true,
-        }),
-      });
+        },
+        expect.any(Object),
+      );
 
       // トーストが表示されることを確認
       expect(toast.success).toHaveBeenCalledWith('リストを更新しました');
@@ -239,23 +180,15 @@ describe('useListMutations', () => {
       expect(topQueryState?.isInvalidated).toBe(true);
     });
 
-    it('リストの更新に失敗する', async () => {
+    it('リストの更新に失敗し、エラートーストが表示される', async () => {
       const errorMessage = 'リストの更新に失敗しました';
-
-      vi.stubGlobal(
-        'fetch',
-        vi.fn().mockResolvedValue({
-          ok: false,
-          json: async () => ({ error: errorMessage }),
-        }),
-      );
+      vi.mocked(updateList).mockRejectedValue(new Error(errorMessage));
 
       const { result } = renderHook(() => useListMutations(), {
         wrapper: createProvider(),
       });
 
       expect(result.current.isUpdating).toBe(false);
-      expect(result.current.updateError).toBeNull();
 
       act(() =>
         result.current.updateList({
@@ -268,57 +201,15 @@ describe('useListMutations', () => {
 
       await waitFor(() => expect(result.current.updateError).toBeInstanceOf(Error));
 
-      expect(fetch).toHaveBeenCalledWith(`/api/lists/${createTestUuid(1)}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
+      expect(updateList).toHaveBeenCalledWith(
+        {
           id: createTestUuid(1),
           name: '更新されたリスト',
           description: '更新された説明',
           public: true,
-        }),
-      });
-
-      // トーストが表示されることを確認
-      expect(toast.error).toHaveBeenCalledWith(errorMessage);
-
-      expect(result.current.isUpdating).toBe(false);
-      expect(result.current.updateError?.message).toBe(errorMessage);
-    });
-
-    it('ネットワークエラー時にエラー状態になる', async () => {
-      const errorMessage = 'Network error';
-
-      vi.stubGlobal('fetch', vi.fn().mockRejectedValue(new Error(errorMessage)));
-
-      const { result } = renderHook(() => useListMutations(), {
-        wrapper: createProvider(),
-      });
-
-      expect(result.current.isUpdating).toBe(false);
-      expect(result.current.updateError).toBeNull();
-
-      act(() =>
-        result.current.updateList({
-          id: createTestUuid(1),
-          name: '更新されたリスト',
-          description: '更新された説明',
-          public: true,
-        }),
+        },
+        expect.any(Object),
       );
-
-      await waitFor(() => expect(result.current.updateError).toBeInstanceOf(Error));
-
-      expect(fetch).toHaveBeenCalledWith(`/api/lists/${createTestUuid(1)}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          id: createTestUuid(1),
-          name: '更新されたリスト',
-          description: '更新された説明',
-          public: true,
-        }),
-      });
 
       // トーストが表示されることを確認
       expect(toast.error).toHaveBeenCalledWith(errorMessage);
@@ -329,8 +220,7 @@ describe('useListMutations', () => {
   });
 
   describe('deleteList', () => {
-    it('リストの削除に成功する', async () => {
-      const mockList = createMockList({ id: createTestUuid(1) });
+    it('リストの削除に成功し、適切な副作用が実行される', async () => {
       const queryClient = createTestQueryClient();
 
       // 事前にlists、books、topページのデータをキャッシュに追加
@@ -338,28 +228,20 @@ describe('useListMutations', () => {
       queryClient.setQueryData(['books'], [createMockBook()]);
       queryClient.setQueryData(['top'], createMockTopPageData());
 
-      vi.stubGlobal(
-        'fetch',
-        vi.fn().mockResolvedValue({
-          ok: true,
-          json: async () => mockList,
-        }),
-      );
+      vi.mocked(deleteList).mockResolvedValue(undefined);
 
       const { result } = renderHook(() => useListMutations(), {
         wrapper: createProvider(queryClient),
       });
 
       expect(result.current.isDeleting).toBe(false);
-      expect(result.current.deleteError).toBeNull();
 
       act(() => result.current.deleteList(createTestUuid(1)));
 
       await waitFor(() => expect(result.current.isDeleting).toBe(false));
 
-      expect(fetch).toHaveBeenCalledWith(`/api/lists/${createTestUuid(1)}`, {
-        method: 'DELETE',
-      });
+      // deleteListが正しい引数で呼ばれたことを確認
+      expect(deleteList).toHaveBeenCalledWith(createTestUuid(1), expect.any(Object));
 
       // トーストが表示されることを確認
       expect(toast.success).toHaveBeenCalledWith('リストを削除しました');
@@ -376,61 +258,21 @@ describe('useListMutations', () => {
       expect(mockPush).toHaveBeenCalledWith('/lists');
     });
 
-    it('リストの削除に失敗する', async () => {
+    it('リストの削除に失敗し、エラートーストが表示される', async () => {
       const errorMessage = 'リストの削除に失敗しました';
-
-      vi.stubGlobal(
-        'fetch',
-        vi.fn().mockResolvedValue({
-          ok: false,
-          json: async () => ({ error: errorMessage }),
-        }),
-      );
+      vi.mocked(deleteList).mockRejectedValue(new Error(errorMessage));
 
       const { result } = renderHook(() => useListMutations(), {
         wrapper: createProvider(),
       });
 
       expect(result.current.isDeleting).toBe(false);
-      expect(result.current.deleteError).toBeNull();
 
       act(() => result.current.deleteList(createTestUuid(1)));
 
       await waitFor(() => expect(result.current.deleteError).toBeInstanceOf(Error));
 
-      expect(fetch).toHaveBeenCalledWith(`/api/lists/${createTestUuid(1)}`, {
-        method: 'DELETE',
-      });
-
-      // トーストが表示されることを確認
-      expect(toast.error).toHaveBeenCalledWith(errorMessage);
-
-      expect(result.current.isDeleting).toBe(false);
-      expect(result.current.deleteError?.message).toBe(errorMessage);
-
-      // リダイレクトされないことを確認
-      expect(mockPush).not.toHaveBeenCalled();
-    });
-
-    it('ネットワークエラー時にエラー状態になる', async () => {
-      const errorMessage = 'Network error';
-
-      vi.stubGlobal('fetch', vi.fn().mockRejectedValue(new Error(errorMessage)));
-
-      const { result } = renderHook(() => useListMutations(), {
-        wrapper: createProvider(),
-      });
-
-      expect(result.current.isDeleting).toBe(false);
-      expect(result.current.deleteError).toBeNull();
-
-      act(() => result.current.deleteList(createTestUuid(1)));
-
-      await waitFor(() => expect(result.current.deleteError).toBeInstanceOf(Error));
-
-      expect(fetch).toHaveBeenCalledWith(`/api/lists/${createTestUuid(1)}`, {
-        method: 'DELETE',
-      });
+      expect(deleteList).toHaveBeenCalledWith(createTestUuid(1), expect.any(Object));
 
       // トーストが表示されることを確認
       expect(toast.error).toHaveBeenCalledWith(errorMessage);
