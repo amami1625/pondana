@@ -4,7 +4,7 @@ import { createTestUuid } from '@/test/helpers';
 import { fetchList } from './fetchList';
 import { server } from '@/test/mocks/server';
 import { http, HttpResponse } from 'msw';
-import { LISTS_ERROR_MESSAGES } from '../constants/errorMessages';
+import { LISTS_ERROR_MESSAGES } from '@/constants/errorMessages';
 
 describe('fetchList', () => {
   beforeEach(() => {

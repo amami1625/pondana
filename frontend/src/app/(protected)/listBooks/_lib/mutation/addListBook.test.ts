@@ -4,7 +4,7 @@ import { http, HttpResponse } from 'msw';
 import { addListBook } from './addListBook';
 import { createTestUuid } from '@/test/helpers';
 import { createMockListBook } from '@/test/factories';
-import { LIST_BOOKS_ERROR_MESSAGES } from '../constants/errorMessages';
+import { LIST_BOOKS_ERROR_MESSAGES } from '@/constants/errorMessages';
 
 describe('addListBook', () => {
   it('リストに本を追加できる', async () => {

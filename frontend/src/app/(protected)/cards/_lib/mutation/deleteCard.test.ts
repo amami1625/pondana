@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { server } from '@/test/mocks/server';
 import { http, HttpResponse } from 'msw';
 import { createTestUuid } from '@/test/helpers';
-import { CARDS_ERROR_MESSAGES } from '../constants/errorMessages';
+import { CARDS_ERROR_MESSAGES } from '@/constants/errorMessages';
 import { deleteCard } from './deleteCard';
 
 describe('deleteCard', () => {

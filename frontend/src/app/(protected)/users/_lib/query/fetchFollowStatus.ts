@@ -1,4 +1,4 @@
-import { FOLLOW_ERROR_MESSAGES } from '../constants/errorMessages';
+import { FOLLOW_ERROR_MESSAGES } from '@/constants/errorMessages';
 import { FollowStatus, followStatusSchema } from '@/app/(protected)/users/_types';
 import { handleApiError, handleNetworkError } from '@/lib/api/handleApiError';
 

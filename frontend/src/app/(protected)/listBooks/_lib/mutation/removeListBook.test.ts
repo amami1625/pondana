@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { server } from '@/test/mocks/server';
 import { http, HttpResponse } from 'msw';
 import { removeListBook } from './removeListBook';
-import { LIST_BOOKS_ERROR_MESSAGES } from '../constants/errorMessages';
+import { LIST_BOOKS_ERROR_MESSAGES } from '@/constants/errorMessages';
 
 describe('removeListBook', () => {
   it('リストから本を削除できる', async () => {

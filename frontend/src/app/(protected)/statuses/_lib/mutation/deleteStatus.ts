@@ -1,4 +1,4 @@
-import { STATUSES_ERROR_MESSAGES } from '../constants/errorMessages';
+import { STATUSES_ERROR_MESSAGES } from '@/constants/errorMessages';
 import { handleApiError, handleNetworkError } from '@/lib/api/handleApiError';
 
 export async function deleteStatus(id: number): Promise<void> {

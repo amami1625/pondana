@@ -1,5 +1,5 @@
 import { cardListSchema, type CardList } from '@/app/(protected)/cards/_types';
-import { CARDS_ERROR_MESSAGES } from '../constants/errorMessages';
+import { CARDS_ERROR_MESSAGES } from '@/constants/errorMessages';
 import { handleApiError, handleNetworkError } from '@/lib/api/handleApiError';
 
 /**

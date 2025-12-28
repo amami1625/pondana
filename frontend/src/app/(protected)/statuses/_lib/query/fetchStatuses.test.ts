@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { toJapaneseLocaleString } from '@/test/helpers';
 import { server } from '@/test/mocks/server';
 import { http, HttpResponse } from 'msw';
-import { STATUSES_ERROR_MESSAGES } from '../constants/errorMessages';
+import { STATUSES_ERROR_MESSAGES } from '@/constants/errorMessages';
 import { fetchStatuses } from './fetchStatuses';
 
 describe('fetchStatuses', () => {

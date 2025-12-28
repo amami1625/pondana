@@ -52,7 +52,8 @@ describe('fetchProfile', () => {
         'fetch',
         vi.fn().mockResolvedValue({
           ok: false,
-          json: async () => ({ error: 'プロフィール情報の取得に失敗しました' }),
+          status: 404,
+          json: async () => ({ code: 'NOT_FOUND', error: 'プロフィール情報の取得に失敗しました' }),
         }),
       );
 
@@ -64,17 +65,18 @@ describe('fetchProfile', () => {
         'fetch',
         vi.fn().mockResolvedValue({
           ok: false,
+          status: 500,
           json: async () => ({}),
         }),
       );
 
-      await expect(fetchProfile()).rejects.toThrow('プロフィール情報の取得に失敗しました');
+      await expect(fetchProfile()).rejects.toThrow('エラーが発生しました。もう一度お試しください');
     });
 
     it('ネットワークエラー時にエラーをスローする', async () => {
-      vi.stubGlobal('fetch', vi.fn().mockRejectedValue(new Error('Network error')));
+      vi.stubGlobal('fetch', vi.fn().mockRejectedValue(new TypeError('Network error')));
 
-      await expect(fetchProfile()).rejects.toThrow('Network error');
+      await expect(fetchProfile()).rejects.toThrow('ネットワークエラーが発生しました');
     });
   });
 

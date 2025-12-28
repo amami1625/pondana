@@ -1,5 +1,5 @@
 import { ListBook, ListBookFormData, listBookSchema } from '@/app/(protected)/listBooks/_types';
-import { LIST_BOOKS_ERROR_MESSAGES } from '../constants/errorMessages';
+import { LIST_BOOKS_ERROR_MESSAGES } from '@/constants/errorMessages';
 import { handleApiError, handleNetworkError } from '@/lib/api/handleApiError';
 
 export async function addListBook(data: ListBookFormData): Promise<ListBook> {

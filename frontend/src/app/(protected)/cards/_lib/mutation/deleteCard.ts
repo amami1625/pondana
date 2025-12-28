@@ -1,4 +1,4 @@
-import { CARDS_ERROR_MESSAGES } from '../constants/errorMessages';
+import { CARDS_ERROR_MESSAGES } from '@/constants/errorMessages';
 import { handleApiError, handleNetworkError } from '@/lib/api/handleApiError';
 
 export async function deleteCard({

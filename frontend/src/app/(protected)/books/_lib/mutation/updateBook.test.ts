@@ -3,7 +3,7 @@ import { server } from '@/test/mocks/server';
 import { http, HttpResponse } from 'msw';
 import { createTestUuid } from '@/test/helpers';
 import { BookUpdateData } from '@/app/(protected)/books/_types';
-import { BOOKS_ERROR_MESSAGES } from '../constants/errorMessages';
+import { BOOKS_ERROR_MESSAGES } from '@/constants/errorMessages';
 import { updateBook } from './updateBook';
 
 describe('updateBook', () => {

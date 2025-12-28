@@ -1,5 +1,5 @@
 import { Card, CardFormData, cardSchema } from '@/app/(protected)/cards/_types';
-import { CARDS_ERROR_MESSAGES } from '../constants/errorMessages';
+import { CARDS_ERROR_MESSAGES } from '@/constants/errorMessages';
 import { handleApiError, handleNetworkError } from '@/lib/api/handleApiError';
 
 // 更新用の型

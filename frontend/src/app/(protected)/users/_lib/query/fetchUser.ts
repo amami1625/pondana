@@ -1,5 +1,5 @@
 import { userWithStatsSchema, type UserWithStats } from '@/app/(protected)/users/_types';
-import { USERS_ERROR_MESSAGES } from '../constants/errorMessages';
+import { USERS_ERROR_MESSAGES } from '@/constants/errorMessages';
 import { handleApiError, handleNetworkError } from '@/lib/api/handleApiError';
 
 /**

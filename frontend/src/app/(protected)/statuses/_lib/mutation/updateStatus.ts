@@ -1,5 +1,5 @@
 import { Status, StatusFormData } from '@/app/(protected)/statuses/_types';
-import { STATUSES_ERROR_MESSAGES } from '../constants/errorMessages';
+import { STATUSES_ERROR_MESSAGES } from '@/constants/errorMessages';
 import { handleApiError, handleNetworkError } from '@/lib/api/handleApiError';
 
 export type UpdateStatusData = StatusFormData & { id: number };

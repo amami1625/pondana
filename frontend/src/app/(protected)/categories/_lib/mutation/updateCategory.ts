@@ -1,5 +1,5 @@
 import { Category, categorySchema } from '@/app/(protected)/categories/_types';
-import { CATEGORIES_ERROR_MESSAGES } from '../constants/errorMessages';
+import { CATEGORIES_ERROR_MESSAGES } from '@/constants/errorMessages';
 import { handleApiError, handleNetworkError } from '@/lib/api/handleApiError';
 
 // 更新用の型

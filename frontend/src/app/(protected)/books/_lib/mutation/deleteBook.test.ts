@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { server } from '@/test/mocks/server';
 import { http, HttpResponse } from 'msw';
 import { createTestUuid } from '@/test/helpers';
-import { BOOKS_ERROR_MESSAGES } from '../constants/errorMessages';
+import { BOOKS_ERROR_MESSAGES } from '@/constants/errorMessages';
 import { deleteBook } from './deleteBook';
 
 describe('deleteBook', () => {

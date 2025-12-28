@@ -1,5 +1,5 @@
 import { tagSchema, type Tag } from '@/app/(protected)/tags/_types';
-import { TAGS_ERROR_MESSAGES } from '../constants/errorMessages';
+import { TAGS_ERROR_MESSAGES } from '@/constants/errorMessages';
 import { handleApiError, handleNetworkError } from '@/lib/api/handleApiError';
 
 /**

@@ -3,7 +3,7 @@ import { server } from '@/test/mocks/server';
 import { http, HttpResponse } from 'msw';
 import { createTestUuid } from '@/test/helpers';
 import { CardFormData } from '@/app/(protected)/cards/_types';
-import { CARDS_ERROR_MESSAGES } from '../constants/errorMessages';
+import { CARDS_ERROR_MESSAGES } from '@/constants/errorMessages';
 import { createCard } from './createCard';
 
 describe('createCard', () => {

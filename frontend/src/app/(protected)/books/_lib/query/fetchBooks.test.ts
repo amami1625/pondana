@@ -3,7 +3,7 @@ import { toJapaneseLocaleString, createTestUuid } from '@/test/helpers';
 import { fetchBooks } from './fetchBooks';
 import { server } from '@/test/mocks/server';
 import { http, HttpResponse } from 'msw';
-import { BOOKS_ERROR_MESSAGES } from '../constants/errorMessages';
+import { BOOKS_ERROR_MESSAGES } from '@/constants/errorMessages';
 
 describe('fetchBooks', () => {
   beforeEach(() => {

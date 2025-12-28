@@ -1,6 +1,6 @@
 import { topPageSchema, type TopPageData } from '@/schemas/top';
 import { handleApiError, handleNetworkError } from '@/lib/api/handleApiError';
-import { TOP_ERROR_MESSAGES } from '@/app/(protected)/top/_lib/constants/errorMessages';
+import { TOP_ERROR_MESSAGES } from '@/constants/errorMessages';
 
 /**
  * トップページデータを取得する

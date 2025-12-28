@@ -4,7 +4,7 @@ import { createTestUuid } from '@/test/helpers';
 import { server } from '@/test/mocks/server';
 import { http, HttpResponse } from 'msw';
 import { fetchBook } from './fetchBook';
-import { BOOKS_ERROR_MESSAGES } from '../constants/errorMessages';
+import { BOOKS_ERROR_MESSAGES } from '@/constants/errorMessages';
 
 describe('fetchBook', () => {
   beforeEach(() => {

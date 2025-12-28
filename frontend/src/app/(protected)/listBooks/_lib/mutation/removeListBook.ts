@@ -1,4 +1,4 @@
-import { LIST_BOOKS_ERROR_MESSAGES } from '../constants/errorMessages';
+import { LIST_BOOKS_ERROR_MESSAGES } from '@/constants/errorMessages';
 import { handleApiError, handleNetworkError } from '@/lib/api/handleApiError';
 
 export async function removeListBook({ id }: { id: number }): Promise<void> {

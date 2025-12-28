@@ -1,4 +1,4 @@
-import { CATEGORIES_ERROR_MESSAGES } from '../constants/errorMessages';
+import { CATEGORIES_ERROR_MESSAGES } from '@/constants/errorMessages';
 import { handleApiError, handleNetworkError } from '@/lib/api/handleApiError';
 
 export async function deleteCategory(id: number): Promise<void> {

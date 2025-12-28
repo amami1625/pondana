@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { server } from '@/test/mocks/server';
 import { http, HttpResponse } from 'msw';
 import { deleteTag } from './deleteTag';
-import { TAGS_ERROR_MESSAGES } from '../constants/errorMessages';
+import { TAGS_ERROR_MESSAGES } from '@/constants/errorMessages';
 
 describe('deleteTag', () => {
   it('タグを削除できる', async () => {

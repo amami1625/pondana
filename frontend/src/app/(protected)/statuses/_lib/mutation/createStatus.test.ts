@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { server } from '@/test/mocks/server';
 import { http, HttpResponse } from 'msw';
 import { createStatus } from './createStatus';
-import { STATUSES_ERROR_MESSAGES } from '../constants/errorMessages';
+import { STATUSES_ERROR_MESSAGES } from '@/constants/errorMessages';
 
 describe('createStatus', () => {
   const mockStatusData = {

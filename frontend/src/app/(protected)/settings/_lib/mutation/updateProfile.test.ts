@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { server } from '@/test/mocks/server';
 import { http, HttpResponse } from 'msw';
 import { updateProfile } from './updateProfile';
-import { PROFILE_ERROR_MESSAGES } from '../constants/errorMessages';
+import { PROFILE_ERROR_MESSAGES } from '@/constants/errorMessages';
 
 describe('updateProfile', () => {
   const mockProfileData = {

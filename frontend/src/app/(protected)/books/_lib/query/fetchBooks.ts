@@ -1,5 +1,5 @@
 import { bookSchema, type Book } from '@/app/(protected)/books/_types';
-import { BOOKS_ERROR_MESSAGES } from '../constants/errorMessages';
+import { BOOKS_ERROR_MESSAGES } from '@/constants/errorMessages';
 import { handleApiError, handleNetworkError } from '@/lib/api/handleApiError';
 
 /**

@@ -1,4 +1,4 @@
-import { LISTS_ERROR_MESSAGES } from '../constants/errorMessages';
+import { LISTS_ERROR_MESSAGES } from '@/constants/errorMessages';
 import { handleApiError, handleNetworkError } from '@/lib/api/handleApiError';
 
 export async function deleteList(id: string): Promise<void> {

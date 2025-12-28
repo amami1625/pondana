@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { server } from '@/test/mocks/server';
 import { http, HttpResponse } from 'msw';
 import { CategoryFormData } from '@/app/(protected)/categories/_types';
-import { CATEGORIES_ERROR_MESSAGES } from '../constants/errorMessages';
+import { CATEGORIES_ERROR_MESSAGES } from '@/constants/errorMessages';
 import { createCategory } from './createCategory';
 
 describe('createCategory', () => {

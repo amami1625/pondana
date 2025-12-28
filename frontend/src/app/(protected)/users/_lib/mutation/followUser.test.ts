@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { server } from '@/test/mocks/server';
 import { http, HttpResponse } from 'msw';
-import { FOLLOW_ERROR_MESSAGES } from '../constants/errorMessages';
+import { FOLLOW_ERROR_MESSAGES } from '@/constants/errorMessages';
 import { followUser } from './followUser';
 
 describe('followUser', () => {

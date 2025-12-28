@@ -1,4 +1,4 @@
-import { FOLLOW_ERROR_MESSAGES } from '../constants/errorMessages';
+import { FOLLOW_ERROR_MESSAGES } from '@/constants/errorMessages';
 import { handleApiError, handleNetworkError } from '@/lib/api/handleApiError';
 
 interface FollowResponse {

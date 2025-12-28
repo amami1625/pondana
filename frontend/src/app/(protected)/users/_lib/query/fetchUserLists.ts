@@ -1,5 +1,5 @@
 import { listSchema, type List } from '@/schemas/list';
-import { USERS_ERROR_MESSAGES } from '../constants/errorMessages';
+import { USERS_ERROR_MESSAGES } from '@/constants/errorMessages';
 import { handleApiError, handleNetworkError } from '@/lib/api/handleApiError';
 
 /**

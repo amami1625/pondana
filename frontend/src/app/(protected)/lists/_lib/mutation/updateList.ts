@@ -1,5 +1,5 @@
 import { ListBase, listBaseSchema } from '@/app/(protected)/lists/_types';
-import { LISTS_ERROR_MESSAGES } from '../constants/errorMessages';
+import { LISTS_ERROR_MESSAGES } from '@/constants/errorMessages';
 import { handleApiError, handleNetworkError } from '@/lib/api/handleApiError';
 
 // 更新用の型

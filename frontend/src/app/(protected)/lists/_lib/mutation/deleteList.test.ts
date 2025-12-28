@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { server } from '@/test/mocks/server';
 import { http, HttpResponse } from 'msw';
 import { createTestUuid } from '@/test/helpers';
-import { LISTS_ERROR_MESSAGES } from '../constants/errorMessages';
+import { LISTS_ERROR_MESSAGES } from '@/constants/errorMessages';
 import { deleteList } from './deleteList';
 
 describe('deleteList', () => {

@@ -1,5 +1,5 @@
 import { User, UserFormData } from '@/schemas/user';
-import { PROFILE_ERROR_MESSAGES } from '../constants/errorMessages';
+import { PROFILE_ERROR_MESSAGES } from '@/constants/errorMessages';
 import { handleApiError, handleNetworkError } from '@/lib/api/handleApiError';
 
 export async function updateProfile(data: UserFormData): Promise<User> {

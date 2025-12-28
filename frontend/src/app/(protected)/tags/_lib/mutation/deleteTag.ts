@@ -1,4 +1,4 @@
-import { TAGS_ERROR_MESSAGES } from '../constants/errorMessages';
+import { TAGS_ERROR_MESSAGES } from '@/constants/errorMessages';
 import { handleApiError, handleNetworkError } from '@/lib/api/handleApiError';
 
 export async function deleteTag({ id }: { id: number }): Promise<void> {
