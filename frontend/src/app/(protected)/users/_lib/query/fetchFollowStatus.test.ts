@@ -1,14 +1,10 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { server } from '@/test/mocks/server';
 import { http, HttpResponse } from 'msw';
 import { FOLLOW_ERROR_MESSAGES } from '@/constants/errorMessages';
 import { fetchFollowStatus } from './fetchFollowStatus';
 
 describe('fetchFollowStatus', () => {
-  beforeEach(() => {
-    vi.clearAllMocks();
-  });
-
   describe('正常系', () => {
     it('フォローの状態を取得できる', async () => {
       const result = await fetchFollowStatus('1');

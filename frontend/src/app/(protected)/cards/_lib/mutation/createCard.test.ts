@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import { server } from '@/test/mocks/server';
 import { http, HttpResponse } from 'msw';
 import { createTestUuid } from '@/test/helpers';
@@ -7,10 +7,6 @@ import { CARDS_ERROR_MESSAGES } from '@/constants/errorMessages';
 import { createCard } from './createCard';
 
 describe('createCard', () => {
-  beforeEach(() => {
-    vi.clearAllMocks();
-  });
-
   const mockCard: CardFormData = {
     book_id: createTestUuid(1),
     title: 'テストカード',

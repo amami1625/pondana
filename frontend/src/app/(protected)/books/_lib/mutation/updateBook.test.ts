@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import { server } from '@/test/mocks/server';
 import { http, HttpResponse } from 'msw';
 import { createTestUuid } from '@/test/helpers';
@@ -7,10 +7,6 @@ import { BOOKS_ERROR_MESSAGES } from '@/constants/errorMessages';
 import { updateBook } from './updateBook';
 
 describe('updateBook', () => {
-  beforeEach(() => {
-    vi.clearAllMocks();
-  });
-
   const mockBook: BookUpdateData = {
     id: createTestUuid(1),
     reading_status: 'unread',

@@ -13,7 +13,7 @@ describe('useStatuses', () => {
     // 各テストの前にモックをリセット
     vi.clearAllMocks();
   });
-  
+
   // APIから返ってくる想定のデータ
   const mockStatuses = [
     createMockStatus({ id: 1, name: 'テストステータスA' }),

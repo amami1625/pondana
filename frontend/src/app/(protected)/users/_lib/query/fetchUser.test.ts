@@ -1,12 +1,8 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { createMockUserWithStats } from '@/test/factories';
 import { fetchUser } from './fetchUser';
 
 describe('fetchUser', () => {
-  beforeEach(() => {
-    vi.clearAllMocks();
-  });
-
   describe('成功時', () => {
     it('ユーザー情報と統計を正しく取得できる', async () => {
       const mockApiResponse = createMockUserWithStats({

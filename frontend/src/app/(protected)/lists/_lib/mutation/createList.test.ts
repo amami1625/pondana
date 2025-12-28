@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import { server } from '@/test/mocks/server';
 import { http, HttpResponse } from 'msw';
 import { ListFormData } from '@/app/(protected)/lists/_types';
@@ -6,10 +6,6 @@ import { LISTS_ERROR_MESSAGES } from '@/constants/errorMessages';
 import { createList } from './createList';
 
 describe('createList', () => {
-  beforeEach(() => {
-    vi.clearAllMocks();
-  });
-
   const mockListData: ListFormData = {
     name: 'テストリスト',
     description: 'テスト説明',

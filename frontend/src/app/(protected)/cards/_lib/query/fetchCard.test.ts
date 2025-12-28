@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import { createMockCard } from '@/test/factories';
 import { createTestUuid } from '@/test/helpers';
 import { fetchCard } from './fetchCard';
@@ -7,10 +7,6 @@ import { http, HttpResponse } from 'msw';
 import { CARDS_ERROR_MESSAGES } from '@/constants/errorMessages';
 
 describe('fetchCard', () => {
-  beforeEach(() => {
-    vi.clearAllMocks();
-  });
-
   describe('成功時', () => {
     it('カード詳細データを正しく取得できる', async () => {
       const result = await fetchCard('1');

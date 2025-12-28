@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import { server } from '@/test/mocks/server';
 import { http, HttpResponse } from 'msw';
 import { createTestUuid } from '@/test/helpers';
@@ -6,10 +6,6 @@ import { LISTS_ERROR_MESSAGES } from '@/constants/errorMessages';
 import { deleteList } from './deleteList';
 
 describe('deleteList', () => {
-  beforeEach(() => {
-    vi.clearAllMocks();
-  });
-
   describe('成功時', () => {
     it('リストを削除できる', async () => {
       server.use(

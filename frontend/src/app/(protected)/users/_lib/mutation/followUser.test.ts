@@ -1,14 +1,10 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { server } from '@/test/mocks/server';
 import { http, HttpResponse } from 'msw';
 import { FOLLOW_ERROR_MESSAGES } from '@/constants/errorMessages';
 import { followUser } from './followUser';
 
 describe('followUser', () => {
-  beforeEach(() => {
-    vi.clearAllMocks();
-  });
-
   describe('正常系', () => {
     it('フォローリクエストが成功する', async () => {
       const result = await followUser('1');

@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import { createMockList } from '@/test/factories';
 import { createTestUuid } from '@/test/helpers';
 import { fetchList } from './fetchList';
@@ -7,10 +7,6 @@ import { http, HttpResponse } from 'msw';
 import { LISTS_ERROR_MESSAGES } from '@/constants/errorMessages';
 
 describe('fetchList', () => {
-  beforeEach(() => {
-    vi.clearAllMocks();
-  });
-
   describe('成功時', () => {
     it('リスト詳細データを正しく取得できる', async () => {
       const result = await fetchList('1');

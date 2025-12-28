@@ -1,14 +1,10 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import { server } from '@/test/mocks/server';
 import { http, HttpResponse } from 'msw';
 import { CATEGORIES_ERROR_MESSAGES } from '@/constants/errorMessages';
 import { updateCategory, UpdateCategoryData } from './updateCategory';
 
 describe('updateCategory', () => {
-  beforeEach(() => {
-    vi.clearAllMocks();
-  });
-
   const mockUpdateData: UpdateCategoryData = {
     id: 1,
     name: '更新されたカテゴリ',

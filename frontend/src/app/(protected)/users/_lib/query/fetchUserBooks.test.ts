@@ -1,13 +1,9 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { createMockBook } from '@/test/factories';
 import { createTestUuid } from '@/test/helpers';
 import { fetchUserBooks } from './fetchUserBooks';
 
 describe('fetchUserBooks', () => {
-  beforeEach(() => {
-    vi.clearAllMocks();
-  });
-
   describe('成功時', () => {
     it('ユーザーの公開本一覧を正しく取得できる', async () => {
       const mockApiResponse = [

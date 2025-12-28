@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import { server } from '@/test/mocks/server';
 import { http, HttpResponse } from 'msw';
 import { createTestUuid } from '@/test/helpers';
@@ -6,10 +6,6 @@ import { CARDS_ERROR_MESSAGES } from '@/constants/errorMessages';
 import { deleteCard } from './deleteCard';
 
 describe('deleteCard', () => {
-  beforeEach(() => {
-    vi.clearAllMocks();
-  });
-
   const bookId = createTestUuid(1);
   const cardId = createTestUuid(2);
 
