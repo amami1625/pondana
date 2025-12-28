@@ -16,7 +16,7 @@ export function useBookDetailView(book: BookDetail) {
     if (!confirm('本当に削除しますか？')) {
       return;
     }
-    deleteBook(id);
+    deleteBook({ id });
   };
 
   // パンくずリストのアイテム

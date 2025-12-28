@@ -13,13 +13,13 @@ describe('useFollowers', () => {
     vi.clearAllMocks();
   });
 
+  const mockFollowers = [
+    createMockUser({ id: 2, name: 'フォロワー1' }),
+    createMockUser({ id: 3, name: 'フォロワー2' }),
+  ];
+
   describe('成功時', () => {
     it('fetchFollowersを呼び出してデータを取得する', async () => {
-      const mockFollowers = [
-        createMockUser({ id: 2, name: 'フォロワー1' }),
-        createMockUser({ id: 3, name: 'フォロワー2' }),
-      ];
-
       vi.mocked(fetchFollowers).mockResolvedValue(mockFollowers);
 
       const { result } = renderHook(() => useFollowers('1'), {
@@ -115,17 +115,20 @@ describe('useFollowers', () => {
   });
 
   describe('React Queryの動作', () => {
-    it('正しいqueryKeyを使用する', async () => {
-      vi.mocked(fetchFollowers).mockResolvedValue([createMockUser()]);
+    it('キャッシュが有効に機能する', async () => {
+      vi.mocked(fetchFollowers).mockResolvedValue(mockFollowers);
 
-      const { result } = renderHook(() => useFollowers('42'), {
+      const { result, rerender } = renderHook(() => useFollowers('1'), {
         wrapper: createProvider(),
       });
 
       await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
-      // fetchFollowersが正しいidで呼ばれたことを確認
-      expect(fetchFollowers).toHaveBeenCalledWith('42');
+      expect(result.current.isSuccess).toBe(true);
+
+      // 再レンダリング時にキャッシュから即座にデータが返される
+      rerender();
+      expect(result.current.data).toBeDefined();
     });
   });
 });

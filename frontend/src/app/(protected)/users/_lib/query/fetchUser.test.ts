@@ -1,12 +1,8 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { createMockUserWithStats } from '@/test/factories';
 import { fetchUser } from './fetchUser';
 
 describe('fetchUser', () => {
-  beforeEach(() => {
-    vi.clearAllMocks();
-  });
-
   describe('成功時', () => {
     it('ユーザー情報と統計を正しく取得できる', async () => {
       const mockApiResponse = createMockUserWithStats({
@@ -64,7 +60,10 @@ describe('fetchUser', () => {
         'fetch',
         vi.fn().mockResolvedValue({
           ok: false,
-          json: async () => ({ error: 'ユーザー情報の取得に失敗しました' }),
+          json: async () => ({
+            code: 'NOT_FOUND',
+            error: 'ユーザー情報の取得に失敗しました',
+          }),
         }),
       );
 
@@ -80,7 +79,7 @@ describe('fetchUser', () => {
         }),
       );
 
-      await expect(fetchUser('1')).rejects.toThrow('ユーザー情報の取得に失敗しました');
+      await expect(fetchUser('1')).rejects.toThrow('エラーが発生しました。もう一度お試しください');
     });
 
     it('ネットワークエラー時にエラーをスローする', async () => {

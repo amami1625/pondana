@@ -13,7 +13,10 @@ class Api::ProfilesController < Api::ApplicationController
     if user.update(profile_params)
       render json: user, status: :ok
     else
-      render json: { errors: user.errors }, status: :unprocessable_entity
+      render json: {
+        code: 'UPDATE_FAILED',
+        error: user.errors.full_messages.join(', '),
+      }, status: :unprocessable_entity
     end
   end
 
@@ -24,6 +27,9 @@ class Api::ProfilesController < Api::ApplicationController
   end
 
   def record_not_found
-    render json: { error: 'Not found' }, status: :not_found
+    render json: {
+      code: 'NOT_FOUND',
+      error: 'プロフィール情報が見つかりませんでした',
+    }, status: :not_found
   end
 end

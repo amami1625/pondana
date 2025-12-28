@@ -1,4 +1,6 @@
 class Api::StatusesController < Api::ApplicationController
+  rescue_from ActiveRecord::RecordNotFound, with: :record_not_found
+
   def index
     statuses = current_user.statuses
     render json: statuses
@@ -9,7 +11,10 @@ class Api::StatusesController < Api::ApplicationController
     if status.save
       render json: status, status: :created
     else
-      render json: { errors: status.errors }, status: :unprocessable_entity
+      render json: {
+        code: 'CREATE_FAILED',
+        error: status.errors.full_messages.join(', '),
+      }, status: :unprocessable_entity
     end
   end
 
@@ -18,7 +23,10 @@ class Api::StatusesController < Api::ApplicationController
     if status.update(status_params)
       render json: status, status: :ok
     else
-      render json: { errors: status.errors }, status: :unprocessable_entity
+      render json: {
+        code: 'UPDATE_FAILED',
+        error: status.errors.full_messages.join(', '),
+      }, status: :unprocessable_entity
     end
   end
 
@@ -27,7 +35,10 @@ class Api::StatusesController < Api::ApplicationController
     if status.destroy
       head :no_content
     else
-      render json: { errors: status.errors }, status: :unprocessable_entity
+      render json: {
+        code: 'DELETE_FAILED',
+        error: status.errors.full_messages.join(', '),
+      }, status: :unprocessable_entity
     end
   end
 
@@ -35,5 +46,12 @@ class Api::StatusesController < Api::ApplicationController
 
   def status_params
     params.require(:status).permit(:name)
+  end
+
+  def record_not_found
+    render json: {
+      code: 'NOT_FOUND',
+      error: 'ステータスが見つかりませんでした',
+    }, status: :not_found
   end
 end

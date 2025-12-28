@@ -5,11 +5,11 @@ import BookDetailView from '@/app/(protected)/books/_components/display/view/Boo
 import ErrorMessage from '@/components/feedback/ErrorMessage';
 import LoadingState from '@/components/feedback/LoadingState';
 
-type Props = {
+interface BookDetailClientProps {
   id: string;
-};
+}
 
-export default function BookDetailClient({ id }: Props) {
+export default function BookDetailClient({ id }: BookDetailClientProps) {
   const { data: book, error: bookError, isLoading } = useBook(id);
 
   if (isLoading) {
@@ -17,7 +17,7 @@ export default function BookDetailClient({ id }: Props) {
   }
 
   if (bookError) {
-    return <ErrorMessage message={bookError?.message || 'エラーが発生しました'} />;
+    return <ErrorMessage message={bookError?.message} />;
   }
 
   if (!book) {

@@ -1,4 +1,5 @@
 import { authenticatedRequest } from '@/supabase/dal';
+import { ApiError } from '@/lib/errors/ApiError';
 import { tagSchema } from '@/app/(protected)/tags/_types';
 import { NextRequest, NextResponse } from 'next/server';
 
@@ -8,13 +9,23 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
     const { id } = await params;
     const body = await request.json();
 
-    const data = await authenticatedRequest(`/tags/${id}`, {
-      method: 'PUT',
-      body: JSON.stringify({ tag: body }),
-    });
+    const data = await authenticatedRequest(
+      `/tags/${id}`,
+      {
+        method: 'PUT',
+        body: JSON.stringify({ tag: body }),
+      },
+      false,
+    );
     const tag = tagSchema.parse(data);
     return NextResponse.json(tag);
   } catch (error) {
+    if (error instanceof ApiError) {
+      return NextResponse.json(
+        { error: error.message, code: error.code },
+        { status: error.statusCode },
+      );
+    }
     if (error instanceof Error) {
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
@@ -30,12 +41,22 @@ export async function DELETE(
   try {
     const { id } = await params;
 
-    await authenticatedRequest(`/tags/${id}`, {
-      method: 'DELETE',
-    });
+    await authenticatedRequest(
+      `/tags/${id}`,
+      {
+        method: 'DELETE',
+      },
+      false,
+    );
 
     return NextResponse.json({ success: true });
   } catch (error) {
+    if (error instanceof ApiError) {
+      return NextResponse.json(
+        { error: error.message, code: error.code },
+        { status: error.statusCode },
+      );
+    }
     if (error instanceof Error) {
       return NextResponse.json({ error: error.message }, { status: 500 });
     }

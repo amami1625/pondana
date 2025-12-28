@@ -1,30 +1,14 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { queryKeys } from '@/constants/queryKeys';
-import { Card, CardFormData } from '@/app/(protected)/cards/_types';
 import toast from 'react-hot-toast';
-
-// 更新用の型
-type UpdateCardData = CardFormData & { id: string };
+import { createCard, updateCard, deleteCard } from '../_lib/mutation';
 
 export function useCardMutations() {
   const queryClient = useQueryClient();
 
   // 作成
   const createMutation = useMutation({
-    mutationFn: async (data: CardFormData) => {
-      const response = await fetch(`/api/books/${data.book_id}/cards`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
-      });
-
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.error || 'カードの作成に失敗しました');
-      }
-
-      return response.json() as Promise<Card>;
-    },
+    mutationFn: createCard,
     onSuccess: (_, { book_id }) => {
       toast.success('カードを作成しました');
       // カード一覧のキャッシュを無効化
@@ -39,20 +23,7 @@ export function useCardMutations() {
 
   // 更新
   const updateMutation = useMutation({
-    mutationFn: async (data: UpdateCardData) => {
-      const response = await fetch(`/api/books/${data.book_id}/cards/${data.id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
-      });
-
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.error || 'カードの更新に失敗しました');
-      }
-
-      return response.json() as Promise<Card>;
-    },
+    mutationFn: updateCard,
     onSuccess: (_, { id, book_id }) => {
       toast.success('カードを更新しました');
       // カード一覧のキャッシュを無効化
@@ -69,18 +40,7 @@ export function useCardMutations() {
 
   // 削除
   const deleteMutation = useMutation({
-    mutationFn: async ({ bookId, cardId }: { bookId: string; cardId: string }) => {
-      const response = await fetch(`/api/books/${bookId}/cards/${cardId}`, {
-        method: 'DELETE',
-      });
-
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.error || 'カードの削除に失敗しました');
-      }
-
-      return response.json();
-    },
+    mutationFn: deleteCard,
     onSuccess: (_, { bookId }) => {
       toast.success('カードを削除しました');
       // カード一覧のキャッシュを無効化

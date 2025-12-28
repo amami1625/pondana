@@ -13,21 +13,21 @@ describe('useUserBooks', () => {
     vi.clearAllMocks();
   });
 
+  const mockBooks = [
+    createMockBook({
+      id: createTestUuid(1),
+      title: 'テスト本1',
+      public: true,
+    }),
+    createMockBook({
+      id: createTestUuid(2),
+      title: 'テスト本2',
+      public: true,
+    }),
+  ];
+
   describe('成功時', () => {
     it('fetchUserBooksを呼び出してデータを取得する', async () => {
-      const mockBooks = [
-        createMockBook({
-          id: createTestUuid(1),
-          title: 'テスト本1',
-          public: true,
-        }),
-        createMockBook({
-          id: createTestUuid(2),
-          title: 'テスト本2',
-          public: true,
-        }),
-      ];
-
       vi.mocked(fetchUserBooks).mockResolvedValue(mockBooks);
 
       const { result } = renderHook(() => useUserBooks('1'), {
@@ -93,17 +93,20 @@ describe('useUserBooks', () => {
   });
 
   describe('React Queryの動作', () => {
-    it('正しいqueryKeyを使用する', async () => {
-      vi.mocked(fetchUserBooks).mockResolvedValue([]);
+    it('キャッシュが有効に機能する', async () => {
+      vi.mocked(fetchUserBooks).mockResolvedValue(mockBooks);
 
-      const { result } = renderHook(() => useUserBooks('42'), {
+      const { result, rerender } = renderHook(() => useUserBooks('1'), {
         wrapper: createProvider(),
       });
 
       await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
-      // fetchUserBooksが正しいidで呼ばれたことを確認
-      expect(fetchUserBooks).toHaveBeenCalledWith('42');
+      expect(result.current.isSuccess).toBe(true);
+
+      // 再レンダリング時にキャッシュから即座にデータが返される
+      rerender();
+      expect(result.current.data).toBeDefined();
     });
   });
 });

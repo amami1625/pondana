@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { queryKeys } from '@/constants/queryKeys';
-import { fetchBooks } from '@/app/(protected)/books/_lib/fetchBooks';
+import { fetchBooks } from '@/app/(protected)/books/_lib/query/fetchBooks';
 
 export function useBooks() {
   return useQuery({

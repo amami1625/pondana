@@ -18,7 +18,7 @@ class Api::CardsController < Api::ApplicationController
     book = current_user.books.find(params[:book_id])
     card = book.cards.find(params[:id])
     if card.update(card_params)
-      render json: card, include: [:status], status: :ok
+      render json: card, include: [:status]
     else
       render json: { errors: card.errors }, status: :unprocessable_entity
     end
@@ -29,7 +29,10 @@ class Api::CardsController < Api::ApplicationController
     if card
       render json: card, include: [:book, :status]
     else
-      render json: { error: 'Card not found' }, status: :not_found
+      render json: { 
+        code: 'NOT_FOUND',
+        message: 'Card not found'
+      }, status: :not_found
     end
   end
 

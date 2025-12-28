@@ -1,17 +1,22 @@
 import { listSchema, type List } from '@/schemas/list';
+import { USERS_ERROR_MESSAGES } from '@/constants/errorMessages';
+import { handleApiError, handleNetworkError } from '@/lib/api/handleApiError';
 
 /**
  * ユーザーの公開リスト一覧を取得する
  * クライアントコンポーネント（useQuery）で使用
  */
 export async function fetchUserLists(id: string): Promise<List[]> {
-  const response = await fetch(`/api/users/${id}/lists`);
+  try {
+    const response = await fetch(`/api/users/${id}/lists`);
 
-  if (!response.ok) {
-    const error = await response.json();
-    throw new Error(error.error || 'ユーザーの公開リスト一覧の取得に失敗しました');
+    if (!response.ok) {
+      await handleApiError(response, USERS_ERROR_MESSAGES, 'Users');
+    }
+
+    const data = await response.json();
+    return listSchema.array().parse(data);
+  } catch (error) {
+    handleNetworkError(error, USERS_ERROR_MESSAGES);
   }
-
-  const data = await response.json();
-  return listSchema.array().parse(data);
 }

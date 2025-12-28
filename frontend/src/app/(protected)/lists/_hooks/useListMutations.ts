@@ -1,11 +1,8 @@
 import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
 import { queryKeys } from '@/constants/queryKeys';
-import { ListBase, ListFormData } from '@/app/(protected)/lists/_types';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-
-// 更新用の型
-type UpdateListData = ListFormData & { id: string };
+import { createList, updateList, deleteList } from '../_lib/mutation';
 
 export function useListMutations() {
   const queryClient = useQueryClient();
@@ -13,20 +10,7 @@ export function useListMutations() {
 
   // 作成
   const createMutation = useMutation({
-    mutationFn: async (data: ListFormData) => {
-      const response = await fetch('/api/lists', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
-      });
-
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.error || 'リストの作成に失敗しました');
-      }
-
-      return response.json() as Promise<ListBase>;
-    },
+    mutationFn: createList,
     onSuccess: () => {
       toast.success('リストを作成しました');
       // リスト一覧を再取得
@@ -39,20 +23,7 @@ export function useListMutations() {
 
   // 更新
   const updateMutation = useMutation({
-    mutationFn: async (data: UpdateListData) => {
-      const response = await fetch(`/api/lists/${data.id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
-      });
-
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.error || 'リストの更新に失敗しました');
-      }
-
-      return response.json() as Promise<ListBase>;
-    },
+    mutationFn: updateList,
     onSuccess: (_, { id }) => {
       toast.success('リストを更新しました');
       // リスト一覧のキャッシュを無効化
@@ -72,16 +43,7 @@ export function useListMutations() {
 
   // 削除
   const deleteMutation = useMutation({
-    mutationFn: async (id: string) => {
-      const response = await fetch(`/api/lists/${id}`, { method: 'DELETE' });
-
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.error || 'リストの削除に失敗しました');
-      }
-
-      return response.json();
-    },
+    mutationFn: deleteList,
     onSuccess: () => {
       toast.success('リストを削除しました');
 

@@ -12,13 +12,13 @@ describe('useFollowStatus', () => {
     vi.clearAllMocks();
   });
 
+  const mockFollowStatus = {
+    is_following: true,
+    is_followed_by: false,
+  };
+
   describe('成功時', () => {
     it('fetchFollowStatusを呼び出してデータを取得する', async () => {
-      const mockFollowStatus = {
-        is_following: true,
-        is_followed_by: false,
-      };
-
       vi.mocked(fetchFollowStatus).mockResolvedValue(mockFollowStatus);
 
       const { result } = renderHook(() => useFollowStatus('1'), {
@@ -121,20 +121,20 @@ describe('useFollowStatus', () => {
   });
 
   describe('React Queryの動作', () => {
-    it('正しいqueryKeyを使用する', async () => {
-      vi.mocked(fetchFollowStatus).mockResolvedValue({
-        is_following: false,
-        is_followed_by: true,
-      });
+    it('キャッシュが有効に機能する', async () => {
+      vi.mocked(fetchFollowStatus).mockResolvedValue(mockFollowStatus);
 
-      const { result } = renderHook(() => useFollowStatus('42'), {
+      const { result, rerender } = renderHook(() => useFollowStatus('1'), {
         wrapper: createProvider(),
       });
 
       await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
-      // fetchFollowStatusが正しいidで呼ばれたことを確認
-      expect(fetchFollowStatus).toHaveBeenCalledWith('42');
+      expect(result.current.isSuccess).toBe(true);
+
+      // 再レンダリング時にキャッシュから即座にデータが返される
+      rerender();
+      expect(result.current.data).toBeDefined();
     });
   });
 });

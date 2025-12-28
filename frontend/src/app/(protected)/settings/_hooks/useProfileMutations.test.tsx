@@ -76,7 +76,10 @@ describe('useProfileMutations', () => {
         'fetch',
         vi.fn().mockResolvedValue({
           ok: false,
-          json: async () => ({ error: errorMessage }),
+          json: async () => ({
+            code: 'UPDATE_FAILED',
+            error: errorMessage,
+          }),
         }),
       );
 

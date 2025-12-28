@@ -80,7 +80,10 @@ describe('useStatusMutations', () => {
         'fetch',
         vi.fn().mockResolvedValue({
           ok: false,
-          json: async () => ({ error: errorMessage }),
+          json: async () => ({
+            code: 'CREATE_FAILED',
+            error: errorMessage,
+          }),
         }),
       );
 

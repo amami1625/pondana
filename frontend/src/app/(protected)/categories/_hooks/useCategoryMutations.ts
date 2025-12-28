@@ -1,30 +1,14 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { queryKeys } from '@/constants/queryKeys';
-import { Category, CategoryFormData } from '@/app/(protected)/categories/_types';
 import toast from 'react-hot-toast';
-
-// 更新用の型
-type UpdateCategoryData = CategoryFormData & { id: number };
+import { createCategory, updateCategory, deleteCategory } from '../_lib/mutation';
 
 export function useCategoryMutations() {
   const queryClient = useQueryClient();
 
   // 作成
   const createMutation = useMutation({
-    mutationFn: async (data: CategoryFormData) => {
-      const response = await fetch('/api/categories', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
-      });
-
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.error || 'カテゴリの作成に失敗しました');
-      }
-
-      return response.json() as Promise<Category>;
-    },
+    mutationFn: createCategory,
     onSuccess: () => {
       toast.success('カテゴリを作成しました');
       // カテゴリ一覧のキャッシュを無効化
@@ -35,21 +19,7 @@ export function useCategoryMutations() {
 
   // 更新
   const updateMutation = useMutation({
-    mutationFn: async (data: UpdateCategoryData) => {
-      const { id, ...updateData } = data;
-      const response = await fetch(`/api/categories/${id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(updateData),
-      });
-
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.error || 'カテゴリの更新に失敗しました');
-      }
-
-      return response.json() as Promise<Category>;
-    },
+    mutationFn: updateCategory,
     onSuccess: () => {
       toast.success('カテゴリを更新しました');
       // カテゴリ一覧のキャッシュを無効化
@@ -65,18 +35,7 @@ export function useCategoryMutations() {
 
   // 削除
   const deleteMutation = useMutation({
-    mutationFn: async (id: number) => {
-      const response = await fetch(`/api/categories/${id}`, {
-        method: 'DELETE',
-      });
-
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.error || 'カテゴリの削除に失敗しました');
-      }
-
-      return response.json();
-    },
+    mutationFn: deleteCategory,
     onSuccess: () => {
       toast.success('カテゴリを削除しました');
       // カテゴリ一覧のキャッシュを無効化

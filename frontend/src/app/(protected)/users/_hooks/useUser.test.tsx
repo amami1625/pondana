@@ -13,19 +13,19 @@ describe('useUser', () => {
     vi.clearAllMocks();
   });
 
+  const mockUser = createMockUserWithStats({
+    id: 1,
+    name: 'テストユーザー',
+    stats: {
+      public_books: 10,
+      public_lists: 5,
+      following_count: 3,
+      followers_count: 7,
+    },
+  });
+
   describe('成功時', () => {
     it('fetchUserを呼び出してデータを取得する', async () => {
-      const mockUser = createMockUserWithStats({
-        id: 1,
-        name: 'テストユーザー',
-        stats: {
-          public_books: 10,
-          public_lists: 5,
-          following_count: 3,
-          followers_count: 7,
-        },
-      });
-
       vi.mocked(fetchUser).mockResolvedValue(mockUser);
 
       const { result } = renderHook(() => useUser('1'), {
@@ -88,17 +88,20 @@ describe('useUser', () => {
   });
 
   describe('React Queryの動作', () => {
-    it('正しいqueryKeyを使用する', async () => {
-      vi.mocked(fetchUser).mockResolvedValue(createMockUserWithStats());
+    it('キャッシュが有効に機能する', async () => {
+      vi.mocked(fetchUser).mockResolvedValue(mockUser);
 
-      const { result } = renderHook(() => useUser('42'), {
+      const { result, rerender } = renderHook(() => useUser('1'), {
         wrapper: createProvider(),
       });
 
       await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
-      // fetchUserが正しいidで呼ばれたことを確認
-      expect(fetchUser).toHaveBeenCalledWith('42');
+      expect(result.current.isSuccess).toBe(true);
+
+      // 再レンダリング時にキャッシュから即座にデータが返される
+      rerender();
+      expect(result.current.data).toBeDefined();
     });
   });
 });

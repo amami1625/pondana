@@ -1,4 +1,5 @@
 import { authenticatedRequest } from '@/supabase/dal';
+import { ApiError } from '@/lib/errors/ApiError';
 import { userSearchResultSchema } from '@/schemas/user';
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
@@ -13,10 +14,16 @@ export async function GET(request: NextRequest) {
       return NextResponse.json([]);
     }
 
-    const data = await authenticatedRequest(`/users?q=${encodeURIComponent(query)}`);
+    const data = await authenticatedRequest(`/users?q=${encodeURIComponent(query)}`, {}, false);
     const users = z.array(userSearchResultSchema).parse(data);
     return NextResponse.json(users);
   } catch (error) {
+    if (error instanceof ApiError) {
+      return NextResponse.json(
+        { error: error.message, code: error.code },
+        { status: error.statusCode },
+      );
+    }
     if (error instanceof Error) {
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
