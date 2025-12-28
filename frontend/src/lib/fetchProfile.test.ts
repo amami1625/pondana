@@ -1,42 +1,24 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect } from 'vitest';
+import { server } from '@/test/mocks/server';
+import { http, HttpResponse } from 'msw';
 import { createMockUser } from '@/test/factories';
 import { fetchProfile } from './fetchProfile';
 
 describe('fetchProfile', () => {
-  beforeEach(() => {
-    vi.clearAllMocks();
-  });
-
   describe('成功時', () => {
     it('プロフィールデータを正しく取得できる', async () => {
-      const mockApiResponse = createMockUser();
-
-      vi.stubGlobal(
-        'fetch',
-        vi.fn().mockResolvedValue({
-          ok: true,
-          json: async () => mockApiResponse,
-        }),
-      );
-
       const result = await fetchProfile();
 
       expect(result.id).toBe(1);
       expect(result.name).toBe('テストユーザー');
       expect(result.supabase_uid).toBe('1');
-
-      expect(fetch).toHaveBeenCalledWith('/api/profiles');
-      expect(fetch).toHaveBeenCalledTimes(1);
     });
 
     it('avatar_urlがnullでも正しく取得できる', async () => {
-      const mockApiResponse = createMockUser({ avatar_url: null });
-
-      vi.stubGlobal(
-        'fetch',
-        vi.fn().mockResolvedValue({
-          ok: true,
-          json: async () => mockApiResponse,
+      // avatar_urlがnullのレスポンスを返すようにオーバーライド
+      server.use(
+        http.get('/api/profiles', () => {
+          return HttpResponse.json(createMockUser({ avatar_url: null }));
         }),
       );
 
@@ -48,12 +30,13 @@ describe('fetchProfile', () => {
 
   describe('エラー時', () => {
     it('APIエラー時にエラーをスローする', async () => {
-      vi.stubGlobal(
-        'fetch',
-        vi.fn().mockResolvedValue({
-          ok: false,
-          status: 404,
-          json: async () => ({ code: 'NOT_FOUND', error: 'プロフィール情報の取得に失敗しました' }),
+      // 404エラーを返すようにオーバーライド
+      server.use(
+        http.get('/api/profiles', () => {
+          return HttpResponse.json(
+            { code: 'NOT_FOUND', error: 'プロフィール情報の取得に失敗しました' },
+            { status: 404 },
+          );
         }),
       );
 
@@ -61,12 +44,10 @@ describe('fetchProfile', () => {
     });
 
     it('エラーメッセージがない場合、デフォルトメッセージを使用する', async () => {
-      vi.stubGlobal(
-        'fetch',
-        vi.fn().mockResolvedValue({
-          ok: false,
-          status: 500,
-          json: async () => ({}),
+      // エラーメッセージなしの500エラーを返すようにオーバーライド
+      server.use(
+        http.get('/api/profiles', () => {
+          return HttpResponse.json({}, { status: 500 });
         }),
       );
 
@@ -74,7 +55,12 @@ describe('fetchProfile', () => {
     });
 
     it('ネットワークエラー時にエラーをスローする', async () => {
-      vi.stubGlobal('fetch', vi.fn().mockRejectedValue(new TypeError('Network error')));
+      // ネットワークエラーをシミュレート
+      server.use(
+        http.get('/api/profiles', () => {
+          return HttpResponse.error();
+        }),
+      );
 
       await expect(fetchProfile()).rejects.toThrow('ネットワークエラーが発生しました');
     });
@@ -82,11 +68,10 @@ describe('fetchProfile', () => {
 
   describe('Zodバリデーション', () => {
     it('不正なデータ形式の場合、Zodエラーをスローする', async () => {
-      vi.stubGlobal(
-        'fetch',
-        vi.fn().mockResolvedValue({
-          ok: true,
-          json: async () => ({ invalid: 'data' }),
+      // 不正なデータ形式を返すようにオーバーライド
+      server.use(
+        http.get('/api/profiles', () => {
+          return HttpResponse.json({ invalid: 'data' });
         }),
       );
 
