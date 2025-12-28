@@ -215,7 +215,7 @@ describe('useTagMutations', () => {
       expect(result.current.isDeleting).toBe(false);
       expect(result.current.deleteError).toBeNull();
 
-      act(() => result.current.deleteTag(1));
+      act(() => result.current.deleteTag({ id: 1 }));
 
       await waitFor(() => expect(result.current.isDeleting).toBe(false));
 
@@ -253,7 +253,7 @@ describe('useTagMutations', () => {
       expect(result.current.isDeleting).toBe(false);
       expect(result.current.deleteError).toBeNull();
 
-      act(() => result.current.deleteTag(1));
+      act(() => result.current.deleteTag({ id: 1 }));
 
       await waitFor(() => expect(result.current.deleteError).toBeInstanceOf(Error));
 

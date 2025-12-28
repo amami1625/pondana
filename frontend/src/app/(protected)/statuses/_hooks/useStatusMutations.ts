@@ -3,7 +3,10 @@ import { queryKeys } from '@/constants/queryKeys';
 import { StatusFormData } from '@/app/(protected)/statuses/_types';
 import toast from 'react-hot-toast';
 import { createStatus } from '@/app/(protected)/statuses/_lib/mutation/createStatus';
-import { updateStatus, UpdateStatusData } from '@/app/(protected)/statuses/_lib/mutation/updateStatus';
+import {
+  updateStatus,
+  UpdateStatusData,
+} from '@/app/(protected)/statuses/_lib/mutation/updateStatus';
 import { deleteStatus } from '@/app/(protected)/statuses/_lib/mutation/deleteStatus';
 
 export function useStatusMutations() {

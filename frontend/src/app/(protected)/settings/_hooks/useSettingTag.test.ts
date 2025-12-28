@@ -92,7 +92,7 @@ describe('useSettingTag', () => {
       expect(confirmSpy).toHaveBeenCalledWith('本当に削除しますか？');
 
       // 削除関数が正しい引数で呼ばれたことを確認
-      expect(mockDeleteTag).toHaveBeenCalledWith(1);
+      expect(mockDeleteTag).toHaveBeenCalledWith({ id: 1 });
     });
   });
 });

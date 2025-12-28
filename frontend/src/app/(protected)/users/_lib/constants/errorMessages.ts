@@ -17,6 +17,7 @@ export type UsersErrorCode = keyof typeof USERS_ERROR_MESSAGES;
  * APIから返されるエラーコードをユーザーフレンドリーな日本語メッセージにマッピング
  */
 export const FOLLOW_ERROR_MESSAGES = {
+  NOT_FOUND: 'ユーザーが見つかりませんでした',
   FOLLOW_SELF_ERROR: '自分自身をフォローすることはできません',
   ALREADY_FOLLOWING: 'すでにこのユーザーをフォローしています',
   NOT_FOLLOWING: 'このユーザーをフォローしていません',

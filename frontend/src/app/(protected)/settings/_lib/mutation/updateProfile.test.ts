@@ -48,9 +48,7 @@ describe('updateProfile', () => {
       }),
     );
 
-    await expect(updateProfile(mockProfileData)).rejects.toThrow(
-      PROFILE_ERROR_MESSAGES.NOT_FOUND,
-    );
+    await expect(updateProfile(mockProfileData)).rejects.toThrow(PROFILE_ERROR_MESSAGES.NOT_FOUND);
   });
 
   it('ネットワークエラー時にNETWORK_ERRORを返す', async () => {
