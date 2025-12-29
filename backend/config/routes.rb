@@ -7,7 +7,6 @@ Rails.application.routes.draw do
 
   # API routes
   namespace :api do
-    get 'hello/index', to: 'hello#index'
     get 'top', to: 'top#index'
     resources :books, only: %i[index create update show destroy] do
       resources :cards, only: %i[create update destroy]
