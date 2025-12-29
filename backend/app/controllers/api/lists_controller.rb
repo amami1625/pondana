@@ -1,5 +1,7 @@
 module Api
   class ListsController < Api::ApplicationController
+    rescue_from ActiveRecord::RecordNotFound, with: :record_not_found
+
     def index
       lists = current_user.lists
                           .left_joins(:list_books)
@@ -14,7 +16,10 @@ module Api
 
       # 非公開もしくは所有者でない場合はエラー
       unless list.public || list.user_id == current_user.id
-        render json: { error: '権限がありません' }, status: :forbidden
+        render json: {
+          code: 'FORBIDDEN',
+          error: '権限がありません'
+        }, status: :forbidden
         return
       end
 
@@ -42,7 +47,11 @@ module Api
       if list.save
         render json: list, status: :created
       else
-        render json: { errors: list.errors }, status: :unprocessable_content
+        error_code = list.errors[:name].any? { |msg| msg.include?('taken') } ? 'ALREADY_EXISTS' : 'CREATE_FAILED'
+        render json: {
+          code: error_code,
+          error: list.errors.full_messages.join(', ')
+        }, status: :unprocessable_content
       end
     end
 
@@ -51,7 +60,11 @@ module Api
       if list.update(list_params)
         render json: list
       else
-        render json: { error: list.error }, status: :unprocessable_content
+        error_code = list.errors[:name].any? { |msg| msg.include?('taken') } ? 'ALREADY_EXISTS' : 'UPDATE_FAILED'
+        render json: {
+          code: error_code,
+          error: list.errors.full_messages.join(', ')
+        }, status: :unprocessable_content
       end
     end
 
@@ -60,7 +73,10 @@ module Api
       if list.destroy
         head :no_content
       else
-        render json: { errors: list.errors }, status: :unprocessable_content
+        render json: {
+          code: 'DELETE_FAILED',
+          error: list.errors.full_messages.join(', ')
+        }, status: :unprocessable_content
       end
     end
 
@@ -68,6 +84,13 @@ module Api
 
     def list_params
       params.require(:list).permit(:name, :description, :public)
+    end
+
+    def record_not_found
+      render json: {
+        code: 'NOT_FOUND',
+        error: 'リストが見つかりませんでした'
+      }, status: :not_found
     end
   end
 end

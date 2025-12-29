@@ -12,8 +12,9 @@ module Api
       if tag.save
         render json: tag, status: :created
       else
+        error_code = tag.errors[:name].any? { |msg| msg.include?('taken') } ? 'ALREADY_EXISTS' : 'CREATE_FAILED'
         render json: {
-          code: 'CREATE_FAILED',
+          code: error_code,
           error: tag.errors.full_messages.join(', ')
         }, status: :unprocessable_content
       end
@@ -24,8 +25,9 @@ module Api
       if tag.update(tag_params)
         render json: tag, status: :ok
       else
+        error_code = tag.errors[:name].any? { |msg| msg.include?('taken') } ? 'ALREADY_EXISTS' : 'UPDATE_FAILED'
         render json: {
-          code: 'UPDATE_FAILED',
+          code: error_code,
           error: tag.errors.full_messages.join(', ')
         }, status: :unprocessable_content
       end

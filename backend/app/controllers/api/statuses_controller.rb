@@ -12,8 +12,9 @@ module Api
       if status.save
         render json: status, status: :created
       else
+        error_code = status.errors[:name].any? { |msg| msg.include?('taken') } ? 'ALREADY_EXISTS' : 'CREATE_FAILED'
         render json: {
-          code: 'CREATE_FAILED',
+          code: error_code,
           error: status.errors.full_messages.join(', ')
         }, status: :unprocessable_content
       end
@@ -24,8 +25,9 @@ module Api
       if status.update(status_params)
         render json: status, status: :ok
       else
+        error_code = status.errors[:name].any? { |msg| msg.include?('taken') } ? 'ALREADY_EXISTS' : 'UPDATE_FAILED'
         render json: {
-          code: 'UPDATE_FAILED',
+          code: error_code,
           error: status.errors.full_messages.join(', ')
         }, status: :unprocessable_content
       end
