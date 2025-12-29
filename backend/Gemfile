@@ -82,4 +82,7 @@ group :test do
 
   # SimpleCov for code coverage
   gem 'simplecov', require: false
+
+  # Shoulda Matchers for concise tests
+  gem 'shoulda-matchers', '~> 7.0'
 end
