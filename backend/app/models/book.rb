@@ -7,7 +7,8 @@ class Book < ApplicationRecord
   has_many :book_tags, dependent: :destroy
   has_many :tags, through: :book_tags
 
-  validates :title, presence: true, uniqueness: { scope: :user_id }, length: { maximum: 255 }
+  validates :title, presence: true, length: { maximum: 255 }
+  validates :google_books_id, uniqueness: { scope: :user_id }, allow_nil: true
   validates :rating, inclusion: { in: 1..5 }, allow_nil: true
   validates :reading_status, presence: true
   validates :public, inclusion: { in: [true, false] }
