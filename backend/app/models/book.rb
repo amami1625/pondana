@@ -12,7 +12,7 @@ class Book < ApplicationRecord
   validates :reading_status, presence: true
   validates :public, inclusion: { in: [true, false] }
 
-  enum reading_status: { unread: 0, reading: 1, completed: 2 }
+  enum :reading_status, { unread: 0, reading: 1, completed: 2 }
 
   def self.as_cards_list(user)
     user.books.includes(cards: :status).map do |book|

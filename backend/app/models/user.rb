@@ -35,11 +35,8 @@ class User < ApplicationRecord
     }
   end
 
-  private
-
   def self.extract_user_name(payload)
     payload.dig('user_metadata', 'full_name') ||
-    payload.dig('user_metadata', 'name') || '名無しさん'
+      payload.dig('user_metadata', 'name') || '名無しさん'
   end
-
 end

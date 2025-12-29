@@ -1,0 +1,62 @@
+plugins:
+  - rubocop-rails
+  - rubocop-rspec
+
+AllCops:
+  NewCops: enable
+  TargetRubyVersion: 3.2
+  Exclude:
+    - 'bin/**/*'
+    - 'db/schema.rb'
+    - 'db/migrate/**/*'
+    - 'node_modules/**/*'
+    - 'vendor/**/*'
+    - 'tmp/**/*'
+    - 'log/**/*'
+    - 'test/**/*'
+
+# スタイル設定
+Style/Documentation:
+  Enabled: false
+
+Style/FrozenStringLiteralComment:
+  Enabled: false
+
+# レイアウト設定
+Layout/LineLength:
+  Max: 120
+  Exclude:
+    - 'config/**/*'
+
+# メトリクス設定
+Metrics/AbcSize:
+  Max: 20
+
+Metrics/MethodLength:
+  Max: 15
+  Exclude:
+    - 'db/seeds.rb'
+
+Metrics/BlockLength:
+  Exclude:
+    - 'spec/**/*'
+    - 'config/routes.rb'
+    - 'config/environments/**/*'
+
+# Rails設定
+Rails/I18nLocaleTexts:
+  Enabled: false
+
+Rails/Exit:
+  Exclude:
+    - 'spec/**/*'
+
+# RSpec設定
+RSpec/ExampleLength:
+  Max: 10
+
+RSpec/MultipleExpectations:
+  Max: 5
+
+RSpec/NestedGroups:
+  Max: 4
