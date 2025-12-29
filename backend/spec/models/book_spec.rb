@@ -30,6 +30,69 @@ RSpec.describe Book, type: :model do
         expect(duplicate_book).to be_valid
       end
     end
+
+    context 'カテゴリの所有権検証' do
+      it '自分のカテゴリを設定できること' do
+        user = create(:user)
+        category = create(:category, user: user)
+        book = build(:book, user: user, category: category)
+        expect(book).to be_valid
+      end
+
+      it '他のユーザーのカテゴリを設定できないこと' do
+        user1 = create(:user)
+        user2 = create(:user)
+        category = create(:category, user: user2)
+        book = build(:book, user: user1, category: category)
+        expect(book).not_to be_valid
+        expect(book.errors[:category_id]).to be_present
+      end
+
+      it 'カテゴリがnilの場合は有効であること' do
+        user = create(:user)
+        book = build(:book, user: user, category: nil)
+        expect(book).to be_valid
+      end
+    end
+
+    context 'タグの所有権検証' do
+      it '自分のタグを設定できること' do
+        user = create(:user)
+        tag1 = create(:tag, user: user)
+        tag2 = create(:tag, user: user)
+        book = create(:book, user: user)
+        book.tags = [tag1, tag2]
+        expect(book).to be_valid
+      end
+
+      it '他のユーザーのタグを設定できないこと' do
+        user1 = create(:user)
+        user2 = create(:user)
+        tag = create(:tag, user: user2)
+        book = create(:book, user: user1)
+        book.tags = [tag]
+        expect(book).not_to be_valid
+        expect(book.errors[:tags]).to be_present
+      end
+
+      it '自分のタグと他のユーザーのタグが混在している場合は無効であること' do
+        user1 = create(:user)
+        user2 = create(:user)
+        own_tag = create(:tag, user: user1)
+        other_tag = create(:tag, user: user2)
+        book = create(:book, user: user1)
+        book.tags = [own_tag, other_tag]
+        expect(book).not_to be_valid
+        expect(book.errors[:tags]).to be_present
+      end
+
+      it 'タグが空の場合は有効であること' do
+        user = create(:user)
+        book = create(:book, user: user)
+        book.tags = []
+        expect(book).to be_valid
+      end
+    end
   end
 
   describe 'enum' do

@@ -1,12 +1,14 @@
 FactoryBot.define do
   factory :book do
     association :user
-    association :category
     sequence(:title) { |n| "Book Title #{n}" }
     description { 'これは書籍の説明文です。' }
     rating { 4 }
     reading_status { :reading }
     public { true }
+
+    # Categoryはuserと同じuserに属するものを作成
+    category { association :category, user: user }
 
     trait :unread do
       reading_status { :unread }
