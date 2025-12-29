@@ -49,6 +49,7 @@ export const CATEGORIES_ERROR_MESSAGES = {
   CREATE_FAILED: 'カテゴリの作成に失敗しました',
   UPDATE_FAILED: 'カテゴリの更新に失敗しました',
   DELETE_FAILED: 'カテゴリの削除に失敗しました',
+  ALREADY_EXISTS: 'このカテゴリ名は既に使用されています',
 } as const satisfies ErrorMessages;
 
 /**
@@ -61,6 +62,7 @@ export const LISTS_ERROR_MESSAGES = {
   CREATE_FAILED: 'リストの作成に失敗しました',
   UPDATE_FAILED: 'リストの更新に失敗しました',
   DELETE_FAILED: 'リストの削除に失敗しました',
+  ALREADY_EXISTS: 'このリスト名は既に使用されています',
 } as const satisfies ErrorMessages;
 
 /**
@@ -85,6 +87,7 @@ export const STATUSES_ERROR_MESSAGES = {
   CREATE_FAILED: 'ステータスの作成に失敗しました',
   UPDATE_FAILED: 'ステータスの更新に失敗しました',
   DELETE_FAILED: 'ステータスの削除に失敗しました',
+  ALREADY_EXISTS: 'このステータス名は既に使用されています',
 } as const satisfies ErrorMessages;
 
 /**
@@ -97,6 +100,7 @@ export const TAGS_ERROR_MESSAGES = {
   CREATE_FAILED: 'タグの作成に失敗しました',
   UPDATE_FAILED: 'タグの更新に失敗しました',
   DELETE_FAILED: 'タグの削除に失敗しました',
+  ALREADY_EXISTS: 'このタグ名は既に使用されています',
 } as const satisfies ErrorMessages;
 
 /**
