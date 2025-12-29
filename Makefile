@@ -1,6 +1,6 @@
 # Makefile for React + Rails Docker development environment
 
-.PHONY: help up down build logs ps app web db lint fix fmt
+.PHONY: help up down build logs ps app web db lint fix fmt rubo rubo-fix spec
 
 # デフォルトターゲット - ヘルプを表示
 help:
@@ -16,6 +16,9 @@ help:
 	@echo "  make lint     - Run ESLint to check code quality"
 	@echo "  make fix      - Run ESLint with auto-fix"
 	@echo "  make fmt      - Run Prettier to format code"
+	@echo "  make rubo     - Run RuboCop to check Ruby code quality"
+	@echo "  make rubo-fix - Run RuboCop with auto-correct"
+	@echo "  make spec     - Run RSpec tests"
 
 # コンテナを起動（バックグラウンド）
 up:
@@ -68,3 +71,15 @@ type:
 # Vitestを実行
 test:
 	docker compose exec web npm run test:run
+
+# RuboCopを実行
+rubo:
+	docker compose exec app rubocop
+
+# RuboCopで自動修正
+rubo-fix:
+	docker compose exec app rubocop --autocorrect-all
+
+# RSpecを実行
+spec:
+	docker compose exec app bundle exec rspec

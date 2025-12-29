@@ -1,10 +1,10 @@
 Rails.application.config.middleware.insert_before 0, Rack::Cors do
   allow do
-    origins ENV['FRONTEND_URL'] 
+    origins ENV.fetch('FRONTEND_URL', 'http://localhost:3000')
 
     resource '*',
-      headers: ['Content-Type', 'Authorization'],
-      methods: [:get, :post, :put, :patch, :delete, :options, :head],
-      credentials: true
+             headers: %w[Content-Type Authorization],
+             methods: %i[get post put patch delete options head],
+             credentials: true
   end
 end

@@ -18,7 +18,9 @@ services:
       - db
     env_file: .env
     environment:
-      DATABASE_URL: postgresql://postgres:password@db:5432/app_development
+      POSTGRES_HOST: db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
     volumes:
       - ./backend:/app
       - gems_data:/usr/local/bundle
