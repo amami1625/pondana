@@ -130,8 +130,9 @@ IT 系イベントや勉強会でアプリを紹介。また、影響力のあ�
 | **Next Cloudinary**         | Cloudinary 連携による画像アップロード・最適化    |
 | **react-hot-toast**         | トースト通知                                     |
 | **TailwindCSS**             | ユーティリティファースト CSS フレームワーク      |
-| **vitest**                  | フロントエンドテストフレームワーク               |
+| **vitest**                  | フロントエンド単体テストフレームワーク           |
 | **React Testing Library**   | React コンポーネントテスト                       |
+| **Playwright**              | E2E テスト（エンドツーエンドテスト）             |
 | **MSW**                     | API モッキング（テスト用）                       |
 | **RSpec**                   | Rails テストフレームワーク                       |
 | **rubocop**                 | Ruby コード静的解析                              |
