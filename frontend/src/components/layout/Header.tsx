@@ -14,6 +14,9 @@ export default function Header({ isAuthenticated }: HeaderProps) {
         </h1>
         <nav>
           <ul className="flex items-center gap-4 text-sm font-medium text-gray-600">
+            <li className="transition-colors hover:text-gray-900">
+              <Link href="/about">About</Link>
+            </li>
             {!isAuthenticated ? (
               <>
                 <li className="transition-colors hover:text-gray-900">
