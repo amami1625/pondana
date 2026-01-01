@@ -29,7 +29,9 @@ services:
     command: bash -c "bundle exec rails db:prepare && bin/rails server -b 0.0.0.0 -p 3000"
 
   web:
-    build: ./frontend
+    build:
+      context: ./frontend
+      target: development  # 開発環境のステージを使用
     ports:
       - "3001:3001"
     depends_on:
