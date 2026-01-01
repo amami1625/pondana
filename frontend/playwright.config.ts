@@ -22,8 +22,8 @@ export default defineConfig({
   // テスト失敗時のリトライ回数（CI環境では2回、ローカルでは0回）
   retries: process.env.CI ? 2 : 0,
 
-  // 並列実行するワーカー数（CI環境では1、ローカルではCPU数に応じて自動）
-  workers: process.env.CI ? 1 : undefined,
+  // 並列実行するワーカー数（認証状態の干渉を防ぐため常に1）
+  workers: 1,
 
   // テスト結果のレポート形式（html = ブラウザで見やすいレポート）
   reporter: 'html',

@@ -16,6 +16,11 @@ const TEST_EMAIL = process.env.TEST_USER_EMAIL || 'test-user@example.com';
 const TEST_PASSWORD = process.env.TEST_USER_PASSWORD || 'password1234';
 
 test.describe('ログイン機能', () => {
+  // 各テストの前にストレージをクリアして、ログイン状態をリセット
+  test.beforeEach(async ({ context }) => {
+    await context.clearCookies();
+  });
+
   test('トップページからログインページに遷移してログインできること', async ({ page }) => {
     await page.goto('/');
 
