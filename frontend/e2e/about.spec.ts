@@ -19,7 +19,8 @@ test.describe('アバウトページ', () => {
     const aboutLink = page.getByRole('link', { name: /About/i });
     await aboutLink.click();
 
-    // ページ遷移を待って、Aboutページの見出しが表示されることを確認
+    // URLとコンテンツの両方を確認
+    await expect(page).toHaveURL(/.*about/);
     await expect(page.getByRole('heading', { level: 1, name: /ぽんダナについて/i })).toBeVisible();
   });
 
@@ -32,7 +33,7 @@ test.describe('アバウトページ', () => {
     const startLink = page.getByRole('link', { name: /今すぐ始める/i });
     await startLink.click();
 
-    // 新規登録ページに遷移することを確認
+    // URLとコンテンツの両方を確認
     await expect(page).toHaveURL(/.*register/);
     await expect(page.getByRole('heading', { level: 2, name: /新規登録/i })).toBeVisible();
   });
