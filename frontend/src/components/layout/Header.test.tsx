@@ -13,72 +13,72 @@ describe('Header', () => {
   });
 
   describe('未認証状態', () => {
-    it('header要素が存在する', () => {
+    beforeEach(() => {
       render(<Header isAuthenticated={false} />);
+    });
 
+    it('header要素が存在する', () => {
       const header = screen.getByRole('banner');
       expect(header).toBeInTheDocument();
     });
 
     it('アプリ名が表示される', () => {
-      render(<Header isAuthenticated={false} />);
-
       expect(screen.getByText('ぽんダナ')).toBeInTheDocument();
     });
 
     it('アプリ名のリンクがトップページ(/)を指す', () => {
-      render(<Header isAuthenticated={false} />);
-
       const link = screen.getByRole('link', { name: 'ぽんダナ' });
       expect(link).toHaveAttribute('href', '/');
     });
 
-    it('新規登録リンクが表示される', () => {
-      render(<Header isAuthenticated={false} />);
+    it('Aboutリンクが表示される', () => {
+      const aboutLink = screen.getByRole('link', { name: 'About' });
+      expect(aboutLink).toBeInTheDocument();
+      expect(aboutLink).toHaveAttribute('href', '/about');
+    });
 
+    it('新規登録リンクが表示される', () => {
       const registerLink = screen.getByRole('link', { name: '新規登録' });
       expect(registerLink).toBeInTheDocument();
       expect(registerLink).toHaveAttribute('href', '/register');
     });
 
     it('ログインリンクが表示される', () => {
-      render(<Header isAuthenticated={false} />);
-
       const loginLink = screen.getByRole('link', { name: 'ログイン' });
       expect(loginLink).toBeInTheDocument();
       expect(loginLink).toHaveAttribute('href', '/login');
     });
 
     it('ログアウトボタンは表示されない', () => {
-      render(<Header isAuthenticated={false} />);
-
       expect(screen.queryByRole('button', { name: 'ログアウト' })).not.toBeInTheDocument();
     });
   });
 
   describe('認証済み状態', () => {
-    it('アプリ名のリンクが/topを指す', () => {
+    beforeEach(() => {
       render(<Header isAuthenticated={true} />);
+    });
 
+    it('アプリ名のリンクが/topを指す', () => {
       const link = screen.getByRole('link', { name: 'ぽんダナ' });
       expect(link).toHaveAttribute('href', '/top');
     });
 
-    it('ログアウトボタンが表示される', () => {
-      render(<Header isAuthenticated={true} />);
+    it('Aboutリンクが表示される', () => {
+      const aboutLink = screen.getByRole('link', { name: 'About' });
+      expect(aboutLink).toBeInTheDocument();
+      expect(aboutLink).toHaveAttribute('href', '/about');
+    });
 
+    it('ログアウトボタンが表示される', () => {
       expect(screen.getByRole('button', { name: 'ログアウト' })).toBeInTheDocument();
     });
 
     it('新規登録リンクは表示されない', () => {
-      render(<Header isAuthenticated={true} />);
-
       expect(screen.queryByRole('link', { name: '新規登録' })).not.toBeInTheDocument();
     });
 
     it('ログインリンクは表示されない', () => {
-      render(<Header isAuthenticated={true} />);
-
       expect(screen.queryByRole('link', { name: 'ログイン' })).not.toBeInTheDocument();
     });
   });
