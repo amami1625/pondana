@@ -19,6 +19,9 @@ test.describe('アバウトページ', () => {
     const aboutLink = page.getByRole('link', { name: /About/i });
     await aboutLink.click();
 
+    // Aboutページへの遷移を明示的に待機
+    await page.waitForURL(/.*about/);
+
     // URLとコンテンツの両方を確認
     await expect(page).toHaveURL(/.*about/);
     await expect(page.getByRole('heading', { level: 1, name: /ぽんダナについて/i })).toBeVisible();
@@ -30,8 +33,14 @@ test.describe('アバウトページ', () => {
     const aboutLink = page.getByRole('link', { name: /About/i });
     await aboutLink.click();
 
+    // Aboutページへの遷移を明示的に待機
+    await page.waitForURL(/.*about/);
+
     const startLink = page.getByRole('link', { name: /今すぐ始める/i });
     await startLink.click();
+
+    // 新規登録ページへの遷移を明示的に待機
+    await page.waitForURL(/.*register/);
 
     // URLとコンテンツの両方を確認
     await expect(page).toHaveURL(/.*register/);
@@ -44,8 +53,8 @@ test.describe('アバウトページ', () => {
     const loginLink = page.getByRole('link', { name: /ログイン/i });
     await loginLink.click();
 
-    // ログインページに遷移したことを確認
-    await expect(page).toHaveURL(/.*login/);
+    // ログインページへの遷移を明示的に待機
+    await page.waitForURL(/.*login/);
 
     const emailInput = page.getByLabel(/メールアドレス/i);
     await emailInput.fill(TEST_EMAIL);
@@ -62,8 +71,14 @@ test.describe('アバウトページ', () => {
     const aboutLink = page.getByRole('link', { name: /About/i });
     await aboutLink.click();
 
+    // Aboutページへの遷移を明示的に待機
+    await page.waitForURL(/.*about/);
+
     const startLink = page.getByRole('link', { name: /今すぐ始める/i });
     await startLink.click();
+
+    // トップページへの遷移を明示的に待機
+    await page.waitForURL(/.*top/);
 
     // ログイン済みの場合、トップページに遷移することを確認
     await expect(page).toHaveURL(/.*top/);
