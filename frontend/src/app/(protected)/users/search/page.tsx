@@ -2,6 +2,7 @@
 
 import { UserSearchInput, UserSearchResults } from '@/app/(protected)/users/search/_components';
 import { useUserSearchApi } from '@/app/(protected)/users/search/_hooks/useUserSearchApi';
+import PageTitle from '@/components/layout/PageTitle';
 
 export default function UsersPage() {
   const { query, setQuery, suggestions, isLoading } = useUserSearchApi();
@@ -9,7 +10,7 @@ export default function UsersPage() {
   return (
     <div className="container mx-auto px-4 py-8 max-w-4xl">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">ユーザー検索</h1>
+        <PageTitle title="ユーザー検索" />
         <p className="text-gray-600">ユーザー名で検索して、プロフィールを閲覧できます。</p>
       </div>
 

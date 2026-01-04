@@ -7,6 +7,7 @@ import UsageGuideModal from '@/app/(protected)/books/search/_components/modal';
 import Button from '@/components/buttons/Button';
 import { Lightbulb } from 'lucide-react';
 import { useBookSearchPage } from '@/app/(protected)/books/search/_hooks/useBookSearchPage';
+import PageTitle from '@/components/layout/PageTitle';
 
 export default function BookSearchPage() {
   const { selectedBook, handleSelectBook, handleClearSelection } = useBookSearchPage();
@@ -15,8 +16,8 @@ export default function BookSearchPage() {
   return (
     <div className="container mx-auto px-4 py-8 max-w-4xl">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">書籍検索</h1>
-        <p className="text-gray-600">書籍名、著者名、ISBNで検索して、書籍を登録できます。</p>
+        <PageTitle title="書籍検索" />
+        <p className="text-gray-600">書籍名、著者名で検索して、書籍を登録できます。</p>
         <Button variant="primary" onClick={open} icon={<Lightbulb />}>
           使い方
         </Button>
