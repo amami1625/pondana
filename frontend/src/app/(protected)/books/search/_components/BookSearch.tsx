@@ -33,8 +33,8 @@ export default function BookSearch({ onSelectBook }: BookSearchAutocompleteProps
           onChange={(e) => setQuery(e.target.value)}
           onKeyDown={handleKeyDown}
           onFocus={handleFocus}
-          placeholder="書籍名、著者名、ISBNで検索"
-          className="w-full px-4 py-3 pr-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          placeholder="書籍名、著者名で検索"
+          className="w-full px-4 py-3 pr-10 border border-gray-300 bg-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
         />
         {isLoading && (
           <div className="absolute right-3 top-1/2 -translate-y-1/2">
