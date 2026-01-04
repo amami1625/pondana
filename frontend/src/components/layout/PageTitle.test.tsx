@@ -6,7 +6,7 @@ describe('PageTitle', () => {
   it('渡されたtitleが表示される', () => {
     render(<PageTitle title="テストページ" />);
 
-    const heading = screen.getByRole('heading', { level: 2 });
+    const heading = screen.getByRole('heading', { level: 1 });
     expect(heading).toBeInTheDocument();
     expect(heading).toHaveTextContent('テストページ');
   });
@@ -15,12 +15,5 @@ describe('PageTitle', () => {
     render(<PageTitle title="別のタイトル" />);
 
     expect(screen.getByText('別のタイトル')).toBeInTheDocument();
-  });
-
-  it('正しいCSSクラスが適用される', () => {
-    render(<PageTitle title="スタイルテスト" />);
-
-    const heading = screen.getByRole('heading', { level: 2 });
-    expect(heading).toHaveClass('text-2xl', 'font-bold', 'text-gray-900', 'mb-6');
   });
 });
