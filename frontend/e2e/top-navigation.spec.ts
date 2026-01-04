@@ -43,7 +43,8 @@ test.describe('トップページからの主要ナビゲーション', () => {
 
     // URLとコンテンツの両方を確認
     await expect(page).toHaveURL(/.*books/);
-    await expect(page.getByRole('heading', { level: 1, name: /本棚/i })).toBeVisible();
+    // ページタイトルが表示されるのを待機
+    await expect(page.getByRole('heading', { level: 1, name: /本棚/i })).toBeVisible({ timeout: 10000 });
   });
 
   test('リスト一覧ページへ遷移できる', async ({ page }) => {
@@ -56,7 +57,8 @@ test.describe('トップページからの主要ナビゲーション', () => {
 
     // URLとコンテンツの両方を確認
     await expect(page).toHaveURL(/.*lists/);
-    await expect(page.getByRole('heading', { level: 1, name: /リスト一覧/i })).toBeVisible();
+    // ページタイトルが表示されるのを待機
+    await expect(page.getByRole('heading', { level: 1, name: /リスト一覧/i })).toBeVisible({ timeout: 10000 });
   });
 
   test('カード一覧ページへ遷移できる', async ({ page }) => {
@@ -69,7 +71,8 @@ test.describe('トップページからの主要ナビゲーション', () => {
 
     // URLとコンテンツの両方を確認
     await expect(page).toHaveURL(/.*cards/);
-    await expect(page.getByRole('heading', { level: 1, name: /カード一覧/i })).toBeVisible();
+    // ページタイトルが表示されるのを待機
+    await expect(page.getByRole('heading', { level: 1, name: /カード一覧/i })).toBeVisible({ timeout: 10000 });
   });
 
   test('ユーザー検索ページへ遷移できる', async ({ page }) => {
@@ -82,7 +85,8 @@ test.describe('トップページからの主要ナビゲーション', () => {
 
     // URLとコンテンツの両方を確認
     await expect(page).toHaveURL(/.*users/);
-    await expect(page.getByRole('heading', { level: 1, name: /ユーザー検索/i })).toBeVisible();
+    // ページタイトルが表示されるのを待機
+    await expect(page.getByRole('heading', { level: 1, name: /ユーザー検索/i })).toBeVisible({ timeout: 10000 });
   });
 
   test('設定ページへ遷移できる', async ({ page }) => {
@@ -95,6 +99,7 @@ test.describe('トップページからの主要ナビゲーション', () => {
 
     // URLとコンテンツの両方を確認
     await expect(page).toHaveURL(/.*settings/);
-    await expect(page.getByRole('heading', { level: 1, name: /設定/i })).toBeVisible();
+    // ページタイトルが表示されるのを待機
+    await expect(page.getByRole('heading', { level: 1, name: /設定/i })).toBeVisible({ timeout: 10000 });
   });
 });
