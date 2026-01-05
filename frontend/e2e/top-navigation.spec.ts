@@ -92,4 +92,16 @@ test.describe('トップページからの主要ナビゲーション', () => {
     // URLを確認
     await expect(page).toHaveURL(/.*settings/);
   });
+
+  test('ダッシュボードへ遷移できる', async ({ page }) => {
+    // ダッシュボードへのリンクをクリック
+    const dashboardLink = page.getByRole('link', { name: /ダッシュボード/i });
+    await dashboardLink.click();
+
+    // ダッシュボードへの遷移を待機
+    await page.waitForURL(/.*dashboard/);
+
+    // URL を確認
+    await expect(page).toHaveURL(/.*dashboard/);
+  });
 });
