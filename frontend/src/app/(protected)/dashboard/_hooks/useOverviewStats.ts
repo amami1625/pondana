@@ -6,7 +6,7 @@ export function useOverviewStats(data: OverviewStats) {
     {
       label: '総書籍数',
       value: data.total_books,
-      icon:  BookOpen,
+      icon: BookOpen,
       color: 'bg-blue-50 text-blue-600',
     },
     {

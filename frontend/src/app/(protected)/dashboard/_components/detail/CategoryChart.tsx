@@ -4,7 +4,6 @@ import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from 'recha
 import type { CategoryStats } from '@/schemas/dashboard';
 import { COLORS } from '@/constants/categoryChartColors';
 
-
 interface CategoryChartProps {
   data: CategoryStats;
 }

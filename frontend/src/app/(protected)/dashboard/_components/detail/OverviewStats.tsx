@@ -17,7 +17,9 @@ export default function OverviewStats({ data }: OverviewStatsProps) {
               <p className="text-sm text-gray-600 mb-1">{stat.label}</p>
               <p className="text-3xl font-bold text-gray-900">{stat.value}</p>
             </div>
-            <div className={`text-4xl ${stat.color} p-3 rounded-full`}><stat.icon /></div>
+            <div className={`text-4xl ${stat.color} p-3 rounded-full`}>
+              <stat.icon />
+            </div>
           </div>
         </div>
       ))}
