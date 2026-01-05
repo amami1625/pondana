@@ -11,7 +11,9 @@ export default function RecentBooks({ data }: RecentBooksProps) {
     return (
       <div className="bg-white rounded-lg shadow p-6 border border-gray-200">
         <h3 className="text-lg font-bold text-gray-900 mb-4">最近の書籍</h3>
-        <div className="text-gray-500 text-center py-8">書籍がまだ登録されていません</div>
+        <div className="flex items-center justify-center h-[300px] text-gray-500">
+          書籍がまだ登録されていません
+        </div>
       </div>
     );
   }
