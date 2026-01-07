@@ -4,6 +4,7 @@ import { fetchBooks } from './fetchBooks';
 import { server } from '@/test/mocks/server';
 import { http, HttpResponse } from 'msw';
 import { BOOKS_ERROR_MESSAGES } from '@/constants/errorMessages';
+import { ZodError } from 'zod';
 
 describe('fetchBooks', () => {
   describe('成功時', () => {
@@ -108,7 +109,7 @@ describe('fetchBooks', () => {
         }),
       );
 
-      await expect(fetchBooks()).rejects.toThrow();
+      await expect(fetchBooks()).rejects.toThrow(ZodError);
     });
   });
 });

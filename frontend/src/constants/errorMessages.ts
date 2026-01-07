@@ -144,3 +144,12 @@ export const TOP_ERROR_MESSAGES = {
   NETWORK_ERROR,
   UNKNOWN_ERROR,
 } as const satisfies ErrorMessages;
+
+/**
+ * Dashboard ドメインのエラーメッセージ
+ */
+export const DASHBOARD_ERROR_MESSAGES = {
+  NOT_FOUND: 'ダッシュボードデータの取得に失敗しました',
+  NETWORK_ERROR,
+  UNKNOWN_ERROR,
+} as const satisfies ErrorMessages;

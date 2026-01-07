@@ -8,6 +8,7 @@ Rails.application.routes.draw do
   # API routes
   namespace :api do
     get 'top', to: 'top#index'
+    get 'dashboard', to: 'dashboards#index'
     resources :books, only: %i[index create update show destroy] do
       resources :cards, only: %i[create update destroy]
     end
