@@ -2,7 +2,7 @@
 
 import { useDashboard } from '@/app/(protected)/dashboard/_hooks/useDashboard';
 import { ErrorMessage, LoadingState } from '@/components/feedback';
-import DashboardIndexView from '@/app/(protected)/dashboard/_components/view/DashboardIndexView';
+import DashboardIndexView from '@/app/(protected)/dashboard/_components/display/view/DashboardIndexView';
 
 export default function DashboardClient() {
   const { data: dashboard, error, isLoading } = useDashboard();
