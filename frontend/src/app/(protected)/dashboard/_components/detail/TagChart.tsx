@@ -24,7 +24,7 @@ export default function TagChart({ data }: TagChartProps) {
   }
 
   return (
-    <div className="bg-white rounded-lg shadow p-6 border border-gray-200">
+    <div className="bg-white rounded-lg shadow p-6 border border-gray-200" data-testid="tagChart">
       <h3 className="text-lg font-bold text-gray-900 mb-4">タグ別（上位10件）</h3>
       <ResponsiveContainer width="100%" height={300}>
         <BarChart data={chartData} layout="vertical">

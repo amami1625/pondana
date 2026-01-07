@@ -17,7 +17,10 @@ interface MonthlyChartProps {
 
 export default function MonthlyChart({ data }: MonthlyChartProps) {
   return (
-    <div className="bg-white rounded-lg shadow p-6 border border-gray-200">
+    <div
+      className="bg-white rounded-lg shadow p-6 border border-gray-200"
+      data-testid="monthlyChart"
+    >
       <h3 className="text-lg font-bold text-gray-900 mb-4">月別読書数（過去12ヶ月）</h3>
       <ResponsiveContainer width="100%" height={300}>
         <LineChart data={data}>

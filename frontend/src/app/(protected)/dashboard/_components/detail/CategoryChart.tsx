@@ -22,7 +22,10 @@ export default function CategoryChart({ data }: CategoryChartProps) {
   }
 
   return (
-    <div className="bg-white rounded-lg shadow p-6 border border-gray-200">
+    <div
+      className="bg-white rounded-lg shadow p-6 border border-gray-200"
+      data-testid="categoryChart"
+    >
       <h3 className="text-lg font-bold text-gray-900 mb-4">カテゴリー別</h3>
       <ResponsiveContainer width="100%" height={300}>
         <PieChart>
