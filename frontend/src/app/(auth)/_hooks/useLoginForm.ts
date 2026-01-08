@@ -3,9 +3,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import toast from 'react-hot-toast';
 import { loginSchema, type LoginFormData } from '@/schemas/auth';
-import { loginAction } from '@/app/(auth)/_lib';
-import { createBrowserSupabaseClient } from '@/supabase/clients/browser';
-import { translateAuthError } from '@/lib/utils/translateAuthError';
+import { loginAction, loginClientSide } from '@/app/(auth)/_lib';
 
 export function useLoginForm() {
   const router = useRouter();
@@ -20,14 +18,10 @@ export function useLoginForm() {
 
   const onSubmit = async (data: LoginFormData) => {
     // 1. クライアント側でログイン（重要: タブ間同期のため）
-    const supabase = createBrowserSupabaseClient();
-    const { error: clientError } = await supabase.auth.signInWithPassword({
-      email: data.email,
-      password: data.password,
-    });
+    const clientError = await loginClientSide(data);
 
     if (clientError) {
-      toast.error(translateAuthError(clientError.message));
+      toast.error(clientError);
       return;
     }
 

@@ -2,9 +2,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useQueryClient } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
-import { logoutAction } from '@/app/(auth)/_lib';
-import { createBrowserSupabaseClient } from '@/supabase/clients/browser';
-import { translateAuthError } from '@/lib/utils/translateAuthError';
+import { logoutAction, logoutClientSide } from '@/app/(auth)/_lib';
 
 export function useLogout() {
   const [loading, setLoading] = useState(false);
@@ -16,11 +14,10 @@ export function useLogout() {
 
     try {
       // 1. クライアント側でログアウト（重要: タブ間同期のため）
-      const supabase = createBrowserSupabaseClient();
-      const { error: clientError } = await supabase.auth.signOut();
+      const clientError = await logoutClientSide();
 
       if (clientError) {
-        toast.error(translateAuthError(clientError.message));
+        toast.error(clientError);
         setLoading(false);
         return;
       }
