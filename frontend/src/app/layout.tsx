@@ -3,7 +3,7 @@ import { Inter } from 'next/font/google';
 import { Toaster } from 'react-hot-toast';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
-import { createServerSupabaseClient } from '@/supabase/clients/server';
+import { getUser } from '@/supabase/dal';
 import { Providers } from '@/app/providers';
 import './globals.css';
 
@@ -24,17 +24,13 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const supabase = await createServerSupabaseClient();
-  const {
-    data: { session },
-  } = await supabase.auth.getSession();
+  const user = await getUser();
 
-  // セッション情報を取得できた場合はユーザー情報を取得してメタデータに反映
   return (
     <html lang="ja">
       <body className={`${inter.variable} flex flex-col min-h-screen`}>
         <Providers>
-          <Header isAuthenticated={!!session} />
+          <Header initialAuth={!!user} />
           <main className="flex-1 pt-header-height">{children}</main>
           <Footer />
         </Providers>

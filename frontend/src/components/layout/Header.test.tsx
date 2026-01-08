@@ -1,6 +1,12 @@
-import { render, screen } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { render, screen } from '@testing-library/react';
+import { createBrowserSupabaseClient } from '@/supabase/clients/browser';
 import Header from './Header';
+
+// Supabaseクライアントをモック化
+vi.mock('@/supabase/clients/browser', () => ({
+  createBrowserSupabaseClient: vi.fn(),
+}));
 
 // LogoutButtonをモック化
 vi.mock('@/app/(auth)/logout/LogoutButton', () => ({
@@ -8,13 +14,31 @@ vi.mock('@/app/(auth)/logout/LogoutButton', () => ({
 }));
 
 describe('Header', () => {
+  const mockOnAuthStateChange = vi.fn();
+  const mockUnsubscribe = vi.fn();
+
   beforeEach(() => {
     vi.clearAllMocks();
+
+    // Supabaseクライアントのモック設定
+    mockOnAuthStateChange.mockReturnValue({
+      data: {
+        subscription: {
+          unsubscribe: mockUnsubscribe,
+        },
+      },
+    });
+
+    vi.mocked(createBrowserSupabaseClient).mockReturnValue({
+      auth: {
+        onAuthStateChange: mockOnAuthStateChange,
+      },
+    } as never);
   });
 
   describe('未認証状態', () => {
     beforeEach(() => {
-      render(<Header isAuthenticated={false} />);
+      render(<Header initialAuth={false} />);
     });
 
     it('header要素が存在する', () => {
@@ -56,7 +80,7 @@ describe('Header', () => {
 
   describe('認証済み状態', () => {
     beforeEach(() => {
-      render(<Header isAuthenticated={true} />);
+      render(<Header initialAuth={true} />);
     });
 
     it('アプリ名のリンクが/topを指す', () => {
@@ -83,7 +107,7 @@ describe('Header', () => {
     });
   });
 
-  describe('isAuthenticated が undefined の場合', () => {
+  describe('initialAuth が undefined の場合', () => {
     it('未認証として扱われる', () => {
       render(<Header />);
 

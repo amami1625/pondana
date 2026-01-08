@@ -1,11 +1,32 @@
-import { LogoutButton } from '@/app/(auth)/logout/LogoutButton';
+'use client';
+
 import Link from 'next/link';
+import { useEffect, useState } from 'react';
+import { LogoutButton } from '@/app/(auth)/logout/LogoutButton';
+import { createBrowserSupabaseClient } from '@/supabase/clients/browser';
 
 interface HeaderProps {
-  isAuthenticated?: boolean;
+  initialAuth?: boolean;
 }
 
-export default function Header({ isAuthenticated }: HeaderProps) {
+export default function Header({ initialAuth }: HeaderProps) {
+  const [isAuthenticated, setIsAuthenticated] = useState(initialAuth);
+
+  useEffect(() => {
+    const supabase = createBrowserSupabaseClient();
+
+    // 認証状態の変更を監視（タブ間同期のため）
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setIsAuthenticated(!!session);
+    });
+
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, []);
+
   return (
     <header className="fixed top-0 left-0 right-0 z-50 border-b border-gray-200 bg-white/80 backdrop-blur">
       <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-3">

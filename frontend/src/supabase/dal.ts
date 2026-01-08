@@ -5,6 +5,35 @@ import { createServerSupabaseClient } from '@/supabase/clients/server';
 import { ApiError } from '@/lib/errors/ApiError';
 
 /**
+ * 現在のユーザー情報を取得する（リダイレクトなし）
+ *
+ * この関数はキャッシュされており、同じリクエスト内では結果が再利用される。
+ * 未認証の場合はnullを返す（リダイレクトしない）。
+ * Layoutやヘッダーなど、認証状態によって表示を変えたい場合に使用する。
+ *
+ * @returns ユーザー情報、またはnull（未認証時）
+ *
+ * @example
+ * // Layoutでの使用
+ * const user = await getUser();
+ * return <Header user={user} />;
+ */
+export const getUser = cache(async () => {
+  const supabase = await createServerSupabaseClient();
+
+  const {
+    data: { user },
+    error,
+  } = await supabase.auth.getUser();
+
+  if (error || !user) {
+    return null;
+  }
+
+  return user;
+});
+
+/**
  * セッションを検証し、認証済みユーザーの情報を取得する
  *
  * この関数はキャッシュされており、同じリクエスト内では結果が再利用される。
