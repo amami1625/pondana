@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useQueryClient } from '@tanstack/react-query';
-import toast from 'react-hot-toast';
 import { logoutAction, logoutClientSide } from '@/app/(auth)/_lib';
+import toast from 'react-hot-toast';
 
 export function useLogout() {
   const [loading, setLoading] = useState(false);
@@ -35,7 +35,7 @@ export function useLogout() {
       queryClient.clear();
       toast.success('ログアウトしました');
       router.push('/');
-    } catch (error) {
+    } catch (_error) {
       toast.error('エラーが発生しました。もう一度お試しください');
       setLoading(false);
     }
