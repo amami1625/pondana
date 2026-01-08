@@ -14,17 +14,17 @@ export default function SettingsSidebar() {
   const pathname = usePathname();
 
   return (
-    <nav className="rounded-lg border border-gray-200 bg-white">
-      <ul className="divide-y divide-gray-100">
+    <nav className="mb-6 rounded-lg border border-gray-200 bg-white">
+      <ul className="flex overflow-x-auto">
         {NAV_ITEMS.map((item) => {
           const isActive = pathname === item.href;
           return (
-            <li key={item.href}>
+            <li key={item.href} className="flex-shrink-0">
               <Link
                 href={item.href}
-                className={`block px-4 py-3 text-sm font-medium transition-colors ${
+                className={`block px-6 py-3 text-sm font-medium transition-colors whitespace-nowrap ${
                   isActive
-                    ? 'bg-blue-50 text-blue-700'
+                    ? 'bg-blue-50 text-blue-700 border-b-2 border-blue-700'
                     : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900'
                 }`}
               >
