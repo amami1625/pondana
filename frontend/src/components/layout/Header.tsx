@@ -1,8 +1,8 @@
 'use client';
 
+import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { LogoutButton } from '@/app/(auth)/logout/LogoutButton';
-import Link from 'next/link';
 import { createBrowserSupabaseClient } from '@/supabase/clients/browser';
 
 interface HeaderProps {
@@ -15,12 +15,7 @@ export default function Header({ initialAuth }: HeaderProps) {
   useEffect(() => {
     const supabase = createBrowserSupabaseClient();
 
-    // 初期状態を取得
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setIsAuthenticated(!!session);
-    });
-
-    // 認証状態の変更を監視
+    // 認証状態の変更を監視（タブ間同期のため）
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
