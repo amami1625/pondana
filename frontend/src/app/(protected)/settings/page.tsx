@@ -10,17 +10,21 @@ export default async function SettingsPage() {
 
   const queryClient = createServerQueryClient();
 
-  await queryClient.prefetchQuery({
+  // データを取得してキャッシュに保存
+  const profileData = await queryClient.fetchQuery({
     queryKey: queryKeys.profile.all,
     queryFn: async () => {
-      const data = await authenticatedRequest('/profiles');
+      const data = await authenticatedRequest('/profile');
       return userSchema.parse(data);
     },
   });
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      <SettingsClient email={authInfo.email ?? 'メールアドレスが設定されていません'} />
+      <SettingsClient
+        email={authInfo.email ?? 'メールアドレスが設定されていません'}
+        initialProfile={profileData}
+      />
     </HydrationBoundary>
   );
 }

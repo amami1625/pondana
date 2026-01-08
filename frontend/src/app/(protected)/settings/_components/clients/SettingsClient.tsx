@@ -2,17 +2,22 @@
 
 import { useProfile } from '@/hooks/useProfile';
 import SettingsView from '@/app/(protected)/settings/_components/display/view/SettingsView';
-import ErrorMessage from '@/components/feedback/ErrorMessage';
-import LoadingState from '@/components/feedback/LoadingState';
+import { ErrorMessage, LoadingState } from '@/components/feedback';
+import { User } from '@/schemas/user';
 
-type Props = {
+interface Props {
   email: string;
-};
+  initialProfile: User;
+}
 
-export default function SettingsClient({ email }: Props) {
-  const { isLoading, error, data: user } = useProfile();
+export default function SettingsClient({ email, initialProfile }: Props) {
+  const { isFetching, error, data: user } = useProfile();
 
-  if (isLoading) {
+  // initialProfileをフォールバックとして使用
+  const profile = user ?? initialProfile;
+
+  // プリフェッチされたデータがない場合のみローディング表示
+  if (isFetching && !profile) {
     return <LoadingState message="プロフィールデータを読み込んでいます..." />;
   }
 
@@ -20,9 +25,9 @@ export default function SettingsClient({ email }: Props) {
     return <ErrorMessage message={error?.message || 'エラーが発生しました'} />;
   }
 
-  if (!user) {
+  if (!profile) {
     return <ErrorMessage message="プロフィールデータの取得に失敗しました" />;
   }
 
-  return <SettingsView email={email} user={user} />;
+  return <SettingsView email={email} user={profile} />;
 }
