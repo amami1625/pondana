@@ -75,7 +75,9 @@ export default function AddedBookItem({ book, listBookId, isOwner = false }: Add
         )}
 
         {/* 説明 */}
-        {book.description && <p className="text-xs md:text-sm text-slate-700 flex-1">{book.description}</p>}
+        {book.description && (
+          <p className="text-xs md:text-sm text-slate-700 flex-1">{book.description}</p>
+        )}
 
         {/* 詳細ページへのリンク（所有者のみ） */}
         {isOwner && (
