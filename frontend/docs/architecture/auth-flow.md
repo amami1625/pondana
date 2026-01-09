@@ -177,71 +177,78 @@ sequenceDiagram
 
 ## コンポーネント構成
 
+### 初期表示の構成
+
 ```mermaid
 graph TB
-    subgraph "Server Component Layer"
-        Layout["📄 layout.tsx<br/>Server Component"]
-        DAL["getUser()<br/>DAL関数"]
+    Layout["📄 layout.tsx<br/>(Server Component)"]
+    DAL["getUser()<br/>(DAL関数)"]
+    Header["📱 Header<br/>(Client Component)"]
+    AuthProvider["🔐 AuthProvider<br/>(認証監視)"]
 
-        Layout -->|getUser()| DAL
-        DAL -->|初期認証状態| Layout
-    end
-
-    subgraph "Client Component Layer"
-        Providers["🔄 Providers<br/>QueryClient + AuthProvider"]
-        AuthProvider["🔐 AuthProvider<br/>認証状態監視"]
-        Header["📱 Header<br/>Client Component"]
-        LoginForm["📝 LoginForm"]
-        LogoutButton["🚪 LogoutButton"]
-
-        useLoginForm["🎣 useLoginForm Hook"]
-        useLogout["🎣 useLogout Hook"]
-    end
-
-    subgraph "Browser APIs"
-        SupabaseClient["🔑 Supabase Client<br/>(Browser)"]
-        LocalStorage["💾 localStorage<br/>タブ間通信"]
-    end
-
-    subgraph "Server Layer"
-        LoginAction["⚙️ loginAction<br/>Server Action"]
-        LogoutAction["⚙️ logoutAction<br/>Server Action"]
-        SupabaseServer["🍪 Supabase Server<br/>(Cookies)"]
-    end
-
-    Layout -->|initialAuth prop| Header
-    Layout --> Providers
-    Providers --> AuthProvider
-    Providers --> Header
-
-    Header --> LogoutButton
-    LoginForm --> useLoginForm
-    LogoutButton --> useLogout
-
-    useLoginForm -->|1. signInWithPassword| SupabaseClient
-    useLoginForm -->|2. loginAction| LoginAction
-    useLogout -->|1. signOut| SupabaseClient
-    useLogout -->|2. logoutAction| LogoutAction
-
-    SupabaseClient <-->|session data| LocalStorage
-    LocalStorage -.->|storage event| AuthProvider
-    LocalStorage -.->|storage event| Header
-
-    LoginAction --> SupabaseServer
-    LogoutAction --> SupabaseServer
-
-    AuthProvider -->|SIGNED_OUT検知| AuthProvider
-    Header -->|認証状態変化検知| Header
+    Layout -->|"1. 認証状態取得"| DAL
+    DAL -->|"2. ユーザー情報"| Layout
+    Layout -->|"3. initialAuth prop"| Header
+    Layout -->|"4. 子要素として配置"| AuthProvider
 
     classDef server fill:#e1f5ff,stroke:#01579b
+    classDef client fill:#fff3e0,stroke:#e65100
+
+    class Layout,DAL server
+    class Header,AuthProvider client
+```
+
+### ログインフローの構成
+
+```mermaid
+graph LR
+    User["👤 ユーザー"] --> LoginForm["📝 LoginForm"]
+    LoginForm --> useLoginForm["🎣 useLoginForm"]
+
+    useLoginForm -->|"1. クライアント側ログイン"| SupabaseClient["🔑 Supabase Client"]
+    SupabaseClient -->|"session保存"| LocalStorage["💾 localStorage"]
+
+    useLoginForm -->|"2. サーバー側ログイン"| LoginAction["⚙️ loginAction"]
+    LoginAction -->|"Cookie設定"| SupabaseServer["🍪 Supabase Server"]
+
+    LocalStorage -.->|"storage event"| Header["📱 Header (他タブ)"]
+
+    useLoginForm -->|"3. リダイレクト"| TopPage["/top"]
+
     classDef client fill:#fff3e0,stroke:#e65100
     classDef browser fill:#f3e5f5,stroke:#4a148c
     classDef serverAction fill:#e8f5e9,stroke:#1b5e20
 
-    class Layout,DAL server
-    class Providers,AuthProvider,Header,LoginForm,LogoutButton,useLoginForm,useLogout client
+    class User,LoginForm,useLoginForm,Header client
     class SupabaseClient,LocalStorage browser
-    class LoginAction,LogoutAction,SupabaseServer serverAction
+    class LoginAction,SupabaseServer serverAction
+```
+
+### ログアウトフローの構成
+
+```mermaid
+graph LR
+    User["👤 ユーザー"] --> LogoutButton["🚪 LogoutButton"]
+    LogoutButton --> useLogout["🎣 useLogout"]
+
+    useLogout -->|"1. クライアント側ログアウト"| SupabaseClient["🔑 Supabase Client"]
+    SupabaseClient -->|"session削除"| LocalStorage["💾 localStorage"]
+
+    useLogout -->|"2. サーバー側ログアウト"| LogoutAction["⚙️ logoutAction"]
+    LogoutAction -->|"Cookie削除"| SupabaseServer["🍪 Supabase Server"]
+
+    LocalStorage -.->|"SIGNED_OUT event"| AuthProvider["🔐 AuthProvider (全タブ)"]
+
+    useLogout -->|"3. キャッシュクリア"| QueryClient["React Query"]
+    useLogout -->|"4. リダイレクト"| LoginPage["/login"]
+
+    classDef client fill:#fff3e0,stroke:#e65100
+    classDef browser fill:#f3e5f5,stroke:#4a148c
+    classDef serverAction fill:#e8f5e9,stroke:#1b5e20
+
+    class User,LogoutButton,useLogout,AuthProvider,QueryClient client
+    class SupabaseClient,LocalStorage browser
+    class LogoutAction,SupabaseServer serverAction
 ```
 
 ## 詳細な処理フロー
