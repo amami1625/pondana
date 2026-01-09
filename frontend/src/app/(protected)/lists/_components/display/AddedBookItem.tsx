@@ -27,6 +27,7 @@ export default function AddedBookItem({ book, listBookId, isOwner = false }: Add
             width={128}
             height={176}
             className="w-32 h-44 shrink-0 object-cover"
+            priority
           />
         ) : (
           <div className="w-32 h-44 shrink-0 flex items-center justify-center bg-slate-200">
