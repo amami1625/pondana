@@ -1,6 +1,6 @@
 import { BookOpen, List, StickyNote } from 'lucide-react';
-import Hero from '@/components/topPage/Hero';
-import FeatureSection from '@/components/topPage/FeatureSection';
+import Hero from '@/app/_components/Hero';
+import FeatureSection from '@/app/_components/FeatureSection';
 
 export default async function Home() {
   return (
