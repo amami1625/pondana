@@ -1,28 +1,19 @@
 'use client';
 
 import { useCard } from '@/app/(protected)/cards/_hooks/useCard';
+import QueryBoundary from '@/components/data/QueryBoundary';
 import CardDetailView from '@/app/(protected)/cards/_components/display/view/CardDetailView';
-import ErrorMessage from '@/components/feedback/ErrorMessage';
-import LoadingState from '@/components/feedback/LoadingState';
 
-type Props = {
+interface CardDetailClientProps {
   id: string;
-};
+}
 
-export default function CardDetailClient({ id }: Props) {
-  const { data: card, error: cardError, isLoading } = useCard(id);
+export default function CardDetailClient({ id }: CardDetailClientProps) {
+  const query = useCard(id);
 
-  if (isLoading) {
-    return <LoadingState message="カード情報を読み込んでいます..." />;
-  }
-
-  if (cardError) {
-    return <ErrorMessage message={cardError?.message} />;
-  }
-
-  if (!card) {
-    return <ErrorMessage message="データの取得に失敗しました" />;
-  }
-
-  return <CardDetailView card={card} />;
+  return (
+    <QueryBoundary {...query} loadingMessage="カード情報を読み込んでいます...">
+      {(card) => <CardDetailView card={card} />}
+    </QueryBoundary>
+  );
 }
