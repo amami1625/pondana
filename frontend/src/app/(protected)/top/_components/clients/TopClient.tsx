@@ -2,28 +2,20 @@
 
 import { useTopPageData } from '@/app/(protected)/top/_hooks/useTopPageData';
 import TopView from '@/app/(protected)/top/_components/view/TopView';
-import LoadingState from '@/components/feedback/LoadingState';
-import ErrorMessage from '@/components/feedback/ErrorMessage';
+import QueryBoundary from '@/components/data/QueryBoundary';
 
 export default function TopClient() {
-  const { data, error, isLoading } = useTopPageData();
+  const query = useTopPageData();
 
-  // ローディング状態（prefetchされているので通常は一瞬）
-  if (isLoading) {
-    return <LoadingState message="データを読み込んでいます..." />;
-  }
-
-  // エラー状態
-  if (error) {
-    return <ErrorMessage message={error?.message || 'エラーが発生しました'} />;
-  }
-
-  // データが取得できていない場合
-  if (!data) {
-    return <ErrorMessage message="データの取得に失敗しました" />;
-  }
-
-  const { recent_books, recent_lists, recent_cards } = data;
-
-  return <TopView books={recent_books} lists={recent_lists} cards={recent_cards} />;
+  return (
+    <QueryBoundary {...query} loadingMessage="データを読み込んでいます...">
+      {(topPageData) => (
+        <TopView
+          books={topPageData.recent_books}
+          lists={topPageData.recent_lists}
+          cards={topPageData.recent_cards}
+        />
+      )}
+    </QueryBoundary>
+  );
 }
