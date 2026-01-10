@@ -26,17 +26,34 @@ describe('UserDetailClient', () => {
     } as unknown as ReturnType<typeof useProfile>);
   });
 
+  const mockUser = createMockUserWithStats();
+  const mockBooks = [createMockBook()];
+  const mockLists = [createMockList()];
+
   describe('ユーザープロフィール', () => {
+    beforeEach(() => {
+      vi.clearAllMocks();
+
+      vi.mocked(useUserBooks).mockReturnValue({
+        data: mockBooks,
+        isLoading: false,
+        error: null,
+      } as unknown as ReturnType<typeof useUserBooks>);
+      vi.mocked(useUserLists).mockReturnValue({
+        data: mockLists,
+        isLoading: false,
+        error: null,
+      } as unknown as ReturnType<typeof useUserLists>);
+    });
+
     it('読み込み中の表示がされる', () => {
       vi.mocked(useUser).mockReturnValue({
         data: undefined,
         error: null,
         isLoading: true,
       } as unknown as ReturnType<typeof useUser>);
-      vi.mocked(useUserBooks).mockReturnValue({} as unknown as ReturnType<typeof useUserBooks>);
-      vi.mocked(useUserLists).mockReturnValue({} as unknown as ReturnType<typeof useUserLists>);
 
-      render(<UserDetailClient id="1" />);
+      render(<UserDetailClient id="1" />, { wrapper: createProvider() });
 
       expect(screen.getByText('ユーザー情報を読み込んでいます...')).toBeInTheDocument();
     });
@@ -47,10 +64,8 @@ describe('UserDetailClient', () => {
         error: new Error('エラーのテスト'),
         isLoading: false,
       } as unknown as ReturnType<typeof useUser>);
-      vi.mocked(useUserBooks).mockReturnValue({} as unknown as ReturnType<typeof useUserBooks>);
-      vi.mocked(useUserLists).mockReturnValue({} as unknown as ReturnType<typeof useUserLists>);
 
-      render(<UserDetailClient id="1" />);
+      render(<UserDetailClient id="1" />, { wrapper: createProvider() });
 
       expect(screen.getByText('エラーのテスト')).toBeInTheDocument();
     });
@@ -61,10 +76,8 @@ describe('UserDetailClient', () => {
         error: new Error(),
         isLoading: false,
       } as unknown as ReturnType<typeof useUser>);
-      vi.mocked(useUserBooks).mockReturnValue({} as unknown as ReturnType<typeof useUserBooks>);
-      vi.mocked(useUserLists).mockReturnValue({} as unknown as ReturnType<typeof useUserLists>);
 
-      render(<UserDetailClient id="1" />);
+      render(<UserDetailClient id="1" />, { wrapper: createProvider() });
 
       expect(screen.getByText('エラーが発生しました')).toBeInTheDocument();
     });
@@ -75,8 +88,8 @@ describe('UserDetailClient', () => {
         error: null,
         isLoading: false,
       } as unknown as ReturnType<typeof useUser>);
-      vi.mocked(useUserBooks).mockReturnValue({} as unknown as ReturnType<typeof useUserBooks>);
-      vi.mocked(useUserLists).mockReturnValue({} as unknown as ReturnType<typeof useUserLists>);
+      // vi.mocked(useUserBooks).mockReturnValue({} as unknown as ReturnType<typeof useUserBooks>);
+      // vi.mocked(useUserLists).mockReturnValue({} as unknown as ReturnType<typeof useUserLists>);
 
       render(<UserDetailClient id="1" />, { wrapper: createProvider() });
 
@@ -85,16 +98,29 @@ describe('UserDetailClient', () => {
   });
 
   describe('本の表示', () => {
+    beforeEach(() => {
+      vi.clearAllMocks();
+
+      vi.mocked(useUser).mockReturnValue({
+        data: mockUser,
+        isLoading: false,
+        error: null,
+      } as unknown as ReturnType<typeof useUser>);
+      vi.mocked(useUserLists).mockReturnValue({
+        data: mockLists,
+        isLoading: false,
+        error: null,
+      } as unknown as ReturnType<typeof useUserLists>);
+    });
+
     it('読み込み中の表示がされる', () => {
       vi.mocked(useUserBooks).mockReturnValue({
         data: undefined,
         error: null,
         isLoading: true,
       } as unknown as ReturnType<typeof useUserBooks>);
-      vi.mocked(useUser).mockReturnValue({} as unknown as ReturnType<typeof useUser>);
-      vi.mocked(useUserLists).mockReturnValue({} as unknown as ReturnType<typeof useUserLists>);
 
-      render(<UserDetailClient id="1" />);
+      render(<UserDetailClient id="1" />, { wrapper: createProvider() });
 
       expect(screen.getByText('本を読み込んでいます...')).toBeInTheDocument();
     });
@@ -105,10 +131,8 @@ describe('UserDetailClient', () => {
         error: new Error('エラーのテスト'),
         isLoading: false,
       } as unknown as ReturnType<typeof useUserBooks>);
-      vi.mocked(useUser).mockReturnValue({} as unknown as ReturnType<typeof useUser>);
-      vi.mocked(useUserLists).mockReturnValue({} as unknown as ReturnType<typeof useUserLists>);
 
-      render(<UserDetailClient id="1" />);
+      render(<UserDetailClient id="1" />, { wrapper: createProvider() });
 
       expect(screen.getByText('エラーのテスト')).toBeInTheDocument();
     });
@@ -119,10 +143,8 @@ describe('UserDetailClient', () => {
         error: new Error(),
         isLoading: false,
       } as unknown as ReturnType<typeof useUserBooks>);
-      vi.mocked(useUser).mockReturnValue({} as unknown as ReturnType<typeof useUser>);
-      vi.mocked(useUserLists).mockReturnValue({} as unknown as ReturnType<typeof useUserLists>);
 
-      render(<UserDetailClient id="1" />);
+      render(<UserDetailClient id="1" />, { wrapper: createProvider() });
 
       expect(screen.getByText('本の取得に失敗しました')).toBeInTheDocument();
     });
@@ -133,26 +155,37 @@ describe('UserDetailClient', () => {
         error: null,
         isLoading: false,
       } as unknown as ReturnType<typeof useUserBooks>);
-      vi.mocked(useUser).mockReturnValue({} as unknown as ReturnType<typeof useUser>);
-      vi.mocked(useUserLists).mockReturnValue({} as unknown as ReturnType<typeof useUserLists>);
 
-      render(<UserDetailClient id="1" />);
+      render(<UserDetailClient id="1" />, { wrapper: createProvider() });
 
       expect(screen.getByText('本一覧')).toBeInTheDocument();
     });
   });
 
   describe('リストの表示', () => {
+    beforeEach(() => {
+      vi.clearAllMocks();
+
+      vi.mocked(useUser).mockReturnValue({
+        data: mockUser,
+        isLoading: false,
+        error: null,
+      } as unknown as ReturnType<typeof useUser>);
+      vi.mocked(useUserBooks).mockReturnValue({
+        data: mockBooks,
+        isLoading: false,
+        error: null,
+      } as unknown as ReturnType<typeof useUserBooks>);
+    });
+
     it('読み込み中の表示がされる', () => {
       vi.mocked(useUserLists).mockReturnValue({
         data: undefined,
         error: null,
         isLoading: true,
       } as unknown as ReturnType<typeof useUserLists>);
-      vi.mocked(useUser).mockReturnValue({} as unknown as ReturnType<typeof useUser>);
-      vi.mocked(useUserBooks).mockReturnValue({} as unknown as ReturnType<typeof useUserBooks>);
 
-      render(<UserDetailClient id="1" />);
+      render(<UserDetailClient id="1" />, { wrapper: createProvider() });
 
       expect(screen.getByText('リストを読み込んでいます...')).toBeInTheDocument();
     });
@@ -163,10 +196,8 @@ describe('UserDetailClient', () => {
         error: new Error('エラーのテスト'),
         isLoading: false,
       } as unknown as ReturnType<typeof useUserLists>);
-      vi.mocked(useUser).mockReturnValue({} as unknown as ReturnType<typeof useUser>);
-      vi.mocked(useUserBooks).mockReturnValue({} as unknown as ReturnType<typeof useUserBooks>);
 
-      render(<UserDetailClient id="1" />);
+      render(<UserDetailClient id="1" />, { wrapper: createProvider() });
 
       expect(screen.getByText('エラーのテスト')).toBeInTheDocument();
     });
@@ -177,10 +208,8 @@ describe('UserDetailClient', () => {
         error: new Error(),
         isLoading: false,
       } as unknown as ReturnType<typeof useUserLists>);
-      vi.mocked(useUser).mockReturnValue({} as unknown as ReturnType<typeof useUser>);
-      vi.mocked(useUserBooks).mockReturnValue({} as unknown as ReturnType<typeof useUserBooks>);
 
-      render(<UserDetailClient id="1" />);
+      render(<UserDetailClient id="1" />, { wrapper: createProvider() });
 
       expect(screen.getByText('リストの取得に失敗しました')).toBeInTheDocument();
     });
@@ -191,10 +220,8 @@ describe('UserDetailClient', () => {
         error: null,
         isLoading: false,
       } as unknown as ReturnType<typeof useUserLists>);
-      vi.mocked(useUser).mockReturnValue({} as unknown as ReturnType<typeof useUser>);
-      vi.mocked(useUserBooks).mockReturnValue({} as unknown as ReturnType<typeof useUserBooks>);
 
-      render(<UserDetailClient id="1" />);
+      render(<UserDetailClient id="1" />, { wrapper: createProvider() });
 
       expect(screen.getByText('公開リスト')).toBeInTheDocument();
     });
