@@ -21,6 +21,7 @@ export function useRegisterForm() {
 
     if (result?.error) {
       toast.error(result.error);
+      return;
     }
 
     if (result?.success) {
