@@ -1,7 +1,6 @@
 'use client';
 
-import ErrorMessage from '@/components/feedback/ErrorMessage';
-import LoadingState from '@/components/feedback/LoadingState';
+import { ErrorMessage, LoadingState } from '@/components/feedback';
 
 interface QueryBoundaryProps<T> {
   data: T | undefined;
@@ -25,7 +24,7 @@ export default function QueryBoundary<T>({
   }
 
   if (error) {
-    return <ErrorMessage message={error.message} />;
+    return <ErrorMessage message={error.message || errorMessage} />;
   }
 
   if (!data) {
