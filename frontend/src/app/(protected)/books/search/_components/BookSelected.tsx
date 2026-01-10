@@ -27,9 +27,9 @@ export default function BookSelected({ book, onClear }: SelectedBookDetailProps)
         </button>
       </div>
 
-      <div className="flex gap-6">
+      <div className="flex flex-col md:flex-row gap-6">
         {/* 書籍画像 */}
-        <div className="flex-shrink-0">
+        <div className="flex-shrink-0 mx-auto md:mx-0">
           {book.volumeInfo.imageLinks?.thumbnail ? (
             <div className="relative w-40 h-60">
               <Image
@@ -80,7 +80,7 @@ export default function BookSelected({ book, onClear }: SelectedBookDetailProps)
             <button
               onClick={() => registerBook(book)}
               disabled={true}
-              className="w-40 px-6 py-3 bg-gray-200 text-gray-700 font-semibold rounded-md disabled:cursor-not-allowed transition-colors"
+              className="w-full md:w-40 px-6 py-3 bg-gray-200 text-gray-700 font-semibold rounded-md disabled:cursor-not-allowed transition-colors"
             >
               ✓ 登録済み
             </button>
@@ -88,7 +88,7 @@ export default function BookSelected({ book, onClear }: SelectedBookDetailProps)
             <button
               onClick={() => registerBook(book)}
               disabled={isRegistering}
-              className="w-40 px-6 py-3 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-700 hover:cursor-pointer disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
+              className="w-full md:w-40 px-6 py-3 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-700 hover:cursor-pointer disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
             >
               この本を登録
             </button>

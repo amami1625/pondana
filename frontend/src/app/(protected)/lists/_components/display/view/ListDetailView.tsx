@@ -4,14 +4,8 @@ import { useListDetailView } from '@/app/(protected)/lists/_hooks/useListDetailV
 import UpdateListFormModal from '@/app/(protected)/lists/_components/modal';
 import AddBookModal from '@/app/(protected)/listBooks/_components/modal/AddBookModal';
 import AddedBooks from '@/app/(protected)/lists/_components/display/AddedBooks';
-import {
-  DetailContainer,
-  DetailCard,
-  DetailHeader,
-  DetailDescription,
-  DetailMetadata,
-  DetailOwner,
-} from '@/components/details';
+import Link from 'next/link';
+import Breadcrumb from '@/components/layout/Breadcrumb';
 import ListActions from '@/app/(protected)/lists/_components/detail/ListActions';
 import { ListDetail } from '@/schemas/list';
 import { useProfile } from '@/hooks/useProfile';
@@ -30,26 +24,56 @@ export default function ListDetailView({ list }: ListDetailProps) {
 
   return (
     <>
-      <DetailContainer breadcrumbItems={isOwner ? breadcrumbItems : undefined}>
+      <div className="flex flex-col gap-8">
+        {/* パンくずリスト（所有者の場合のみ） */}
+        {isOwner && <Breadcrumb items={breadcrumbItems} />}
         {/* 所有者でない場合、ユーザー名を表示 */}
-        {!isOwner && <DetailOwner userId={list.user_id} name={list.user.name} />}
-        <DetailCard>
-          <DetailHeader title={list.name} badges={badges} />
-          <DetailDescription description={list.description} />
-          <DetailMetadata createdAt={list.created_at} updatedAt={list.updated_at} />
-          {/* 所有者の場合のみ編集・削除ボタンを表示 */}
-          {isOwner && (
-            <ListActions
-              onEdit={updateModal.open}
-              onAddBook={addBookModal.open}
-              onDelete={() => handleDelete(list.id)}
-            />
-          )}
-        </DetailCard>
+        {!isOwner && (
+          <div className="mb-4">
+            <Link
+              href={`/users/${list.user_id}`}
+              className="text-sm text-slate-600 hover:text-primary transition-colors"
+            >
+              {list.user.name}さんのリスト
+            </Link>
+          </div>
+        )}
+        {/* メインカード */}
+        <div className="flex flex-col sm:flex-row gap-6 p-6 sm:p-8 bg-white rounded-xl border border-slate-200">
+          <div className="flex flex-1 flex-col gap-6 min-w-0">
+            {/* ヘッダー */}
+            <div className="flex flex-wrap justify-between items-start gap-4 min-w-0">
+              <div className="flex flex-col gap-1 flex-1 min-w-0">
+                <h1 className="text-slate-900 text-3xl sm:text-4xl font-black tracking-tighter truncate">
+                  {list.name}
+                </h1>
+              </div>
+              {badges && <div className="flex items-center gap-3">{badges}</div>}
+            </div>
+            {/* 説明 */}
+            <p className="text-slate-600 text-base font-normal leading-relaxed">
+              {list.description ?? '説明が登録されていません'}
+            </p>
+
+            {/* メタデータ */}
+            <div className="flex flex-wrap gap-x-6 gap-y-2 text-sm text-slate-500 pt-2 border-t border-slate-200">
+              <span>登録日: {list.created_at}</span>
+              <span>更新日: {list.updated_at}</span>
+            </div>
+            {/* 所有者の場合のみ編集・削除ボタンを表示 */}
+            {isOwner && (
+              <ListActions
+                onEdit={updateModal.open}
+                onAddBook={addBookModal.open}
+                onDelete={() => handleDelete(list.id)}
+              />
+            )}
+          </div>
+        </div>
 
         {/* 追加済みの本 */}
         <AddedBooks books={list.books} listBooks={list.list_books} isOwner={isOwner} />
-      </DetailContainer>
+      </div>
 
       {/* 所有者の場合のみモーダルを表示できるようにする */}
       {isOwner && (

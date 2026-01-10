@@ -27,10 +27,10 @@ export default function ListItem({ items, variant }: ListItemProps) {
           <Link
             key={item.id}
             href={href}
-            className="flex items-center justify-between p-4 rounded-lg bg-white hover:bg-slate-100/50 border border-slate-200 transition-colors"
+            className="flex items-center justify-between gap-3 p-4 rounded-lg bg-white hover:bg-slate-100/50 border border-slate-200 transition-colors min-w-0"
           >
-            <span className="font-medium text-slate-800">{title}</span>
-            <ChevronRight size={20} className="text-slate-400" />
+            <span className="font-medium text-slate-800 truncate flex-1 min-w-0">{title}</span>
+            <ChevronRight size={20} className="text-slate-400 flex-shrink-0" />
           </Link>
         );
       })}

@@ -10,10 +10,11 @@ export default async function SettingsPage() {
 
   const queryClient = createServerQueryClient();
 
+  // データをprefetchしてキャッシュに保存
   await queryClient.prefetchQuery({
     queryKey: queryKeys.profile.all,
     queryFn: async () => {
-      const data = await authenticatedRequest('/profiles');
+      const data = await authenticatedRequest('/profile');
       return userSchema.parse(data);
     },
   });

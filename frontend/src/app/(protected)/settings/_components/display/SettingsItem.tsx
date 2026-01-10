@@ -1,4 +1,4 @@
-import Button from '@/components/buttons/Button';
+import { Edit3, Trash2 } from 'lucide-react';
 
 interface SettingsItemProps {
   label: string;
@@ -23,16 +23,22 @@ export default function SettingsItem({
           <dd className="text-base text-gray-900">{value}</dd>
         </div>
         {(onEdit || onDelete) && (
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-3">
             {onEdit && (
-              <Button variant="update" onClick={onEdit}>
-                編集
-              </Button>
+              <button
+                onClick={onEdit}
+                className="cursor-pointer hover:text-blue-600 transition-colors"
+              >
+                <Edit3 size={18} />
+              </button>
             )}
             {onDelete && (
-              <Button variant="delete" onClick={onDelete}>
-                削除
-              </Button>
+              <button
+                onClick={onDelete}
+                className="cursor-pointer hover:text-red-600 transition-colors"
+              >
+                <Trash2 size={18} />
+              </button>
             )}
           </div>
         )}

@@ -5,13 +5,9 @@ import { useBookDetailView } from '@/app/(protected)/books/_hooks/useBookDetailV
 import UpdateBookFormModal from '@/app/(protected)/books/_components/modal';
 import AddListModal from '@/app/(protected)/listBooks/_components/modal/AddListModal';
 import CardModal from '@/app/(protected)/cards/_components/modal';
-import {
-  DetailContainer,
-  DetailCard,
-  DetailHeader,
-  DetailDescription,
-  DetailMetadata,
-} from '@/components/details';
+import { Star } from 'lucide-react';
+import Image from 'next/image';
+import Breadcrumb from '@/components/layout/Breadcrumb';
 import BookActions from '@/app/(protected)/books/_components/detail/BookActions';
 import BookDetailTabs from '@/app/(protected)/books/_components/detail/tab/BookDetailTabs';
 import { useProfile } from '@/hooks/useProfile';
@@ -30,33 +26,74 @@ export default function BookDetailView({ book }: BookDetailProps) {
 
   return (
     <>
-      <DetailContainer breadcrumbItems={breadcrumbItems}>
-        <DetailCard
-          thumbnail={book.thumbnail ? { src: book.thumbnail, alt: book.title } : undefined}
-        >
-          <DetailHeader
-            title={book.title}
-            subtitle={book.subtitle ?? ''}
-            authors={book.authors}
-            rating={book.rating ?? undefined}
-            badges={badges}
-          />
-          <DetailDescription description={book.description} />
-          <DetailMetadata createdAt={book.created_at} updatedAt={book.updated_at} />
-          {/* 所有者の場合のみ編集・削除ボタンを表示 */}
-          {isOwner && (
-            <BookActions
-              onEdit={updateModal.open}
-              onAddToList={addListModal.open}
-              onCreateCard={cardModal.open}
-              onDelete={() => handleDelete(book.id)}
+      <div className="flex flex-col gap-8">
+        {/* パンくずリスト */}
+        <Breadcrumb items={breadcrumbItems} />
+        {/* メインカード */}
+        <div className="flex flex-col sm:flex-row gap-6 p-6 sm:p-8 bg-white rounded-xl border border-slate-200">
+          {book.thumbnail && (
+            <Image
+              src={book.thumbnail}
+              alt={book.title}
+              width={128}
+              height={176}
+              className="w-32 h-44 shrink-0 object-cover rounded-lg"
+              priority
             />
           )}
-        </DetailCard>
+          <div className="flex flex-1 flex-col gap-6 min-w-0">
+            {/* ヘッダー */}
+            <div className="flex flex-wrap justify-between items-start gap-4 min-w-0">
+              <div className="flex flex-col gap-1 flex-1 min-w-0">
+                <h1 className="text-slate-900 text-3xl sm:text-4xl font-black tracking-tighter truncate">
+                  {book.title}
+                </h1>
+                {book.subtitle && (
+                  <p className="text-slate-500 text-lg font-medium truncate">{book.subtitle}</p>
+                )}
+                {book.authors && (
+                  <p className="text-slate-500 text-lg font-medium truncate">
+                    {`著者: ${book.authors.join(', ')}`}
+                  </p>
+                )}
+                {book.rating && (
+                  <div className="flex items-center gap-1 text-primary mb-3">
+                    {[...Array(5)].map((_, i) => (
+                      <Star
+                        key={i}
+                        className={`h-4 w-4 ${i < book.rating! ? 'fill-current' : ''}`}
+                      />
+                    ))}
+                  </div>
+                )}
+              </div>
+              {badges && <div className="flex items-center gap-3">{badges}</div>}
+            </div>
+            {/* 説明 */}
+            <p className="text-slate-600 text-base font-normal leading-relaxed">
+              {book.description ?? '説明が登録されていません'}
+            </p>
+
+            {/* メタデータ */}
+            <div className="flex flex-wrap gap-x-6 gap-y-2 text-sm text-slate-500 pt-2 border-t border-slate-200">
+              <span>登録日: {book.created_at}</span>
+              <span>更新日: {book.updated_at}</span>
+            </div>
+            {/* 所有者の場合のみ編集・削除ボタンを表示 */}
+            {isOwner && (
+              <BookActions
+                onEdit={updateModal.open}
+                onAddToList={addListModal.open}
+                onCreateCard={cardModal.open}
+                onDelete={() => handleDelete(book.id)}
+              />
+            )}
+          </div>
+        </div>
 
         {/* タブ切り替え */}
         <BookDetailTabs lists={book.lists} cards={book.cards} />
-      </DetailContainer>
+      </div>
 
       {/* モーダル */}
       <UpdateBookFormModal book={book} isOpen={updateModal.isOpen} onClose={updateModal.close} />

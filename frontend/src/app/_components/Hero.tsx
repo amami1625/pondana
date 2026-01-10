@@ -8,7 +8,7 @@ export default function Hero() {
         <div className="text-center max-w-3xl mx-auto">
           <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-slate-900 leading-tight mb-8">
             学びの記録は
-            <br className="hidden sm:block" />
+            <br />
             <span className="text-sky-600">ぽんダナ</span>で。
           </h1>
           <p className="text-xl text-slate-600 mb-10 leading-relaxed max-w-2xl mx-auto">
