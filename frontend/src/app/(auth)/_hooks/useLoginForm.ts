@@ -26,17 +26,15 @@ export function useLoginForm() {
     }
 
     // 2. サーバー側のセッションも設定
-    const result = await loginAction(data);
+    const serverError = await loginAction(data);
 
-    if (result?.error) {
-      toast.error(result.error);
+    if (serverError) {
+      toast.error(serverError);
       return;
     }
 
-    if (result?.success) {
-      toast.success('ログインしました');
-      router.push('/top');
-    }
+    toast.success('ログインしました');
+    router.push('/top');
   };
 
   return {

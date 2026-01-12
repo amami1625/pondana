@@ -1,6 +1,6 @@
 interface ButtonProps {
   type?: 'button' | 'submit';
-  variant: 'create' | 'update' | 'delete' | 'cancel' | 'primary' | 'secondary' | 'danger';
+  variant: 'primary' | 'secondary' | 'danger' | 'ghost';
   onClick?: () => void;
   disabled?: boolean;
   children: React.ReactNode;
@@ -9,16 +9,10 @@ interface ButtonProps {
 }
 
 const BUTTON_STYLES = {
-  // アクション系（意味重視）
-  create: 'bg-primary text-white hover:bg-primary/90',
-  update: 'bg-green-600 text-white hover:bg-green-700',
-  delete: 'bg-red-600 text-white hover:bg-red-700',
-  cancel: 'bg-slate-200 text-slate-800 hover:bg-slate-300',
-
-  // 汎用（見た目重視）
   primary: 'bg-primary text-white hover:bg-primary/90',
   secondary: 'bg-slate-200 text-slate-800 hover:bg-slate-300',
   danger: 'text-red-600 hover:bg-red-500/10',
+  ghost: 'bg-transparent text-primary hover:bg-slate-100',
 };
 
 const BASE_STYLES =

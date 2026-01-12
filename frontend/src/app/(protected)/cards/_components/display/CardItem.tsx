@@ -1,37 +1,18 @@
 'use client';
 
+import { Flag } from 'lucide-react';
 import { Card } from '@/app/(protected)/cards/_types';
 import Button from '@/components/buttons/Button';
-import { DetailLink } from '@/components/links';
-import { useCardMutations } from '@/app/(protected)/cards/_hooks/useCardMutations';
 import StatusBadge from '@/components/badges/StatusBadge';
-import { useRouter } from 'next/navigation';
-import { Flag } from 'lucide-react';
+import { DetailLink } from '@/components/links';
+import { useCardItem } from '@/app/(protected)/cards/_hooks/useCardItem';
 
 interface CardItemProps {
   card: Card;
 }
 
 export default function CardItem({ card }: CardItemProps) {
-  const router = useRouter();
-  const { deleteCard } = useCardMutations();
-
-  const handleDelete = () => {
-    if (!confirm('本当に削除しますか？')) {
-      return;
-    }
-
-    if (card) {
-      deleteCard(
-        { bookId: card.book_id, cardId: card.id },
-        {
-          onSuccess: () => {
-            router.push('/cards');
-          },
-        },
-      );
-    }
-  };
+  const { handleDelete } = useCardItem(card);
 
   return (
     <div className="border-b border-gray-200 p-4 last:border-b-0">
@@ -55,7 +36,7 @@ export default function CardItem({ card }: CardItemProps) {
         {/* アクションボタン */}
         <div className="flex-shrink-0 flex gap-2 justify-center sm:justify-start">
           <DetailLink href={`/cards/${card.id}`} />
-          <Button variant="delete" onClick={handleDelete}>
+          <Button variant="danger" onClick={handleDelete}>
             削除
           </Button>
         </div>

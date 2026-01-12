@@ -12,33 +12,28 @@ export function useLogout() {
   const logout = async () => {
     setLoading(true);
 
-    try {
-      // 1. クライアント側でログアウト（重要: タブ間同期のため）
-      const clientError = await logoutClientSide();
+    // 1. クライアント側でログアウト（重要: タブ間同期のため）
+    const clientError = await logoutClientSide();
 
-      if (clientError) {
-        toast.error(clientError);
-        setLoading(false);
-        return;
-      }
-
-      // 2. サーバー側のセッションもクリア
-      const result = await logoutAction();
-
-      if (result?.error) {
-        toast.error(result.error);
-        setLoading(false);
-        return;
-      }
-
-      // 3. React Queryのキャッシュをクリア
-      queryClient.clear();
-      toast.success('ログアウトしました');
-      router.push('/');
-    } catch (_error) {
-      toast.error('エラーが発生しました。もう一度お試しください');
+    if (clientError) {
+      toast.error(clientError);
       setLoading(false);
+      return;
     }
+
+    // 2. サーバー側のセッションもクリア
+    const serverError = await logoutAction();
+
+    if (serverError) {
+      toast.error(serverError);
+      setLoading(false);
+      return;
+    }
+
+    // 3. React Queryのキャッシュをクリア
+    queryClient.clear();
+    toast.success('ログアウトしました');
+    router.push('/');
   };
 
   return {

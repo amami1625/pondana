@@ -57,51 +57,7 @@ describe('Button', () => {
     });
   });
 
-  describe('アクション系のスタイル', () => {
-    it('create 用のスタイルが適用される', () => {
-      render(
-        <Button variant="create" onClick={() => {}}>
-          テスト
-        </Button>,
-      );
-
-      expect(screen.getByRole('button')).toHaveClass('bg-primary text-white hover:bg-primary/90');
-    });
-
-    it('update 用のスタイルが適用される', () => {
-      render(
-        <Button variant="update" onClick={() => {}}>
-          テスト
-        </Button>,
-      );
-
-      expect(screen.getByRole('button')).toHaveClass('bg-green-600 text-white hover:bg-green-700');
-    });
-
-    it('delete 用のスタイルが適用される', () => {
-      render(
-        <Button variant="delete" onClick={() => {}}>
-          テスト
-        </Button>,
-      );
-
-      expect(screen.getByRole('button')).toHaveClass('bg-red-600 text-white hover:bg-red-700');
-    });
-
-    it('cancel 用のスタイルが適用される', () => {
-      render(
-        <Button variant="cancel" onClick={() => {}}>
-          テスト
-        </Button>,
-      );
-
-      expect(screen.getByRole('button')).toHaveClass(
-        'bg-slate-200 text-slate-800 hover:bg-slate-300',
-      );
-    });
-  });
-
-  describe('汎用スタイル', () => {
+  describe('バリアントスタイル', () => {
     it('primary 用のスタイルが適用される', () => {
       render(
         <Button variant="primary" onClick={() => {}}>
@@ -132,6 +88,18 @@ describe('Button', () => {
       );
 
       expect(screen.getByRole('button')).toHaveClass('text-red-600 hover:bg-red-500/10');
+    });
+
+    it('ghost 用のスタイルが適用される', () => {
+      render(
+        <Button variant="ghost" onClick={() => {}}>
+          テスト
+        </Button>,
+      );
+
+      expect(screen.getByRole('button')).toHaveClass(
+        'bg-transparent text-primary hover:bg-slate-100',
+      );
     });
   });
 });

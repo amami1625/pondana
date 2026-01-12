@@ -25,7 +25,11 @@ export default function BookCardGroup({ book, cards }: BookCardGroupProps) {
         <h2 className="text-xl font-bold text-gray-900 w-full sm:flex-1 min-w-0 truncate">
           {book.title}
         </h2>
-        <Button variant="create" onClick={cardModal.open} icon={<StickyNote className="h-4 w-4" />}>
+        <Button
+          variant="primary"
+          onClick={cardModal.open}
+          icon={<StickyNote className="h-4 w-4" />}
+        >
           カードを作成
         </Button>
       </div>

@@ -17,16 +17,15 @@ export function useRegisterForm() {
   });
 
   const onSubmit = async (data: RegisterFormData) => {
-    const result = await signUpAction(data.name, data.email, data.password);
+    const error = await signUpAction(data.name, data.email, data.password);
 
-    if (result?.error) {
-      toast.error(result.error);
+    if (error) {
+      toast.error(error);
+      return;
     }
 
-    if (result?.success) {
-      toast.success('ユーザー登録が完了しました');
-      router.push('/top');
-    }
+    toast.success('ユーザー登録が完了しました');
+    router.push('/top');
   };
 
   return {

@@ -66,18 +66,14 @@ export default function CardForm({ card, bookId, onClose, submitLabel }: CardFor
             setValueAs: (v) => (v === '' ? undefined : Number(v)),
           }}
           button={
-            <button
-              type="button"
-              onClick={statusModal.open}
-              className="text-sm text-blue-600 hover:text-blue-700 hover: cursor-pointer"
-            >
+            <Button type="button" variant="ghost" onClick={statusModal.open}>
               + ステータスを追加
-            </button>
+            </Button>
           }
         />
 
         <div className="flex justify-end gap-3">
-          <Button variant="cancel" onClick={onClose}>
+          <Button variant="secondary" onClick={onClose}>
             キャンセル
           </Button>
           <Button

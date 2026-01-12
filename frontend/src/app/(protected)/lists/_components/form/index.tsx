@@ -49,7 +49,7 @@ export default function ListForm({ list, submitLabel, cancel }: ListFormProps) {
       />
 
       <div className="flex flex-col sm:flex-row justify-end gap-3">
-        <Button variant="cancel" onClick={cancel}>
+        <Button variant="secondary" onClick={cancel}>
           キャンセル
         </Button>
         <Button
