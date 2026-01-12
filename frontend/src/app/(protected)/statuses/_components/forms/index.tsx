@@ -31,7 +31,7 @@ export default function StatusForm({ status, submitLabel, cancel }: StatusFormPr
       </div>
 
       <div className="flex justify-end gap-3">
-        <Button variant="cancel" onClick={cancel}>
+        <Button variant="secondary" onClick={cancel}>
           キャンセル
         </Button>
         <Button

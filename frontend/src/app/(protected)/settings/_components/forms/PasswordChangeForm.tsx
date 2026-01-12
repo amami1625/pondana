@@ -49,7 +49,7 @@ export default function PasswordChangeForm({ email, onClose }: PasswordChangeFor
             </p>
           </div>
           <div className="mt-6 flex justify-end gap-3">
-            <Button type="button" variant="cancel" onClick={onClose}>
+            <Button type="button" variant="secondary" onClick={onClose}>
               キャンセル
             </Button>
             <Button

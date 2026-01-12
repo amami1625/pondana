@@ -55,7 +55,7 @@ export default function CardItem({ card }: CardItemProps) {
         {/* アクションボタン */}
         <div className="flex-shrink-0 flex gap-2 justify-center sm:justify-start">
           <DetailLink href={`/cards/${card.id}`} />
-          <Button variant="delete" onClick={handleDelete}>
+          <Button variant="danger" onClick={handleDelete}>
             削除
           </Button>
         </div>

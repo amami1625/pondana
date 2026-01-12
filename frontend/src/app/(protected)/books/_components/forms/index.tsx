@@ -83,13 +83,9 @@ export default function BookForm({ book, submitLabel, cancel }: BookFormProps) {
             setValueAs: (v) => (v === '' ? undefined : Number(v)),
           }}
           button={
-            <button
-              type="button"
-              onClick={categoryModal.open}
-              className="text-sm text-blue-600 hover:text-blue-700"
-            >
+            <Button type="button" variant="ghost" onClick={categoryModal.open}>
               + カテゴリを追加
-            </button>
+            </Button>
           }
         />
         {/* タグ */}
@@ -98,13 +94,9 @@ export default function BookForm({ book, submitLabel, cancel }: BookFormProps) {
             <label htmlFor="tags" className="font-semibold text-gray-700">
               タグ
             </label>
-            <button
-              type="button"
-              onClick={tagModal.open}
-              className="text-sm text-blue-600 hover:text-blue-700"
-            >
+            <Button type="button" variant="ghost" onClick={tagModal.open}>
               + タグを追加
-            </button>
+            </Button>
           </div>
           <Controller
             name="tag_ids"
@@ -141,7 +133,7 @@ export default function BookForm({ book, submitLabel, cancel }: BookFormProps) {
         />
 
         <div className="flex justify-end gap-3">
-          <Button variant="cancel" onClick={cancel}>
+          <Button variant="secondary" onClick={cancel}>
             キャンセル
           </Button>
           <Button
