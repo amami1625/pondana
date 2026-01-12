@@ -49,7 +49,7 @@ describe('useLoginForm', () => {
   describe('onSubmit: 正常系', () => {
     beforeEach(() => {
       vi.mocked(loginClientSide).mockResolvedValue(null);
-      vi.mocked(loginAction).mockResolvedValue({ success: true });
+      vi.mocked(loginAction).mockResolvedValue(null);
     });
 
     it('loginClientside が呼ばれる', async () => {
@@ -91,7 +91,7 @@ describe('useLoginForm', () => {
 
     it('loginAction のエラーメッセージがトーストで表示される', async () => {
       vi.mocked(loginClientSide).mockResolvedValue(null);
-      vi.mocked(loginAction).mockResolvedValue({ error: 'エラーです' });
+      vi.mocked(loginAction).mockResolvedValue('エラーです');
 
       const { result } = renderHook(() => useLoginForm());
 
@@ -102,7 +102,7 @@ describe('useLoginForm', () => {
 
     it('トップページに遷移されない', async () => {
       vi.mocked(loginClientSide).mockResolvedValue(null);
-      vi.mocked(loginAction).mockResolvedValue({ error: 'エラーです' });
+      vi.mocked(loginAction).mockResolvedValue('エラーです');
 
       const { result } = renderHook(() => useLoginForm());
 

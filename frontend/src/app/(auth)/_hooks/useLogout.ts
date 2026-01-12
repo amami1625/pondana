@@ -22,10 +22,10 @@ export function useLogout() {
     }
 
     // 2. サーバー側のセッションもクリア
-    const result = await logoutAction();
+    const serverError = await logoutAction();
 
-    if (result?.error) {
-      toast.error(result.error);
+    if (serverError) {
+      toast.error(serverError);
       setLoading(false);
       return;
     }

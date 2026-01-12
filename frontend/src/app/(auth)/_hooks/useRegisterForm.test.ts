@@ -49,7 +49,7 @@ describe('useRegisterForm', () => {
 
   describe('onSubmit: 正常系', () => {
     beforeEach(() => {
-      vi.mocked(signUpAction).mockResolvedValue({ success: true });
+      vi.mocked(signUpAction).mockResolvedValue(null);
     });
 
     it('signUpAction が呼ばれる', async () => {
@@ -76,7 +76,7 @@ describe('useRegisterForm', () => {
 
   describe('onSubmit: 異常系', () => {
     beforeEach(() => {
-      vi.mocked(signUpAction).mockResolvedValue({ error: 'エラーです' });
+      vi.mocked(signUpAction).mockResolvedValue('エラーです');
     });
 
     it('signUpAction のエラーメッセージがトーストで表示される', async () => {

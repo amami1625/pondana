@@ -57,7 +57,7 @@ describe('useLogout', () => {
   describe('logout: 正常系', () => {
     beforeEach(() => {
       vi.mocked(logoutClientSide).mockResolvedValue(null);
-      vi.mocked(logoutAction).mockResolvedValue({ success: true });
+      vi.mocked(logoutAction).mockResolvedValue(null);
     });
 
     it('logoutClientSide が呼ばれる', async () => {
@@ -108,7 +108,7 @@ describe('useLogout', () => {
 
     it('logoutAction のエラーメッセージがトーストで表示される', async () => {
       vi.mocked(logoutClientSide).mockResolvedValue(null);
-      vi.mocked(logoutAction).mockResolvedValue({ error: 'エラーです' });
+      vi.mocked(logoutAction).mockResolvedValue('エラーです');
 
       const { result } = renderHook(() => useLogout());
 
@@ -120,7 +120,7 @@ describe('useLogout', () => {
 
     it('queryClient.clear (キャッシュクリア)が呼ばれない', async () => {
       vi.mocked(logoutClientSide).mockResolvedValue(null);
-      vi.mocked(logoutAction).mockResolvedValue({ error: 'エラーです' });
+      vi.mocked(logoutAction).mockResolvedValue('エラーです');
 
       const { result } = renderHook(() => useLogout());
 
@@ -131,7 +131,7 @@ describe('useLogout', () => {
 
     it('トップページに遷移されない', async () => {
       vi.mocked(logoutClientSide).mockResolvedValue(null);
-      vi.mocked(logoutAction).mockResolvedValue({ error: 'エラーです' });
+      vi.mocked(logoutAction).mockResolvedValue('エラーです');
 
       const { result } = renderHook(() => useLogout());
 
