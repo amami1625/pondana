@@ -7,6 +7,7 @@ import Filter from '@/components/filters/Filter';
 import EmptyState from '@/components/feedback/EmptyState';
 import Link from 'next/link';
 import { useBookIndexView } from '@/app/(protected)/books/_hooks/useBookIndexView';
+import PageTitle from '@/components/layout/PageTitle';
 
 interface BookIndexViewProps {
   books: Book[];
@@ -22,9 +23,7 @@ export default function BookIndexView({ books }: BookIndexViewProps) {
       <header className="mb-6">
         <div className="flex flex-wrap justify-between gap-3">
           <div className="flex min-w-72 flex-col gap-2">
-            <h1 className="text-slate-900 text-4xl font-black leading-tight tracking-tight">
-              本棚
-            </h1>
+            <PageTitle title="本棚" />
             <p className="text-slate-500 text-base font-normal leading-normal">
               登録した本を管理できます
             </p>

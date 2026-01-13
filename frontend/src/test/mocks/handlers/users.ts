@@ -21,8 +21,8 @@ export const usersHandlers = [
 
     // クエリに応じてモックユーザーを返す
     return HttpResponse.json([
-      createMockUser({ id: 1, name: `${query} User 1` }),
-      createMockUser({ id: 2, name: `${query} User 2` }),
+      createMockUser({ id: createTestUuid(1), name: `${query} User 1` }),
+      createMockUser({ id: createTestUuid(2), name: `${query} User 2` }),
     ]);
   }),
 
@@ -30,7 +30,7 @@ export const usersHandlers = [
   http.get('/api/users/:id', ({ params }) => {
     const { id } = params;
     return HttpResponse.json({
-      ...createMockUser({ id: Number(id) }),
+      ...createMockUser({ id: String(id) }),
       stats: {
         books_count: 10,
         lists_count: 5,

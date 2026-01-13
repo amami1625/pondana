@@ -36,7 +36,10 @@ describe('useFollowMutations', () => {
 
       // 事前にキャッシュを設定
       queryClient.setQueryData(['users', 'followStatus', '1'], { is_following: false });
-      queryClient.setQueryData(['users', 'detail', '1'], createMockUserWithStats({ id: 1 }));
+      queryClient.setQueryData(
+        ['users', 'detail', '1'],
+        createMockUserWithStats({ id: '550e8400-e29b-41d4-a716-446655440000' }),
+      );
 
       const { result } = renderHook(() => useFollowMutations('1'), {
         wrapper: createProvider(queryClient),
@@ -109,7 +112,10 @@ describe('useFollowMutations', () => {
 
       // 事前にキャッシュを設定
       queryClient.setQueryData(['users', 'followStatus', '1'], { is_following: true });
-      queryClient.setQueryData(['users', 'detail', '1'], createMockUserWithStats({ id: 1 }));
+      queryClient.setQueryData(
+        ['users', 'detail', '1'],
+        createMockUserWithStats({ id: '550e8400-e29b-41d4-a716-446655440000' }),
+      );
 
       const { result } = renderHook(() => useFollowMutations('1'), {
         wrapper: createProvider(queryClient),

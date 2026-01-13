@@ -8,7 +8,7 @@ import { Category } from '@/schemas/category';
 export const createMockCategory = (overrides?: Partial<Category>): Category => ({
   id: 1,
   name: 'テストカテゴリー',
-  user_id: 1,
+  user_id: '550e8400-e29b-41d4-a716-446655440000',
   created_at: '2025-01-01T00:00:00Z',
   updated_at: '2025-01-01T00:00:00Z',
   ...overrides,

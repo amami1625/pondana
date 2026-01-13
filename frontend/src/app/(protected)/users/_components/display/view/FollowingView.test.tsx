@@ -22,7 +22,9 @@ describe('FollowingView', () => {
 
   describe('リストのレンダリング', () => {
     it('フォロー中のユーザーが表示される', () => {
-      const following = [createMockUser({ id: 2, name: 'フォローユーザーA' })];
+      const following = [
+        createMockUser({ id: '550e8400-e29b-41d4-a716-446655440001', name: 'フォローユーザーA' }),
+      ];
 
       render(<FollowingView id="1" userName="テストユーザー" following={following} />);
 
@@ -31,8 +33,8 @@ describe('FollowingView', () => {
 
     it('フォロー中のユーザーが複数存在する場合、全て表示される', () => {
       const following = [
-        createMockUser({ id: 2, name: 'フォローユーザーA' }),
-        createMockUser({ id: 3, name: 'フォローユーザーB' }),
+        createMockUser({ id: '550e8400-e29b-41d4-a716-446655440001', name: 'フォローユーザーA' }),
+        createMockUser({ id: '550e8400-e29b-41d4-a716-446655440002', name: 'フォローユーザーB' }),
       ];
 
       render(<FollowingView id="1" userName="テストユーザー" following={following} />);

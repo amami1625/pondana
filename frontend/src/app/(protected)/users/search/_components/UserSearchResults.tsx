@@ -42,21 +42,19 @@ export default function UserSearchResults({
             >
               <div className="flex items-center gap-3">
                 {/* TODO: ユーザー画像変更機能実装後に画像を表示するように変更 */}
-                <Link href={`/users/${user.id}`}>
-                  <div
-                    className="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center text-white font-medium cursor-pointer"
-                    data-testid="initial"
-                  >
-                    {user.name.charAt(0).toUpperCase()}
-                  </div>
-                </Link>
+                <div
+                  className="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center text-white font-medium cursor-pointer"
+                  data-testid="initial"
+                >
+                  {user.name.charAt(0).toUpperCase()}
+                </div>
                 <Link href={`/users/${user.id}`} className="flex-1 min-w-0">
                   <div className="font-medium text-gray-900 truncate hover:underline">
                     {user.name}
                   </div>
                 </Link>
                 <div className="flex-shrink-0">
-                  <FollowButton userId={user.id.toString()} />
+                  <FollowButton userId={user.id} />
                 </div>
               </div>
             </div>

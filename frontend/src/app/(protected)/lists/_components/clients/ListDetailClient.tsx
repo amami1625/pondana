@@ -1,28 +1,19 @@
 'use client';
 
 import { useList } from '@/app/(protected)/lists/_hooks/useList';
+import QueryBoundary from '@/components/data/QueryBoundary';
 import ListDetailView from '@/app/(protected)/lists/_components/display/view/ListDetailView';
-import ErrorMessage from '@/components/feedback/ErrorMessage';
-import LoadingState from '@/components/feedback/LoadingState';
 
-type Props = {
+interface ListDetailClientProps {
   id: string;
-};
+}
 
-export default function ListDetailClient({ id }: Props) {
-  const { data: list, error: listError, isLoading } = useList(id);
+export default function ListDetailClient({ id }: ListDetailClientProps) {
+  const query = useList(id);
 
-  if (isLoading) {
-    return <LoadingState message="リストを読み込んでいます..." />;
-  }
-
-  if (listError) {
-    return <ErrorMessage message={listError?.message} />;
-  }
-
-  if (!list) {
-    return <ErrorMessage message="データの取得に失敗しました" />;
-  }
-
-  return <ListDetailView list={list} />;
+  return (
+    <QueryBoundary {...query} loadingMessage="リストを読み込んでいます...">
+      {(list) => <ListDetailView list={list} />}
+    </QueryBoundary>
+  );
 }

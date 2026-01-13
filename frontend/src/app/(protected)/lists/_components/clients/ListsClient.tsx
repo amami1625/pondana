@@ -1,27 +1,15 @@
 'use client';
 
 import { useLists } from '@/app/(protected)/lists/_hooks/useLists';
-import ErrorMessage from '@/components/feedback/ErrorMessage';
-import LoadingState from '@/components/feedback/LoadingState';
+import QueryBoundary from '@/components/data/QueryBoundary';
 import ListIndexView from '@/app/(protected)/lists/_components/display/view/ListIndexView';
 
 export default function ListsClient() {
-  const { data: lists, error, isLoading } = useLists();
+  const query = useLists();
 
-  // ローディング状態（prefetchされているので通常は一瞬）
-  if (isLoading) {
-    return <LoadingState message="リスト一覧を読み込んでいます..." />;
-  }
-
-  // エラー状態
-  if (error) {
-    return <ErrorMessage message={error.message} />;
-  }
-
-  // データが取得できていない場合
-  if (!lists) {
-    return <ErrorMessage message="データの取得に失敗しました" />;
-  }
-
-  return <ListIndexView lists={lists} />;
+  return (
+    <QueryBoundary {...query} loadingMessage="リスト一覧を読み込んでいます...">
+      {(lists) => <ListIndexView lists={lists} />}
+    </QueryBoundary>
+  );
 }

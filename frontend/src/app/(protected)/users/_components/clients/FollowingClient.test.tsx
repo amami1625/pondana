@@ -76,7 +76,10 @@ describe('FollowingClient', () => {
 
     it('フォロー中ユーザーのエラー時にメッセージが表示される', () => {
       vi.mocked(useUser).mockReturnValue({
-        data: createMockUserWithStats({ id: 1, name: 'テストユーザー' }),
+        data: createMockUserWithStats({
+          id: '550e8400-e29b-41d4-a716-446655440000',
+          name: 'テストユーザー',
+        }),
         error: null,
         isLoading: false,
         isError: false,
@@ -116,15 +119,24 @@ describe('FollowingClient', () => {
   describe('正常表示', () => {
     it('フォロー中のユーザーが表示される', () => {
       vi.mocked(useUser).mockReturnValue({
-        data: createMockUserWithStats({ id: 1, name: 'テストユーザー' }),
+        data: createMockUserWithStats({
+          id: '550e8400-e29b-41d4-a716-446655440000',
+          name: 'テストユーザー',
+        }),
         error: null,
         isLoading: false,
         isError: false,
       } as unknown as ReturnType<typeof useUser>);
       vi.mocked(useFollowing).mockReturnValue({
         data: [
-          createMockUser({ id: 2, name: 'フォロー中ユーザーA' }),
-          createMockUser({ id: 3, name: 'フォロー中ユーザーB' }),
+          createMockUser({
+            id: '550e8400-e29b-41d4-a716-446655440001',
+            name: 'フォロー中ユーザーA',
+          }),
+          createMockUser({
+            id: '550e8400-e29b-41d4-a716-446655440002',
+            name: 'フォロー中ユーザーB',
+          }),
         ],
         error: null,
         isLoading: false,
@@ -140,7 +152,10 @@ describe('FollowingClient', () => {
 
     it('フォロー中のユーザーが0人の場合、空の状態メッセージが表示される', () => {
       vi.mocked(useUser).mockReturnValue({
-        data: createMockUserWithStats({ id: 1, name: 'テストユーザー' }),
+        data: createMockUserWithStats({
+          id: '550e8400-e29b-41d4-a716-446655440000',
+          name: 'テストユーザー',
+        }),
         error: null,
         isLoading: false,
         isError: false,

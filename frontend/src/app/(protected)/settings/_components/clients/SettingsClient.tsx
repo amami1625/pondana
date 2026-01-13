@@ -2,27 +2,18 @@
 
 import { useProfile } from '@/hooks/useProfile';
 import SettingsView from '@/app/(protected)/settings/_components/display/view/SettingsView';
-import ErrorMessage from '@/components/feedback/ErrorMessage';
-import LoadingState from '@/components/feedback/LoadingState';
+import QueryBoundary from '@/components/data/QueryBoundary';
 
-type Props = {
+interface SettingsClientProps {
   email: string;
-};
+}
 
-export default function SettingsClient({ email }: Props) {
-  const { isLoading, error, data: user } = useProfile();
+export default function SettingsClient({ email }: SettingsClientProps) {
+  const query = useProfile();
 
-  if (isLoading) {
-    return <LoadingState message="プロフィールデータを読み込んでいます..." />;
-  }
-
-  if (error) {
-    return <ErrorMessage message={error?.message || 'エラーが発生しました'} />;
-  }
-
-  if (!user) {
-    return <ErrorMessage message="プロフィールデータの取得に失敗しました" />;
-  }
-
-  return <SettingsView email={email} user={user} />;
+  return (
+    <QueryBoundary {...query} loadingMessage="プロフィールデータを読み込んでいます...">
+      {(user) => <SettingsView email={email} user={user} />}
+    </QueryBoundary>
+  );
 }

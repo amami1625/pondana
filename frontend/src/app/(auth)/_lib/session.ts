@@ -5,33 +5,37 @@ import { LoginFormData } from '@/schemas/auth';
 import { createServerSupabaseClient } from '@/supabase/clients/server';
 import { translateAuthError } from '@/lib/utils/translateAuthError';
 
-export async function loginAction(formData: LoginFormData) {
+export async function loginAction(formData: LoginFormData): Promise<string | null> {
   const supabase = await createServerSupabaseClient();
 
   const { error } = await supabase.auth.signInWithPassword(formData);
 
   if (error) {
-    return { error: translateAuthError(error.message) };
+    return translateAuthError(error.message);
   }
 
   revalidatePath('/', 'layout');
-  return { success: true };
+  return null;
 }
 
-export async function logoutAction() {
+export async function logoutAction(): Promise<string | null> {
   const supabase = await createServerSupabaseClient();
 
   const { error } = await supabase.auth.signOut();
 
   if (error) {
-    return { error: translateAuthError(error.message) };
+    return translateAuthError(error.message);
   }
 
   revalidatePath('/', 'layout');
-  return { success: true };
+  return null;
 }
 
-export async function signUpAction(name: string, email: string, password: string) {
+export async function signUpAction(
+  name: string,
+  email: string,
+  password: string,
+): Promise<string | null> {
   const supabase = await createServerSupabaseClient();
 
   const { error } = await supabase.auth.signUp({
@@ -45,9 +49,9 @@ export async function signUpAction(name: string, email: string, password: string
   });
 
   if (error) {
-    return { error: translateAuthError(error.message) };
+    return translateAuthError(error.message);
   }
 
   revalidatePath('/', 'layout');
-  return { success: true };
+  return null;
 }

@@ -6,7 +6,7 @@ import { User, UserWithStats } from '@/schemas/user';
  * @returns User型のモックオブジェクト
  */
 export const createMockUser = (overrides?: Partial<User>): User => ({
-  id: 1,
+  id: '550e8400-e29b-41d4-a716-446655440000',
   supabase_uid: '1',
   name: 'テストユーザー',
   avatar_url: null,
@@ -21,7 +21,7 @@ export const createMockUser = (overrides?: Partial<User>): User => ({
  * @returns UserWithStats型のモックオブジェクト
  */
 export const createMockUserWithStats = (overrides?: Partial<UserWithStats>): UserWithStats => ({
-  id: 1,
+  id: '550e8400-e29b-41d4-a716-446655440000',
   supabase_uid: '1',
   name: 'テストユーザー',
   avatar_url: null,

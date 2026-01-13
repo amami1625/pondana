@@ -9,7 +9,7 @@ export default async function ProtectedLayout({ children }: { children: React.Re
   return (
     <div className="min-h-screen bg-background-light font-display">
       <SideNav />
-      <main className="ml-64 p-8">
+      <main className="lg:ml-64 p-4 sm:p-6 md:p-8">
         <div className="mx-auto max-w-6xl">{children}</div>
       </main>
     </div>

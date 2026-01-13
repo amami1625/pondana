@@ -33,7 +33,7 @@ export default function CategoryForm({ category, submitLabel, cancel }: Category
       </div>
 
       <div className="flex justify-end gap-3">
-        <Button variant="cancel" onClick={cancel}>
+        <Button variant="secondary" onClick={cancel}>
           キャンセル
         </Button>
         <Button

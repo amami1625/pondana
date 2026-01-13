@@ -32,7 +32,7 @@ describe('loginAction', () => {
 
       const result = await loginAction({ email: 'test@example.com', password: 'password123' });
 
-      expect(result).toEqual({ success: true });
+      expect(result).toEqual(null);
       expect(mockSupabase.auth.signInWithPassword).toHaveBeenCalledWith({
         email: 'test@example.com',
         password: 'password123',
@@ -58,7 +58,7 @@ describe('loginAction', () => {
 
       const result = await loginAction({ email: 'test@example.com', password: 'wrong' });
 
-      expect(result).toEqual({ error: translatedError });
+      expect(result).toEqual(translatedError);
       expect(translateAuthError).toHaveBeenCalledWith(mockError);
       expect(revalidatePath).not.toHaveBeenCalled();
     });
@@ -81,7 +81,7 @@ describe('logoutAction', () => {
 
       const result = await logoutAction();
 
-      expect(result).toEqual({ success: true });
+      expect(result).toEqual(null);
       expect(mockSupabase.auth.signOut).toHaveBeenCalled();
       expect(revalidatePath).toHaveBeenCalledWith('/', 'layout');
     });
@@ -104,7 +104,7 @@ describe('logoutAction', () => {
 
       const result = await logoutAction();
 
-      expect(result).toEqual({ error: translatedError });
+      expect(result).toEqual(translatedError);
       expect(translateAuthError).toHaveBeenCalledWith(mockError);
       expect(revalidatePath).not.toHaveBeenCalled();
     });
@@ -127,7 +127,7 @@ describe('signUpAction', () => {
 
       const result = await signUpAction('Test User', 'test@example.com', 'password123');
 
-      expect(result).toEqual({ success: true });
+      expect(result).toEqual(null);
       expect(mockSupabase.auth.signUp).toHaveBeenCalledWith({
         email: 'test@example.com',
         password: 'password123',
@@ -179,7 +179,7 @@ describe('signUpAction', () => {
 
       const result = await signUpAction('Test User', 'existing@example.com', 'password123');
 
-      expect(result).toEqual({ error: translatedError });
+      expect(result).toEqual(translatedError);
       expect(translateAuthError).toHaveBeenCalledWith(mockError);
       expect(revalidatePath).not.toHaveBeenCalled();
     });

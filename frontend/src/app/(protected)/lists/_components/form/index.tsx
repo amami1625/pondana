@@ -20,21 +20,16 @@ export default function ListForm({ list, submitLabel, cancel }: ListFormProps) {
   });
 
   return (
-    <form
-      className="flex flex-col gap-6 rounded-2xl border border-gray-200 bg-white p-6 shadow-sm"
-      onSubmit={handleSubmit(onSubmit)}
-    >
-      <div className="grid gap-4 md:grid-cols-2">
-        {/* リスト名 */}
-        <FormInput
-          name="name"
-          label="リスト名"
-          type="text"
-          placeholder="リスト名を入力"
-          error={errors.name?.message}
-          register={register}
-        />
-      </div>
+    <form className="flex flex-col gap-6" onSubmit={handleSubmit(onSubmit)}>
+      {/* リスト名 */}
+      <FormInput
+        name="name"
+        label="リスト名"
+        type="text"
+        placeholder="リスト名を入力"
+        error={errors.name?.message}
+        register={register}
+      />
 
       {/* 説明 */}
       <FormTextarea
@@ -46,17 +41,15 @@ export default function ListForm({ list, submitLabel, cancel }: ListFormProps) {
       />
 
       {/* 公開・非公開 */}
-      <div className="grid gap-4 md:grid-cols-2">
-        <FormCheckbox
-          name="public"
-          label="公開する"
-          error={errors.public?.message}
-          register={register}
-        />
-      </div>
+      <FormCheckbox
+        name="public"
+        label="公開する"
+        error={errors.public?.message}
+        register={register}
+      />
 
-      <div className="flex justify-end gap-3">
-        <Button variant="cancel" onClick={cancel}>
+      <div className="flex flex-col sm:flex-row justify-end gap-3">
+        <Button variant="secondary" onClick={cancel}>
           キャンセル
         </Button>
         <Button

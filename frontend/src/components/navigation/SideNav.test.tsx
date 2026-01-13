@@ -86,6 +86,7 @@ describe('SideNav', () => {
     render(<SideNav />);
 
     expect(screen.getByText('ホーム')).toBeInTheDocument();
+    expect(screen.getByText('ダッシュボード')).toBeInTheDocument();
     expect(screen.getByText('ユーザーを検索')).toBeInTheDocument();
     expect(screen.getByText('本を検索')).toBeInTheDocument();
     expect(screen.getByText('本棚')).toBeInTheDocument();

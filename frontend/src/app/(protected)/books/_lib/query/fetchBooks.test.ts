@@ -4,6 +4,7 @@ import { fetchBooks } from './fetchBooks';
 import { server } from '@/test/mocks/server';
 import { http, HttpResponse } from 'msw';
 import { BOOKS_ERROR_MESSAGES } from '@/constants/errorMessages';
+import { ZodError } from 'zod';
 
 describe('fetchBooks', () => {
   describe('成功時', () => {
@@ -18,7 +19,7 @@ describe('fetchBooks', () => {
         id: createTestUuid(1),
         title: 'テスト本A',
         description: 'テスト説明',
-        user_id: 1,
+        user_id: '550e8400-e29b-41d4-a716-446655440000',
         category: expect.any(Object),
         tags: expect.any(Array),
         rating: 5,
@@ -37,7 +38,7 @@ describe('fetchBooks', () => {
         id: createTestUuid(2),
         title: 'テスト本B',
         description: 'テスト説明',
-        user_id: 1,
+        user_id: '550e8400-e29b-41d4-a716-446655440000',
         category: expect.any(Object),
         tags: expect.any(Array),
         rating: 5,
@@ -108,7 +109,7 @@ describe('fetchBooks', () => {
         }),
       );
 
-      await expect(fetchBooks()).rejects.toThrow();
+      await expect(fetchBooks()).rejects.toThrow(ZodError);
     });
   });
 });

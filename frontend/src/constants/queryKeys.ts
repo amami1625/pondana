@@ -26,6 +26,9 @@ export const queryKeys = {
   top: {
     all: ['top'] as const, // トップページデータ取得用
   },
+  dashboard: {
+    all: ['dashboard'] as const, // ダッシュボードデータ取得用
+  },
   users: {
     detail: (id: string) => ['users', 'detail', id] as const, // ユーザー詳細取得用
     books: (id: string) => ['users', 'books', id] as const, // ユーザーの公開本一覧取得用

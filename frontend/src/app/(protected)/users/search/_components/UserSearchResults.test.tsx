@@ -44,9 +44,9 @@ describe('UserSearchResults', () => {
 
   describe('検索結果の表示', () => {
     const mockUsers = [
-      createMockUser({ id: 1, name: 'ユーザーA' }),
-      createMockUser({ id: 2, name: 'ユーザーB' }),
-      createMockUser({ id: 3, name: 'ユーザーC' }),
+      createMockUser({ id: '550e8400-e29b-41d4-a716-446655440000', name: 'ユーザーA' }),
+      createMockUser({ id: '550e8400-e29b-41d4-a716-446655440001', name: 'ユーザーB' }),
+      createMockUser({ id: '550e8400-e29b-41d4-a716-446655440002', name: 'ユーザーC' }),
     ];
 
     it('検索結果がある場合、件数が表示される', () => {
@@ -75,13 +75,10 @@ describe('UserSearchResults', () => {
       const links = screen.getAllByRole('link');
       // 各ユーザーカードには2つのリンク（アバターと名前）がある
       const userLinks = links.filter((link) => link.getAttribute('href')?.startsWith('/users/'));
-      expect(userLinks.length).toBe(6); // 3ユーザー × 2リンク
-      expect(userLinks[0]).toHaveAttribute('href', '/users/1');
-      expect(userLinks[1]).toHaveAttribute('href', '/users/1');
-      expect(userLinks[2]).toHaveAttribute('href', '/users/2');
-      expect(userLinks[3]).toHaveAttribute('href', '/users/2');
-      expect(userLinks[4]).toHaveAttribute('href', '/users/3');
-      expect(userLinks[5]).toHaveAttribute('href', '/users/3');
+      expect(userLinks.length).toBe(3);
+      expect(userLinks[0]).toHaveAttribute('href', '/users/550e8400-e29b-41d4-a716-446655440000');
+      expect(userLinks[1]).toHaveAttribute('href', '/users/550e8400-e29b-41d4-a716-446655440001');
+      expect(userLinks[2]).toHaveAttribute('href', '/users/550e8400-e29b-41d4-a716-446655440002');
     });
 
     it('各ユーザーカードにアバター（頭文字）が表示される', () => {
@@ -94,7 +91,9 @@ describe('UserSearchResults', () => {
     });
 
     it('名前の頭文字が小文字でも大文字で表示される', () => {
-      const lowerCaseUsers = [createMockUser({ id: 1, name: 'alice' })];
+      const lowerCaseUsers = [
+        createMockUser({ id: '550e8400-e29b-41d4-a716-446655440000', name: 'alice' }),
+      ];
       render(<UserSearchResults query="alice" suggestions={lowerCaseUsers} isLoading={false} />, {
         wrapper: createProvider(),
       });
@@ -105,7 +104,9 @@ describe('UserSearchResults', () => {
 
   describe('エッジケース', () => {
     it('検索結果が1件の場合、「1件のユーザーが見つかりました」と表示される', () => {
-      const singleUser = [createMockUser({ id: 1, name: 'ユーザー' })];
+      const singleUser = [
+        createMockUser({ id: '550e8400-e29b-41d4-a716-446655440000', name: 'ユーザー' }),
+      ];
       render(<UserSearchResults query="single" suggestions={singleUser} isLoading={false} />, {
         wrapper: createProvider(),
       });

@@ -1,7 +1,7 @@
 'use client';
 
 import { useUser, useFollowers } from '@/app/(protected)/users/_hooks';
-import { ErrorMessage, LoadingState } from '@/components/feedback';
+import QueryBoundary from '@/components/data/QueryBoundary';
 import FollowersView from '../display/view/FollowersView';
 
 interface FollowersClientProps {
@@ -9,37 +9,28 @@ interface FollowersClientProps {
 }
 
 export default function FollowersClient({ id }: FollowersClientProps) {
-  const {
-    data: user,
-    isLoading: isUserLoading,
-    isError: userError,
-    error: userErrObj,
-  } = useUser(id);
-  const {
-    data: followers,
-    isLoading: isFollowersLoading,
-    isError: followersError,
-    error: followersErrObj,
-  } = useFollowers(id);
+  // TODO カスタムフック化を検討する
+  const userQuery = useUser(id);
+  const followersQuery = useFollowers(id);
 
-  // ローディング状態
-  if (isUserLoading || isFollowersLoading) {
-    return <LoadingState message="フォロワーを読み込んでいます..." />;
-  }
+  // 両方のデータが必要なので、どちらかがローディング中ならローディング表示
+  const isLoading = userQuery.isLoading || followersQuery.isLoading;
+  const error = userQuery.error || followersQuery.error;
+  const data =
+    userQuery.data && followersQuery.data
+      ? { user: userQuery.data, followers: followersQuery.data }
+      : undefined;
 
-  // エラー状態
-  if (userError) {
-    return <ErrorMessage message={userErrObj.message} />;
-  }
-
-  if (followersError) {
-    return <ErrorMessage message={followersErrObj.message} />;
-  }
-
-  // prefetchされているのでデータは存在するはず
-  if (!user || !followers) {
-    return <ErrorMessage message="データの取得に失敗しました" />;
-  }
-
-  return <FollowersView id={id} userName={user?.name} followers={followers} />;
+  return (
+    <QueryBoundary
+      data={data}
+      isLoading={isLoading}
+      error={error}
+      loadingMessage="フォロワーを読み込んでいます..."
+    >
+      {({ user, followers }) => (
+        <FollowersView id={id} userName={user.name} followers={followers} />
+      )}
+    </QueryBoundary>
+  );
 }

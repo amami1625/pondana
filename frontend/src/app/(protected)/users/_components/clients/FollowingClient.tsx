@@ -1,7 +1,7 @@
 'use client';
 
 import { useUser, useFollowing } from '@/app/(protected)/users/_hooks';
-import { ErrorMessage, LoadingState } from '@/components/feedback';
+import QueryBoundary from '@/components/data/QueryBoundary';
 import FollowingView from '../display/view/FollowingView';
 
 interface FollowingClientProps {
@@ -9,37 +9,28 @@ interface FollowingClientProps {
 }
 
 export default function FollowingClient({ id }: FollowingClientProps) {
-  const {
-    data: user,
-    isLoading: isUserLoading,
-    isError: userError,
-    error: userErrObj,
-  } = useUser(id);
-  const {
-    data: following,
-    isLoading: isFollowingLoading,
-    isError: followingError,
-    error: followingErrObj,
-  } = useFollowing(id);
+  // カスタムフック化を検討する
+  const userQuery = useUser(id);
+  const followingQuery = useFollowing(id);
 
-  // ローディング状態
-  if (isUserLoading || isFollowingLoading) {
-    return <LoadingState message="フォロー中のユーザーを読み込んでいます..." />;
-  }
+  // 両方のデータが必要なので、どちらかがローディング中ならローディング表示
+  const isLoading = userQuery.isLoading || followingQuery.isLoading;
+  const error = userQuery.error || followingQuery.error;
+  const data =
+    userQuery.data && followingQuery.data
+      ? { user: userQuery.data, following: followingQuery.data }
+      : undefined;
 
-  // エラー状態
-  if (userError) {
-    return <ErrorMessage message={userErrObj.message} />;
-  }
-
-  if (followingError) {
-    return <ErrorMessage message={followingErrObj.message} />;
-  }
-
-  // prefetchされているのでデータは存在するはず
-  if (!user || !following) {
-    return <ErrorMessage message="データの取得に失敗しました" />;
-  }
-
-  return <FollowingView id={id} userName={user.name} following={following} />;
+  return (
+    <QueryBoundary
+      data={data}
+      isLoading={isLoading}
+      error={error}
+      loadingMessage="フォロー中のユーザーを読み込んでいます..."
+    >
+      {({ user, following }) => (
+        <FollowingView id={id} userName={user.name} following={following} />
+      )}
+    </QueryBoundary>
+  );
 }

@@ -7,7 +7,7 @@ export const listBaseSchema = z.object({
   id: z.uuid(),
   name: z.string(),
   description: z.string().nullable(),
-  user_id: z.number(),
+  user_id: z.string(),
   public: z.boolean(),
   books_count: z.number().optional(),
   created_at: z.string().transform((str) => {
@@ -34,7 +34,7 @@ export const listDetailSchema = listSchema.extend({
   ),
   list_books: z.array(listBookSchema),
   user: z.object({
-    id: z.number(),
+    id: z.string(),
     name: z.string(),
   }),
 });

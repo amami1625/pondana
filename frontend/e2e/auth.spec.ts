@@ -11,11 +11,23 @@
  */
 import { test, expect } from '@playwright/test';
 
-// テスト用の認証情報を環境変数から取得
-const TEST_EMAIL = process.env.TEST_USER_EMAIL || 'test-user@example.com';
-const TEST_PASSWORD = process.env.TEST_USER_PASSWORD || 'password1234';
+const TEST_EMAIL = process.env.TEST_USER_EMAIL;
+const TEST_PASSWORD = process.env.TEST_USER_PASSWORD;
+
+if (!TEST_EMAIL || !TEST_PASSWORD) {
+  throw new Error(
+    'E2Eテストの実行には環境変数 TEST_USER_EMAIL と TEST_USER_PASSWORD の設定が必要です。\n' +
+      'ローカル環境: export TEST_USER_EMAIL="..." && export TEST_USER_PASSWORD="..."\n' +
+      'CI環境: Repository Secrets に設定してください。',
+  );
+}
 
 test.describe('ログイン機能', () => {
+  // 各テストの前にストレージをクリアして、ログイン状態をリセット
+  test.beforeEach(async ({ context }) => {
+    await context.clearCookies();
+  });
+
   test('トップページからログインページに遷移してログインできること', async ({ page }) => {
     await page.goto('/');
 

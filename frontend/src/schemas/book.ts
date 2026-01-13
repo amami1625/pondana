@@ -14,7 +14,7 @@ export const bookBaseSchema = z.object({
   subtitle: z.string().nullable(),
   thumbnail: z.string().nullable(),
   authors: z.array(z.string()),
-  user_id: z.number(),
+  user_id: z.string(),
   category: categorySchema.optional(),
   tags: z.array(tagSchema),
   rating: z.number().int().min(1).max(5).nullable(),

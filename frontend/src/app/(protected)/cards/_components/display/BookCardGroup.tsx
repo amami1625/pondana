@@ -21,9 +21,15 @@ export default function BookCardGroup({ book, cards }: BookCardGroupProps) {
   return (
     <section className="space-y-4">
       {/* 本のタイトルと作成ボタン */}
-      <div className="flex items-center justify-between">
-        <h2 className="text-xl font-bold text-gray-900">{book.title}</h2>
-        <Button variant="create" onClick={cardModal.open} icon={<StickyNote className="h-4 w-4" />}>
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+        <h2 className="text-xl font-bold text-gray-900 w-full sm:flex-1 min-w-0 truncate">
+          {book.title}
+        </h2>
+        <Button
+          variant="primary"
+          onClick={cardModal.open}
+          icon={<StickyNote className="h-4 w-4" />}
+        >
           カードを作成
         </Button>
       </div>

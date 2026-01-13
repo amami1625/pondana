@@ -20,7 +20,7 @@ export default function ListIndexView({ lists }: ListIndexViewProps) {
     <>
       <PageTitle title="リスト一覧" />
       <div className="mb-6 flex justify-end">
-        <Button variant="create" onClick={createModal.open} icon={<Plus className="h-4 w-4" />}>
+        <Button variant="primary" onClick={createModal.open} icon={<Plus className="h-4 w-4" />}>
           作成
         </Button>
       </div>
