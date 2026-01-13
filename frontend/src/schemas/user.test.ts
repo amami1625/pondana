@@ -214,7 +214,7 @@ describe('userWithStatsSchema', () => {
 
       const result = userWithStatsSchema.parse(validData);
 
-      expect(result.id).toBe(1);
+      expect(result.id).toBe('550e8400-e29b-41d4-a716-446655440000');
       expect(result.name).toBe('テストユーザー');
       expect(result.stats.public_books).toBe(10);
       expect(result.stats.public_lists).toBe(5);
