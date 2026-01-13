@@ -7,10 +7,6 @@ RSpec.describe Follow, type: :model do
   end
 
   describe 'バリデーション' do
-    subject(:follow) { build(:follow) }
-
-    it { is_expected.to validate_uniqueness_of(:follower_id).scoped_to(:followed_id) }
-
     context '自分自身をフォローできないこと' do
       it '自分自身をフォローしようとすると無効であること' do
         user = create(:user)

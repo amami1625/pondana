@@ -49,8 +49,8 @@ describe('useUserSearchApi', () => {
 
     it('query が 2 文字以上の場合、デバウンス後に検索APIが呼ばれる', async () => {
       const mockUsers = [
-        createMockUser({ id: 1, name: 'testA' }),
-        createMockUser({ id: 2, name: 'testB' }),
+        createMockUser({ id: '550e8400-e29b-41d4-a716-446655440000', name: 'testA' }),
+        createMockUser({ id: '550e8400-e29b-41d4-a716-446655440001', name: 'testB' }),
       ];
 
       vi.stubGlobal(
@@ -90,8 +90,8 @@ describe('useUserSearchApi', () => {
 
     it('query が変更されたら、前のタイマーがキャンセルされる（デバウンス）', async () => {
       const mockUsers = [
-        createMockUser({ id: 1, name: 'testA' }),
-        createMockUser({ id: 2, name: 'testB' }),
+        createMockUser({ id: '550e8400-e29b-41d4-a716-446655440000', name: 'testA' }),
+        createMockUser({ id: '550e8400-e29b-41d4-a716-446655440001', name: 'testB' }),
       ];
 
       vi.stubGlobal(

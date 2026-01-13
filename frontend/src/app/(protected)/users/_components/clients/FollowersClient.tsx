@@ -9,6 +9,7 @@ interface FollowersClientProps {
 }
 
 export default function FollowersClient({ id }: FollowersClientProps) {
+  // TODO カスタムフック化を検討する
   const userQuery = useUser(id);
   const followersQuery = useFollowers(id);
 

@@ -14,8 +14,8 @@ describe('useFollowing', () => {
   });
 
   const mockFollowing = [
-    createMockUser({ id: 2, name: 'フォロー中1' }),
-    createMockUser({ id: 3, name: 'フォロー中2' }),
+    createMockUser({ id: '550e8400-e29b-41d4-a716-446655440001', name: 'フォロー中1' }),
+    createMockUser({ id: '550e8400-e29b-41d4-a716-446655440002', name: 'フォロー中2' }),
   ];
 
   describe('成功時', () => {
@@ -58,9 +58,9 @@ describe('useFollowing', () => {
 
     it('複数のフォロー中ユーザーを取得できる', async () => {
       const mockFollowing = [
-        createMockUser({ id: 2, name: 'ユーザーX' }),
-        createMockUser({ id: 3, name: 'ユーザーY' }),
-        createMockUser({ id: 4, name: 'ユーザーZ' }),
+        createMockUser({ id: '550e8400-e29b-41d4-a716-446655440001', name: 'ユーザーX' }),
+        createMockUser({ id: '550e8400-e29b-41d4-a716-446655440002', name: 'ユーザーY' }),
+        createMockUser({ id: '550e8400-e29b-41d4-a716-446655440003', name: 'ユーザーZ' }),
       ];
 
       vi.mocked(fetchFollowing).mockResolvedValue(mockFollowing);

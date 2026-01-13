@@ -11,7 +11,7 @@ describe('fetchFollowing', () => {
 
       expect(result).toEqual([
         {
-          id: 1,
+          id: '550e8400-e29b-41d4-a716-446655440000',
           supabase_uid: '1',
           name: 'テストユーザー',
           avatar_url: null,

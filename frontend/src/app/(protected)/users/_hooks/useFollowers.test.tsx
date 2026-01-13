@@ -14,8 +14,8 @@ describe('useFollowers', () => {
   });
 
   const mockFollowers = [
-    createMockUser({ id: 2, name: 'フォロワー1' }),
-    createMockUser({ id: 3, name: 'フォロワー2' }),
+    createMockUser({ id: '550e8400-e29b-41d4-a716-446655440001', name: 'フォロワー1' }),
+    createMockUser({ id: '550e8400-e29b-41d4-a716-446655440002', name: 'フォロワー2' }),
   ];
 
   describe('成功時', () => {
@@ -58,9 +58,9 @@ describe('useFollowers', () => {
 
     it('複数のフォロワーを取得できる', async () => {
       const mockFollowers = [
-        createMockUser({ id: 2, name: 'ユーザーA' }),
-        createMockUser({ id: 3, name: 'ユーザーB' }),
-        createMockUser({ id: 4, name: 'ユーザーC' }),
+        createMockUser({ id: '550e8400-e29b-41d4-a716-446655440001', name: 'ユーザーA' }),
+        createMockUser({ id: '550e8400-e29b-41d4-a716-446655440002', name: 'ユーザーB' }),
+        createMockUser({ id: '550e8400-e29b-41d4-a716-446655440003', name: 'ユーザーC' }),
       ];
 
       vi.mocked(fetchFollowers).mockResolvedValue(mockFollowers);

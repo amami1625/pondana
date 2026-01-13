@@ -1,12 +1,13 @@
 import { describe, it, expect, vi } from 'vitest';
 import { createMockUserWithStats } from '@/test/factories';
+import { createTestUuid } from '@/test/helpers';
 import { fetchUser } from './fetchUser';
 
 describe('fetchUser', () => {
   describe('成功時', () => {
     it('ユーザー情報と統計を正しく取得できる', async () => {
       const mockApiResponse = createMockUserWithStats({
-        id: 1,
+        id: createTestUuid(1),
         name: 'テストユーザー',
         stats: {
           public_books: 10,
@@ -26,7 +27,7 @@ describe('fetchUser', () => {
 
       const result = await fetchUser('1');
 
-      expect(result.id).toBe(1);
+      expect(result.id).toBe(createTestUuid(1));
       expect(result.name).toBe('テストユーザー');
       expect(result.stats.public_books).toBe(10);
       expect(result.stats.public_lists).toBe(5);
@@ -36,7 +37,10 @@ describe('fetchUser', () => {
     });
 
     it('異なるIDで正しくリクエストできる', async () => {
-      const mockApiResponse = createMockUserWithStats({ id: 42, name: '別のユーザー' });
+      const mockApiResponse = createMockUserWithStats({
+        id: createTestUuid(42),
+        name: '別のユーザー',
+      });
 
       vi.stubGlobal(
         'fetch',
@@ -48,7 +52,7 @@ describe('fetchUser', () => {
 
       const result = await fetchUser('42');
 
-      expect(result.id).toBe(42);
+      expect(result.id).toBe(createTestUuid(42));
       expect(result.name).toBe('別のユーザー');
       expect(fetch).toHaveBeenCalledWith('/api/users/42');
     });

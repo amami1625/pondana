@@ -4,7 +4,7 @@ import { z } from 'zod';
 export const categorySchema = z.object({
   id: z.number(),
   name: z.string(),
-  user_id: z.number(),
+  user_id: z.string(),
   created_at: z.string().transform((str) => {
     return new Date(str).toLocaleString('ja-JP', {
       timeZone: 'Asia/Tokyo',

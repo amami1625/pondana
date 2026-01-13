@@ -21,7 +21,7 @@ describe('updateList', () => {
             id: createTestUuid(1),
             name: '更新されたリスト',
             description: '更新された説明',
-            user_id: 1,
+            user_id: '550e8400-e29b-41d4-a716-446655440000',
             public: false,
             created_at: '2025-01-01T00:00:00Z',
             updated_at: '2025-01-02T00:00:00Z',

@@ -57,7 +57,10 @@ describe('FollowersClient', () => {
 
     it('フォロワーのエラー時にメッセージが表示される', () => {
       vi.mocked(useUser).mockReturnValue({
-        data: createMockUserWithStats({ id: 1, name: 'テストユーザー' }),
+        data: createMockUserWithStats({
+          id: '550e8400-e29b-41d4-a716-446655440000',
+          name: 'テストユーザー',
+        }),
         error: null,
         isLoading: false,
         isError: false,
@@ -97,15 +100,18 @@ describe('FollowersClient', () => {
   describe('正常表示', () => {
     it('フォロワー一覧が表示される', () => {
       vi.mocked(useUser).mockReturnValue({
-        data: createMockUserWithStats({ id: 1, name: 'テストユーザー' }),
+        data: createMockUserWithStats({
+          id: '550e8400-e29b-41d4-a716-446655440000',
+          name: 'テストユーザー',
+        }),
         error: null,
         isLoading: false,
         isError: false,
       } as unknown as ReturnType<typeof useUser>);
       vi.mocked(useFollowers).mockReturnValue({
         data: [
-          createMockUser({ id: 2, name: 'フォロワーA' }),
-          createMockUser({ id: 3, name: 'フォロワーB' }),
+          createMockUser({ id: '550e8400-e29b-41d4-a716-446655440001', name: 'フォロワーA' }),
+          createMockUser({ id: '550e8400-e29b-41d4-a716-446655440002', name: 'フォロワーB' }),
         ],
         error: null,
         isLoading: false,
