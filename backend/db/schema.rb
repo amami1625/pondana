@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_12_29_053707) do
+ActiveRecord::Schema[7.1].define(version: 2026_01_13_155828) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -27,7 +27,6 @@ ActiveRecord::Schema[7.1].define(version: 2025_12_29_053707) do
   create_table "books", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "title", null: false
     t.text "description"
-    t.bigint "user_id", null: false
     t.bigint "category_id"
     t.integer "rating"
     t.integer "reading_status", default: 0, null: false
@@ -39,8 +38,8 @@ ActiveRecord::Schema[7.1].define(version: 2025_12_29_053707) do
     t.text "subtitle"
     t.string "thumbnail"
     t.jsonb "authors", default: []
+    t.uuid "user_id", null: false
     t.index ["category_id"], name: "index_books_on_category_id"
-    t.index ["user_id", "google_books_id"], name: "index_books_on_user_id_and_google_books_id", unique: true, where: "(google_books_id IS NOT NULL)"
     t.index ["user_id"], name: "index_books_on_user_id"
   end
 
@@ -57,17 +56,17 @@ ActiveRecord::Schema[7.1].define(version: 2025_12_29_053707) do
 
   create_table "categories", force: :cascade do |t|
     t.string "name", null: false
-    t.bigint "user_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.uuid "user_id", null: false
     t.index ["user_id"], name: "index_categories_on_user_id"
   end
 
   create_table "follows", force: :cascade do |t|
-    t.integer "follower_id", null: false
-    t.integer "followed_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.uuid "follower_id", null: false
+    t.uuid "followed_id", null: false
     t.index ["followed_id"], name: "index_follows_on_followed_id"
     t.index ["follower_id", "followed_id"], name: "index_follows_on_follower_id_and_followed_id", unique: true
     t.index ["follower_id"], name: "index_follows_on_follower_id"
@@ -83,33 +82,33 @@ ActiveRecord::Schema[7.1].define(version: 2025_12_29_053707) do
   end
 
   create_table "lists", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.string "name"
+    t.string "name", null: false
     t.text "description"
-    t.bigint "user_id", null: false
-    t.boolean "public"
+    t.boolean "public", default: false, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.uuid "user_id", null: false
     t.index ["user_id"], name: "index_lists_on_user_id"
   end
 
   create_table "statuses", force: :cascade do |t|
-    t.bigint "user_id", null: false
     t.string "name", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.uuid "user_id", null: false
     t.index ["user_id", "name"], name: "index_statuses_on_user_id_and_name", unique: true
     t.index ["user_id"], name: "index_statuses_on_user_id"
   end
 
   create_table "tags", force: :cascade do |t|
     t.string "name", null: false
-    t.bigint "user_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.uuid "user_id", null: false
     t.index ["user_id"], name: "index_tags_on_user_id"
   end
 
-  create_table "users", force: :cascade do |t|
+  create_table "users", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "supabase_uid", null: false
     t.string "name", null: false
     t.string "avatar_url"
