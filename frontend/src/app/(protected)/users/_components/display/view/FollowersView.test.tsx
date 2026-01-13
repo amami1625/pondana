@@ -22,7 +22,9 @@ describe('FollowersView', () => {
 
   describe('リストのレンダリング', () => {
     it('フォロワーが表示される', () => {
-      const followers = [createMockUser({ id: 2, name: 'フォロワーA' })];
+      const followers = [
+        createMockUser({ id: '550e8400-e29b-41d4-a716-446655440001', name: 'フォロワーA' }),
+      ];
 
       render(<FollowersView id="1" userName="テストユーザー" followers={followers} />);
 
@@ -31,8 +33,8 @@ describe('FollowersView', () => {
 
     it('フォロワーが複数存在する場合、全て表示される', () => {
       const followers = [
-        createMockUser({ id: 2, name: 'フォロワーA' }),
-        createMockUser({ id: 3, name: 'フォロワーB' }),
+        createMockUser({ id: '550e8400-e29b-41d4-a716-446655440001', name: 'フォロワーA' }),
+        createMockUser({ id: '550e8400-e29b-41d4-a716-446655440002', name: 'フォロワーB' }),
       ];
 
       render(<FollowersView id="1" userName="テストユーザー" followers={followers} />);

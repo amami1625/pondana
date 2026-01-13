@@ -9,6 +9,7 @@ interface FollowingClientProps {
 }
 
 export default function FollowingClient({ id }: FollowingClientProps) {
+  // カスタムフック化を検討する
   const userQuery = useUser(id);
   const followingQuery = useFollowing(id);
 
