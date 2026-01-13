@@ -56,7 +56,7 @@ export default function UserSearchResults({
                   </div>
                 </Link>
                 <div className="flex-shrink-0">
-                  <FollowButton userId={user.id.toString()} />
+                  <FollowButton userId={user.id} />
                 </div>
               </div>
             </div>

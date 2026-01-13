@@ -36,7 +36,7 @@ export default function UserProfileView({ user }: UserProfileViewProps) {
 
           {/* フォローボタン */}
           <div className="mb-6">
-            <FollowButton userId={user.id.toString()} />
+            <FollowButton userId={user.id} />
           </div>
 
           {/* 統計情報 */}

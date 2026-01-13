@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 export const userSchema = z.object({
-  id: z.number(),
+  id: z.string(),
   supabase_uid: z.string(),
   name: z.string(),
   avatar_url: z.string().nullable(),
@@ -32,7 +32,7 @@ export const userWithStatsSchema = userSchema.extend({
 
 // ユーザー検索結果のスキーマ
 export const userSearchResultSchema = z.object({
-  id: z.number(),
+  id: z.string(),
   name: z.string(),
   avatar_url: z.string().nullable(),
 });
