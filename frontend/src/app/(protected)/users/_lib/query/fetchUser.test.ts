@@ -1,5 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
 import { createMockUserWithStats } from '@/test/factories';
+import { createTestUuid } from '@/test/helpers';
 import { fetchUser } from './fetchUser';
 
 describe('fetchUser', () => {
@@ -36,7 +37,7 @@ describe('fetchUser', () => {
     });
 
     it('異なるIDで正しくリクエストできる', async () => {
-      const mockApiResponse = createMockUserWithStats({ id: 42, name: '別のユーザー' });
+      const mockApiResponse = createMockUserWithStats({ id: createTestUuid(42), name: '別のユーザー' });
 
       vi.stubGlobal(
         'fetch',

@@ -19,7 +19,7 @@ describe('fetchStatuses', () => {
       expect(result[0]).toEqual({
         id: 1,
         name: 'テストステータスA',
-        user_id: 1,
+        user_id: '550e8400-e29b-41d4-a716-446655440000',
         created_at: expectedDate,
         updated_at: expectedDate,
       });
@@ -27,7 +27,7 @@ describe('fetchStatuses', () => {
       expect(result[1]).toEqual({
         id: 2,
         name: 'テストステータスB',
-        user_id: 1,
+        user_id: '550e8400-e29b-41d4-a716-446655440000',
         created_at: expectedDate,
         updated_at: expectedDate,
       });

@@ -19,7 +19,7 @@ describe('fetchTags', () => {
       expect(result[0]).toEqual({
         id: 1,
         name: 'テストタグA',
-        user_id: 1,
+        user_id: '550e8400-e29b-41d4-a716-446655440000',
         created_at: expectedDate,
         updated_at: expectedDate,
       });
@@ -27,7 +27,7 @@ describe('fetchTags', () => {
       expect(result[1]).toEqual({
         id: 2,
         name: 'テストタグB',
-        user_id: 1,
+        user_id: '550e8400-e29b-41d4-a716-446655440000',
         created_at: expectedDate,
         updated_at: expectedDate,
       });

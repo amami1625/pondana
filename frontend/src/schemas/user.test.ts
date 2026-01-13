@@ -198,7 +198,7 @@ describe('userWithStatsSchema', () => {
   describe('正常系: 有効なデータを受け入れる', () => {
     it('ユーザー情報と統計情報を正しくパースできる', () => {
       const validData = {
-        id: 1,
+        id: '550e8400-e29b-41d4-a716-446655440000',
         supabase_uid: 'test-uid-123',
         name: 'テストユーザー',
         avatar_url: null,
@@ -222,7 +222,7 @@ describe('userWithStatsSchema', () => {
 
     it('avatar_url がnullの場合も正しくパースできる', () => {
       const validData = {
-        id: 1,
+        id: '550e8400-e29b-41d4-a716-446655440000',
         supabase_uid: 'test-uid-123',
         name: 'テストユーザー',
         avatar_url: null,
@@ -246,7 +246,7 @@ describe('userWithStatsSchema', () => {
   describe('異常系: 無効なデータを拒否する', () => {
     it('stats が欠落している場合エラーを返す', () => {
       const invalidData = {
-        id: 1,
+        id: '550e8400-e29b-41d4-a716-446655440000',
         supabase_uid: 'test-uid-123',
         name: 'テストユーザー',
         avatar_url: null,
@@ -259,7 +259,7 @@ describe('userWithStatsSchema', () => {
 
     it('stats.public_books が欠落している場合エラーを返す', () => {
       const invalidData = {
-        id: 1,
+        id: '550e8400-e29b-41d4-a716-446655440000',
         supabase_uid: 'test-uid-123',
         name: 'テストユーザー',
         avatar_url: null,
