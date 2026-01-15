@@ -14,6 +14,7 @@ class User < ApplicationRecord
 
   validates :name, presence: true, length: { maximum: 50 }
   validates :supabase_uid, presence: true, uniqueness: true
+  validates :avatar_url, format: { with: URI::DEFAULT_PARSER.make_regexp(%w[http https]), message: 'must be a valid URL' }, allow_nil: true
 
   # 初回ログイン時にSupabaseのUIDをもとにユーザーを検索し、存在しない場合は作成する
   def self.find_or_create_by_supabase_uid(supabase_uid, payload = {})

@@ -41,6 +41,27 @@ RSpec.describe 'Api::Profiles', type: :request do
       expect(user.reload.name).to eq('新しい名前')
     end
 
+    it 'avatar_urlをnullにして画像を削除できること' do
+      user.update(avatar_url: 'https://example.com/old-avatar.jpg')
+
+      patch '/api/profile',
+            params: { profile: { avatar_url: nil } },
+            headers: headers
+
+      expect(response).to have_http_status(:ok)
+      expect(user.reload.avatar_url).to be_nil
+    end
+
+    it '無効なURLの場合は更新できないこと' do
+      patch '/api/profile',
+            params: { profile: { avatar_url: 'invalid-url' } },
+            headers: headers
+
+      expect(response).to have_http_status(:unprocessable_content)
+      json = response.parsed_body
+      expect(json['code']).to eq('UPDATE_FAILED')
+    end
+
     it '名前が空の場合は更新できないこと' do
       patch '/api/profile',
             params: { profile: { name: '' } },
