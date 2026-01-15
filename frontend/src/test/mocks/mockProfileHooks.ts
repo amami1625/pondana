@@ -6,6 +6,6 @@ export const mockUseProfileMutations = (overrides = {}) => {
     updateUser: vi.fn(),
     isUpdating: false,
     updateError: null,
-    ...overrides
+    ...overrides,
   });
 };
