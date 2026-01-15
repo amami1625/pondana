@@ -24,7 +24,7 @@ module Api
     private
 
     def profile_params
-      params.require(:profile).permit(:name, :avatar_url)
+      params.require(:profile).permit(:name, :avatar_url, :avatar_public_id)
     end
 
     def record_not_found

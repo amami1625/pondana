@@ -5,6 +5,7 @@ export const userSchema = z.object({
   supabase_uid: z.string(),
   name: z.string(),
   avatar_url: z.string().nullable(),
+  avatar_public_id: z.string().nullable(),
   created_at: z.string().transform((str) => {
     return new Date(str).toLocaleString('ja-JP', {
       timeZone: 'Asia/Tokyo',
@@ -35,6 +36,7 @@ export const userSearchResultSchema = z.object({
   id: z.string(),
   name: z.string(),
   avatar_url: z.string().nullable(),
+  avatar_public_id: z.string().nullable(),
 });
 
 export const followStatusSchema = z.object({
@@ -49,7 +51,8 @@ export const userFormSchema = z.object({
     .trim()
     .min(1, { message: 'ユーザー名を入力してください' })
     .max(50, { message: 'ユーザー名は50文字以内で入力してください' }),
-  avatar_url: z.string().optional(),
+  avatar_url: z.string().nullable().optional(),
+  avatar_public_id: z.string().nullable().optional(),
 });
 
 export type User = z.infer<typeof userSchema>;
