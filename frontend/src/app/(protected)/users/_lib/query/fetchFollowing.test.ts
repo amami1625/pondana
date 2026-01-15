@@ -15,6 +15,7 @@ describe('fetchFollowing', () => {
           supabase_uid: '1',
           name: 'テストユーザー',
           avatar_url: null,
+          avatar_public_id: null,
           created_at: '2025/1/1 9:00:00',
           updated_at: '2025/1/1 9:00:00',
         },
