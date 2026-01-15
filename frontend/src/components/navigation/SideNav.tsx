@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState } from 'react';
 import { Menu, X } from 'lucide-react';
+import { CldImage } from 'next-cloudinary';
 import { NAV_ITEMS } from '@/constants/navItems';
 import { useProfile } from '@/hooks/useProfile';
 
@@ -41,8 +42,22 @@ export default function SideNav() {
         <div className="flex flex-col gap-4 pt-16 lg:pt-0">
           {/* ユーザープロフィール */}
           <div className="flex items-center gap-3">
-            <div className="flex size-10 items-center justify-center rounded-full bg-primary text-white font-bold">
-              {profile?.name?.charAt(0).toUpperCase() || '?'}
+            <div className="relative size-10 flex-shrink-0">
+              {profile?.avatar_public_id ? (
+                <CldImage
+                  src={profile.avatar_public_id}
+                  alt={profile.name}
+                  width={40}
+                  height={40}
+                  crop="thumb"
+                  gravity="custom"
+                  className="rounded-full object-cover"
+                />
+              ) : (
+                <div className="flex size-10 items-center justify-center rounded-full bg-primary text-white font-bold">
+                  {profile?.name?.charAt(0).toUpperCase() || '?'}
+                </div>
+              )}
             </div>
             <div className="flex flex-col">
               <h1 className="text-slate-900 text-base font-medium leading-normal">

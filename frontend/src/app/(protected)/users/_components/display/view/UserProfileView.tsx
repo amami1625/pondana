@@ -1,8 +1,8 @@
 'use client';
 
-import Image from 'next/image';
 import Link from 'next/link';
 import { BookOpen, List, Users, UserCheck } from 'lucide-react';
+import { CldImage } from 'next-cloudinary';
 import { UserWithStats } from '@/app/(protected)/users/_types';
 import FollowButton from '@/app/(protected)/users/_components/actions/FollowButton';
 
@@ -17,12 +17,14 @@ export default function UserProfileView({ user }: UserProfileViewProps) {
       <div className="bg-white rounded-lg border border-slate-200 p-8">
         <div className="flex flex-col items-center">
           {/* プロフィール画像 or 頭文字 */}
-          {user.avatar_url ? (
-            <Image
-              src={user.avatar_url}
+          {user.avatar_public_id ? (
+            <CldImage
+              src={user.avatar_public_id}
               alt={user.name}
               width={128}
               height={128}
+              crop="thumb"
+              gravity="custom"
               className="w-32 h-32 rounded-full object-cover mb-4"
             />
           ) : (
