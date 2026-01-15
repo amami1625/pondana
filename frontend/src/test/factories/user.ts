@@ -10,6 +10,7 @@ export const createMockUser = (overrides?: Partial<User>): User => ({
   supabase_uid: '1',
   name: 'テストユーザー',
   avatar_url: null,
+  avatar_public_id: null,
   created_at: '2025-01-01T00:00:00Z',
   updated_at: '2025-01-01T00:00:00Z',
   ...overrides,
@@ -25,6 +26,7 @@ export const createMockUserWithStats = (overrides?: Partial<UserWithStats>): Use
   supabase_uid: '1',
   name: 'テストユーザー',
   avatar_url: null,
+  avatar_public_id: null,
   created_at: '2025-01-01T00:00:00Z',
   updated_at: '2025-01-01T00:00:00Z',
   stats: {

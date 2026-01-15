@@ -202,6 +202,7 @@ describe('userWithStatsSchema', () => {
         supabase_uid: 'test-uid-123',
         name: 'テストユーザー',
         avatar_url: null,
+        avatar_public_id: null,
         created_at: '2025-01-01T00:00:00.000+09:00',
         updated_at: '2025-01-01T00:00:00.000+09:00',
         stats: {
@@ -226,6 +227,7 @@ describe('userWithStatsSchema', () => {
         supabase_uid: 'test-uid-123',
         name: 'テストユーザー',
         avatar_url: null,
+        avatar_public_id: null,
         created_at: '2025-01-01T00:00:00.000+09:00',
         updated_at: '2025-01-01T00:00:00.000+09:00',
         stats: {

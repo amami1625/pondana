@@ -10,12 +10,17 @@ export const profileHandlers = [
   // PUT - プロフィール更新
   http.put('/api/profiles', async ({ request }) => {
     const body = await request.json();
-    const { name, avatar_url } = body as { name?: string; avatar_url?: string | null };
+    const { name, avatar_url, avatar_public_id } = body as {
+      name?: string;
+      avatar_url?: string | null;
+      avatar_public_id?: string | null;
+    };
 
     return HttpResponse.json(
       createMockUser({
         name: name ?? 'テストユーザー',
         avatar_url: avatar_url ?? null,
+        avatar_public_id: avatar_public_id ?? null,
       }),
     );
   }),
