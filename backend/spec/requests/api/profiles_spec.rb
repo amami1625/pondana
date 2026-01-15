@@ -26,7 +26,8 @@ RSpec.describe 'Api::Profiles', type: :request do
       {
         profile: {
           name: '新しい名前',
-          avatar_url: 'https://example.com/avatar.jpg'
+          avatar_url: 'https://example.com/avatar.jpg',
+          avatar_public_id: 'avatars/test123'
         }
       }
     end
@@ -38,18 +39,21 @@ RSpec.describe 'Api::Profiles', type: :request do
       json = response.parsed_body
       expect(json['name']).to eq('新しい名前')
       expect(json['avatar_url']).to eq('https://example.com/avatar.jpg')
+      expect(json['avatar_public_id']).to eq('avatars/test123')
       expect(user.reload.name).to eq('新しい名前')
+      expect(user.reload.avatar_public_id).to eq('avatars/test123')
     end
 
     it 'avatar_urlをnullにして画像を削除できること' do
-      user.update(avatar_url: 'https://example.com/old-avatar.jpg')
+      user.update(avatar_url: 'https://example.com/old-avatar.jpg', avatar_public_id: 'avatars/old123')
 
       patch '/api/profile',
-            params: { profile: { avatar_url: nil } },
+            params: { profile: { avatar_url: nil, avatar_public_id: nil } },
             headers: headers
 
       expect(response).to have_http_status(:ok)
       expect(user.reload.avatar_url).to be_nil
+      expect(user.reload.avatar_public_id).to be_nil
     end
 
     it '無効なURLの場合は更新できないこと' do
