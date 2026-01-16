@@ -83,7 +83,7 @@ describe('UserProfileView', () => {
     it('プロフィール画像が存在する場合、画像が表示される', () => {
       const user = createMockUserWithStats({
         name: 'テストユーザー',
-        avatar_url: 'http://testImage.com',
+        avatar_public_id: 'avatars/test123',
       });
 
       render(<UserProfileView user={user} />, { wrapper: createProvider() });
@@ -92,7 +92,7 @@ describe('UserProfileView', () => {
     });
 
     it('プロフィール画像が無い場合、ユーザー名の頭文字が表示される', () => {
-      const user = createMockUserWithStats({ name: 'テストユーザー' });
+      const user = createMockUserWithStats({ name: 'テストユーザー', avatar_public_id: null });
 
       render(<UserProfileView user={user} />, { wrapper: createProvider() });
 

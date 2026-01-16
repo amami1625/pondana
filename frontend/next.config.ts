@@ -10,6 +10,12 @@ const nextConfig: NextConfig = {
         port: '',
         pathname: '/books/content/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'res.cloudinary.com',
+        port: '',
+        pathname: '/**',
+      },
     ],
   },
   async headers() {
@@ -21,11 +27,12 @@ const nextConfig: NextConfig = {
             key: 'Content-Security-Policy',
             value: [
               "default-src 'self'",
-              "script-src 'self' 'unsafe-eval' 'unsafe-inline'",
+              "script-src 'self' 'unsafe-eval' 'unsafe-inline' https://upload-widget.cloudinary.com https://widget.cloudinary.com",
               "style-src 'self' 'unsafe-inline'",
               "img-src 'self' data: https: http:",
               "font-src 'self' data:",
-              "connect-src 'self' https://*.supabase.co https://www.googleapis.com",
+              "connect-src 'self' https://*.supabase.co https://www.googleapis.com https://api.cloudinary.com https://*.cloudinary.com",
+              'frame-src https://upload-widget.cloudinary.com',
               "frame-ancestors 'none'",
               "base-uri 'self'",
               "form-action 'self'",

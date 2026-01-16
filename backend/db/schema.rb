@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2026_01_13_155828) do
+ActiveRecord::Schema[7.1].define(version: 2026_01_15_172632) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -114,6 +114,7 @@ ActiveRecord::Schema[7.1].define(version: 2026_01_13_155828) do
     t.string "avatar_url"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "avatar_public_id"
     t.index ["supabase_uid"], name: "index_users_on_supabase_uid", unique: true
   end
 

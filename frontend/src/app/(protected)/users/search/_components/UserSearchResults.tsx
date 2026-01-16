@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { CldImage } from 'next-cloudinary';
 import { UserSearchResult } from '@/app/(protected)/users/_types';
 import FollowButton from '@/app/(protected)/users/_components/actions/FollowButton';
 
@@ -41,12 +42,25 @@ export default function UserSearchResults({
               className="p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
             >
               <div className="flex items-center gap-3">
-                {/* TODO: ユーザー画像変更機能実装後に画像を表示するように変更 */}
-                <div
-                  className="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center text-white font-medium cursor-pointer"
-                  data-testid="initial"
-                >
-                  {user.name.charAt(0).toUpperCase()}
+                <div className="relative w-10 h-10 flex-shrink-0">
+                  {user.avatar_public_id ? (
+                    <CldImage
+                      src={user.avatar_public_id}
+                      alt={user.name}
+                      width={40}
+                      height={40}
+                      crop="thumb"
+                      gravity="custom"
+                      className="rounded-full object-cover"
+                    />
+                  ) : (
+                    <div
+                      className="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center text-white font-medium"
+                      data-testid="initial"
+                    >
+                      {user.name.charAt(0).toUpperCase()}
+                    </div>
+                  )}
                 </div>
                 <Link href={`/users/${user.id}`} className="flex-1 min-w-0">
                   <div className="font-medium text-gray-900 truncate hover:underline">
