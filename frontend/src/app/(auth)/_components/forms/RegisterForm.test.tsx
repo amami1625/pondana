@@ -7,6 +7,10 @@ vi.mock('@/app/(auth)/_hooks/useRegisterForm', () => ({
   useRegisterForm: vi.fn(),
 }));
 
+vi.mock('@/app/(auth)/_components/GoogleLoginButton', () => ({
+  default: () => <button type="button">Googleでログイン</button>,
+}));
+
 describe('RegisterForm', () => {
   // ヘルパー関数: useRegisterForm のモックを設定
   const mockUseRegisterForm = (overrides = {}) => {
@@ -78,6 +82,14 @@ describe('RegisterForm', () => {
       const button = screen.getByRole('button', { name: '登録' });
       expect(button).toHaveAttribute('type', 'submit');
       expect(button).not.toBeDisabled();
+    });
+
+    it('Googleログインボタンが存在する', () => {
+      mockUseRegisterForm();
+
+      render(<RegisterForm />);
+
+      expect(screen.getByRole('button', { name: 'Googleでログイン' })).toBeInTheDocument();
     });
   });
 
