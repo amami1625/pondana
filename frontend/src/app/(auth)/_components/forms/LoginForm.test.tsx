@@ -7,6 +7,10 @@ vi.mock('@/app/(auth)/_hooks/useLoginForm', () => ({
   useLoginForm: vi.fn(),
 }));
 
+vi.mock('@/app/(auth)/_components/GoogleLoginButton', () => ({
+  default: () => <button type="button">Googleでログイン</button>,
+}));
+
 describe('LoginForm', () => {
   // ヘルパー関数: useLoginForm のモックを設定
   const mockUseLoginForm = (overrides = {}) => {
@@ -58,6 +62,14 @@ describe('LoginForm', () => {
       const button = screen.getByRole('button', { name: 'ログイン' });
       expect(button).toHaveAttribute('type', 'submit');
       expect(button).not.toBeDisabled();
+    });
+
+    it('Googleログインボタンが存在する', () => {
+      mockUseLoginForm();
+
+      render(<LoginForm />);
+
+      expect(screen.getByRole('button', { name: 'Googleでログイン' })).toBeInTheDocument();
     });
   });
 

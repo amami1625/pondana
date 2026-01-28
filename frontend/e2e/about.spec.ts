@@ -69,7 +69,7 @@ test.describe('アバウトページ', () => {
     const passwordInput = page.getByLabel(/パスワード/i);
     await passwordInput.fill(TEST_PASSWORD);
 
-    const loginButton = page.getByRole('button', { name: /ログイン/i });
+    const loginButton = page.getByRole('button', { name: 'ログイン', exact: true });
     await loginButton.click();
 
     // ログイン後、トップページに遷移することを確認
