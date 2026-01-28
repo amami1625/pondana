@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import toast from 'react-hot-toast';
 import { registerSchema, type RegisterFormData } from '@/schemas/auth';
-import { signUpAction } from '@/app/(auth)/_lib';
+import { signUpAction, loginClientSide } from '@/app/(auth)/_lib';
 
 export function useRegisterForm() {
   const router = useRouter();
@@ -21,6 +21,14 @@ export function useRegisterForm() {
 
     if (error) {
       toast.error(error);
+      return;
+    }
+
+    // クライアント側でログインしてonAuthStateChangeを発火させる
+    const clientError = await loginClientSide({ email: data.email, password: data.password });
+
+    if (clientError) {
+      toast.error(clientError);
       return;
     }
 

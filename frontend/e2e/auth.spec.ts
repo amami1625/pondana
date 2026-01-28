@@ -43,7 +43,7 @@ test.describe('ログイン機能', () => {
     const passwordInput = page.getByLabel(/パスワード/i);
     await passwordInput.fill(TEST_PASSWORD);
 
-    const loginButton = page.getByRole('button', { name: /ログイン/i });
+    const loginButton = page.getByRole('button', { name: 'ログイン', exact: true });
     await loginButton.click();
 
     await page.waitForURL(/.*top/, { timeout: 10000 });
@@ -64,7 +64,7 @@ test.describe('ログイン機能', () => {
     const passwordInput = page.getByLabel(/パスワード/i);
     await passwordInput.fill(TEST_PASSWORD);
 
-    const loginButton = page.getByRole('button', { name: /ログイン/i });
+    const loginButton = page.getByRole('button', { name: 'ログイン', exact: true });
     await loginButton.click();
 
     await page.waitForURL(/.*top/, { timeout: 10000 });
@@ -93,7 +93,7 @@ test.describe('ログイン機能', () => {
     const passwordInput = page.getByLabel(/パスワード/i);
     await passwordInput.fill(TEST_PASSWORD);
 
-    const loginButton = page.getByRole('button', { name: /ログイン/i });
+    const loginButton = page.getByRole('button', { name: 'ログイン', exact: true });
     await loginButton.click();
 
     await page.waitForURL(/.*top/, { timeout: 10000 });
@@ -125,7 +125,7 @@ test.describe('ログイン機能', () => {
     await passwordInput.fill('wrong-password-123');
 
     // ログインボタンをクリック
-    const loginButton = page.getByRole('button', { name: /ログイン/i });
+    const loginButton = page.getByRole('button', { name: 'ログイン', exact: true });
     await loginButton.click();
 
     // エラーメッセージが表示されることを確認
@@ -146,7 +146,7 @@ test.describe('ログイン機能', () => {
     await passwordInput.fill(TEST_PASSWORD);
 
     // ログインボタンをクリック
-    const loginButton = page.getByRole('button', { name: /ログイン/i });
+    const loginButton = page.getByRole('button', { name: 'ログイン', exact: true });
     await loginButton.click();
 
     // エラーメッセージが表示されることを確認
@@ -163,7 +163,7 @@ test.describe('ログイン機能', () => {
     await passwordInput.fill(TEST_PASSWORD);
 
     // ログインボタンをクリック
-    const loginButton = page.getByRole('button', { name: /ログイン/i });
+    const loginButton = page.getByRole('button', { name: 'ログイン', exact: true });
     await loginButton.click();
 
     // エラーメッセージが表示されることを確認
