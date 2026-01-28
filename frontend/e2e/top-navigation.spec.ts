@@ -27,7 +27,7 @@ test.describe('トップページからの主要ナビゲーション', () => {
 
     await page.getByLabel(/メールアドレス/i).fill(TEST_EMAIL);
     await page.getByLabel(/パスワード/i).fill(TEST_PASSWORD);
-    await page.getByRole('button', { name: /ログイン/i }).click();
+    await page.getByRole('button', { name: 'ログイン', exact: true }).click();
 
     // トップページへの遷移を待機
     await page.waitForURL(/.*top/, { timeout: 10000 });
