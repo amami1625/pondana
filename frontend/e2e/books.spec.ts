@@ -3,8 +3,11 @@
  *
  * このテストでは以下を確認します：
  * 1. 書籍一覧ページの表示と操作
- * 2. 書籍検索ページでの検索と登録
- * 3. 書籍詳細ページの表示と操作（編集、削除）
+ * 2. 書籍検索ページの表示
+ * 3. 書籍詳細ページの表示と操作（編集）
+ *
+ * 注意: Google Books APIを使用する検索機能のテストは、
+ * CIでのAPIキー制限の問題を避けるため含めていません
  */
 import { test, expect } from '@playwright/test';
 
@@ -77,21 +80,6 @@ test.describe('書籍検索ページ', () => {
 
     // "使い方" ボタンが表示される
     await expect(page.getByRole('button', { name: /使い方/i })).toBeVisible();
-  });
-
-  test('検索入力で候補が表示される', async ({ page }) => {
-    const searchInput = page.getByPlaceholder(/書籍名、著者名で検索/i);
-
-    // 検索キーワードを入力（2文字以上必要）
-    await searchInput.fill('JavaScript');
-
-    // 候補リストが表示されるまで待機（APIレスポンスを待つ）
-    await page.waitForTimeout(1000);
-
-    // 候補リストまたはローディング状態を確認
-    // 注: 実際のAPIレスポンスによって結果が変わる可能性あり
-    const hasResults = await page.locator('[class*="border-gray-100"]').count();
-    expect(hasResults).toBeGreaterThanOrEqual(0);
   });
 
   test('「使い方」ボタンでガイドモーダルが表示される', async ({ page }) => {
