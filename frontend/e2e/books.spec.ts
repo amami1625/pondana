@@ -10,28 +10,11 @@
  * CIでのAPIキー制限の問題を避けるため含めていません
  */
 import { test, expect } from '@playwright/test';
-
-const TEST_EMAIL = process.env.TEST_USER_EMAIL;
-const TEST_PASSWORD = process.env.TEST_USER_PASSWORD;
-
-if (!TEST_EMAIL || !TEST_PASSWORD) {
-  throw new Error(
-    'E2Eテストの実行には環境変数 TEST_USER_EMAIL と TEST_USER_PASSWORD の設定が必要です。\n' +
-      'ローカル環境: export TEST_USER_EMAIL="..." && export TEST_USER_PASSWORD="..."\n' +
-      'CI環境: Repository Secrets に設定してください。',
-  );
-}
+import { login } from './helpers/auth';
 
 test.describe('書籍一覧ページ', () => {
   test.beforeEach(async ({ page }) => {
-    // ログイン処理
-    await page.goto('/login');
-    await page.getByLabel(/メールアドレス/i).fill(TEST_EMAIL);
-    await page.getByLabel(/パスワード/i).fill(TEST_PASSWORD);
-    await page.getByRole('button', { name: 'ログイン', exact: true }).click();
-    await page.waitForURL(/.*top/, { timeout: 10000 });
-
-    // 書籍一覧ページへ遷移
+    await login(page);
     await page.goto('/books');
   });
 
@@ -57,14 +40,7 @@ test.describe('書籍一覧ページ', () => {
 
 test.describe('書籍検索ページ', () => {
   test.beforeEach(async ({ page }) => {
-    // ログイン処理
-    await page.goto('/login');
-    await page.getByLabel(/メールアドレス/i).fill(TEST_EMAIL);
-    await page.getByLabel(/パスワード/i).fill(TEST_PASSWORD);
-    await page.getByRole('button', { name: 'ログイン', exact: true }).click();
-    await page.waitForURL(/.*top/, { timeout: 10000 });
-
-    // 書籍検索ページへ遷移
+    await login(page);
     await page.goto('/books/search');
   });
 
@@ -93,14 +69,7 @@ test.describe('書籍検索ページ', () => {
 
 test.describe('書籍詳細ページ', () => {
   test.beforeEach(async ({ page }) => {
-    // ログイン処理
-    await page.goto('/login');
-    await page.getByLabel(/メールアドレス/i).fill(TEST_EMAIL);
-    await page.getByLabel(/パスワード/i).fill(TEST_PASSWORD);
-    await page.getByRole('button', { name: 'ログイン', exact: true }).click();
-    await page.waitForURL(/.*top/, { timeout: 10000 });
-
-    // 書籍一覧ページへ遷移
+    await login(page);
     await page.goto('/books');
   });
 
@@ -172,12 +141,7 @@ test.describe('書籍詳細ページ', () => {
 
 test.describe('書籍の編集フロー', () => {
   test.beforeEach(async ({ page }) => {
-    // ログイン処理
-    await page.goto('/login');
-    await page.getByLabel(/メールアドレス/i).fill(TEST_EMAIL);
-    await page.getByLabel(/パスワード/i).fill(TEST_PASSWORD);
-    await page.getByRole('button', { name: 'ログイン', exact: true }).click();
-    await page.waitForURL(/.*top/, { timeout: 10000 });
+    await login(page);
   });
 
   test('書籍のステータスを変更できる', async ({ page }) => {
