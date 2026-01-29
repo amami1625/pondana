@@ -105,8 +105,8 @@ test.describe('書籍詳細ページ', () => {
   });
 
   test('書籍一覧から詳細ページへ遷移できる', async ({ page }) => {
-    // 書籍カードのリンクをクリック（最初の書籍）
-    const bookDetailLink = page.locator('[aria-label="書籍の詳細を表示"]').first();
+    // 書籍カードの「詳細」リンクをクリック（最初の書籍）
+    const bookDetailLink = page.getByRole('link', { name: '詳細' }).first();
 
     // 書籍が存在する場合のみテスト
     const bookExists = (await bookDetailLink.count()) > 0;
@@ -126,8 +126,8 @@ test.describe('書籍詳細ページ', () => {
   });
 
   test('書籍詳細ページで編集モーダルが開ける', async ({ page }) => {
-    // 書籍カードのリンクをクリック（最初の書籍）
-    const bookDetailLink = page.locator('[aria-label="書籍の詳細を表示"]').first();
+    // 書籍カードの「詳細」リンクをクリック（最初の書籍）
+    const bookDetailLink = page.getByRole('link', { name: '詳細' }).first();
 
     const bookExists = (await bookDetailLink.count()) > 0;
     if (bookExists) {
@@ -148,8 +148,8 @@ test.describe('書籍詳細ページ', () => {
   });
 
   test('書籍詳細ページでタブ切り替えができる', async ({ page }) => {
-    // 書籍カードのリンクをクリック（最初の書籍）
-    const bookDetailLink = page.locator('[aria-label="書籍の詳細を表示"]').first();
+    // 書籍カードの「詳細」リンクをクリック（最初の書籍）
+    const bookDetailLink = page.getByRole('link', { name: '詳細' }).first();
 
     const bookExists = (await bookDetailLink.count()) > 0;
     if (bookExists) {
@@ -184,8 +184,8 @@ test.describe('書籍の編集フロー', () => {
     // 書籍一覧ページへ遷移
     await page.goto('/books');
 
-    // 書籍カードのリンクをクリック（最初の書籍）
-    const bookDetailLink = page.locator('[aria-label="書籍の詳細を表示"]').first();
+    // 書籍カードの「詳細」リンクをクリック（最初の書籍）
+    const bookDetailLink = page.getByRole('link', { name: '詳細' }).first();
 
     const bookExists = (await bookDetailLink.count()) > 0;
     if (bookExists) {
