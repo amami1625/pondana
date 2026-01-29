@@ -21,7 +21,7 @@ export default function ListIndexView({ lists }: ListIndexViewProps) {
       <PageTitle title="リスト一覧" />
       <div className="mb-6 flex justify-end">
         <Button variant="primary" onClick={createModal.open} icon={<Plus className="h-4 w-4" />}>
-          作成
+          リストを新規作成
         </Button>
       </div>
       {lists && lists.length === 0 ? (
