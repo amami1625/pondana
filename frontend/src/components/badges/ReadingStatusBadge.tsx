@@ -30,7 +30,7 @@ export default function ReadingStatusBudge({ label }: ReadingStatusBudgeProps) {
   return (
     <div className={`flex h-8 items-center justify-center gap-x-2 rounded-lg px-3 ${className}`}>
       {icon}
-      <p className="text-sm font-medium">{displayLabel}</p>
+      <p className="text-xs sm:text-sm font-medium">{displayLabel}</p>
     </div>
   );
 }

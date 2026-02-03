@@ -10,8 +10,8 @@ interface BookListCardProps {
 
 export default function BookListCard({ book, showDetailLink = true }: BookListCardProps) {
   return (
-    <div className="relative p-4 bg-white rounded-xl border border-slate-200 hover:shadow-lg transition-all">
-      <div className="flex items-stretch justify-between gap-6">
+    <div className="p-4 bg-white rounded-xl border border-slate-200 hover:shadow-lg transition-shadow">
+      <div className="flex flex-col sm:flex-row gap-4 sm:gap-6">
         {/* 書籍カバー画像 */}
         {book.thumbnail ? (
           <Image
@@ -35,46 +35,44 @@ export default function BookListCard({ book, showDetailLink = true }: BookListCa
         )}
 
         {/* 書籍情報 */}
-        <div className="flex flex-1 flex-col justify-between gap-2 py-1">
-          <div className="flex flex-col gap-1">
-            {/* タイトル */}
-            <p className="text-slate-900 text-lg font-bold leading-tight">{book.title}</p>
+        <div className="flex flex-col gap-3 min-w-0">
+          {/* タイトル */}
+          <p className="text-slate-900 text-lg font-bold leading-tight line-clamp-2">
+            {book.title}
+          </p>
 
-            {/* 著者 | 最終更新日 */}
-            <div className="text-slate-500 text-sm font-normal leading-normal">
-              <p>
-                {book.authors && book.authors.length > 0
-                  ? `著者: ${book.authors.map((author) => author).join(', ')}`
-                  : ''}
-              </p>
-              <p>最終更新: {book.updated_at}</p>
-            </div>
-
-            {/* 説明文 */}
-            {book.description && (
-              <p className="text-slate-600 text-sm font-normal leading-normal mt-2 line-clamp-2">
-                {book.description}
-              </p>
+          {/* 著者・最終更新日 */}
+          <div className="text-slate-500 text-sm">
+            {book.authors && book.authors.length > 0 && (
+              <p className="line-clamp-1">著者: {book.authors.join(', ')}</p>
             )}
+            <p>最終更新: {book.updated_at}</p>
           </div>
+
+          {/* 説明文 */}
+          {book.description && (
+            <p className="text-slate-600 text-sm line-clamp-2">{book.description}</p>
+          )}
 
           {/* カテゴリ・タグ */}
           {book.category && (
-            <div className="flex items-center gap-2 text-xs">
-              カテゴリ: <CategoryBadge label={book.category.name} />
-              タグ:
+            <div className="flex flex-col sm:flex-row sm:flex-wrap sm:items-center gap-2 text-xs">
+              <span>カテゴリ:</span>
+              <CategoryBadge label={book.category.name} />
+              <span>タグ:</span>
               {book.tags.map((tag) => (
                 <TagBadge key={tag.id} label={tag.name} />
               ))}
             </div>
           )}
         </div>
+
         {/* 詳細ページへのリンク */}
         {showDetailLink && (
-          <div className="flex items-end justify-end">
+          <div className="sm:self-end sm:ml-auto">
             <Link
               href={`/books/${book.id}`}
-              className="inline-flex min-w-[84px] items-center justify-center overflow-hidden rounded-lg h-10 px-4 text-sm font-bold transition-colors cursor-pointer gap-2 bg-primary text-white hover:bg-primary/90"
+              className="flex w-full sm:w-auto items-center justify-center rounded-lg h-10 px-4 text-sm font-bold transition-colors bg-primary text-white hover:bg-primary/90"
             >
               詳細
             </Link>
