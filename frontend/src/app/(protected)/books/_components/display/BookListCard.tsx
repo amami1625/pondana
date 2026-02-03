@@ -69,19 +69,18 @@ export default function BookListCard({ book, showDetailLink = true }: BookListCa
             </div>
           )}
         </div>
+        {/* 詳細ページへのリンク */}
+        {showDetailLink && (
+          <div className="flex items-end justify-end">
+            <Link
+              href={`/books/${book.id}`}
+              className="inline-flex min-w-[84px] items-center justify-center overflow-hidden rounded-lg h-10 px-4 text-sm font-bold transition-colors cursor-pointer gap-2 bg-primary text-white hover:bg-primary/90"
+            >
+              詳細
+            </Link>
+          </div>
+        )}
       </div>
-
-      {/* 詳細ページへのリンク */}
-      {showDetailLink && (
-        <div className="flex justify-end mt-2">
-          <Link
-            href={`/books/${book.id}`}
-            className="inline-flex min-w-[84px] items-center justify-center overflow-hidden rounded-lg h-10 px-4 text-sm font-bold transition-colors cursor-pointer gap-2 bg-primary text-white hover:bg-primary/90"
-          >
-            詳細
-          </Link>
-        </div>
-      )}
     </div>
   );
 }
