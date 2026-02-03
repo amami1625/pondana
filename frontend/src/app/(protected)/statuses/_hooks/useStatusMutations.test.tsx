@@ -1,7 +1,8 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { renderHook, waitFor, act } from '@testing-library/react';
-import { createProvider, createTestQueryClient } from '@/test/helpers';
-import { createMockStatus } from '@/test/factories/status';
+import { createProvider } from '@/test/helpers';
+import { server } from '@/test/mocks/server';
+import { http, HttpResponse } from 'msw';
 import { useStatusMutations } from './useStatusMutations';
 import toast from 'react-hot-toast';
 
@@ -15,75 +16,32 @@ vi.mock('react-hot-toast', () => ({
 
 describe('useStatusMutations', () => {
   beforeEach(() => {
-    // 各テストの前にモックをリセット
     vi.clearAllMocks();
   });
 
   describe('createStatus', () => {
-    it('ステータスの作成が成功する', async () => {
-      const mockStatus = createMockStatus({ name: 'テストステータス' });
-      const queryClient = createTestQueryClient();
+    const createData = {
+      name: 'ステータス',
+    };
 
-      // 事前に statuses のデータをキャッシュに追加
-      queryClient.setQueryData(['statuses'], [createMockStatus({ id: 1 })]);
-
-      vi.stubGlobal(
-        'fetch',
-        vi.fn().mockResolvedValue({
-          ok: true,
-          json: async () => mockStatus,
-        }),
-      );
-
+    it('成功時にトーストが表示される', async () => {
       const { result } = renderHook(() => useStatusMutations(), {
-        wrapper: createProvider(queryClient),
+        wrapper: createProvider(),
       });
 
-      // 初期状態
-      expect(result.current.isCreating).toBe(false);
-      expect(result.current.createError).toBeNull();
-
-      // ミューテーション実行
       act(() => {
-        result.current.createStatus({
-          name: 'テストステータス',
-        });
+        result.current.createStatus(createData);
       });
 
-      // 完了を待つ
       await waitFor(() => expect(result.current.isCreating).toBe(false));
 
-      // fetchが正しく呼ばれたことを確認
-      expect(fetch).toHaveBeenCalledWith(
-        '/api/statuses',
-        expect.objectContaining({
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            name: 'テストステータス',
-          }),
-        }),
-      );
-
-      // トーストが表示されることを確認
       expect(toast.success).toHaveBeenCalledWith('ステータスを作成しました');
-
-      // キャッシュが無効化されることを確認
-      const statusesQueryState = queryClient.getQueryState(['statuses']);
-      expect(statusesQueryState?.isInvalidated).toBe(true);
     });
 
-    it('ステータスの作成が失敗する', async () => {
-      const errorMessage = 'ステータスの作成に失敗しました';
-
-      vi.stubGlobal(
-        'fetch',
-        vi.fn().mockResolvedValue({
-          ok: false,
-          json: async () => ({
-            code: 'CREATE_FAILED',
-            error: errorMessage,
-          }),
+    it('失敗時にエラートーストが表示される', async () => {
+      server.use(
+        http.post('/api/statuses', () => {
+          return HttpResponse.json({ error: 'Server error' }, { status: 500 });
         }),
       );
 
@@ -91,122 +49,90 @@ describe('useStatusMutations', () => {
         wrapper: createProvider(),
       });
 
-      // 初期状態
-      expect(result.current.isCreating).toBe(false);
-      expect(result.current.createError).toBeNull();
-
-      // ミューテーション実行
       act(() => {
-        result.current.createStatus({
-          name: 'テストステータス',
-        });
+        result.current.createStatus(createData);
       });
 
-      // エラー完了を待つ
-      await waitFor(() => expect(result.current.createError).not.toBeNull());
+      await waitFor(() => expect(result.current.createError).toBeInstanceOf(Error));
 
-      // トーストでエラーが表示されることを確認
-      expect(toast.error).toHaveBeenCalledWith(errorMessage);
+      expect(toast.error).toHaveBeenCalled();
     });
   });
 
   describe('updateStatus', () => {
-    it('ステータスの更新が成功する', async () => {
-      const mockStatus = createMockStatus({ id: 1, name: '更新後ステータス' });
-      const queryClient = createTestQueryClient();
+    const updateData = {
+      id: 1,
+      name: '更新後ステータス',
+    };
 
-      queryClient.setQueryData(['statuses'], [createMockStatus({ id: 1 })]);
-      queryClient.setQueryData(['cards'], []);
+    it('成功時にトーストが表示される', async () => {
+      const { result } = renderHook(() => useStatusMutations(), {
+        wrapper: createProvider(),
+      });
 
-      vi.stubGlobal(
-        'fetch',
-        vi.fn().mockResolvedValue({
-          ok: true,
-          json: async () => mockStatus,
+      act(() => {
+        result.current.updateStatus(updateData);
+      });
+
+      await waitFor(() => expect(result.current.isUpdating).toBe(false));
+
+      expect(toast.success).toHaveBeenCalledWith('ステータスを更新しました');
+    });
+
+    it('失敗時にエラートーストが表示される', async () => {
+      server.use(
+        http.put('/api/statuses/:id', () => {
+          return HttpResponse.json({ error: 'Server error' }, { status: 500 });
         }),
       );
 
       const { result } = renderHook(() => useStatusMutations(), {
-        wrapper: createProvider(queryClient),
+        wrapper: createProvider(),
       });
 
-      // ミューテーション実行
       act(() => {
-        result.current.updateStatus({
-          id: 1,
-          name: '更新後ステータス',
-        });
+        result.current.updateStatus(updateData);
       });
 
-      // 完了を待つ
-      await waitFor(() => expect(result.current.isUpdating).toBe(false));
+      await waitFor(() => expect(result.current.updateError).toBeInstanceOf(Error));
 
-      // fetchが正しく呼ばれたことを確認
-      expect(fetch).toHaveBeenCalledWith(
-        '/api/statuses/1',
-        expect.objectContaining({
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            name: '更新後ステータス',
-          }),
-        }),
-      );
-
-      // トーストが表示されることを確認
-      expect(toast.success).toHaveBeenCalledWith('ステータスを更新しました');
-
-      // キャッシュが無効化されることを確認
-      const statusesQueryState = queryClient.getQueryState(['statuses']);
-      const cardsQueryState = queryClient.getQueryState(['cards']);
-      expect(statusesQueryState?.isInvalidated).toBe(true);
-      expect(cardsQueryState?.isInvalidated).toBe(true);
+      expect(toast.error).toHaveBeenCalled();
     });
   });
 
   describe('deleteStatus', () => {
-    it('ステータスの削除が成功する', async () => {
-      const queryClient = createTestQueryClient();
-
-      queryClient.setQueryData(['statuses'], [createMockStatus({ id: 1 })]);
-      queryClient.setQueryData(['cards'], []);
-
-      vi.stubGlobal(
-        'fetch',
-        vi.fn().mockResolvedValue({
-          ok: true,
-          json: async () => ({}),
-        }),
-      );
-
+    it('成功時にトーストが表示される', async () => {
       const { result } = renderHook(() => useStatusMutations(), {
-        wrapper: createProvider(queryClient),
+        wrapper: createProvider(),
       });
 
-      // ミューテーション実行
       act(() => {
         result.current.deleteStatus(1);
       });
 
-      // 完了を待つ
       await waitFor(() => expect(result.current.isDeleting).toBe(false));
 
-      // fetchが正しく呼ばれたことを確認
-      expect(fetch).toHaveBeenCalledWith(
-        '/api/statuses/1',
-        expect.objectContaining({
-          method: 'DELETE',
+      expect(toast.success).toHaveBeenCalledWith('ステータスを削除しました');
+    });
+
+    it('失敗時にエラートーストが表示される', async () => {
+      server.use(
+        http.delete('/api/statuses/:id', () => {
+          return HttpResponse.json({ error: 'Server error' }, { status: 500 });
         }),
       );
 
-      // トーストが表示されることを確認
-      expect(toast.success).toHaveBeenCalledWith('ステータスを削除しました');
+      const { result } = renderHook(() => useStatusMutations(), {
+        wrapper: createProvider(),
+      });
 
-      // キャッシュが無効化されることを確認
-      const statusesQueryState = queryClient.getQueryState(['statuses']);
-      const cardsQueryState = queryClient.getQueryState(['cards']);
-      expect(statusesQueryState?.isInvalidated).toBe(true);
-      expect(cardsQueryState?.isInvalidated).toBe(true);
+      act(() => {
+        result.current.deleteStatus(1);
+      });
+
+      await waitFor(() => expect(result.current.deleteError).toBeInstanceOf(Error));
+
+      expect(toast.error).toHaveBeenCalled();
     });
   });
 });

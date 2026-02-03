@@ -23,10 +23,9 @@ export async function searchBooks(
   }
 
   try {
-    // TODO: 本リリース時にapiキーを取得、設定する
     const apiKey = process.env.NEXT_PUBLIC_GOOGLE_BOOKS_API_KEY;
     const params = new URLSearchParams({
-      q: query,
+      q: `intitle:${query}`,
       maxResults: maxResults.toString(),
       ...(apiKey && { key: apiKey }),
     });

@@ -7,30 +7,11 @@
  * 3. 実際のユーザー動線を再現
  */
 import { test, expect } from '@playwright/test';
-
-const TEST_EMAIL = process.env.TEST_USER_EMAIL;
-const TEST_PASSWORD = process.env.TEST_USER_PASSWORD;
-
-if (!TEST_EMAIL || !TEST_PASSWORD) {
-  throw new Error(
-    'E2Eテストの実行には環境変数 TEST_USER_EMAIL と TEST_USER_PASSWORD の設定が必要です。\n' +
-      'ローカル環境: export TEST_USER_EMAIL="..." && export TEST_USER_PASSWORD="..."\n' +
-      'CI環境: Repository Secrets に設定してください。',
-  );
-}
+import { login } from './helpers/auth';
 
 test.describe('トップページからの主要ナビゲーション', () => {
-  // 各テストの前にログイン
   test.beforeEach(async ({ page }) => {
-    // ログイン処理
-    await page.goto('/login');
-
-    await page.getByLabel(/メールアドレス/i).fill(TEST_EMAIL);
-    await page.getByLabel(/パスワード/i).fill(TEST_PASSWORD);
-    await page.getByRole('button', { name: 'ログイン', exact: true }).click();
-
-    // トップページへの遷移を待機
-    await page.waitForURL(/.*top/, { timeout: 10000 });
+    await login(page);
   });
 
   test('書籍一覧ページへ遷移できる', async ({ page }) => {
