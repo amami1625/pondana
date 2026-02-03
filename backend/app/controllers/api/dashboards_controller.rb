@@ -29,8 +29,8 @@ module Api
       books_by_month = books.group_by { |book| book.created_at.strftime('%Y-%m') }
                             .transform_values(&:count)
 
-      # 過去12ヶ月の全ての月を生成し、データがない月は0で埋める（配列形式）
-      12.downto(1).map do |months_ago|
+      # 当月を含む過去12ヶ月の全ての月を生成し、データがない月は0で埋める（配列形式）
+      11.downto(0).map do |months_ago|
         month_key = months_ago.months.ago.strftime('%Y-%m')
         { month: month_key, count: books_by_month[month_key] || 0 }
       end
