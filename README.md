@@ -213,3 +213,7 @@ erDiagram
         timestamp updated_at
     }
 ```
+
+### アプリURL
+
+- https://app.monowave.net/top
