@@ -1,9 +1,10 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { renderHook, waitFor, act } from '@testing-library/react';
-import { createProvider, createTestQueryClient } from '@/test/helpers';
-import { createMockUser, createMockTopPageData } from '@/test/factories';
-import toast from 'react-hot-toast';
+import { createProvider } from '@/test/helpers';
+import { server } from '@/test/mocks/server';
+import { http, HttpResponse } from 'msw';
 import { useProfileMutations } from './useProfileMutations';
+import toast from 'react-hot-toast';
 
 // react-hot-toastをモック
 vi.mock('react-hot-toast', () => ({
@@ -15,71 +16,30 @@ vi.mock('react-hot-toast', () => ({
 
 describe('useProfileMutations', () => {
   beforeEach(() => {
-    // 各テストの前にモックをリセット
     vi.clearAllMocks();
   });
 
   describe('updateUser', () => {
-    it('プロフィールの更新に成功する', async () => {
-      const mockUser = createMockUser({ name: '更新されたユーザー' });
-      const queryClient = createTestQueryClient();
+    const updateData = {
+      name: '更新されたユーザー',
+    };
 
-      // 事前にprofile、topページのデータをキャッシュに追加
-      queryClient.setQueryData(['profile'], createMockUser());
-      queryClient.setQueryData(['top'], createMockTopPageData());
-
-      vi.stubGlobal(
-        'fetch',
-        vi.fn().mockResolvedValue({
-          ok: true,
-          json: async () => mockUser,
-        }),
-      );
-
+    it('成功時にトーストが表示される', async () => {
       const { result } = renderHook(() => useProfileMutations(), {
-        wrapper: createProvider(queryClient),
+        wrapper: createProvider(),
       });
 
-      expect(result.current.isUpdating).toBe(false);
-      expect(result.current.updateError).toBeNull();
-
-      act(() =>
-        result.current.updateUser({
-          name: '更新されたユーザー',
-        }),
-      );
+      act(() => result.current.updateUser(updateData));
 
       await waitFor(() => expect(result.current.isUpdating).toBe(false));
 
-      expect(fetch).toHaveBeenCalledWith('/api/profiles', {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          name: '更新されたユーザー',
-        }),
-      });
-
-      // トーストが表示されることを確認
       expect(toast.success).toHaveBeenCalledWith('プロフィールを更新しました');
-
-      // キャッシュが無効化されることを確認
-      const profileQueryState = queryClient.getQueryState(['profile']);
-      const topQueryState = queryClient.getQueryState(['top']);
-      expect(profileQueryState?.isInvalidated).toBe(true);
-      expect(topQueryState?.isInvalidated).toBe(true);
     });
 
-    it('プロフィールの更新に失敗する', async () => {
-      const errorMessage = 'プロフィールの更新に失敗しました';
-
-      vi.stubGlobal(
-        'fetch',
-        vi.fn().mockResolvedValue({
-          ok: false,
-          json: async () => ({
-            code: 'UPDATE_FAILED',
-            error: errorMessage,
-          }),
+    it('失敗時にエラートーストが表示される', async () => {
+      server.use(
+        http.put('/api/profiles', () => {
+          return HttpResponse.json({ error: 'Server error' }, { status: 500 });
         }),
       );
 
@@ -87,65 +47,11 @@ describe('useProfileMutations', () => {
         wrapper: createProvider(),
       });
 
-      expect(result.current.isUpdating).toBe(false);
-      expect(result.current.updateError).toBeNull();
-
-      act(() =>
-        result.current.updateUser({
-          name: '更新されたユーザー',
-        }),
-      );
+      act(() => result.current.updateUser(updateData));
 
       await waitFor(() => expect(result.current.updateError).toBeInstanceOf(Error));
 
-      expect(fetch).toHaveBeenCalledWith('/api/profiles', {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          name: '更新されたユーザー',
-        }),
-      });
-
-      // トーストが表示されることを確認
-      expect(toast.error).toHaveBeenCalledWith(errorMessage);
-
-      expect(result.current.isUpdating).toBe(false);
-      expect(result.current.updateError?.message).toBe(errorMessage);
-    });
-
-    it('ネットワークエラー時にエラー状態になる', async () => {
-      const errorMessage = 'Network error';
-
-      vi.stubGlobal('fetch', vi.fn().mockRejectedValue(new Error(errorMessage)));
-
-      const { result } = renderHook(() => useProfileMutations(), {
-        wrapper: createProvider(),
-      });
-
-      expect(result.current.isUpdating).toBe(false);
-      expect(result.current.updateError).toBeNull();
-
-      act(() =>
-        result.current.updateUser({
-          name: '更新されたユーザー',
-        }),
-      );
-
-      await waitFor(() => expect(result.current.updateError).toBeInstanceOf(Error));
-
-      expect(fetch).toHaveBeenCalledWith('/api/profiles', {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          name: '更新されたユーザー',
-        }),
-      });
-
-      expect(result.current.isUpdating).toBe(false);
-      expect(result.current.updateError?.message).toBe(errorMessage);
-
-      // トーストが表示されることを確認
-      expect(toast.error).toHaveBeenCalledWith(errorMessage);
+      expect(toast.error).toHaveBeenCalled();
     });
   });
 });

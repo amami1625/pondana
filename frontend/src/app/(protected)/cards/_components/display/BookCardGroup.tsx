@@ -33,6 +33,7 @@ export default function BookCardGroup({ book, cards }: BookCardGroupProps) {
           <button
             onClick={toggleExpand}
             className="flex-shrink-0 p-1 hover:bg-gray-100 rounded transition-colors cursor-pointer"
+            data-testid="expand"
             aria-label={isExpanded ? 'カードリストを折りたたむ' : 'カードリストを展開する'}
             aria-expanded={isExpanded}
           >

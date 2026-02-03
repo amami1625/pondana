@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { List } from '@/app/(protected)/lists/_types';
-import { ChevronRight, Clock, Bookmark } from 'lucide-react';
+import { Clock, Bookmark } from 'lucide-react';
 
 interface ListCardProps {
   list: List;
@@ -8,11 +8,8 @@ interface ListCardProps {
 
 export default function ListCard({ list }: ListCardProps) {
   return (
-    <Link
-      href={`/lists/${list.id}`}
-      className="group block rounded-lg border border-slate-200 bg-white transition hover:shadow-lg"
-    >
-      <div className="flex items-center gap-4 p-4">
+    <div className="rounded-lg border border-slate-200 bg-white p-4 hover:shadow-lg transition-all">
+      <div className="flex items-center gap-4">
         {/* ブックマークアイコンエリア */}
         <div className="flex-shrink-0 flex items-center justify-center w-12 h-12 rounded-lg bg-primary/20">
           <Bookmark className="h-6 w-6 text-primary" />
@@ -21,9 +18,7 @@ export default function ListCard({ list }: ListCardProps) {
         {/* リスト情報 */}
         <div className="flex-1 min-w-0">
           {/* タイトル */}
-          <h2 className="text-lg font-semibold text-slate-800 group-hover:text-primary truncate mb-1">
-            {list.name}
-          </h2>
+          <h2 className="text-lg font-semibold text-slate-800 truncate mb-1">{list.name}</h2>
 
           {/* 説明 */}
           {list.description && (
@@ -43,12 +38,16 @@ export default function ListCard({ list }: ListCardProps) {
             </div>
           </div>
         </div>
-
-        {/* 右側のアイコン */}
-        <div className="flex-shrink-0">
-          <ChevronRight className="h-5 w-5 text-slate-400 transition group-hover:text-primary" />
+        {/* 詳細ページへのリンク */}
+        <div className="flex justify-end mt-2">
+          <Link
+            href={`/lists/${list.id}`}
+            className="inline-flex min-w-[84px] items-center justify-center overflow-hidden rounded-lg h-10 px-4 text-sm font-bold transition-colors cursor-pointer gap-2 bg-primary text-white hover:bg-primary/90"
+          >
+            詳細
+          </Link>
         </div>
       </div>
-    </Link>
+    </div>
   );
 }
