@@ -103,10 +103,7 @@ describe('useBookDetailView', () => {
 
     it('タグバッジが表示される', () => {
       const book = createMockBook({
-        tags: [
-          createMockTag({ name: 'TypeScript' }),
-          createMockTag({ name: 'React' }),
-        ],
+        tags: [createMockTag({ name: 'TypeScript' }), createMockTag({ name: 'React' })],
       });
 
       const { result } = renderHook(() => useBookDetailView(book));
