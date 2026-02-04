@@ -41,36 +41,36 @@ export default function BookDetailView({ book }: BookDetailProps) {
               priority
             />
           )}
-          <div className="flex flex-1 flex-col gap-6 min-w-0">
-            {/* ヘッダー */}
-            <div className="flex flex-wrap justify-between items-start gap-4 min-w-0">
-              <div className="flex flex-col gap-1 flex-1 min-w-0">
-                <h1 className="text-slate-900 text-3xl sm:text-4xl font-black tracking-tighter truncate">
-                  {book.title}
-                </h1>
-                {book.subtitle && (
-                  <p className="text-slate-500 text-lg font-medium truncate">{book.subtitle}</p>
-                )}
-                {book.authors && (
-                  <p className="text-slate-500 text-lg font-medium truncate">
-                    {`著者: ${book.authors.join(', ')}`}
-                  </p>
-                )}
-                {book.rating && (
-                  <div className="flex items-center gap-1 text-primary mb-3">
-                    {[...Array(5)].map((_, i) => (
-                      <Star
-                        key={i}
-                        className={`h-4 w-4 ${i < book.rating! ? 'fill-current' : ''}`}
-                      />
-                    ))}
-                  </div>
-                )}
-              </div>
-              {badges && <div className="flex items-center gap-3">{badges}</div>}
+          <div className="flex flex-col gap-4 min-w-0">
+            {/* タイトル・著者情報 */}
+            <div className="flex flex-col gap-1">
+              <h1 className="text-slate-900 text-3xl sm:text-4xl font-black tracking-tighter line-clamp-2 sm:line-clamp-1">
+                {book.title}
+              </h1>
+              {book.subtitle && (
+                <p className="text-slate-500 text-lg font-medium line-clamp-1">{book.subtitle}</p>
+              )}
+              {book.authors && (
+                <p className="text-slate-500 text-lg font-medium line-clamp-1">
+                  {`著者: ${book.authors.join(', ')}`}
+                </p>
+              )}
             </div>
+
+            {/* バッジ */}
+            {badges && <div className="flex flex-col sm:flex-row sm:flex-wrap gap-2">{badges}</div>}
+
+            {/* 評価 */}
+            {book.rating && (
+              <div className="flex items-center gap-1 text-primary">
+                {[...Array(5)].map((_, i) => (
+                  <Star key={i} className={`h-4 w-4 ${i < book.rating! ? 'fill-current' : ''}`} />
+                ))}
+              </div>
+            )}
+
             {/* 説明 */}
-            <p className="text-slate-600 text-base font-normal leading-relaxed">
+            <p className="text-slate-600 text-base leading-relaxed">
               {book.description ?? '説明が登録されていません'}
             </p>
 
@@ -79,7 +79,8 @@ export default function BookDetailView({ book }: BookDetailProps) {
               <span>登録日: {book.created_at}</span>
               <span>更新日: {book.updated_at}</span>
             </div>
-            {/* 所有者の場合のみ編集・削除ボタンを表示 */}
+
+            {/* アクションボタン（所有者のみ） */}
             {isOwner && (
               <BookActions
                 onEdit={updateModal.open}

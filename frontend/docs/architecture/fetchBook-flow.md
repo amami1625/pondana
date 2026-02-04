@@ -54,18 +54,18 @@ participant Rails as "Rails API<br/>/books/:id"
     Client->>Hook: "useBook('123')"
     activate Hook
 
-    Hook->>Hook: "useQuery({<br/>  queryKey: ['books', '123'],<br/>  queryFn: () => fetchBook('123'),<br/>  staleTime: 60000<br/>})"
+    Hook->>Hook: "useQuery({<br/>  queryKey: ['books', '123'],<br/>  queryFn: () => fetchBook('123')<br/>})"
 
-    Note over Hook: キャッシュが存在 & 新鮮<br/>(staleTime内)
+    Note over Hook: キャッシュが存在 & 新鮮<br/>(staleTime: 5分)
     Hook-->>Client: "{ data: book, isLoading: false }"
     deactivate Hook
 
     Client-->>Browser: "書籍詳細を即座に表示"
     deactivate Client
 
-    Note over Browser,Rails: 【60秒後 or キャッシュ無効化時】再フェッチ
+    Note over Browser,Rails: 【5分後 or キャッシュ無効化時】再フェッチ
 
-    Browser->>Hook: "キャッシュが古くなる (staleTime経過)"
+    Browser->>Hook: "キャッシュが古くなる (staleTime: 5分経過)"
     activate Hook
 
     Hook->>FetchFn: "fetchBook('123')"
@@ -233,7 +233,7 @@ export function useBook(id: string) {
     queryKey: queryKeys.books.detail(id),
     queryFn: () => fetchBook(id),
     enabled: !!id,
-    staleTime: 60 * 1000, // 60秒間キャッシュを新鮮として扱う
+    // staleTimeはproviders.tsxのデフォルト設定（5分）を使用
   });
 }
 ```
@@ -241,8 +241,8 @@ export function useBook(id: string) {
 **ポイント**:
 
 - ✅ プリフェッチされたデータがキャッシュにある → `isLoading: false` で即座に表示
-- ✅ `staleTime: 60秒` → 60秒間は再フェッチせずキャッシュを使用
-- ✅ 60秒経過後、バックグラウンドで自動的に再フェッチ
+- ✅ `staleTime: 5分`（デフォルト設定） → 5分間は再フェッチせずキャッシュを使用
+- ✅ 5分経過後、バックグラウンドで自動的に再フェッチ
 
 ---
 
@@ -495,11 +495,12 @@ Start["fetchBook実行"] --> Fetch["fetch実行"]
 ### ✅ キャッシュ戦略
 
 ```typescript
-staleTime: 60 * 1000; // 60秒間キャッシュを新鮮として扱う
+// providers.tsx でデフォルト設定
+staleTime: 1000 * 60 * 5; // 5分間キャッシュを新鮮として扱う
 ```
 
-- **0〜60秒**: キャッシュから即座に返す（再フェッチなし）
-- **60秒以降**: バックグラウンドで再フェッチ（画面は更新されたまま）
+- **0〜5分**: キャッシュから即座に返す（再フェッチなし）
+- **5分以降**: バックグラウンドで再フェッチ（画面は更新されたまま）
 - **キャッシュ無効化時**: 手動で `invalidateQueries` を呼ぶ
 
 ---

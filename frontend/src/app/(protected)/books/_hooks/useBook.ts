@@ -7,6 +7,5 @@ export function useBook(id: string) {
     queryKey: queryKeys.books.detail(id),
     queryFn: () => fetchBook(id),
     enabled: !!id,
-    staleTime: 60 * 1000, // 60秒間キャッシュを新鮮として扱う
   });
 }

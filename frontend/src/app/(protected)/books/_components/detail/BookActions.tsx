@@ -15,7 +15,7 @@ export default function BookActions({
   onDelete,
 }: BookActionsProps) {
   return (
-    <div className="flex flex-wrap gap-3 pt-4">
+    <div className="flex flex-col sm:flex-row sm:flex-wrap gap-3 pt-4">
       <Button variant="primary" onClick={onEdit} icon={<Edit size={18} />}>
         編集
       </Button>
@@ -25,7 +25,7 @@ export default function BookActions({
       <Button variant="secondary" onClick={onCreateCard} icon={<FilePlus size={18} />}>
         カードを作成
       </Button>
-      <div className="ml-auto">
+      <div className="sm:ml-auto">
         <Button variant="danger" onClick={onDelete} icon={<Trash2 size={18} />}>
           削除
         </Button>
