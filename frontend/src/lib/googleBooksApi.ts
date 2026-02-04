@@ -25,7 +25,7 @@ export async function searchBooks(
   try {
     const apiKey = process.env.NEXT_PUBLIC_GOOGLE_BOOKS_API_KEY;
     const params = new URLSearchParams({
-      q: `intitle:${query}`,
+      q: query,
       maxResults: maxResults.toString(),
       ...(apiKey && { key: apiKey }),
     });
