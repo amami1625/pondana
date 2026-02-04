@@ -3,6 +3,14 @@ import { ApiError } from '@/lib/errors/ApiError';
 import { bookBaseSchema, bookSchema } from '@/app/(protected)/books/_types';
 import { NextRequest, NextResponse } from 'next/server';
 
+// エラーメッセージ
+const ERROR_MESSAGES = {
+  NOT_FOUND: '本の取得に失敗しました',
+  CREATE_FAILED: '本の作成に失敗しました',
+  NETWORK_ERROR: 'ネットワークエラーが発生しました',
+  UNKNOWN: 'エラーが発生しました。もう一度お試しください',
+};
+
 // GET - 一覧取得
 export async function GET() {
   try {
@@ -11,15 +19,14 @@ export async function GET() {
     return NextResponse.json(books);
   } catch (error) {
     if (error instanceof ApiError) {
-      return NextResponse.json(
-        { error: error.message, code: error.code },
-        { status: error.statusCode },
-      );
+      const message =
+        error.statusCode === 404 ? ERROR_MESSAGES.NOT_FOUND : ERROR_MESSAGES.UNKNOWN;
+      return NextResponse.json({ error: message }, { status: error.statusCode });
     }
-    if (error instanceof Error) {
-      return NextResponse.json({ error: error.message }, { status: 500 });
+    if (error instanceof TypeError) {
+      return NextResponse.json({ error: ERROR_MESSAGES.NETWORK_ERROR }, { status: 503 });
     }
-    return NextResponse.json({ error: '不明なエラーが発生しました' }, { status: 500 });
+    return NextResponse.json({ error: ERROR_MESSAGES.UNKNOWN }, { status: 500 });
   }
 }
 
@@ -43,14 +50,11 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(book);
   } catch (error) {
     if (error instanceof ApiError) {
-      return NextResponse.json(
-        { error: error.message, code: error.code },
-        { status: error.statusCode },
-      );
+      return NextResponse.json({ error: ERROR_MESSAGES.CREATE_FAILED }, { status: error.statusCode });
     }
-    if (error instanceof Error) {
-      return NextResponse.json({ error: error.message }, { status: 500 });
+    if (error instanceof TypeError) {
+      return NextResponse.json({ error: ERROR_MESSAGES.NETWORK_ERROR }, { status: 503 });
     }
-    return NextResponse.json({ error: '不明なエラーが発生しました' }, { status: 500 });
+    return NextResponse.json({ error: ERROR_MESSAGES.UNKNOWN }, { status: 500 });
   }
 }

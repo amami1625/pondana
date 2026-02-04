@@ -3,6 +3,13 @@ import { bookBaseSchema, bookDetailSchema } from '@/app/(protected)/books/_types
 import { ApiError } from '@/lib/errors/ApiError';
 import { NextRequest, NextResponse } from 'next/server';
 
+// エラーメッセージ
+const ERROR_MESSAGES = {
+  NOT_FOUND: '本の取得に失敗しました',
+  NETWORK_ERROR: 'ネットワークエラーが発生しました',
+  UNKNOWN: 'エラーが発生しました。もう一度お試しください',
+};
+
 // GET - 詳細取得
 export async function GET(
   _request: NextRequest,
@@ -10,37 +17,21 @@ export async function GET(
 ) {
   try {
     const { bookId } = await params;
-    const data = await authenticatedRequest(`/books/${bookId}`, {}, false); // API Routeでは404をApiErrorとしてスロー
+    const data = await authenticatedRequest(`/books/${bookId}`, {}, false);
     const book = bookDetailSchema.parse(data);
     return NextResponse.json(book);
   } catch (error) {
-    // ApiErrorの場合はステータスコードとエラーコードを保持
     if (error instanceof ApiError) {
-      return NextResponse.json(
-        {
-          error: error.message,
-          code: error.code,
-        },
-        { status: error.statusCode },
-      );
+      const message =
+        error.statusCode === 404 ? ERROR_MESSAGES.NOT_FOUND : ERROR_MESSAGES.UNKNOWN;
+      return NextResponse.json({ error: message }, { status: error.statusCode });
     }
 
-    // ネットワークエラーの場合（Next.js → Rails 間の通信失敗）
     if (error instanceof TypeError) {
-      return NextResponse.json(
-        {
-          error: error.message, // 技術的なメッセージ（開発時のデバッグ用）
-          code: 'NETWORK_ERROR',
-        },
-        { status: 503 }, // Service Unavailable
-      );
+      return NextResponse.json({ error: ERROR_MESSAGES.NETWORK_ERROR }, { status: 503 });
     }
 
-    if (error instanceof Error) {
-      return NextResponse.json({ error: error.message }, { status: 500 });
-    }
-
-    return NextResponse.json({ error: '不明なエラーが発生しました' }, { status: 500 });
+    return NextResponse.json({ error: ERROR_MESSAGES.UNKNOWN }, { status: 500 });
   }
 }
 
