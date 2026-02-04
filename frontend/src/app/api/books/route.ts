@@ -1,6 +1,6 @@
 import { authenticatedRequest } from '@/supabase/dal';
-import { ApiError } from '@/lib/errors/ApiError';
 import { bookBaseSchema, bookSchema } from '@/app/(protected)/books/_types';
+import { handleRouteError } from '@/lib/api/handleRouteError';
 import { NextRequest, NextResponse } from 'next/server';
 
 // エラーメッセージ
@@ -18,15 +18,11 @@ export async function GET() {
     const books = bookSchema.array().parse(data);
     return NextResponse.json(books);
   } catch (error) {
-    if (error instanceof ApiError) {
-      const message =
-        error.statusCode === 404 ? ERROR_MESSAGES.NOT_FOUND : ERROR_MESSAGES.UNKNOWN;
-      return NextResponse.json({ error: message }, { status: error.statusCode });
-    }
-    if (error instanceof TypeError) {
-      return NextResponse.json({ error: ERROR_MESSAGES.NETWORK_ERROR }, { status: 503 });
-    }
-    return NextResponse.json({ error: ERROR_MESSAGES.UNKNOWN }, { status: 500 });
+    return handleRouteError(error, {
+      apiError: ERROR_MESSAGES.NOT_FOUND,
+      networkError: ERROR_MESSAGES.NETWORK_ERROR,
+      unknown: ERROR_MESSAGES.UNKNOWN,
+    });
   }
 }
 
@@ -49,12 +45,10 @@ export async function POST(request: NextRequest) {
     const book = bookBaseSchema.parse(data);
     return NextResponse.json(book);
   } catch (error) {
-    if (error instanceof ApiError) {
-      return NextResponse.json({ error: ERROR_MESSAGES.CREATE_FAILED }, { status: error.statusCode });
-    }
-    if (error instanceof TypeError) {
-      return NextResponse.json({ error: ERROR_MESSAGES.NETWORK_ERROR }, { status: 503 });
-    }
-    return NextResponse.json({ error: ERROR_MESSAGES.UNKNOWN }, { status: 500 });
+    return handleRouteError(error, {
+      apiError: ERROR_MESSAGES.CREATE_FAILED,
+      networkError: ERROR_MESSAGES.NETWORK_ERROR,
+      unknown: ERROR_MESSAGES.UNKNOWN,
+    });
   }
 }
