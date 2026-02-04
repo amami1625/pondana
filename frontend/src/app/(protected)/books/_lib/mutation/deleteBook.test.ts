@@ -2,7 +2,6 @@ import { describe, it, expect } from 'vitest';
 import { server } from '@/test/mocks/server';
 import { http, HttpResponse } from 'msw';
 import { createTestUuid } from '@/test/helpers';
-import { BOOKS_ERROR_MESSAGES } from '@/constants/errorMessages';
 import { deleteBook } from './deleteBook';
 
 describe('deleteBook', () => {
@@ -15,34 +14,26 @@ describe('deleteBook', () => {
   });
 
   describe('エラー時', () => {
-    it('404エラー時に適切なエラーメッセージをスローする', async () => {
+    it('APIからのエラーメッセージをそのままスローする', async () => {
+      const errorMessage = '本の削除に失敗しました';
       server.use(
         http.delete('/api/books/:id', () => {
-          return HttpResponse.json({ error: 'Not found' }, { status: 404 });
+          return HttpResponse.json({ error: errorMessage }, { status: 404 });
         }),
       );
 
-      await expect(deleteBook({ id: bookId })).rejects.toThrow(BOOKS_ERROR_MESSAGES.NOT_FOUND);
+      await expect(deleteBook({ id: bookId })).rejects.toThrow(errorMessage);
     });
 
-    it('500エラー時にデフォルトエラーメッセージをスローする', async () => {
+    it('サーバーエラー時もAPIからのエラーメッセージをスローする', async () => {
+      const errorMessage = 'エラーが発生しました。もう一度お試しください';
       server.use(
         http.delete('/api/books/:id', () => {
-          return HttpResponse.json({ error: 'Internal server error' }, { status: 500 });
+          return HttpResponse.json({ error: errorMessage }, { status: 500 });
         }),
       );
 
-      await expect(deleteBook({ id: bookId })).rejects.toThrow(BOOKS_ERROR_MESSAGES.UNKNOWN_ERROR);
-    });
-
-    it('ネットワークエラー時に適切なエラーメッセージをスローする', async () => {
-      server.use(
-        http.delete('/api/books/:id', () => {
-          return HttpResponse.error();
-        }),
-      );
-
-      await expect(deleteBook({ id: bookId })).rejects.toThrow(BOOKS_ERROR_MESSAGES.NETWORK_ERROR);
+      await expect(deleteBook({ id: bookId })).rejects.toThrow(errorMessage);
     });
   });
 });
