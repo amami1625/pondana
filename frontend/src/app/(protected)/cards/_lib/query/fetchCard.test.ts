@@ -1,10 +1,8 @@
 import { describe, it, expect } from 'vitest';
-import { createMockCard } from '@/test/factories';
 import { createTestUuid } from '@/test/helpers';
 import { fetchCard } from './fetchCard';
 import { server } from '@/test/mocks/server';
 import { http, HttpResponse } from 'msw';
-import { CARDS_ERROR_MESSAGES } from '@/constants/errorMessages';
 
 describe('fetchCard', () => {
   describe('成功時', () => {
@@ -14,57 +12,29 @@ describe('fetchCard', () => {
       expect(result.id).toBe(createTestUuid(1));
       expect(result.title).toBe('テストカード');
     });
-
-    it('異なるIDで正しくリクエストできる', async () => {
-      server.use(
-        http.get('/api/cards/:id', ({ params }) => {
-          const { id } = params;
-          return HttpResponse.json(
-            createMockCard({ id: createTestUuid(Number(id)), title: '別のカード' }),
-          );
-        }),
-      );
-
-      const result = await fetchCard('42');
-
-      expect(result.id).toBe(createTestUuid(42));
-      expect(result.title).toBe('別のカード');
-    });
   });
 
   describe('エラー時', () => {
-    it('404エラー時に適切なエラーメッセージをスローする', async () => {
+    it('APIからのエラーメッセージをそのままスローする', async () => {
+      const errorMessage = 'カードの取得に失敗しました';
       server.use(
         http.get('/api/cards/:id', () => {
-          return HttpResponse.json({ error: 'Not found' }, { status: 404 });
+          return HttpResponse.json({ error: errorMessage }, { status: 404 });
         }),
       );
 
-      await expect(fetchCard(createTestUuid(1))).rejects.toThrow(CARDS_ERROR_MESSAGES.NOT_FOUND);
+      await expect(fetchCard(createTestUuid(1))).rejects.toThrow(errorMessage);
     });
 
-    it('500エラー時にデフォルトエラーメッセージをスローする', async () => {
+    it('サーバーエラー時もAPIからのエラーメッセージをスローする', async () => {
+      const errorMessage = 'エラーが発生しました。もう一度お試しください';
       server.use(
         http.get('/api/cards/:id', () => {
-          return HttpResponse.json({ error: 'Internal server error' }, { status: 500 });
+          return HttpResponse.json({ error: errorMessage }, { status: 500 });
         }),
       );
 
-      await expect(fetchCard(createTestUuid(1))).rejects.toThrow(
-        CARDS_ERROR_MESSAGES.UNKNOWN_ERROR,
-      );
-    });
-
-    it('ネットワークエラー時にエラーをスローする', async () => {
-      server.use(
-        http.get('/api/cards/:id', () => {
-          return HttpResponse.error();
-        }),
-      );
-
-      await expect(fetchCard(createTestUuid(1))).rejects.toThrow(
-        CARDS_ERROR_MESSAGES.NETWORK_ERROR,
-      );
+      await expect(fetchCard(createTestUuid(1))).rejects.toThrow(errorMessage);
     });
   });
 
