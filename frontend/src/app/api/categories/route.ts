@@ -1,7 +1,14 @@
 import { authenticatedRequest } from '@/supabase/dal';
-import { ApiError } from '@/lib/errors/ApiError';
+import { handleRouteError } from '@/lib/api/handleRouteError';
 import { categorySchema } from '@/app/(protected)/categories/_types';
 import { NextRequest, NextResponse } from 'next/server';
+
+const ERROR_MESSAGES = {
+  NOT_FOUND: 'カテゴリの取得に失敗しました',
+  CREATE_FAILED: 'カテゴリの作成に失敗しました',
+  NETWORK_ERROR: 'ネットワークエラーが発生しました',
+  UNKNOWN: 'エラーが発生しました。もう一度お試しください',
+};
 
 // GET - 一覧取得
 export async function GET() {
@@ -10,16 +17,11 @@ export async function GET() {
     const categories = categorySchema.array().parse(data);
     return NextResponse.json(categories);
   } catch (error) {
-    if (error instanceof ApiError) {
-      return NextResponse.json(
-        { error: error.message, code: error.code },
-        { status: error.statusCode },
-      );
-    }
-    if (error instanceof Error) {
-      return NextResponse.json({ error: error.message }, { status: 500 });
-    }
-    return NextResponse.json({ error: '不明なエラーが発生しました' }, { status: 500 });
+    return handleRouteError(error, {
+      apiError: ERROR_MESSAGES.NOT_FOUND,
+      networkError: ERROR_MESSAGES.NETWORK_ERROR,
+      unknown: ERROR_MESSAGES.UNKNOWN,
+    });
   }
 }
 
@@ -38,15 +40,10 @@ export async function POST(request: NextRequest) {
     const category = categorySchema.parse(data);
     return NextResponse.json(category);
   } catch (error) {
-    if (error instanceof ApiError) {
-      return NextResponse.json(
-        { error: error.message, code: error.code },
-        { status: error.statusCode },
-      );
-    }
-    if (error instanceof Error) {
-      return NextResponse.json({ error: error.message }, { status: 500 });
-    }
-    return NextResponse.json({ error: '不明なエラーが発生しました' }, { status: 500 });
+    return handleRouteError(error, {
+      apiError: ERROR_MESSAGES.CREATE_FAILED,
+      networkError: ERROR_MESSAGES.NETWORK_ERROR,
+      unknown: ERROR_MESSAGES.UNKNOWN,
+    });
   }
 }

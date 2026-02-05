@@ -1,51 +1,36 @@
 import { describe, it, expect } from 'vitest';
 import { server } from '@/test/mocks/server';
 import { http, HttpResponse } from 'msw';
-import { CATEGORIES_ERROR_MESSAGES } from '@/constants/errorMessages';
 import { deleteCategory } from './deleteCategory';
 
 describe('deleteCategory', () => {
   describe('成功時', () => {
     it('カテゴリを削除できる', async () => {
-      server.use(
-        http.delete('/api/categories/:id', () => {
-          return new HttpResponse(null, { status: 204 });
-        }),
-      );
-
       await expect(deleteCategory(1)).resolves.toBeUndefined();
     });
   });
 
   describe('エラー時', () => {
-    it('404エラー時に適切なエラーメッセージをスローする', async () => {
+    it('APIからのエラーメッセージをそのままスローする', async () => {
+      const errorMessage = 'カテゴリの削除に失敗しました';
       server.use(
         http.delete('/api/categories/:id', () => {
-          return HttpResponse.json({ error: 'Not Found' }, { status: 404 });
+          return HttpResponse.json({ error: errorMessage }, { status: 404 });
         }),
       );
 
-      await expect(deleteCategory(1)).rejects.toThrow(CATEGORIES_ERROR_MESSAGES.NOT_FOUND);
+      await expect(deleteCategory(1)).rejects.toThrow(errorMessage);
     });
 
-    it('500エラー時にデフォルトエラーメッセージをスローする', async () => {
+    it('サーバーエラー時もAPIからのエラーメッセージをスローする', async () => {
+      const errorMessage = 'エラーが発生しました。もう一度お試しください';
       server.use(
         http.delete('/api/categories/:id', () => {
-          return HttpResponse.json({ error: 'Internal server error' }, { status: 500 });
+          return HttpResponse.json({ error: errorMessage }, { status: 500 });
         }),
       );
 
-      await expect(deleteCategory(1)).rejects.toThrow(CATEGORIES_ERROR_MESSAGES.UNKNOWN_ERROR);
-    });
-
-    it('ネットワークエラー時にエラーをスローする', async () => {
-      server.use(
-        http.delete('/api/categories/:id', () => {
-          return HttpResponse.error();
-        }),
-      );
-
-      await expect(deleteCategory(1)).rejects.toThrow(CATEGORIES_ERROR_MESSAGES.NETWORK_ERROR);
+      await expect(deleteCategory(1)).rejects.toThrow(errorMessage);
     });
   });
 });
