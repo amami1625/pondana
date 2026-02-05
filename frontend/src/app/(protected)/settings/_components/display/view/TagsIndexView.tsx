@@ -4,6 +4,7 @@ import { Tag } from '@/app/(protected)/tags/_types';
 import SettingsItem from '@/app/(protected)/settings/_components/display/SettingsItem';
 import TagModal from '@/app/(protected)/tags/_components/modal';
 import { useSettingTag } from '@/app/(protected)/settings/_hooks/useSettingTag';
+import Button from '@/components/buttons/Button';
 
 interface TagsIndexViewProps {
   tags: Tag[];
@@ -18,12 +19,9 @@ export default function TagsIndexView({ tags }: TagsIndexViewProps) {
       <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
         <div className="mb-6 flex items-center justify-between">
           <h2 className="text-xl font-semibold text-gray-900">タグ管理</h2>
-          <button
-            onClick={handleCreate}
-            className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
-          >
+          <Button variant="primary" onClick={handleCreate}>
             新規作成
-          </button>
+          </Button>
         </div>
 
         {tags.length === 0 ? (
