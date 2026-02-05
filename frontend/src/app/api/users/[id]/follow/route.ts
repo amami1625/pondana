@@ -1,8 +1,14 @@
 import { authenticatedRequest } from '@/supabase/dal';
-import { ApiError } from '@/lib/errors/ApiError';
+import { handleRouteError } from '@/lib/api/handleRouteError';
 import { NextRequest, NextResponse } from 'next/server';
 
-// POST - ユーザーをフォロー
+const ERROR_MESSAGES = {
+  FOLLOW_FAILED: 'フォローに失敗しました',
+  UNFOLLOW_FAILED: 'フォロー解除に失敗しました',
+  NETWORK_ERROR: 'ネットワークエラーが発生しました',
+  UNKNOWN: 'エラーが発生しました。もう一度お試しください',
+};
+
 export async function POST(_request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const { id } = await params;
@@ -11,37 +17,14 @@ export async function POST(_request: NextRequest, { params }: { params: Promise<
     });
     return NextResponse.json(data, { status: 201 });
   } catch (error) {
-    // ApiErrorの場合はステータスコードとエラーコードを保持
-    if (error instanceof ApiError) {
-      return NextResponse.json(
-        {
-          error: error.message,
-          code: error.code,
-        },
-        { status: error.statusCode },
-      );
-    }
-
-    // ネットワークエラーの場合（Next.js → Rails 間の通信失敗）
-    if (error instanceof TypeError) {
-      return NextResponse.json(
-        {
-          error: error.message, // 技術的なメッセージ（開発時のデバッグ用）
-          code: 'NETWORK_ERROR',
-        },
-        { status: 503 }, // Service Unavailable
-      );
-    }
-
-    if (error instanceof Error) {
-      return NextResponse.json({ error: error.message }, { status: 500 });
-    }
-
-    return NextResponse.json({ error: '不明なエラーが発生しました' }, { status: 500 });
+    return handleRouteError(error, {
+      apiError: ERROR_MESSAGES.FOLLOW_FAILED,
+      networkError: ERROR_MESSAGES.NETWORK_ERROR,
+      unknown: ERROR_MESSAGES.UNKNOWN,
+    });
   }
 }
 
-// DELETE - フォロー解除
 export async function DELETE(
   _request: NextRequest,
   { params }: { params: Promise<{ id: string }> },
@@ -53,32 +36,10 @@ export async function DELETE(
     });
     return NextResponse.json(data);
   } catch (error) {
-    // ApiErrorの場合はステータスコードとエラーコードを保持
-    if (error instanceof ApiError) {
-      return NextResponse.json(
-        {
-          error: error.message,
-          code: error.code,
-        },
-        { status: error.statusCode },
-      );
-    }
-
-    // ネットワークエラーの場合（Next.js → Rails 間の通信失敗）
-    if (error instanceof TypeError) {
-      return NextResponse.json(
-        {
-          error: error.message, // 技術的なメッセージ（開発時のデバッグ用）
-          code: 'NETWORK_ERROR',
-        },
-        { status: 503 }, // Service Unavailable
-      );
-    }
-
-    if (error instanceof Error) {
-      return NextResponse.json({ error: error.message }, { status: 500 });
-    }
-
-    return NextResponse.json({ error: '不明なエラーが発生しました' }, { status: 500 });
+    return handleRouteError(error, {
+      apiError: ERROR_MESSAGES.UNFOLLOW_FAILED,
+      networkError: ERROR_MESSAGES.NETWORK_ERROR,
+      unknown: ERROR_MESSAGES.UNKNOWN,
+    });
   }
 }

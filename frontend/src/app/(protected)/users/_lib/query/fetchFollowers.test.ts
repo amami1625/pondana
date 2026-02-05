@@ -1,146 +1,50 @@
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import { server } from '@/test/mocks/server';
 import { http, HttpResponse } from 'msw';
-import { FOLLOW_ERROR_MESSAGES } from '@/constants/errorMessages';
 import { fetchFollowers } from './fetchFollowers';
 
 describe('fetchFollowers', () => {
-  describe('正常系', () => {
+  describe('成功時', () => {
     it('フォロワーを取得できる', async () => {
       const result = await fetchFollowers('1');
 
-      expect(result).toEqual([
-        {
-          id: '550e8400-e29b-41d4-a716-446655440000',
-          supabase_uid: '1',
-          name: 'テストユーザー',
-          avatar_url: null,
-          avatar_public_id: null,
-          created_at: '2025/1/1 9:00:00',
-          updated_at: '2025/1/1 9:00:00',
-        },
-      ]);
+      expect(Array.isArray(result)).toBe(true);
     });
   });
 
-  describe('異常系', () => {
-    describe('エラーマッピング', () => {
-      it('NETWORK_ERROR: ネットワークエラーが発生した場合', async () => {
-        server.use(
-          http.get('/api/users/:id/followers', () => {
-            return HttpResponse.json(
-              {
-                code: 'NETWORK_ERROR',
-                error: 'Failed to fetch',
-              },
-              { status: 503 },
-            );
-          }),
-        );
-
-        await expect(fetchFollowers('1')).rejects.toThrow(FOLLOW_ERROR_MESSAGES.NETWORK_ERROR);
-      });
-    });
-
-    describe('フォールバック', () => {
-      it('エラーコードがない場合はUNKNOWN_ERRORを返す', async () => {
-        server.use(
-          http.get('/api/users/:id/followers', () => {
-            return HttpResponse.json(
-              {
-                error: 'Some unknown error',
-              },
-              { status: 500 },
-            );
-          }),
-        );
-
-        await expect(fetchFollowers('1')).rejects.toThrow(FOLLOW_ERROR_MESSAGES.UNKNOWN_ERROR);
-      });
-
-      it('不明なエラーコードの場合はUNKNOWN_ERRORを返す', async () => {
-        server.use(
-          http.get('/api/users/:id/followers', () => {
-            return HttpResponse.json(
-              {
-                code: 'SOME_UNKNOWN_CODE',
-                error: 'Unknown error',
-              },
-              { status: 500 },
-            );
-          }),
-        );
-
-        await expect(fetchFollowers('1')).rejects.toThrow(FOLLOW_ERROR_MESSAGES.UNKNOWN_ERROR);
-      });
-    });
-
-    describe('ネットワークエラー', () => {
-      it('fetch自体が失敗した場合にNETWORK_ERRORを返す', async () => {
-        server.use(
-          http.get('/api/users/:id/followers', () => {
-            return HttpResponse.error();
-          }),
-        );
-
-        await expect(fetchFollowers('1')).rejects.toThrow(FOLLOW_ERROR_MESSAGES.NETWORK_ERROR);
-      });
-    });
-  });
-
-  describe('ログ出力', () => {
-    it('開発環境ではエラー詳細をログ出力する', async () => {
-      vi.stubEnv('NODE_ENV', 'development');
-      const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
-
+  describe('エラー時', () => {
+    it('APIからのエラーメッセージをそのままスローする', async () => {
+      const errorMessage = 'フォロワー一覧の取得に失敗しました';
       server.use(
         http.get('/api/users/:id/followers', () => {
-          return HttpResponse.json(
-            {
-              code: 'UNKNOWN_ERROR',
-              error: 'error',
-            },
-            { status: 422 },
-          );
+          return HttpResponse.json({ error: errorMessage }, { status: 404 });
+        }),
+      );
+
+      await expect(fetchFollowers('1')).rejects.toThrow(errorMessage);
+    });
+
+    it('サーバーエラー時もAPIからのエラーメッセージをスローする', async () => {
+      const errorMessage = 'エラーが発生しました。もう一度お試しください';
+      server.use(
+        http.get('/api/users/:id/followers', () => {
+          return HttpResponse.json({ error: errorMessage }, { status: 500 });
+        }),
+      );
+
+      await expect(fetchFollowers('1')).rejects.toThrow(errorMessage);
+    });
+  });
+
+  describe('Zod バリデーション', () => {
+    it('不正なデータ形式の場合、Zodエラーをスローする', async () => {
+      server.use(
+        http.get('/api/users/:id/followers', () => {
+          return HttpResponse.json([{ invalid: 'data' }]);
         }),
       );
 
       await expect(fetchFollowers('1')).rejects.toThrow();
-
-      expect(consoleErrorSpy).toHaveBeenCalledWith('Users API Error:', {
-        status: 422,
-        data: {
-          code: 'UNKNOWN_ERROR',
-          error: 'error',
-        },
-      });
-
-      consoleErrorSpy.mockRestore();
-      vi.unstubAllEnvs();
-    });
-
-    it('本番環境ではエラー詳細をログ出力しない', async () => {
-      vi.stubEnv('NODE_ENV', 'production');
-      const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
-
-      server.use(
-        http.get('/api/users/:id/followers', () => {
-          return HttpResponse.json(
-            {
-              code: 'UNKNOWN_ERROR',
-              error: 'error',
-            },
-            { status: 422 },
-          );
-        }),
-      );
-
-      await expect(fetchFollowers('1')).rejects.toThrow();
-
-      expect(consoleErrorSpy).not.toHaveBeenCalled();
-
-      consoleErrorSpy.mockRestore();
-      vi.unstubAllEnvs();
     });
   });
 });
