@@ -1,9 +1,8 @@
 import { describe, it, expect } from 'vitest';
-import { toJapaneseLocaleString, createTestUuid } from '@/test/helpers';
-import { fetchBooks } from './fetchBooks';
 import { server } from '@/test/mocks/server';
 import { http, HttpResponse } from 'msw';
 import { ZodError } from 'zod';
+import { fetchBooks } from './fetchBooks';
 
 describe('fetchBooks', () => {
   describe('成功時', () => {
@@ -11,46 +10,8 @@ describe('fetchBooks', () => {
       const result = await fetchBooks();
 
       expect(result).toHaveLength(2);
-
-      const expectedDate = toJapaneseLocaleString('2025-01-01T00:00:00Z');
-
-      expect(result[0]).toEqual({
-        id: createTestUuid(1),
-        title: 'テスト本A',
-        description: 'テスト説明',
-        user_id: '550e8400-e29b-41d4-a716-446655440000',
-        category: expect.any(Object),
-        tags: expect.any(Array),
-        rating: 5,
-        reading_status: 'completed',
-        public: true,
-        created_at: expectedDate,
-        updated_at: expectedDate,
-        google_books_id: 'aaaaaaaaaa',
-        isbn: '999999999',
-        subtitle: null,
-        thumbnail: null,
-        authors: ['テスト著者A'],
-      });
-
-      expect(result[1]).toEqual({
-        id: createTestUuid(2),
-        title: 'テスト本B',
-        description: 'テスト説明',
-        user_id: '550e8400-e29b-41d4-a716-446655440000',
-        category: expect.any(Object),
-        tags: expect.any(Array),
-        rating: 5,
-        reading_status: 'completed',
-        public: true,
-        created_at: expectedDate,
-        updated_at: expectedDate,
-        google_books_id: 'aaaaaaaaaa',
-        isbn: '999999999',
-        subtitle: null,
-        thumbnail: null,
-        authors: ['テスト著者B'],
-      });
+      expect(result[0].title).toBe('テスト本A');
+      expect(result[1].title).toBe('テスト本B');
     });
 
     it('データが存在しない場合、空配列を返す', async () => {

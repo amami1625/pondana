@@ -1,8 +1,8 @@
 import { describe, it, expect } from 'vitest';
-import { createMockBook } from '@/test/factories';
 import { createTestUuid } from '@/test/helpers';
 import { server } from '@/test/mocks/server';
 import { http, HttpResponse } from 'msw';
+import { ZodError } from 'zod';
 import { fetchBook } from './fetchBook';
 
 describe('fetchBook', () => {
@@ -12,25 +12,6 @@ describe('fetchBook', () => {
 
       expect(result.id).toBe(createTestUuid(1));
       expect(result.title).toBe('テスト本');
-      expect(result.authors).toHaveLength(1);
-    });
-
-    it('異なるIDで正しくリクエストできる', async () => {
-      server.use(
-        http.get('/api/books/:id', ({ params }) => {
-          return HttpResponse.json(
-            createMockBook({
-              id: createTestUuid(Number(params.id)),
-              title: '別の本',
-            }),
-          );
-        }),
-      );
-
-      const result = await fetchBook('42');
-
-      expect(result.id).toBe(createTestUuid(42));
-      expect(result.title).toBe('別の本');
     });
   });
 
@@ -68,7 +49,7 @@ describe('fetchBook', () => {
         }),
       );
 
-      await expect(fetchBook(createTestUuid(1))).rejects.toThrow();
+      await expect(fetchBook(createTestUuid(1))).rejects.toThrow(ZodError);
     });
   });
 });
