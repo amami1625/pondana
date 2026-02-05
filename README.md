@@ -112,6 +112,8 @@ erDiagram
     users ||--o{ tags : "has many"
     users ||--o{ lists : "has many"
     users ||--o{ statuses : "has many"
+    users ||--o{ follows : "has many (as follower)"
+    users ||--o{ follows : "has many (as followed)"
 
     books ||--o{ cards : "has many"
     books }o--o| categories : "belongs to"
@@ -209,6 +211,14 @@ erDiagram
         bigint id PK
         uuid book_id FK "NOT NULL"
         uuid list_id FK "NOT NULL"
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    follows {
+        bigint id PK
+        bigint follower_id FK "NOT NULL (フォローする側)"
+        bigint followed_id FK "NOT NULL (フォローされる側)"
         timestamp created_at
         timestamp updated_at
     }
