@@ -10,10 +10,7 @@ module Api
       if card
         render json: card, include: %i[book status]
       else
-        render json: {
-          code: 'NOT_FOUND',
-          message: 'Card not found'
-        }, status: :not_found
+        render json: { error: 'Card not found' }, status: :not_found
       end
     end
 
@@ -23,7 +20,7 @@ module Api
       if card.save
         render json: card, include: [:status], status: :created
       else
-        render json: { errors: card.errors }, status: :unprocessable_content
+        render json: { error: card.errors.full_messages.join(', ') }, status: :unprocessable_content
       end
     end
 
@@ -33,7 +30,7 @@ module Api
       if card.update(card_params)
         render json: card, include: [:status]
       else
-        render json: { errors: card.errors }, status: :unprocessable_content
+        render json: { error: card.errors.full_messages.join(', ') }, status: :unprocessable_content
       end
     end
 
@@ -43,7 +40,7 @@ module Api
       if card.destroy
         head :no_content
       else
-        render json: { errors: card.errors }, status: :unprocessable_content
+        render json: { error: card.errors.full_messages.join(', ') }, status: :unprocessable_content
       end
     end
 

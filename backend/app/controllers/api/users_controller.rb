@@ -45,10 +45,7 @@ module Api
       user = User.find(params[:id])
 
       if current_user.id == user.id
-        render json: {
-          code: 'FOLLOW_SELF_ERROR',
-          message: 'Cannot follow yourself'
-        }, status: :unprocessable_content
+        render json: { error: 'Cannot follow yourself' }, status: :unprocessable_content
         return
       end
 
@@ -57,10 +54,7 @@ module Api
       if follow.save
         render json: { message: 'Followed successfully' }, status: :created
       else
-        render json: {
-          code: 'ALREADY_FOLLOWING',
-          message: follow.errors.full_messages.join(', ')
-        }, status: :unprocessable_content
+        render json: { error: follow.errors.full_messages.join(', ') }, status: :unprocessable_content
       end
     end
 
@@ -72,10 +66,7 @@ module Api
         follow.destroy
         render json: { message: 'Unfollowed successfully' }, status: :ok
       else
-        render json: {
-          code: 'NOT_FOLLOWING',
-          message: 'Not following this user'
-        }, status: :not_found
+        render json: { error: 'Not following this user' }, status: :not_found
       end
     end
 

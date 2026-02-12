@@ -12,11 +12,7 @@ module Api
       if status.save
         render json: status, status: :created
       else
-        error_code = status.errors[:name].any? { |msg| msg.include?('taken') } ? 'ALREADY_EXISTS' : 'CREATE_FAILED'
-        render json: {
-          code: error_code,
-          error: status.errors.full_messages.join(', ')
-        }, status: :unprocessable_content
+        render json: { error: status.errors.full_messages.join(', ') }, status: :unprocessable_content
       end
     end
 
@@ -25,11 +21,7 @@ module Api
       if status.update(status_params)
         render json: status, status: :ok
       else
-        error_code = status.errors[:name].any? { |msg| msg.include?('taken') } ? 'ALREADY_EXISTS' : 'UPDATE_FAILED'
-        render json: {
-          code: error_code,
-          error: status.errors.full_messages.join(', ')
-        }, status: :unprocessable_content
+        render json: { error: status.errors.full_messages.join(', ') }, status: :unprocessable_content
       end
     end
 
@@ -38,10 +30,7 @@ module Api
       if status.destroy
         head :no_content
       else
-        render json: {
-          code: 'DELETE_FAILED',
-          error: status.errors.full_messages.join(', ')
-        }, status: :unprocessable_content
+        render json: { error: status.errors.full_messages.join(', ') }, status: :unprocessable_content
       end
     end
 
@@ -52,10 +41,7 @@ module Api
     end
 
     def record_not_found
-      render json: {
-        code: 'NOT_FOUND',
-        error: 'ステータスが見つかりませんでした'
-      }, status: :not_found
+      render json: { error: 'ステータスが見つかりませんでした' }, status: :not_found
     end
   end
 end
