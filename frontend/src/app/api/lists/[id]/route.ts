@@ -16,7 +16,7 @@ const ERROR_MESSAGES = {
 export async function GET(_request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const { id } = await params;
-    const data = await authenticatedRequest(`/lists/${id}`, {}, false);
+    const data = await authenticatedRequest(`/lists/${id}`);
     const list = listDetailSchema.parse(data);
     return NextResponse.json(list);
   } catch (error) {
@@ -40,14 +40,10 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
       description: body.description?.trim() || null,
     };
 
-    const data = await authenticatedRequest(
-      `/lists/${id}`,
-      {
-        method: 'PUT',
-        body: JSON.stringify({ list: listData }),
-      },
-      false,
-    );
+    const data = await authenticatedRequest(`/lists/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify({ list: listData }),
+    });
     const list = listBaseSchema.parse(data);
     return NextResponse.json(list);
   } catch (error) {
@@ -66,13 +62,9 @@ export async function DELETE(
 ) {
   try {
     const { id } = await params;
-    await authenticatedRequest(
-      `/lists/${id}`,
-      {
-        method: 'DELETE',
-      },
-      false,
-    );
+    await authenticatedRequest(`/lists/${id}`, {
+      method: 'DELETE',
+    });
 
     return NextResponse.json({ success: true });
   } catch (error) {

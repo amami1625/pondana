@@ -11,7 +11,7 @@ const ERROR_MESSAGES = {
 
 export async function GET() {
   try {
-    const data = await authenticatedRequest('/top', {}, false);
+    const data = await authenticatedRequest('/top');
     const topPageData = topPageSchema.parse(data);
     return NextResponse.json(topPageData);
   } catch (error) {

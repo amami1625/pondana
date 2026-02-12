@@ -24,7 +24,6 @@ export async function POST(
         method: 'POST',
         body: JSON.stringify({ card: validatedData }),
       },
-      false,
     );
 
     const card = cardSchema.parse(data);

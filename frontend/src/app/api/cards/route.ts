@@ -11,7 +11,7 @@ const ERROR_MESSAGES = {
 
 export async function GET() {
   try {
-    const data = await authenticatedRequest('/cards', {}, false);
+    const data = await authenticatedRequest('/cards');
     const cards = cardListSchema.parse(data);
     return NextResponse.json(cards);
   } catch (error) {

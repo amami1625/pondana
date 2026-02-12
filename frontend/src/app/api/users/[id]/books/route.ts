@@ -13,7 +13,7 @@ const ERROR_MESSAGES = {
 export async function GET(_request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const { id } = await params;
-    const data = await authenticatedRequest(`/users/${id}/books`, {}, false);
+    const data = await authenticatedRequest(`/users/${id}/books`);
     const books = z.array(bookSchema).parse(data);
     return NextResponse.json(books);
   } catch (error) {

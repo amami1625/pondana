@@ -19,14 +19,10 @@ export async function PUT(
     const body = await request.json();
     const validatedData = cardFormSchema.parse(body);
 
-    const data = await authenticatedRequest(
-      `/books/${bookId}/cards/${cardId}`,
-      {
-        method: 'PUT',
-        body: JSON.stringify({ card: validatedData }),
-      },
-      false,
-    );
+    const data = await authenticatedRequest(`/books/${bookId}/cards/${cardId}`, {
+      method: 'PUT',
+      body: JSON.stringify({ card: validatedData }),
+    });
 
     const card = cardSchema.parse(data);
     return NextResponse.json(card);
@@ -45,13 +41,9 @@ export async function DELETE(
 ) {
   try {
     const { bookId, cardId } = await params;
-    await authenticatedRequest(
-      `/books/${bookId}/cards/${cardId}`,
-      {
-        method: 'DELETE',
-      },
-      false,
-    );
+    await authenticatedRequest(`/books/${bookId}/cards/${cardId}`, {
+      method: 'DELETE',
+    });
     return NextResponse.json({ success: true });
   } catch (error) {
     return handleRouteError(error, {

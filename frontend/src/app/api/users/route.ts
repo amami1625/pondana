@@ -19,7 +19,7 @@ export async function GET(request: NextRequest) {
       return NextResponse.json([]);
     }
 
-    const data = await authenticatedRequest(`/users?q=${encodeURIComponent(query)}`, {}, false);
+    const data = await authenticatedRequest(`/users?q=${encodeURIComponent(query)}`);
     const users = z.array(userSearchResultSchema).parse(data);
     return NextResponse.json(users);
   } catch (error) {

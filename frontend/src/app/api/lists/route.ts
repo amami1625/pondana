@@ -14,7 +14,7 @@ const ERROR_MESSAGES = {
 // GET - 一覧取得
 export async function GET() {
   try {
-    const data = await authenticatedRequest('/lists', {}, false);
+    const data = await authenticatedRequest('/lists');
     const lists = listSchema.array().parse(data);
     return NextResponse.json(lists);
   } catch (error) {

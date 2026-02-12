@@ -14,7 +14,7 @@ const ERROR_MESSAGES = {
 // GET - 一覧取得
 export async function GET() {
   try {
-    const data = await authenticatedRequest('/books', {}, false);
+    const data = await authenticatedRequest('/books');
     const books = bookSchema.array().parse(data);
     return NextResponse.json(books);
   } catch (error) {

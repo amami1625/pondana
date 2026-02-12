@@ -15,14 +15,10 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
     const { id } = await params;
     const body = await request.json();
 
-    const data = await authenticatedRequest(
-      `/tags/${id}`,
-      {
-        method: 'PUT',
-        body: JSON.stringify({ tag: body }),
-      },
-      false,
-    );
+    const data = await authenticatedRequest(`/tags/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify({ tag: body }),
+    });
     const tag = tagSchema.parse(data);
     return NextResponse.json(tag);
   } catch (error) {
@@ -41,13 +37,9 @@ export async function DELETE(
   try {
     const { id } = await params;
 
-    await authenticatedRequest(
-      `/tags/${id}`,
-      {
-        method: 'DELETE',
-      },
-      false,
-    );
+    await authenticatedRequest(`/tags/${id}`, {
+      method: 'DELETE',
+    });
 
     return NextResponse.json({ success: true });
   } catch (error) {

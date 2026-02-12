@@ -15,13 +15,9 @@ export async function DELETE(
   try {
     const { id } = await params;
 
-    await authenticatedRequest(
-      `/list_books/${id}`,
-      {
-        method: 'DELETE',
-      },
-      false,
-    );
+    await authenticatedRequest(`/list_books/${id}`, {
+      method: 'DELETE',
+    });
 
     return NextResponse.json({ success: true });
   } catch (error) {

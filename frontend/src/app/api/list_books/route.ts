@@ -13,14 +13,10 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
 
-    const data = await authenticatedRequest(
-      '/list_books',
-      {
-        method: 'POST',
-        body: JSON.stringify({ list_book: body }),
-      },
-      false,
-    );
+    const data = await authenticatedRequest('/list_books', {
+      method: 'POST',
+      body: JSON.stringify({ list_book: body }),
+    });
 
     const listBook = listBookSchema.parse(data);
     return NextResponse.json(listBook, { status: 201 });

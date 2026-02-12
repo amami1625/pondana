@@ -13,7 +13,7 @@ const ERROR_MESSAGES = {
 // GET - 一覧取得
 export async function GET() {
   try {
-    const data = await authenticatedRequest('/categories', {}, false);
+    const data = await authenticatedRequest('/categories');
     const categories = categorySchema.array().parse(data);
     return NextResponse.json(categories);
   } catch (error) {
@@ -35,7 +35,6 @@ export async function POST(request: NextRequest) {
         method: 'POST',
         body: JSON.stringify({ category: body }),
       },
-      false,
     );
     const category = categorySchema.parse(data);
     return NextResponse.json(category);

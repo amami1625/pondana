@@ -11,7 +11,7 @@ const ERROR_MESSAGES = {
 export async function GET(_request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const { id } = await params;
-    const data = await authenticatedRequest(`/users/${id}/following`, {}, false);
+    const data = await authenticatedRequest(`/users/${id}/following`);
     return NextResponse.json(data);
   } catch (error) {
     return handleRouteError(error, {

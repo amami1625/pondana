@@ -12,7 +12,7 @@ const ERROR_MESSAGES = {
 
 export async function GET() {
   try {
-    const data = await authenticatedRequest('/profile', {}, false);
+    const data = await authenticatedRequest('/profile');
     const profile = userSchema.parse(data);
     return NextResponse.json(profile);
   } catch (error) {

@@ -16,14 +16,10 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
     const { id } = await params;
     const body = await request.json();
 
-    const data = await authenticatedRequest(
-      `/categories/${id}`,
-      {
-        method: 'PUT',
-        body: JSON.stringify({ category: body }),
-      },
-      false,
-    );
+    const data = await authenticatedRequest(`/categories/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify({ category: body }),
+    });
     const category = categorySchema.parse(data);
     return NextResponse.json(category);
   } catch (error) {
@@ -43,13 +39,9 @@ export async function DELETE(
   try {
     const { id } = await params;
 
-    await authenticatedRequest(
-      `/categories/${id}`,
-      {
-        method: 'DELETE',
-      },
-      false,
-    );
+    await authenticatedRequest(`/categories/${id}`, {
+      method: 'DELETE',
+    });
 
     return NextResponse.json({ success: true });
   } catch (error) {

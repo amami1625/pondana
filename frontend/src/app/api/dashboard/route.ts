@@ -11,7 +11,7 @@ const ERROR_MESSAGES = {
 
 export async function GET() {
   try {
-    const data = await authenticatedRequest('/dashboard', {}, false);
+    const data = await authenticatedRequest('/dashboard');
     const dashboard = dashboardSchema.parse(data);
     return NextResponse.json(dashboard);
   } catch (error) {

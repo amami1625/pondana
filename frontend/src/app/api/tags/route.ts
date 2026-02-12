@@ -12,7 +12,7 @@ const ERROR_MESSAGES = {
 
 export async function GET() {
   try {
-    const data = await authenticatedRequest('/tags', {}, false);
+    const data = await authenticatedRequest('/tags');
     const tags = tagSchema.array().parse(data);
     return NextResponse.json(tags);
   } catch (error) {
@@ -33,7 +33,6 @@ export async function POST(request: NextRequest) {
         method: 'POST',
         body: JSON.stringify({ tag: body }),
       },
-      false,
     );
     const tag = tagSchema.parse(data);
     return NextResponse.json(tag, { status: 201 });

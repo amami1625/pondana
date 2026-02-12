@@ -19,7 +19,7 @@ export async function GET(
 ) {
   try {
     const { bookId } = await params;
-    const data = await authenticatedRequest(`/books/${bookId}`, {}, false);
+    const data = await authenticatedRequest(`/books/${bookId}`);
     const book = bookDetailSchema.parse(data);
     return NextResponse.json(book);
   } catch (error) {
@@ -47,14 +47,10 @@ export async function PUT(
       rating: body.rating ?? null,
     };
 
-    const data = await authenticatedRequest(
-      `/books/${bookId}`,
-      {
-        method: 'PUT',
-        body: JSON.stringify({ book: bookData }),
-      },
-      false,
-    );
+    const data = await authenticatedRequest(`/books/${bookId}`, {
+      method: 'PUT',
+      body: JSON.stringify({ book: bookData }),
+    });
     const book = bookBaseSchema.parse(data);
     return NextResponse.json(book);
   } catch (error) {
@@ -73,13 +69,9 @@ export async function DELETE(
 ) {
   try {
     const { bookId } = await params;
-    await authenticatedRequest(
-      `/books/${bookId}`,
-      {
-        method: 'DELETE',
-      },
-      false,
-    );
+    await authenticatedRequest(`/books/${bookId}`, {
+      method: 'DELETE',
+    });
 
     return NextResponse.json({ success: true });
   } catch (error) {
