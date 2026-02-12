@@ -7,7 +7,7 @@ class User < ApplicationRecord
   has_many :statuses, dependent: :destroy
 
   # フォロー関連の機能
-  
+
   # 自分がフォローしたレコード（follows テーブルで follower_id = 自分）
   has_many :active_follows, class_name: 'Follow', foreign_key: 'follower_id', dependent: :destroy
   # 自分がフォローされたレコード（follows テーブルで followed_id = 自分）

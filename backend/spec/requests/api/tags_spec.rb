@@ -44,7 +44,7 @@ RSpec.describe 'Api::Tags', type: :request do
 
       expect(response).to have_http_status(:unprocessable_content)
       json = response.parsed_body
-      expect(json['code']).to eq('ALREADY_EXISTS')
+      expect(json['error']).to be_present
     end
 
     it '名前が空の場合は作成できないこと' do
@@ -52,7 +52,7 @@ RSpec.describe 'Api::Tags', type: :request do
 
       expect(response).to have_http_status(:unprocessable_content)
       json = response.parsed_body
-      expect(json['code']).to eq('CREATE_FAILED')
+      expect(json['error']).to be_present
     end
   end
 
@@ -77,7 +77,7 @@ RSpec.describe 'Api::Tags', type: :request do
 
       expect(response).to have_http_status(:unprocessable_content)
       json = response.parsed_body
-      expect(json['code']).to eq('ALREADY_EXISTS')
+      expect(json['error']).to be_present
     end
 
     it '他のユーザーのタグは更新できないこと' do

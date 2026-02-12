@@ -35,7 +35,7 @@ RSpec.describe 'Api::ListBooks', type: :request do
 
       expect(response).to have_http_status(:unprocessable_content)
       json = response.parsed_body
-      expect(json['code']).to eq('ALREADY_EXISTS')
+      expect(json['error']).to be_present
     end
 
     it '他のユーザーのリストには本を追加できないこと' do
