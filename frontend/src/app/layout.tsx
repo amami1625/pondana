@@ -17,6 +17,15 @@ const inter = Inter({
 export const metadata: Metadata = {
   title: 'ぽんダナ',
   description: 'エンジニアのための技術書籍管理サービス',
+  openGraph: {
+    title: 'ぽんダナ',
+    description: 'エンジニアのための技術書籍管理サービス',
+    images: [{ url: '/ogp.png', width: 1200, height: 630 }],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    images: ['/ogp.png'],
+  },
 };
 
 export default async function RootLayout({
