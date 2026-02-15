@@ -29,13 +29,10 @@ export async function GET() {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const data = await authenticatedRequest(
-      '/categories',
-      {
-        method: 'POST',
-        body: JSON.stringify({ category: body }),
-      },
-    );
+    const data = await authenticatedRequest('/categories', {
+      method: 'POST',
+      body: JSON.stringify({ category: body }),
+    });
     const category = categorySchema.parse(data);
     return NextResponse.json(category);
   } catch (error) {

@@ -18,13 +18,10 @@ export async function POST(
     const body = await request.json();
     const validatedData = cardFormSchema.parse(body);
 
-    const data = await authenticatedRequest(
-      `/books/${bookId}/cards`,
-      {
-        method: 'POST',
-        body: JSON.stringify({ card: validatedData }),
-      },
-    );
+    const data = await authenticatedRequest(`/books/${bookId}/cards`, {
+      method: 'POST',
+      body: JSON.stringify({ card: validatedData }),
+    });
 
     const card = cardSchema.parse(data);
     return NextResponse.json(card, { status: 201 });
