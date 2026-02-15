@@ -32,8 +32,8 @@ export const usersHandlers = [
     return HttpResponse.json({
       ...createMockUser({ id: String(id) }),
       stats: {
-        books_count: 10,
-        lists_count: 5,
+        public_books: 10,
+        public_lists: 5,
         followers_count: 3,
         following_count: 7,
       },

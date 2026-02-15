@@ -4,6 +4,7 @@ import { Category } from '@/app/(protected)/categories/_types';
 import { useSettingCategory } from '@/app/(protected)/settings/_hooks/useSettingCategory';
 import SettingsItem from '@/app/(protected)/settings/_components/display/SettingsItem';
 import CategoryModal from '@/app/(protected)/categories/_components/modal';
+import Button from '@/components/buttons/Button';
 
 interface CategoryIndexViewProps {
   categories: Category[];
@@ -18,12 +19,9 @@ export default function CategoryIndexView({ categories }: CategoryIndexViewProps
       <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
         <div className="mb-6 flex items-center justify-between">
           <h2 className="text-xl font-semibold text-gray-900">カテゴリー管理</h2>
-          <button
-            onClick={handleCreate}
-            className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
-          >
+          <Button variant="primary" onClick={handleCreate}>
             新規作成
-          </button>
+          </Button>
         </div>
 
         {categories.length === 0 ? (

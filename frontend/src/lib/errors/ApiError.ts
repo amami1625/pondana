@@ -1,12 +1,11 @@
 /**
  * APIエラークラス
- * HTTPステータスコードとエラーコードを保持する
+ * HTTPステータスコードを保持する
  */
 export class ApiError extends Error {
   constructor(
     message: string,
     public statusCode: number,
-    public code?: string,
   ) {
     super(message);
     this.name = 'ApiError';

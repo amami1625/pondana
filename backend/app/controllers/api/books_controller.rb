@@ -24,7 +24,7 @@ module Api
       if book.save
         render json: book, include: %i[category tags], status: :created
       else
-        render json: { errors: book.errors }, status: :unprocessable_content
+        render json: { error: book.errors.full_messages.join(', ') }, status: :unprocessable_content
       end
     end
 
@@ -33,7 +33,7 @@ module Api
       if book.update(book_params)
         render json: book, include: %i[category tags]
       else
-        render json: { errors: book.errors }, status: :unprocessable_content
+        render json: { error: book.errors.full_messages.join(', ') }, status: :unprocessable_content
       end
     end
 
@@ -42,7 +42,7 @@ module Api
       if book.destroy
         head :no_content
       else
-        render json: { errors: book.errors }, status: :unprocessable_content
+        render json: { error: book.errors.full_messages.join(', ') }, status: :unprocessable_content
       end
     end
 

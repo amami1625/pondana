@@ -53,7 +53,7 @@ RSpec.describe 'Api::Cards', type: :request do
 
       expect(response).to have_http_status(:not_found)
       json = response.parsed_body
-      expect(json['code']).to eq('NOT_FOUND')
+      expect(json['error']).to be_present
     end
   end
 
@@ -87,7 +87,7 @@ RSpec.describe 'Api::Cards', type: :request do
 
       expect(response).to have_http_status(:unprocessable_content)
       json = response.parsed_body
-      expect(json['errors']).to be_present
+      expect(json['error']).to be_present
     end
 
     it '他のユーザーの本にはカードを作成できないこと' do

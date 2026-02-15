@@ -20,7 +20,7 @@ export default function BaseBadge({ icon, label, variant }: BaseBadgeProps) {
       className={`flex h-8 items-center justify-center gap-x-2 rounded-lg px-3 ${BADGE_STYLES[variant]}`}
     >
       {icon}
-      <p className="text-sm font-medium">{label}</p>
+      <p className="text-xs sm:text-sm font-medium">{label}</p>
     </div>
   );
 }

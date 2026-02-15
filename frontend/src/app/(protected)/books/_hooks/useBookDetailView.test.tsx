@@ -1,6 +1,6 @@
-import React from 'react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { renderHook } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { createMockBook, createMockCategory } from '@/test/factories';
 import { mockUseBookMutations, mockUseModal } from '@/test/mocks';
 import { useBookDetailView } from './useBookDetailView';
@@ -13,53 +13,37 @@ vi.mock('@/app/(protected)/books/_hooks/useBookMutations');
 
 describe('useBookDetailView', () => {
   beforeEach(() => {
-    // 各テストの前にモックをリセット
     vi.clearAllMocks();
+    mockUseBookMutations();
+    mockUseModal();
   });
 
   describe('handleDelete', () => {
-    // 削除関数の偽物を作成
     const mockDeleteBook = vi.fn();
 
     beforeEach(() => {
-      // モックを設定（ヘルパー関数を使用）
       mockUseBookMutations({ deleteBook: mockDeleteBook });
-      mockUseModal();
     });
 
     it('ユーザーが削除をキャンセルした場合、削除されない', () => {
-      // 確認ダイアログを偽物にして、falseを返す
       const confirmSpy = vi.spyOn(window, 'confirm').mockReturnValue(false);
-
       const book = createMockBook({ id: createTestUuid(1) });
 
       const { result } = renderHook(() => useBookDetailView(book));
-
-      // 削除を実行
       result.current.handleDelete(createTestUuid(1));
 
-      // 確認ダイアログが表示されたことを確認
       expect(confirmSpy).toHaveBeenCalledWith('本当に削除しますか？');
-
-      // 削除関数は呼ばれていないことを確認（キャンセルしたから）
       expect(mockDeleteBook).not.toHaveBeenCalled();
     });
 
-    it('ユーザーが削除をキャンセルしなかった場合、削除される', () => {
-      // 確認ダイアログを偽物にして、trueを返す
+    it('ユーザーが削除を確認した場合、削除される', () => {
       const confirmSpy = vi.spyOn(window, 'confirm').mockReturnValue(true);
-
       const book = createMockBook({ id: createTestUuid(1) });
 
       const { result } = renderHook(() => useBookDetailView(book));
-
-      // 削除を実行
       result.current.handleDelete(createTestUuid(1));
 
-      // 確認ダイアログが表示されたことを確認
       expect(confirmSpy).toHaveBeenCalledWith('本当に削除しますか？');
-
-      // 削除関数が正しい引数で呼ばれたことを確認
       expect(mockDeleteBook).toHaveBeenCalledWith({ id: createTestUuid(1) });
     });
   });
@@ -77,12 +61,9 @@ describe('useBookDetailView', () => {
 
   describe('モーダル', () => {
     it('updateModal, addListModal, cardModal が返される', () => {
-      mockUseModal();
-
       const book = createMockBook();
       const { result } = renderHook(() => useBookDetailView(book));
 
-      // 3つのモーダルが存在することを確認
       expect(result.current.updateModal).toBeDefined();
       expect(result.current.addListModal).toBeDefined();
       expect(result.current.cardModal).toBeDefined();
@@ -90,76 +71,73 @@ describe('useBookDetailView', () => {
   });
 
   describe('badges', () => {
-    beforeEach(() => {
-      mockUseBookMutations();
-      mockUseModal();
-    });
-
-    it('badges が JSX 要素として定義されている', () => {
-      const book = createMockBook();
+    it('読書ステータスバッジが表示される', () => {
+      const book = createMockBook({ reading_status: 'reading' });
 
       const { result } = renderHook(() => useBookDetailView(book));
+      render(<div>{result.current.badges}</div>);
 
-      // badges が定義されていることを確認
-      expect(result.current.badges).toBeDefined();
-      // JSX 要素であることを確認
-      expect(result.current.badges).toHaveProperty('type');
+      expect(screen.getByText('読書中')).toBeInTheDocument();
     });
 
-    it('カテゴリ・タグがある場合、バッジが表示される', () => {
+    it('カテゴリバッジが表示される', () => {
       const book = createMockBook({
-        category: createMockCategory({ name: 'テストカテゴリ' }),
-        tags: [createMockTag({ name: 'テストタグ' })],
+        category: createMockCategory({ name: 'プログラミング' }),
       });
 
       const { result } = renderHook(() => useBookDetailView(book));
+      render(<div>{result.current.badges}</div>);
 
-      // Fragment の props.children を確認
-      const badges = result.current.badges as React.ReactElement<{ children: React.ReactNode[] }>;
-      const children = badges.props.children;
-
-      // 3つの子要素があることを確認（CategoryBadge, TagBadge, PublicBadge）
-      expect(Array.isArray(children)).toBe(true);
-      expect(children).toHaveLength(3);
-      expect(children[0]).toBeDefined(); // CategoryBadge
-      expect(children[1]).toBeDefined(); // TagBadge
-      expect(children[2]).toBeDefined(); // PublicBadge
+      expect(screen.getByText('プログラミング')).toBeInTheDocument();
     });
 
-    it('カテゴリのみがある場合、CategoryBadge と PublicBadge が含まれる', () => {
+    it('カテゴリがない場合、カテゴリバッジは表示されない', () => {
+      const book = createMockBook({ category: undefined });
+
+      const { result } = renderHook(() => useBookDetailView(book));
+      render(<div>{result.current.badges}</div>);
+
+      // カテゴリ名がないことを確認（他のバッジは存在する）
+      expect(screen.queryByText('プログラミング')).not.toBeInTheDocument();
+    });
+
+    it('タグバッジが表示される', () => {
       const book = createMockBook({
-        category: createMockCategory({ name: 'テストカテゴリ' }),
-        tags: [],
+        tags: [createMockTag({ name: 'TypeScript' }), createMockTag({ name: 'React' })],
       });
 
       const { result } = renderHook(() => useBookDetailView(book));
+      render(<div>{result.current.badges}</div>);
 
-      // Fragment の props.children を確認
-      const badges = result.current.badges as React.ReactElement<{ children: React.ReactNode[] }>;
-      const children = badges.props.children;
-
-      // 3つの子要素があることを確認（CategoryBadge, TagBadge(null), PublicBadge）
-      expect(Array.isArray(children)).toBe(true);
-      expect(children).toHaveLength(3);
-      expect(children[0]).toBeDefined(); // CategoryBadge
-      expect(children[1]).toBe(false); // TagBadge
-      expect(children[2]).toBeDefined(); // PublicBadge
+      expect(screen.getByText('TypeScript')).toBeInTheDocument();
+      expect(screen.getByText('React')).toBeInTheDocument();
     });
 
-    it('カテゴリーがない場合、PublicBadge のみが含まれる', () => {
-      const book = createMockBook({ category: undefined, tags: [] });
+    it('タグがない場合、タグバッジは表示されない', () => {
+      const book = createMockBook({ tags: [] });
 
       const { result } = renderHook(() => useBookDetailView(book));
+      render(<div>{result.current.badges}</div>);
 
-      // Fragment の props.children を確認
-      const badges = result.current.badges as React.ReactElement<{ children: React.ReactNode[] }>;
-      const children = badges.props.children;
+      expect(screen.queryByText('TypeScript')).not.toBeInTheDocument();
+    });
 
-      // 3つの子要素があることを確認（CategoryBadge, TagBadge(null), PublicBadge）
-      expect(Array.isArray(children)).toBe(true);
-      expect(children[0]).toBe(undefined); // CategoryBadge
-      expect(children[1]).toBeDefined(); // TagBadge
-      expect(children[2]).toBeDefined(); // PublicBadge
+    it('公開状態バッジが表示される（公開）', () => {
+      const book = createMockBook({ public: true });
+
+      const { result } = renderHook(() => useBookDetailView(book));
+      render(<div>{result.current.badges}</div>);
+
+      expect(screen.getByText('公開')).toBeInTheDocument();
+    });
+
+    it('公開状態バッジが表示される（非公開）', () => {
+      const book = createMockBook({ public: false });
+
+      const { result } = renderHook(() => useBookDetailView(book));
+      render(<div>{result.current.badges}</div>);
+
+      expect(screen.getByText('非公開')).toBeInTheDocument();
     });
   });
 });

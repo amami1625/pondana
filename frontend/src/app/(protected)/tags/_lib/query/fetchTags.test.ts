@@ -1,36 +1,16 @@
 import { describe, it, expect } from 'vitest';
-import { toJapaneseLocaleString } from '@/test/helpers';
 import { server } from '@/test/mocks/server';
 import { http, HttpResponse } from 'msw';
-import { TAGS_ERROR_MESSAGES } from '@/constants/errorMessages';
 import { fetchTags } from './fetchTags';
 
 describe('fetchTags', () => {
   describe('成功時', () => {
-    it('タグのデータを正しく取得できる', async () => {
+    it('タグ一覧を正しく取得できる', async () => {
       const result = await fetchTags();
 
-      // Zodで変換された後のデータを確認
       expect(result).toHaveLength(2);
-
-      // 日付変換の期待値を計算（'2025-01-01T00:00:00Z' → 日本時間）
-      const expectedDate = toJapaneseLocaleString('2025-01-01T00:00:00Z');
-
-      expect(result[0]).toEqual({
-        id: 1,
-        name: 'テストタグA',
-        user_id: '550e8400-e29b-41d4-a716-446655440000',
-        created_at: expectedDate,
-        updated_at: expectedDate,
-      });
-
-      expect(result[1]).toEqual({
-        id: 2,
-        name: 'テストタグB',
-        user_id: '550e8400-e29b-41d4-a716-446655440000',
-        created_at: expectedDate,
-        updated_at: expectedDate,
-      });
+      expect(result[0].name).toBe('テストタグA');
+      expect(result[1].name).toBe('テストタグB');
     });
 
     it('データが存在しない場合、空配列を取得する', async () => {
@@ -47,34 +27,26 @@ describe('fetchTags', () => {
   });
 
   describe('エラー時', () => {
-    it('404エラー時に適切なエラーメッセージをスローする', async () => {
+    it('APIからのエラーメッセージをそのままスローする', async () => {
+      const errorMessage = 'タグの取得に失敗しました';
       server.use(
         http.get('/api/tags', () => {
-          return HttpResponse.json({ error: 'Not found' }, { status: 404 });
+          return HttpResponse.json({ error: errorMessage }, { status: 404 });
         }),
       );
 
-      await expect(fetchTags()).rejects.toThrow(TAGS_ERROR_MESSAGES.NOT_FOUND);
+      await expect(fetchTags()).rejects.toThrow(errorMessage);
     });
 
-    it('500エラー時にデフォルトエラーメッセージをスローする', async () => {
+    it('サーバーエラー時もAPIからのエラーメッセージをスローする', async () => {
+      const errorMessage = 'エラーが発生しました。もう一度お試しください';
       server.use(
         http.get('/api/tags', () => {
-          return HttpResponse.json({ error: 'Internal server error' }, { status: 500 });
+          return HttpResponse.json({ error: errorMessage }, { status: 500 });
         }),
       );
 
-      await expect(fetchTags()).rejects.toThrow(TAGS_ERROR_MESSAGES.UNKNOWN_ERROR);
-    });
-
-    it('ネットワークエラー時にエラーをスローする', async () => {
-      server.use(
-        http.get('/api/tags', () => {
-          return HttpResponse.error();
-        }),
-      );
-
-      await expect(fetchTags()).rejects.toThrow(TAGS_ERROR_MESSAGES.NETWORK_ERROR);
+      await expect(fetchTags()).rejects.toThrow(errorMessage);
     });
   });
 

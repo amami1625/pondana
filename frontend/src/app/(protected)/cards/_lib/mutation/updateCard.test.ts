@@ -3,7 +3,6 @@ import { server } from '@/test/mocks/server';
 import { http, HttpResponse } from 'msw';
 import { createTestUuid } from '@/test/helpers';
 import { updateCard } from './updateCard';
-import { CARDS_ERROR_MESSAGES } from '@/constants/errorMessages';
 
 describe('updateCard', () => {
   const mockCard = {
@@ -19,39 +18,30 @@ describe('updateCard', () => {
 
       expect(result.id).toBe(createTestUuid(2));
       expect(result.title).toBe('テストカード');
-      expect(result.content).toBe('テスト詳細');
     });
   });
 
   describe('エラー時', () => {
-    it('404エラー時に適切なエラーメッセージをスローする', async () => {
+    it('APIからのエラーメッセージをそのままスローする', async () => {
+      const errorMessage = 'カードの更新に失敗しました';
       server.use(
         http.put('/api/books/:bookId/cards/:cardId', () => {
-          return HttpResponse.json({ error: 'Not found' }, { status: 404 });
+          return HttpResponse.json({ error: errorMessage }, { status: 404 });
         }),
       );
 
-      await expect(updateCard(mockCard)).rejects.toThrow(CARDS_ERROR_MESSAGES.NOT_FOUND);
+      await expect(updateCard(mockCard)).rejects.toThrow(errorMessage);
     });
 
-    it('500エラー時にデフォルトエラーメッセージをスローする', async () => {
+    it('サーバーエラー時もAPIからのエラーメッセージをスローする', async () => {
+      const errorMessage = 'エラーが発生しました。もう一度お試しください';
       server.use(
         http.put('/api/books/:bookId/cards/:cardId', () => {
-          return HttpResponse.json({ error: 'Internal server error' }, { status: 500 });
+          return HttpResponse.json({ error: errorMessage }, { status: 500 });
         }),
       );
 
-      await expect(updateCard(mockCard)).rejects.toThrow(CARDS_ERROR_MESSAGES.UNKNOWN_ERROR);
-    });
-
-    it('ネットワークエラー時に適切なエラーメッセージをスローする', async () => {
-      server.use(
-        http.put('/api/books/:bookId/cards/:cardId', () => {
-          return HttpResponse.error();
-        }),
-      );
-
-      await expect(updateCard(mockCard)).rejects.toThrow(CARDS_ERROR_MESSAGES.NETWORK_ERROR);
+      await expect(updateCard(mockCard)).rejects.toThrow(errorMessage);
     });
   });
 

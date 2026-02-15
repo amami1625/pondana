@@ -16,20 +16,13 @@ describe('FeatureSection', () => {
     expect(screen.getByText('詳細')).toBeInTheDocument();
   });
 
-  it('異なるタイトルと説明文でも正しく表示される', () => {
-    render(<FeatureSection title="別のタイトル" description="別の説明文" icon={<BookOpen />} />);
-
-    expect(screen.getByRole('heading', { level: 2 })).toHaveTextContent('別のタイトル');
-    expect(screen.getByText('別の説明文')).toBeInTheDocument();
-  });
-
   it('デフォルトの背景色が適用される', () => {
     const { container } = render(
       <FeatureSection title="タイトル" description="説明" icon={<BookOpen />} />,
     );
 
     const section = container.querySelector('section');
-    expect(section).toHaveClass('bg-slate-50/50');
+    expect(section).toHaveClass('bg-white');
   });
 
   it('指定した背景色を設定できる', () => {

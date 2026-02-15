@@ -1,15 +1,14 @@
 module Api
   class ListBooksController < Api::ApplicationController
+    rescue_from ActiveRecord::RecordNotFound, with: :record_not_found
+
     before_action :find_list_and_book, only: [:create]
     before_action :find_list_book, only: [:destroy]
 
     def create
       # 既に追加されているかチェック
       if @list.list_books.exists?(book: @book)
-        render json: {
-          code: 'ALREADY_EXISTS',
-          error: '既にこの本はリストに追加されています'
-        }, status: :unprocessable_content
+        render json: { error: '既にこの本はリストに追加されています' }, status: :unprocessable_content
         return
       end
 
@@ -18,32 +17,16 @@ module Api
       if list_book.save
         render json: list_book, status: :created
       else
-        render json: {
-          code: 'ADD_FAILED',
-          error: list_book.errors.full_messages.join(', ')
-        }, status: :unprocessable_content
+        render json: { error: list_book.errors.full_messages.join(', ') }, status: :unprocessable_content
       end
-    rescue ActiveRecord::RecordNotFound
-      render json: {
-        code: 'NOT_FOUND',
-        error: 'リストまたは本が見つかりませんでした'
-      }, status: :not_found
     end
 
     def destroy
       if @list_book.destroy
         head :no_content
       else
-        render json: {
-          code: 'REMOVE_FAILED',
-          error: @list_book.errors.full_messages.join(', ')
-        }, status: :unprocessable_content
+        render json: { error: @list_book.errors.full_messages.join(', ') }, status: :unprocessable_content
       end
-    rescue ActiveRecord::RecordNotFound
-      render json: {
-        code: 'NOT_FOUND',
-        error: 'リストまたは本が見つかりませんでした'
-      }, status: :not_found
     end
 
     private
@@ -57,6 +40,10 @@ module Api
       # 現在のユーザーが所有するリストと本のみを取得
       @list = current_user.lists.find(list_book_params[:list_id])
       @book = current_user.books.find(list_book_params[:book_id])
+    end
+
+    def record_not_found
+      render json: { error: 'リストまたは本が見つかりませんでした' }, status: :not_found
     end
 
     def find_list_book

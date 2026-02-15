@@ -136,7 +136,7 @@ RSpec.describe 'Api::Users', type: :request do
 
       expect(response).to have_http_status(:unprocessable_content)
       json = response.parsed_body
-      expect(json['code']).to eq('FOLLOW_SELF_ERROR')
+      expect(json['error']).to be_present
     end
 
     it '既にフォローしているユーザーは再度フォローできないこと' do
@@ -148,7 +148,7 @@ RSpec.describe 'Api::Users', type: :request do
 
       expect(response).to have_http_status(:unprocessable_content)
       json = response.parsed_body
-      expect(json['code']).to eq('ALREADY_FOLLOWING')
+      expect(json['error']).to be_present
     end
   end
 
@@ -174,7 +174,7 @@ RSpec.describe 'Api::Users', type: :request do
 
       expect(response).to have_http_status(:not_found)
       json = response.parsed_body
-      expect(json['code']).to eq('NOT_FOLLOWING')
+      expect(json['error']).to be_present
     end
   end
 

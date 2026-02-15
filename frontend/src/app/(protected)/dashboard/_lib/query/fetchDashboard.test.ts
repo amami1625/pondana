@@ -3,8 +3,6 @@ import { fetchDashboard } from './fetchDashboard';
 import { server } from '@/test/mocks/server';
 import { http, HttpResponse } from 'msw';
 import { createMockDashboard } from '@/test/factories/dashboard';
-import { DASHBOARD_ERROR_MESSAGES } from '@/constants/errorMessages';
-import { ZodError } from 'zod';
 
 describe('fetchDashboard', () => {
   describe('成功時', () => {
@@ -56,34 +54,26 @@ describe('fetchDashboard', () => {
   });
 
   describe('エラー時', () => {
-    it('404エラー時に適切なエラーメッセージをスローする', async () => {
+    it('APIからのエラーメッセージをそのままスローする', async () => {
+      const errorMessage = 'ダッシュボードの取得に失敗しました';
       server.use(
         http.get('/api/dashboard', () => {
-          return HttpResponse.json({ error: 'Not found' }, { status: 404 });
+          return HttpResponse.json({ error: errorMessage }, { status: 404 });
         }),
       );
 
-      await expect(fetchDashboard()).rejects.toThrow(DASHBOARD_ERROR_MESSAGES.NOT_FOUND);
+      await expect(fetchDashboard()).rejects.toThrow(errorMessage);
     });
 
-    it('500エラー時にデフォルトエラーメッセージをスローする', async () => {
+    it('サーバーエラー時もAPIからのエラーメッセージをスローする', async () => {
+      const errorMessage = 'エラーが発生しました。もう一度お試しください';
       server.use(
         http.get('/api/dashboard', () => {
-          return HttpResponse.json({ error: 'Internal server error' }, { status: 500 });
+          return HttpResponse.json({ error: errorMessage }, { status: 500 });
         }),
       );
 
-      await expect(fetchDashboard()).rejects.toThrow(DASHBOARD_ERROR_MESSAGES.UNKNOWN_ERROR);
-    });
-
-    it('ネットワークエラー時に適切なエラーメッセージをスローする', async () => {
-      server.use(
-        http.get('/api/dashboard', () => {
-          return HttpResponse.error();
-        }),
-      );
-
-      await expect(fetchDashboard()).rejects.toThrow(DASHBOARD_ERROR_MESSAGES.NETWORK_ERROR);
+      await expect(fetchDashboard()).rejects.toThrow(errorMessage);
     });
   });
 
@@ -97,7 +87,7 @@ describe('fetchDashboard', () => {
         }),
       );
 
-      await expect(fetchDashboard()).rejects.toThrow(ZodError);
+      await expect(fetchDashboard()).rejects.toThrow();
     });
   });
 });

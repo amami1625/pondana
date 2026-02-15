@@ -1,7 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { authenticatedRequest } from '@/supabase/dal';
-import { ApiError } from '@/lib/errors/ApiError';
+import { handleRouteError } from '@/lib/api/handleRouteError';
 import { cardFormSchema, cardSchema } from '@/app/(protected)/cards/_types';
+
+const ERROR_MESSAGES = {
+  CREATE_FAILED: 'カードの作成に失敗しました',
+  NETWORK_ERROR: 'ネットワークエラーが発生しました',
+  UNKNOWN: 'エラーが発生しました。もう一度お試しください',
+};
 
 export async function POST(
   request: NextRequest,
@@ -12,27 +18,18 @@ export async function POST(
     const body = await request.json();
     const validatedData = cardFormSchema.parse(body);
 
-    const data = await authenticatedRequest(
-      `/books/${bookId}/cards`,
-      {
-        method: 'POST',
-        body: JSON.stringify({ card: validatedData }),
-      },
-      false,
-    );
+    const data = await authenticatedRequest(`/books/${bookId}/cards`, {
+      method: 'POST',
+      body: JSON.stringify({ card: validatedData }),
+    });
 
     const card = cardSchema.parse(data);
     return NextResponse.json(card, { status: 201 });
   } catch (error) {
-    if (error instanceof ApiError) {
-      return NextResponse.json(
-        { error: error.message, code: error.code },
-        { status: error.statusCode },
-      );
-    }
-    if (error instanceof Error) {
-      return NextResponse.json({ error: error.message }, { status: 500 });
-    }
-    return NextResponse.json({ error: '不明なエラーが発生しました' }, { status: 500 });
+    return handleRouteError(error, {
+      apiError: ERROR_MESSAGES.CREATE_FAILED,
+      networkError: ERROR_MESSAGES.NETWORK_ERROR,
+      unknown: ERROR_MESSAGES.UNKNOWN,
+    });
   }
 }

@@ -106,7 +106,7 @@ RSpec.describe 'Api::Books', type: :request do
 
       expect(response).to have_http_status(:unprocessable_content)
       json = response.parsed_body
-      expect(json['errors']).to be_present
+      expect(json['error']).to be_present
     end
 
     it '他のユーザーのカテゴリを使用できないこと' do
@@ -121,7 +121,7 @@ RSpec.describe 'Api::Books', type: :request do
 
       expect(response).to have_http_status(:unprocessable_content)
       json = response.parsed_body
-      expect(json['errors']).to be_present
+      expect(json['error']).to be_present
     end
 
     it '他のユーザーのタグを使用できないこと' do
@@ -136,7 +136,7 @@ RSpec.describe 'Api::Books', type: :request do
 
       expect(response).to have_http_status(:unprocessable_content)
       json = response.parsed_body
-      expect(json['errors']).to be_present
+      expect(json['error']).to be_present
     end
   end
 
@@ -189,7 +189,7 @@ RSpec.describe 'Api::Books', type: :request do
 
       expect(response).to have_http_status(:unprocessable_content)
       json = response.parsed_body
-      expect(json['errors']).to be_present
+      expect(json['error']).to be_present
     end
 
     it '他のユーザーのタグに更新できないこと' do
@@ -202,7 +202,7 @@ RSpec.describe 'Api::Books', type: :request do
 
       expect(response).to have_http_status(:unprocessable_content)
       json = response.parsed_body
-      expect(json['errors']).to be_present
+      expect(json['error']).to be_present
     end
   end
 
