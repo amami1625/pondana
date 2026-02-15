@@ -1,7 +1,16 @@
 import { authenticatedRequest } from '@/supabase/dal';
 import { bookBaseSchema, bookDetailSchema } from '@/app/(protected)/books/_types';
-import { ApiError } from '@/lib/errors/ApiError';
+import { handleRouteError } from '@/lib/api/handleRouteError';
 import { NextRequest, NextResponse } from 'next/server';
+
+// エラーメッセージ
+const ERROR_MESSAGES = {
+  NOT_FOUND: '本の取得に失敗しました',
+  UPDATE_FAILED: '本の更新に失敗しました',
+  DELETE_FAILED: '本の削除に失敗しました',
+  NETWORK_ERROR: 'ネットワークエラーが発生しました',
+  UNKNOWN: 'エラーが発生しました。もう一度お試しください',
+};
 
 // GET - 詳細取得
 export async function GET(
@@ -10,37 +19,15 @@ export async function GET(
 ) {
   try {
     const { bookId } = await params;
-    const data = await authenticatedRequest(`/books/${bookId}`, {}, false); // API Routeでは404をApiErrorとしてスロー
+    const data = await authenticatedRequest(`/books/${bookId}`);
     const book = bookDetailSchema.parse(data);
     return NextResponse.json(book);
   } catch (error) {
-    // ApiErrorの場合はステータスコードとエラーコードを保持
-    if (error instanceof ApiError) {
-      return NextResponse.json(
-        {
-          error: error.message,
-          code: error.code,
-        },
-        { status: error.statusCode },
-      );
-    }
-
-    // ネットワークエラーの場合（Next.js → Rails 間の通信失敗）
-    if (error instanceof TypeError) {
-      return NextResponse.json(
-        {
-          error: error.message, // 技術的なメッセージ（開発時のデバッグ用）
-          code: 'NETWORK_ERROR',
-        },
-        { status: 503 }, // Service Unavailable
-      );
-    }
-
-    if (error instanceof Error) {
-      return NextResponse.json({ error: error.message }, { status: 500 });
-    }
-
-    return NextResponse.json({ error: '不明なエラーが発生しました' }, { status: 500 });
+    return handleRouteError(error, {
+      apiError: ERROR_MESSAGES.NOT_FOUND,
+      networkError: ERROR_MESSAGES.NETWORK_ERROR,
+      unknown: ERROR_MESSAGES.UNKNOWN,
+    });
   }
 }
 
@@ -60,32 +47,18 @@ export async function PUT(
       rating: body.rating ?? null,
     };
 
-    const data = await authenticatedRequest(
-      `/books/${bookId}`,
-      {
-        method: 'PUT',
-        body: JSON.stringify({ book: bookData }),
-      },
-      false, // API Routeでは404をApiErrorとしてスロー
-    );
+    const data = await authenticatedRequest(`/books/${bookId}`, {
+      method: 'PUT',
+      body: JSON.stringify({ book: bookData }),
+    });
     const book = bookBaseSchema.parse(data);
     return NextResponse.json(book);
   } catch (error) {
-    // ApiErrorの場合はステータスコードとエラーコードを保持
-    if (error instanceof ApiError) {
-      return NextResponse.json(
-        {
-          error: error.message,
-          code: error.code,
-        },
-        { status: error.statusCode },
-      );
-    }
-
-    if (error instanceof Error) {
-      return NextResponse.json({ error: error.message }, { status: 500 });
-    }
-    return NextResponse.json({ error: '不明なエラーが発生しました' }, { status: 500 });
+    return handleRouteError(error, {
+      apiError: ERROR_MESSAGES.UPDATE_FAILED,
+      networkError: ERROR_MESSAGES.NETWORK_ERROR,
+      unknown: ERROR_MESSAGES.UNKNOWN,
+    });
   }
 }
 
@@ -96,30 +69,16 @@ export async function DELETE(
 ) {
   try {
     const { bookId } = await params;
-    await authenticatedRequest(
-      `/books/${bookId}`,
-      {
-        method: 'DELETE',
-      },
-      false, // API Routeでは404をApiErrorとしてスロー
-    );
+    await authenticatedRequest(`/books/${bookId}`, {
+      method: 'DELETE',
+    });
 
     return NextResponse.json({ success: true });
   } catch (error) {
-    // ApiErrorの場合はステータスコードとエラーコードを保持
-    if (error instanceof ApiError) {
-      return NextResponse.json(
-        {
-          error: error.message,
-          code: error.code,
-        },
-        { status: error.statusCode },
-      );
-    }
-
-    if (error instanceof Error) {
-      return NextResponse.json({ error: error.message }, { status: 500 });
-    }
-    return NextResponse.json({ error: '不明なエラーが発生しました' }, { status: 500 });
+    return handleRouteError(error, {
+      apiError: ERROR_MESSAGES.DELETE_FAILED,
+      networkError: ERROR_MESSAGES.NETWORK_ERROR,
+      unknown: ERROR_MESSAGES.UNKNOWN,
+    });
   }
 }

@@ -102,7 +102,7 @@ RSpec.describe 'Api::Lists', type: :request do
 
         expect(response).to have_http_status(:forbidden)
         json = response.parsed_body
-        expect(json['code']).to eq('FORBIDDEN')
+        expect(json['error']).to be_present
       end
 
       it '公開リストでも非公開の本はフィルタリングされること' do
@@ -144,7 +144,7 @@ RSpec.describe 'Api::Lists', type: :request do
 
       expect(response).to have_http_status(:unprocessable_content)
       json = response.parsed_body
-      expect(json['code']).to eq('ALREADY_EXISTS')
+      expect(json['error']).to be_present
     end
 
     it '名前が空の場合は作成できないこと' do
@@ -152,7 +152,7 @@ RSpec.describe 'Api::Lists', type: :request do
 
       expect(response).to have_http_status(:unprocessable_content)
       json = response.parsed_body
-      expect(json['code']).to eq('CREATE_FAILED')
+      expect(json['error']).to be_present
     end
   end
 
@@ -179,7 +179,7 @@ RSpec.describe 'Api::Lists', type: :request do
 
       expect(response).to have_http_status(:unprocessable_content)
       json = response.parsed_body
-      expect(json['code']).to eq('ALREADY_EXISTS')
+      expect(json['error']).to be_present
     end
 
     it '他のユーザーのリストは更新できないこと' do

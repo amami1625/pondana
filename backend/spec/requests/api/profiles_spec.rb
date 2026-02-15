@@ -63,7 +63,7 @@ RSpec.describe 'Api::Profiles', type: :request do
 
       expect(response).to have_http_status(:unprocessable_content)
       json = response.parsed_body
-      expect(json['code']).to eq('UPDATE_FAILED')
+      expect(json['error']).to be_present
     end
 
     it '名前が空の場合は更新できないこと' do
@@ -73,7 +73,7 @@ RSpec.describe 'Api::Profiles', type: :request do
 
       expect(response).to have_http_status(:unprocessable_content)
       json = response.parsed_body
-      expect(json['code']).to eq('UPDATE_FAILED')
+      expect(json['error']).to be_present
     end
 
     it '認証なしでは更新できないこと' do

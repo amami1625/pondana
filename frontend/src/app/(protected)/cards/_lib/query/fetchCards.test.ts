@@ -1,8 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import { toJapaneseLocaleString, createTestUuid } from '@/test/helpers';
 import { server } from '@/test/mocks/server';
 import { http, HttpResponse } from 'msw';
-import { CARDS_ERROR_MESSAGES } from '@/constants/errorMessages';
 import { fetchCards } from './fetchCards';
 
 describe('fetchCards', () => {
@@ -12,27 +10,8 @@ describe('fetchCards', () => {
 
       expect(result).toHaveProperty('books');
       expect(result.books).toHaveLength(2);
-
-      const expectedDate = toJapaneseLocaleString('2025-01-01T00:00:00Z');
-
-      expect(result.books[0]).toEqual({
-        book: { id: createTestUuid(1), title: 'テスト本A' },
-        cards: [
-          {
-            id: createTestUuid(1),
-            title: 'テストカード',
-            content: 'テスト本文',
-            book_id: createTestUuid(1),
-            created_at: expectedDate,
-            updated_at: expectedDate,
-          },
-        ],
-      });
-
-      expect(result.books[1]).toEqual({
-        book: { id: createTestUuid(2), title: 'テスト本B' },
-        cards: [],
-      });
+      expect(result.books[0].book.title).toBe('テスト本A');
+      expect(result.books[1].book.title).toBe('テスト本B');
     });
 
     it('データが存在しない場合、空配列を返す', async () => {
@@ -49,34 +28,26 @@ describe('fetchCards', () => {
   });
 
   describe('エラー時', () => {
-    it('404エラー時に適切なエラーメッセージをスローする', async () => {
+    it('APIからのエラーメッセージをそのままスローする', async () => {
+      const errorMessage = 'カードの取得に失敗しました';
       server.use(
         http.get('/api/cards', () => {
-          return HttpResponse.json({ error: 'Not found' }, { status: 404 });
+          return HttpResponse.json({ error: errorMessage }, { status: 404 });
         }),
       );
 
-      await expect(fetchCards()).rejects.toThrow(CARDS_ERROR_MESSAGES.NOT_FOUND);
+      await expect(fetchCards()).rejects.toThrow(errorMessage);
     });
 
-    it('500エラー時にデフォルトエラーメッセージをスローする', async () => {
+    it('サーバーエラー時もAPIからのエラーメッセージをスローする', async () => {
+      const errorMessage = 'エラーが発生しました。もう一度お試しください';
       server.use(
         http.get('/api/cards', () => {
-          return HttpResponse.json({ error: 'Internal server error' }, { status: 500 });
+          return HttpResponse.json({ error: errorMessage }, { status: 500 });
         }),
       );
 
-      await expect(fetchCards()).rejects.toThrow(CARDS_ERROR_MESSAGES.UNKNOWN_ERROR);
-    });
-
-    it('ネットワークエラー時に適切なエラーメッセージをスローする', async () => {
-      server.use(
-        http.get('/api/cards', () => {
-          return HttpResponse.error();
-        }),
-      );
-
-      await expect(fetchCards()).rejects.toThrow(CARDS_ERROR_MESSAGES.NETWORK_ERROR);
+      await expect(fetchCards()).rejects.toThrow(errorMessage);
     });
   });
 

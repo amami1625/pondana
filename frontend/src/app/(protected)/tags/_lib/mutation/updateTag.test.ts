@@ -2,7 +2,6 @@ import { describe, it, expect } from 'vitest';
 import { server } from '@/test/mocks/server';
 import { http, HttpResponse } from 'msw';
 import { updateTag } from './updateTag';
-import { TAGS_ERROR_MESSAGES } from '@/constants/errorMessages';
 
 describe('updateTag', () => {
   const mockUpdateData = {
@@ -10,68 +9,48 @@ describe('updateTag', () => {
     name: '更新されたタグ',
   };
 
-  it('タグを更新できる', async () => {
-    const result = await updateTag(mockUpdateData);
+  describe('成功時', () => {
+    it('タグを更新できる', async () => {
+      const result = await updateTag(mockUpdateData);
 
-    expect(result.id).toBe(1);
-    expect(result.name).toBe('更新されたタグ');
+      expect(result.id).toBe(1);
+      expect(result.name).toBe('更新されたタグ');
+    });
   });
 
-  it('更新に失敗した場合はUPDATE_FAILEDエラーを返す', async () => {
-    server.use(
-      http.put('/api/tags/:id', () => {
-        return HttpResponse.json(
-          {
-            code: 'UPDATE_FAILED',
-            error: 'タグの更新に失敗しました',
-          },
-          { status: 422 },
-        );
-      }),
-    );
+  describe('エラー時', () => {
+    it('APIからのエラーメッセージをそのままスローする', async () => {
+      const errorMessage = 'タグの更新に失敗しました';
+      server.use(
+        http.put('/api/tags/:id', () => {
+          return HttpResponse.json({ error: errorMessage }, { status: 404 });
+        }),
+      );
 
-    await expect(updateTag(mockUpdateData)).rejects.toThrow(TAGS_ERROR_MESSAGES.UPDATE_FAILED);
+      await expect(updateTag(mockUpdateData)).rejects.toThrow(errorMessage);
+    });
+
+    it('サーバーエラー時もAPIからのエラーメッセージをスローする', async () => {
+      const errorMessage = 'エラーが発生しました。もう一度お試しください';
+      server.use(
+        http.put('/api/tags/:id', () => {
+          return HttpResponse.json({ error: errorMessage }, { status: 500 });
+        }),
+      );
+
+      await expect(updateTag(mockUpdateData)).rejects.toThrow(errorMessage);
+    });
   });
 
-  it('404エラー時にNOT_FOUNDエラーを返す', async () => {
-    server.use(
-      http.put('/api/tags/:id', () => {
-        return HttpResponse.json(
-          {
-            code: 'NOT_FOUND',
-            error: 'タグが見つかりませんでした',
-          },
-          { status: 404 },
-        );
-      }),
-    );
+  describe('Zod バリデーション', () => {
+    it('不正なデータ形式の場合、Zodエラーをスローする', async () => {
+      server.use(
+        http.put('/api/tags/:id', () => {
+          return HttpResponse.json({ invalid: 'invalid-data' });
+        }),
+      );
 
-    await expect(updateTag(mockUpdateData)).rejects.toThrow(TAGS_ERROR_MESSAGES.NOT_FOUND);
-  });
-
-  it('ネットワークエラー時にNETWORK_ERRORを返す', async () => {
-    server.use(
-      http.put('/api/tags/:id', () => {
-        return HttpResponse.error();
-      }),
-    );
-
-    await expect(updateTag(mockUpdateData)).rejects.toThrow(TAGS_ERROR_MESSAGES.NETWORK_ERROR);
-  });
-
-  it('不明なエラーコードの場合はUNKNOWN_ERRORを返す', async () => {
-    server.use(
-      http.put('/api/tags/:id', () => {
-        return HttpResponse.json(
-          {
-            code: 'SOME_UNKNOWN_ERROR',
-            error: 'Some unknown error',
-          },
-          { status: 500 },
-        );
-      }),
-    );
-
-    await expect(updateTag(mockUpdateData)).rejects.toThrow(TAGS_ERROR_MESSAGES.UNKNOWN_ERROR);
+      await expect(updateTag(mockUpdateData)).rejects.toThrow();
+    });
   });
 });

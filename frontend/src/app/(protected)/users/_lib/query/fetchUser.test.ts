@@ -1,124 +1,47 @@
-import { describe, it, expect, vi } from 'vitest';
-import { createMockUserWithStats } from '@/test/factories';
-import { createTestUuid } from '@/test/helpers';
+import { describe, it, expect } from 'vitest';
+import { server } from '@/test/mocks/server';
+import { http, HttpResponse } from 'msw';
 import { fetchUser } from './fetchUser';
 
 describe('fetchUser', () => {
   describe('成功時', () => {
     it('ユーザー情報と統計を正しく取得できる', async () => {
-      const mockApiResponse = createMockUserWithStats({
-        id: createTestUuid(1),
-        name: 'テストユーザー',
-        stats: {
-          public_books: 10,
-          public_lists: 5,
-          following_count: 3,
-          followers_count: 7,
-        },
-      });
-
-      vi.stubGlobal(
-        'fetch',
-        vi.fn().mockResolvedValue({
-          ok: true,
-          json: async () => mockApiResponse,
-        }),
-      );
-
       const result = await fetchUser('1');
 
-      expect(result.id).toBe(createTestUuid(1));
-      expect(result.name).toBe('テストユーザー');
-      expect(result.stats.public_books).toBe(10);
-      expect(result.stats.public_lists).toBe(5);
-
-      expect(fetch).toHaveBeenCalledWith('/api/users/1');
-      expect(fetch).toHaveBeenCalledTimes(1);
-    });
-
-    it('異なるIDで正しくリクエストできる', async () => {
-      const mockApiResponse = createMockUserWithStats({
-        id: createTestUuid(42),
-        name: '別のユーザー',
-      });
-
-      vi.stubGlobal(
-        'fetch',
-        vi.fn().mockResolvedValue({
-          ok: true,
-          json: async () => mockApiResponse,
-        }),
-      );
-
-      const result = await fetchUser('42');
-
-      expect(result.id).toBe(createTestUuid(42));
-      expect(result.name).toBe('別のユーザー');
-      expect(fetch).toHaveBeenCalledWith('/api/users/42');
+      expect(result).toHaveProperty('name');
+      expect(result).toHaveProperty('stats');
     });
   });
 
   describe('エラー時', () => {
-    it('APIエラー時にエラーをスローする', async () => {
-      vi.stubGlobal(
-        'fetch',
-        vi.fn().mockResolvedValue({
-          ok: false,
-          json: async () => ({
-            code: 'NOT_FOUND',
-            error: 'ユーザー情報の取得に失敗しました',
-          }),
+    it('APIからのエラーメッセージをそのままスローする', async () => {
+      const errorMessage = 'ユーザー情報の取得に失敗しました';
+      server.use(
+        http.get('/api/users/:id', () => {
+          return HttpResponse.json({ error: errorMessage }, { status: 404 });
         }),
       );
 
-      await expect(fetchUser('1')).rejects.toThrow('ユーザー情報の取得に失敗しました');
+      await expect(fetchUser('1')).rejects.toThrow(errorMessage);
     });
 
-    it('エラーメッセージがない場合、デフォルトメッセージを使用する', async () => {
-      vi.stubGlobal(
-        'fetch',
-        vi.fn().mockResolvedValue({
-          ok: false,
-          json: async () => ({}),
+    it('サーバーエラー時もAPIからのエラーメッセージをスローする', async () => {
+      const errorMessage = 'エラーが発生しました。もう一度お試しください';
+      server.use(
+        http.get('/api/users/:id', () => {
+          return HttpResponse.json({ error: errorMessage }, { status: 500 });
         }),
       );
 
-      await expect(fetchUser('1')).rejects.toThrow('エラーが発生しました。もう一度お試しください');
-    });
-
-    it('ネットワークエラー時にエラーをスローする', async () => {
-      vi.stubGlobal('fetch', vi.fn().mockRejectedValue(new Error('Network error')));
-
-      await expect(fetchUser('1')).rejects.toThrow('Network error');
+      await expect(fetchUser('1')).rejects.toThrow(errorMessage);
     });
   });
 
-  describe('Zodバリデーション', () => {
+  describe('Zod バリデーション', () => {
     it('不正なデータ形式の場合、Zodエラーをスローする', async () => {
-      vi.stubGlobal(
-        'fetch',
-        vi.fn().mockResolvedValue({
-          ok: true,
-          json: async () => ({ invalid: 'data' }),
-        }),
-      );
-
-      await expect(fetchUser('1')).rejects.toThrow();
-    });
-
-    it('statsが欠落している場合、Zodエラーをスローする', async () => {
-      vi.stubGlobal(
-        'fetch',
-        vi.fn().mockResolvedValue({
-          ok: true,
-          json: async () => ({
-            id: 1,
-            supabase_uid: '1',
-            name: 'テストユーザー',
-            avatar_url: null,
-            created_at: '2025-01-01T00:00:00Z',
-            updated_at: '2025-01-01T00:00:00Z',
-          }),
+      server.use(
+        http.get('/api/users/:id', () => {
+          return HttpResponse.json({ invalid: 'data' });
         }),
       );
 

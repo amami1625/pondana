@@ -1,8 +1,8 @@
 import { describe, it, expect } from 'vitest';
 import { server } from '@/test/mocks/server';
 import { http, HttpResponse } from 'msw';
+import { ZodError } from 'zod';
 import { ListFormData } from '@/app/(protected)/lists/_types';
-import { LISTS_ERROR_MESSAGES } from '@/constants/errorMessages';
 import { createList } from './createList';
 
 describe('createList', () => {
@@ -23,34 +23,26 @@ describe('createList', () => {
   });
 
   describe('エラー時', () => {
-    it('404エラー時に適切なエラーメッセージをスローする', async () => {
+    it('APIからのエラーメッセージをそのままスローする', async () => {
+      const errorMessage = 'リストの作成に失敗しました';
       server.use(
         http.post('/api/lists', () => {
-          return HttpResponse.json({ error: 'Not Found' }, { status: 404 });
+          return HttpResponse.json({ error: errorMessage }, { status: 400 });
         }),
       );
 
-      await expect(createList(mockListData)).rejects.toThrow(LISTS_ERROR_MESSAGES.NOT_FOUND);
+      await expect(createList(mockListData)).rejects.toThrow(errorMessage);
     });
 
-    it('500エラー時にデフォルトエラーメッセージをスローする', async () => {
+    it('サーバーエラー時もAPIからのエラーメッセージをスローする', async () => {
+      const errorMessage = 'エラーが発生しました。もう一度お試しください';
       server.use(
         http.post('/api/lists', () => {
-          return HttpResponse.json({ error: 'Internal server error' }, { status: 500 });
+          return HttpResponse.json({ error: errorMessage }, { status: 500 });
         }),
       );
 
-      await expect(createList(mockListData)).rejects.toThrow(LISTS_ERROR_MESSAGES.UNKNOWN_ERROR);
-    });
-
-    it('ネットワークエラー時にエラーをスローする', async () => {
-      server.use(
-        http.post('/api/lists', () => {
-          return HttpResponse.error();
-        }),
-      );
-
-      await expect(createList(mockListData)).rejects.toThrow(LISTS_ERROR_MESSAGES.NETWORK_ERROR);
+      await expect(createList(mockListData)).rejects.toThrow(errorMessage);
     });
   });
 
@@ -62,7 +54,7 @@ describe('createList', () => {
         }),
       );
 
-      await expect(createList(mockListData)).rejects.toThrow();
+      await expect(createList(mockListData)).rejects.toThrow(ZodError);
     });
   });
 });

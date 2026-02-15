@@ -3,7 +3,6 @@ import { server } from '@/test/mocks/server';
 import { http, HttpResponse } from 'msw';
 import { createTestUuid } from '@/test/helpers';
 import { BookCreateData } from '@/app/(protected)/books/_types';
-import { BOOKS_ERROR_MESSAGES } from '@/constants/errorMessages';
 import { createBook } from './createBook';
 
 describe('createBook', () => {
@@ -27,34 +26,26 @@ describe('createBook', () => {
   });
 
   describe('エラー時', () => {
-    it('404エラー時に適切なエラーメッセージをスローする', async () => {
+    it('APIからのエラーメッセージをそのままスローする', async () => {
+      const errorMessage = '本の作成に失敗しました';
       server.use(
         http.post('/api/books', () => {
-          return HttpResponse.json({ error: 'Not found' }, { status: 404 });
+          return HttpResponse.json({ error: errorMessage }, { status: 400 });
         }),
       );
 
-      await expect(createBook(mockBook)).rejects.toThrow(BOOKS_ERROR_MESSAGES.NOT_FOUND);
+      await expect(createBook(mockBook)).rejects.toThrow(errorMessage);
     });
 
-    it('500エラー時にデフォルトエラーメッセージをスローする', async () => {
+    it('サーバーエラー時もAPIからのエラーメッセージをスローする', async () => {
+      const errorMessage = 'エラーが発生しました。もう一度お試しください';
       server.use(
         http.post('/api/books', () => {
-          return HttpResponse.json({ error: 'Internal server error' }, { status: 500 });
+          return HttpResponse.json({ error: errorMessage }, { status: 500 });
         }),
       );
 
-      await expect(createBook(mockBook)).rejects.toThrow(BOOKS_ERROR_MESSAGES.UNKNOWN_ERROR);
-    });
-
-    it('ネットワークエラー時に適切なエラーメッセージをスローする', async () => {
-      server.use(
-        http.post('/api/books', () => {
-          return HttpResponse.error();
-        }),
-      );
-
-      await expect(createBook(mockBook)).rejects.toThrow(BOOKS_ERROR_MESSAGES.NETWORK_ERROR);
+      await expect(createBook(mockBook)).rejects.toThrow(errorMessage);
     });
   });
 

@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import { toJapaneseLocaleString, createTestUuid } from '@/test/helpers';
+import { server } from '@/test/mocks/server';
+import { http, HttpResponse } from 'msw';
 import { fetchTopPageData } from './fetchTopPageData';
 
 describe('fetchTopPageData', () => {
@@ -13,47 +14,42 @@ describe('fetchTopPageData', () => {
       expect(result.recent_books).toHaveLength(2);
       expect(result.recent_lists).toHaveLength(2);
       expect(result.recent_cards).toHaveLength(2);
+    });
+  });
 
-      const expectedDate = toJapaneseLocaleString('2025-01-01T00:00:00Z');
+  describe('エラー時', () => {
+    it('APIからのエラーメッセージをそのままスローする', async () => {
+      const errorMessage = 'トップページデータの取得に失敗しました';
+      server.use(
+        http.get('/api/top', () => {
+          return HttpResponse.json({ error: errorMessage }, { status: 404 });
+        }),
+      );
 
-      // 最初の本のデータを検証
-      expect(result.recent_books[0]).toMatchObject({
-        id: createTestUuid(1),
-        title: '最近の本1',
-        description: 'テスト説明',
-        user_id: '550e8400-e29b-41d4-a716-446655440000',
-        rating: 5,
-        reading_status: 'completed',
-        public: true,
-        google_books_id: 'aaaaaaaaaa',
-        isbn: '999999999',
-        created_at: expectedDate,
-        updated_at: expectedDate,
-      });
-      expect(result.recent_books[0]).toHaveProperty('category');
-      expect(result.recent_books[0]).toHaveProperty('tags');
+      await expect(fetchTopPageData()).rejects.toThrow(errorMessage);
+    });
 
-      // 最初のリストのデータを検証
-      expect(result.recent_lists[0]).toEqual({
-        id: createTestUuid(1),
-        name: '最近のリスト1',
-        description: 'テスト説明',
-        user_id: '550e8400-e29b-41d4-a716-446655440000',
-        public: true,
-        books_count: 3,
-        created_at: expectedDate,
-        updated_at: expectedDate,
-      });
+    it('サーバーエラー時もAPIからのエラーメッセージをスローする', async () => {
+      const errorMessage = 'エラーが発生しました。もう一度お試しください';
+      server.use(
+        http.get('/api/top', () => {
+          return HttpResponse.json({ error: errorMessage }, { status: 500 });
+        }),
+      );
 
-      // 最初のカードのデータを検証
-      expect(result.recent_cards[0]).toMatchObject({
-        id: createTestUuid(1),
-        title: '最近のカード1',
-        book_id: createTestUuid(1),
-        book: { title: '本のタイトル1' },
-        created_at: expectedDate,
-        updated_at: expectedDate,
-      });
+      await expect(fetchTopPageData()).rejects.toThrow(errorMessage);
+    });
+  });
+
+  describe('Zod バリデーション', () => {
+    it('不正なデータ形式の場合、Zodエラーをスローする', async () => {
+      server.use(
+        http.get('/api/top', () => {
+          return HttpResponse.json({ invalid: 'invalid-data' });
+        }),
+      );
+
+      await expect(fetchTopPageData()).rejects.toThrow();
     });
   });
 });

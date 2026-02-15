@@ -14,10 +14,7 @@ module Api
       if user.update(profile_params)
         render json: user, status: :ok
       else
-        render json: {
-          code: 'UPDATE_FAILED',
-          error: user.errors.full_messages.join(', ')
-        }, status: :unprocessable_content
+        render json: { error: user.errors.full_messages.join(', ') }, status: :unprocessable_content
       end
     end
 
@@ -28,10 +25,7 @@ module Api
     end
 
     def record_not_found
-      render json: {
-        code: 'NOT_FOUND',
-        error: 'プロフィール情報が見つかりませんでした'
-      }, status: :not_found
+      render json: { error: 'プロフィール情報が見つかりませんでした' }, status: :not_found
     end
   end
 end

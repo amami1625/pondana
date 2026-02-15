@@ -6,10 +6,15 @@ class User < ApplicationRecord
   has_many :lists, dependent: :destroy
   has_many :statuses, dependent: :destroy
 
-  # フォロー機能の関連
+  # フォロー関連の機能
+
+  # 自分がフォローしたレコード（follows テーブルで follower_id = 自分）
   has_many :active_follows, class_name: 'Follow', foreign_key: 'follower_id', dependent: :destroy
+  # 自分がフォローされたレコード（follows テーブルで followed_id = 自分）
   has_many :passive_follows, class_name: 'Follow', foreign_key: 'followed_id', dependent: :destroy
+  # 自分がフォローしているユーザー一覧
   has_many :following, through: :active_follows, source: :followed
+  # 自分をフォローしているユーザー一覧
   has_many :followers, through: :passive_follows, source: :follower
 
   validates :name, presence: true, length: { maximum: 50 }
