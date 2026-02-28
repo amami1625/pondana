@@ -1,17 +1,5 @@
-import { BookBase, bookBaseSchema, BookCreateData } from '@/app/(protected)/books/_types';
+import { type BookBase, bookBaseSchema, type BookCreateData } from '@/app/(protected)/books/_types';
+import { mutateResource } from '@/lib/api/mutateResource';
 
-export async function createBook(data: BookCreateData): Promise<BookBase> {
-  const response = await fetch('/api/books', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(data),
-  });
-
-  if (!response.ok) {
-    const { error } = await response.json();
-    throw new Error(error);
-  }
-
-  const res = await response.json();
-  return bookBaseSchema.parse(res);
-}
+export const createBook = (data: BookCreateData): Promise<BookBase> =>
+  mutateResource('/api/books', 'POST', data, bookBaseSchema);
