@@ -372,9 +372,7 @@ describe('useBookSuggestions', () => {
     });
 
     it('候補がない場合、キー操作は何もしない', () => {
-      const { result } = renderHook(() =>
-        useBookSuggestions([], mockOnSelectBook, emptyItemRefs),
-      );
+      const { result } = renderHook(() => useBookSuggestions([], mockOnSelectBook, emptyItemRefs));
 
       const event = {
         key: 'ArrowDown',
