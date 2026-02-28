@@ -1,13 +1,5 @@
 import { listSchema, type List } from '@/schemas/list';
+import { fetchResource } from '@/lib/api/fetchResource';
 
-export async function fetchUserLists(id: string): Promise<List[]> {
-  const response = await fetch(`/api/users/${id}/lists`);
-
-  if (!response.ok) {
-    const { error } = await response.json();
-    throw new Error(error);
-  }
-
-  const data = await response.json();
-  return listSchema.array().parse(data);
-}
+export const fetchUserLists = (id: string): Promise<List[]> =>
+  fetchResource(`/api/users/${id}/lists`, listSchema.array());

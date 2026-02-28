@@ -1,13 +1,4 @@
 import { userSchema, type User } from '@/schemas/user';
+import { fetchResource } from '@/lib/api/fetchResource';
 
-export async function fetchProfile(): Promise<User> {
-  const response = await fetch('/api/profiles');
-
-  if (!response.ok) {
-    const { error } = await response.json();
-    throw new Error(error);
-  }
-
-  const data = await response.json();
-  return userSchema.parse(data);
-}
+export const fetchProfile = (): Promise<User> => fetchResource('/api/profiles', userSchema);
