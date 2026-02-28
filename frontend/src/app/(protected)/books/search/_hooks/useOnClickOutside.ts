@@ -34,5 +34,4 @@ export function useOnClickOutside(
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [isOpen, onClickOutside]);
-  // inputRef, dropdownRef は ref オブジェクトなので依存配列に不要
 }
