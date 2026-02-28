@@ -3,7 +3,6 @@ import { GoogleBooksVolume } from '@/app/(protected)/books/_types';
 import { useBookSearchApi } from '@/app/(protected)/books/search/_hooks/useBookSearchApi';
 import { useBookSuggestions } from '@/app/(protected)/books/search/_hooks/useBookSuggestions';
 import { useOnClickOutside } from '@/app/(protected)/books/search/_hooks/useOnClickOutside';
-import { useAutoScrollIntoView } from '@/app/(protected)/books/search/_hooks/useAutoScrollIntoView';
 
 export function useBookSearch(onSelectBook: (book: GoogleBooksVolume) => void) {
   const inputRef = useRef<HTMLInputElement>(null);
@@ -13,7 +12,7 @@ export function useBookSearch(onSelectBook: (book: GoogleBooksVolume) => void) {
   // 検索API（デバウンス付き）
   const { query, setQuery, suggestions, isLoading } = useBookSearchApi();
 
-  //サジェスト操作（開閉・選択・キー操作）
+  //サジェスト操作（開閉・選択・キー操作・スクロール）
   const { isOpen, setIsOpen, selectedIndex, handleKeyDown, handleClickItem } = useBookSuggestions(
     suggestions,
     (book) => {
@@ -21,6 +20,7 @@ export function useBookSearch(onSelectBook: (book: GoogleBooksVolume) => void) {
       onSelectBook(book);
       inputRef.current?.blur();
     },
+    itemRefs,
   );
 
   // 外部クリックで閉じる
@@ -30,9 +30,6 @@ export function useBookSearch(onSelectBook: (book: GoogleBooksVolume) => void) {
 
   // isOpen が true のときだけイベントリスナーを登録（パフォーマンス最適化）
   useOnClickOutside(inputRef, dropdownRef, onClickOutside, isOpen);
-
-  // 選択された項目までスクロール
-  useAutoScrollIntoView(selectedIndex, itemRefs, isOpen);
 
   // フォームフォーカス時、検索結果(suggestions)があれば開く
   const handleFocus = () => {

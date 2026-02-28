@@ -4,6 +4,8 @@ import { createMockGoogleBooksVolume } from '@/test/factories';
 import { useBookSuggestions } from '@/app/(protected)/books/search/_hooks/useBookSuggestions';
 import { GoogleBooksVolume } from '../../_types';
 
+const emptyItemRefs = { current: [] };
+
 describe('useBookSuggestions', () => {
   const mockOnSelectBook = vi.fn();
 
@@ -13,13 +15,13 @@ describe('useBookSuggestions', () => {
 
   describe('初期状態', () => {
     it('isOpen が false になっている', () => {
-      const { result } = renderHook(() => useBookSuggestions([], mockOnSelectBook));
+      const { result } = renderHook(() => useBookSuggestions([], mockOnSelectBook, emptyItemRefs));
 
       expect(result.current.selectedIndex).toBe(-1);
     });
 
     it('selectedIndex が -1 になっている', () => {
-      const { result } = renderHook(() => useBookSuggestions([], mockOnSelectBook));
+      const { result } = renderHook(() => useBookSuggestions([], mockOnSelectBook, emptyItemRefs));
 
       expect(result.current.selectedIndex).toBe(-1);
     });
@@ -27,7 +29,7 @@ describe('useBookSuggestions', () => {
 
   describe('useEffect: suggestions の変化', () => {
     it('初回レンダリング時、isOpen は false、selectedIndex は -1 のまま', () => {
-      const { result } = renderHook(() => useBookSuggestions([], mockOnSelectBook));
+      const { result } = renderHook(() => useBookSuggestions([], mockOnSelectBook, emptyItemRefs));
 
       expect(result.current.isOpen).toBe(false);
       expect(result.current.selectedIndex).toBe(-1);
@@ -38,7 +40,7 @@ describe('useBookSuggestions', () => {
 
       // 最初は空配列
       const { result, rerender } = renderHook(
-        ({ suggestions }) => useBookSuggestions(suggestions, mockOnSelectBook),
+        ({ suggestions }) => useBookSuggestions(suggestions, mockOnSelectBook, emptyItemRefs),
         {
           initialProps: { suggestions: <GoogleBooksVolume[]>[] },
         },
@@ -61,7 +63,7 @@ describe('useBookSuggestions', () => {
 
       // 最初は候補あり
       const { result, rerender } = renderHook(
-        ({ suggestions }) => useBookSuggestions(suggestions, mockOnSelectBook),
+        ({ suggestions }) => useBookSuggestions(suggestions, mockOnSelectBook, emptyItemRefs),
         {
           initialProps: { suggestions: [mockBook] },
         },
@@ -85,7 +87,7 @@ describe('useBookSuggestions', () => {
 
       // 最初は book-1 が2つ（ArrowDownでインデックスを増やすため）
       const { result, rerender } = renderHook(
-        ({ suggestions }) => useBookSuggestions(suggestions, mockOnSelectBook),
+        ({ suggestions }) => useBookSuggestions(suggestions, mockOnSelectBook, emptyItemRefs),
         {
           initialProps: { suggestions: [mockBook1, mockBook1] },
         },
@@ -122,7 +124,9 @@ describe('useBookSuggestions', () => {
         createMockGoogleBooksVolume({ id: 'book-3' }),
       ];
 
-      const { result } = renderHook(() => useBookSuggestions(suggestions, mockOnSelectBook));
+      const { result } = renderHook(() =>
+        useBookSuggestions(suggestions, mockOnSelectBook, emptyItemRefs),
+      );
 
       // 初期状態: selectedIndex = 0
       expect(result.current.selectedIndex).toBe(0);
@@ -146,7 +150,9 @@ describe('useBookSuggestions', () => {
         createMockGoogleBooksVolume({ id: 'book-1' }),
         createMockGoogleBooksVolume({ id: 'book-2' }),
       ];
-      const { result } = renderHook(() => useBookSuggestions(suggestions, mockOnSelectBook));
+      const { result } = renderHook(() =>
+        useBookSuggestions(suggestions, mockOnSelectBook, emptyItemRefs),
+      );
 
       // selectedIndex を 1 (最後) にする
       const arrowDownEvent = {
@@ -175,7 +181,9 @@ describe('useBookSuggestions', () => {
         createMockGoogleBooksVolume({ id: 'book-3' }),
       ];
 
-      const { result } = renderHook(() => useBookSuggestions(suggestions, mockOnSelectBook));
+      const { result } = renderHook(() =>
+        useBookSuggestions(suggestions, mockOnSelectBook, emptyItemRefs),
+      );
 
       // まず ArrowDown で selectedIndex を 1 にする
       const arrowDownEvent = {
@@ -209,7 +217,9 @@ describe('useBookSuggestions', () => {
         createMockGoogleBooksVolume({ id: 'book-2' }),
       ];
 
-      const { result } = renderHook(() => useBookSuggestions(suggestions, mockOnSelectBook));
+      const { result } = renderHook(() =>
+        useBookSuggestions(suggestions, mockOnSelectBook, emptyItemRefs),
+      );
 
       // 初期状態: selectedIndex = 0
       expect(result.current.selectedIndex).toBe(0);
@@ -233,7 +243,9 @@ describe('useBookSuggestions', () => {
         createMockGoogleBooksVolume({ id: 'book-2' }),
       ];
 
-      const { result } = renderHook(() => useBookSuggestions(suggestions, mockOnSelectBook));
+      const { result } = renderHook(() =>
+        useBookSuggestions(suggestions, mockOnSelectBook, emptyItemRefs),
+      );
 
       // 初期状態: selectedIndex = 0
       expect(result.current.selectedIndex).toBe(0);
@@ -264,7 +276,9 @@ describe('useBookSuggestions', () => {
         createMockGoogleBooksVolume({ id: 'book-2' }),
       ];
 
-      const { result } = renderHook(() => useBookSuggestions(suggestions, mockOnSelectBook));
+      const { result } = renderHook(() =>
+        useBookSuggestions(suggestions, mockOnSelectBook, emptyItemRefs),
+      );
 
       // 初期状態
       expect(result.current.isOpen).toBe(true);
@@ -290,7 +304,9 @@ describe('useBookSuggestions', () => {
       const mockBook2 = createMockGoogleBooksVolume({ id: 'book-2' });
       const suggestions = [mockBook1, mockBook2];
 
-      const { result } = renderHook(() => useBookSuggestions(suggestions, mockOnSelectBook));
+      const { result } = renderHook(() =>
+        useBookSuggestions(suggestions, mockOnSelectBook, emptyItemRefs),
+      );
 
       // ArrowDown で selectedIndex を 1 にする
       const arrowDownEvent = {
@@ -325,7 +341,9 @@ describe('useBookSuggestions', () => {
       const mockBook2 = createMockGoogleBooksVolume({ id: 'book-2' });
       const suggestions = [mockBook1, mockBook2];
 
-      const { result } = renderHook(() => useBookSuggestions(suggestions, mockOnSelectBook));
+      const { result } = renderHook(() =>
+        useBookSuggestions(suggestions, mockOnSelectBook, emptyItemRefs),
+      );
 
       // ArrowUp で selectedIndex を -1 にする
       const arrowUpEvent = {
@@ -354,7 +372,9 @@ describe('useBookSuggestions', () => {
     });
 
     it('候補がない場合、キー操作は何もしない', () => {
-      const { result } = renderHook(() => useBookSuggestions([], mockOnSelectBook));
+      const { result } = renderHook(() =>
+        useBookSuggestions([], mockOnSelectBook, emptyItemRefs),
+      );
 
       const event = {
         key: 'ArrowDown',
@@ -377,7 +397,9 @@ describe('useBookSuggestions', () => {
       const mockBook2 = createMockGoogleBooksVolume({ id: 'book-2' });
       const suggestions = [mockBook1, mockBook2];
 
-      const { result } = renderHook(() => useBookSuggestions(suggestions, mockOnSelectBook));
+      const { result } = renderHook(() =>
+        useBookSuggestions(suggestions, mockOnSelectBook, emptyItemRefs),
+      );
 
       act(() => {
         result.current.handleClickItem(1);
@@ -396,7 +418,9 @@ describe('useBookSuggestions', () => {
       const mockBook2 = createMockGoogleBooksVolume({ id: 'book-2' });
       const suggestions = [mockBook1, mockBook2];
 
-      const { result } = renderHook(() => useBookSuggestions(suggestions, mockOnSelectBook));
+      const { result } = renderHook(() =>
+        useBookSuggestions(suggestions, mockOnSelectBook, emptyItemRefs),
+      );
 
       act(() => {
         result.current.handleClickItem(999); // 存在しないインデックス
@@ -404,6 +428,72 @@ describe('useBookSuggestions', () => {
 
       // onSelectBook は呼ばれない
       expect(mockOnSelectBook).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('スクロール動作', () => {
+    let mockScrollIntoView: ReturnType<typeof vi.fn>;
+
+    beforeEach(() => {
+      mockScrollIntoView = vi.fn();
+    });
+
+    it('selectedIndex が 0 以上で isOpen が true の場合、scrollIntoView が呼ばれる', () => {
+      const suggestions = [createMockGoogleBooksVolume({ id: 'book-1' })];
+      const itemRefs = {
+        current: [{ scrollIntoView: mockScrollIntoView } as unknown as HTMLElement],
+      };
+
+      renderHook(() => useBookSuggestions(suggestions, mockOnSelectBook, itemRefs));
+
+      expect(mockScrollIntoView).toHaveBeenCalledWith({
+        behavior: 'smooth',
+        block: 'nearest',
+      });
+    });
+
+    it('selectedIndex が -1 の場合、scrollIntoView は呼ばれない', () => {
+      const itemRefs = {
+        current: [{ scrollIntoView: mockScrollIntoView } as unknown as HTMLElement],
+      };
+
+      // 候補なし → selectedIndex は -1 のまま
+      renderHook(() => useBookSuggestions([], mockOnSelectBook, itemRefs));
+
+      expect(mockScrollIntoView).not.toHaveBeenCalled();
+    });
+
+    it('selectedIndex が変更されると、新しい要素に scrollIntoView が呼ばれる', () => {
+      const mockScrollIntoView1 = vi.fn();
+      const mockScrollIntoView2 = vi.fn();
+      const suggestions = [
+        createMockGoogleBooksVolume({ id: 'book-1' }),
+        createMockGoogleBooksVolume({ id: 'book-2' }),
+      ];
+      const itemRefs = {
+        current: [
+          { scrollIntoView: mockScrollIntoView1 } as unknown as HTMLElement,
+          { scrollIntoView: mockScrollIntoView2 } as unknown as HTMLElement,
+        ],
+      };
+
+      const { result } = renderHook(() =>
+        useBookSuggestions(suggestions, mockOnSelectBook, itemRefs),
+      );
+
+      expect(mockScrollIntoView1).toHaveBeenCalledTimes(1);
+      expect(mockScrollIntoView2).not.toHaveBeenCalled();
+
+      // ArrowDown で selectedIndex を 1 に変更
+      act(() => {
+        result.current.handleKeyDown({
+          key: 'ArrowDown',
+          preventDefault: vi.fn(),
+        } as unknown as React.KeyboardEvent<HTMLInputElement>);
+      });
+
+      expect(mockScrollIntoView1).toHaveBeenCalledTimes(1); // 変わらず
+      expect(mockScrollIntoView2).toHaveBeenCalledTimes(1); // 新しく呼ばれる
     });
   });
 });

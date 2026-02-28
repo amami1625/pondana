@@ -4,14 +4,12 @@ import { useBookSearch } from '@/app/(protected)/books/search/_hooks/useBookSear
 import { useBookSearchApi } from '@/app/(protected)/books/search/_hooks/useBookSearchApi';
 import { useBookSuggestions } from '@/app/(protected)/books/search/_hooks/useBookSuggestions';
 import { useOnClickOutside } from '@/app/(protected)/books/search/_hooks/useOnClickOutside';
-import { useAutoScrollIntoView } from '@/app/(protected)/books/search/_hooks/useAutoScrollIntoView';
 import { createMockGoogleBooksVolume } from '@/test/factories';
 
 // 子フックをモックして、このフック固有のロジックだけをテスト
 vi.mock('@/app/(protected)/books/search/_hooks/useBookSearchApi');
 vi.mock('@/app/(protected)/books/search/_hooks/useBookSuggestions');
 vi.mock('@/app/(protected)/books/search/_hooks/useOnClickOutside');
-vi.mock('@/app/(protected)/books/search/_hooks/useAutoScrollIntoView');
 
 describe('useBookSearch', () => {
   const mockOnSelectBook = vi.fn();
@@ -41,9 +39,8 @@ describe('useBookSearch', () => {
       handleClickItem: mockHandleClickItem,
     });
 
-    // useOnClickOutside と useAutoScrollIntoView のモック（何もしない）
+    // useOnClickOutside のモック（何もしない）
     vi.mocked(useOnClickOutside).mockImplementation(() => {});
-    vi.mocked(useAutoScrollIntoView).mockImplementation(() => {});
   });
 
   describe('onSelectBook と blur() の統合', () => {
@@ -229,31 +226,18 @@ describe('useBookSearch', () => {
       expect(inputRef).toBeDefined();
       expect(dropdownRef).toBeDefined();
       expect(typeof onClickOutside).toBe('function');
-      expect(isOpen).toBe(true); // isOpen が true
+      expect(isOpen).toBe(true);
     });
 
-    it('useAutoScrollIntoView が正しいパラメータで呼ばれる', () => {
-      vi.mocked(useBookSuggestions).mockReturnValue({
-        isOpen: true,
-        setIsOpen: mockSetIsOpen,
-        selectedIndex: 2,
-        handleKeyDown: mockHandleKeyDown,
-        handleClickItem: mockHandleClickItem,
-      });
-
+    it('useBookSuggestions に itemRefs が渡される', () => {
       renderHook(() => useBookSearch(mockOnSelectBook));
 
-      // useAutoScrollIntoView が呼ばれることを確認
-      expect(useAutoScrollIntoView).toHaveBeenCalled();
-
-      // 呼び出しパラメータを検証
-      const calls = vi.mocked(useAutoScrollIntoView).mock.calls;
+      const calls = vi.mocked(useBookSuggestions).mock.calls;
       expect(calls.length).toBeGreaterThan(0);
 
-      const [selectedIndex, itemRefs, isOpen] = calls[calls.length - 1];
-      expect(selectedIndex).toBe(2);
+      const [, , itemRefs] = calls[calls.length - 1];
       expect(itemRefs).toBeDefined();
-      expect(isOpen).toBe(true);
+      expect(Array.isArray(itemRefs.current)).toBe(true);
     });
   });
 });

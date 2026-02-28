@@ -4,6 +4,7 @@ import { GoogleBooksVolume } from '@/app/(protected)/books/_types';
 export function useBookSuggestions(
   suggestions: GoogleBooksVolume[],
   onSelectBook: (book: GoogleBooksVolume) => void,
+  itemRefs: React.RefObject<(HTMLElement | null)[]>,
 ) {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(-1);
@@ -21,6 +22,16 @@ export function useBookSuggestions(
     setIsOpen(true);
     setSelectedIndex(0);
   }, [hasSuggestions, suggestions]);
+
+  // 選択された項目までスクロール
+  useEffect(() => {
+    if (isOpen && selectedIndex >= 0 && itemRefs.current[selectedIndex]) {
+      itemRefs.current[selectedIndex]?.scrollIntoView({
+        behavior: 'smooth',
+        block: 'nearest',
+      });
+    }
+  }, [isOpen, selectedIndex, itemRefs]);
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (!hasSuggestions) return;
