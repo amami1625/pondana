@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import { BookDetail } from '@/app/(protected)/books/_types';
 import { useBookDetailView } from '@/app/(protected)/books/_hooks/useBookDetailView';
 import UpdateBookFormModal from '@/app/(protected)/books/_components/modal';
@@ -20,9 +21,12 @@ export default function BookDetailView({ book }: BookDetailProps) {
   const { breadcrumbItems, badges, handleDelete, updateModal, addListModal, cardModal } =
     useBookDetailView(book);
   const { data: profile } = useProfile();
+  const [isOwner, setIsOwner] = useState(false);
 
-  // ログインユーザーが本の所有者かどうかを判定
-  const isOwner = profile?.id === book.user_id;
+  // ハイドレーション後にオーナー判定を行い、サーバー/クライアントのミスマッチを防ぐ
+  useEffect(() => {
+    setIsOwner(profile?.id === book.user_id);
+  }, [profile?.id, book.user_id]);
 
   return (
     <>
