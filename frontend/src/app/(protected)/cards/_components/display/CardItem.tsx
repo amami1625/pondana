@@ -1,6 +1,5 @@
 'use client';
 
-import { Flag } from 'lucide-react';
 import { Card } from '@/app/(protected)/cards/_types';
 import Button from '@/components/buttons/Button';
 import StatusBadge from '@/components/badges/StatusBadge';
@@ -15,26 +14,23 @@ export default function CardItem({ card }: CardItemProps) {
   const { handleDelete } = useCardItem(card);
 
   return (
-    <div className="border-b border-gray-200 p-4 last:border-b-0">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div className="flex-1 min-w-0">
-          {/* タイトル */}
-          <h3 className="text-base font-semibold text-gray-900 mb-2 truncate">{card.title}</h3>
-
-          {/* 本文 */}
-          <p className="text-sm text-gray-600 whitespace-pre-wrap mb-2">{card.content}</p>
-
-          {/* ステータス */}
+    <div className="rounded-lg border border-gray-200 bg-white p-4">
+      <div className="flex flex-col gap-3">
+        {/* ヘッダー: タイトルとステータス */}
+        <div className="flex items-start justify-between gap-3">
+          <h3 className="text-base font-semibold text-gray-900 truncate min-w-0">{card.title}</h3>
           {card.status && (
-            <div className="inline-flex items-center gap-2">
-              <Flag size={16} className="text-gray-500" />
+            <div className="flex-shrink-0">
               <StatusBadge label={card.status.name} />
             </div>
           )}
         </div>
 
+        {/* 本文 */}
+        <p className="text-sm text-gray-600 line-clamp-2">{card.content}</p>
+
         {/* アクションボタン */}
-        <div className="flex-shrink-0 flex gap-2 justify-center sm:justify-start items-center">
+        <div className="flex items-center gap-2 pt-1">
           <DetailLink href={`/cards/${card.id}`} />
           <Button variant="danger" onClick={handleDelete}>
             削除
