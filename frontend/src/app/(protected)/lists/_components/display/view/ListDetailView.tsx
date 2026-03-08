@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import { useListDetailView } from '@/app/(protected)/lists/_hooks/useListDetailView';
 import UpdateListFormModal from '@/app/(protected)/lists/_components/modal';
 import AddBookModal from '@/app/(protected)/listBooks/_components/modal/AddBookModal';
@@ -18,9 +19,12 @@ export default function ListDetailView({ list }: ListDetailProps) {
   const { breadcrumbItems, badges, handleDelete, updateModal, addBookModal } =
     useListDetailView(list);
   const { data: profile } = useProfile();
+  const [isOwner, setIsOwner] = useState(false);
 
-  // ログインユーザーがリストの所有者かどうかを判定
-  const isOwner = profile?.id === list.user_id;
+  // ハイドレーション後にオーナー判定を行い、サーバー/クライアントのミスマッチを防ぐ
+  useEffect(() => {
+    setIsOwner(profile?.id === list.user_id);
+  }, [profile?.id, list.user_id]);
 
   return (
     <>
