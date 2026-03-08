@@ -13,6 +13,11 @@ test.describe('カード一覧ページ', () => {
   });
 
   test('書籍グループの展開・折りたたみができる', async ({ page }) => {
+    // データ読み込み完了を待機
+    await expect(
+      page.getByTestId('expand').first().or(page.getByText(/カードが登録されていません/i)),
+    ).toBeVisible();
+
     const cardExpandButton = page.getByTestId('expand').first();
     const groupExists = (await cardExpandButton.count()) > 0;
 
@@ -36,7 +41,12 @@ test.describe('カード一覧ページ', () => {
   });
 
   test('「カードを作成」ボタンでモーダルが開ける', async ({ page }) => {
-    const createCardButton = page.getByRole('button', { name: /カードを作成/i }).first();
+    // データ読み込み完了を待機
+    await expect(
+      page.getByRole('button', { name: 'カードを作成' }).first().or(page.getByText(/カードが登録されていません/i)),
+    ).toBeVisible();
+
+    const createCardButton = page.getByRole('button', { name: 'カードを作成' }).first();
     const buttonExists = (await createCardButton.count()) > 0;
 
     if (buttonExists) {
@@ -57,6 +67,11 @@ test.describe('カード詳細ページ', () => {
   });
 
   test('カード一覧から詳細ページへ遷移できる', async ({ page }) => {
+    // データ読み込み完了を待機
+    await expect(
+      page.getByTestId('expand').first().or(page.getByText(/カードが登録されていません/i)),
+    ).toBeVisible();
+
     const cardExpandButton = page.getByTestId('expand').first();
     const groupExists = (await cardExpandButton.count()) > 0;
 
@@ -83,6 +98,11 @@ test.describe('カード詳細ページ', () => {
   });
 
   test('カード詳細ページで編集モーダルが開ける', async ({ page }) => {
+    // データ読み込み完了を待機
+    await expect(
+      page.getByTestId('expand').first().or(page.getByText(/カードが登録されていません/i)),
+    ).toBeVisible();
+
     const cardExpandButton = page.getByTestId('expand').first();
     const groupExists = (await cardExpandButton.count()) > 0;
 
@@ -121,6 +141,11 @@ test.describe('カードの編集フロー', () => {
   });
 
   test('カードの詳細を変更できる', async ({ page }) => {
+    // データ読み込み完了を待機
+    await expect(
+      page.getByTestId('expand').first().or(page.getByText(/カードが登録されていません/i)),
+    ).toBeVisible();
+
     const cardExpandButton = page.getByTestId('expand').first();
     const groupExists = (await cardExpandButton.count()) > 0;
 
