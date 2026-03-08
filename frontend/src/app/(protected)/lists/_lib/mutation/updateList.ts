@@ -1,6 +1,6 @@
-import { ListBase, listBaseSchema } from '@/app/(protected)/lists/_types';
+import { type ListBase, listBaseSchema } from '@/app/(protected)/lists/_types';
+import { mutateResource } from '@/lib/api/mutateResource';
 
-// 更新用の型
 export interface UpdateListData {
   id: string;
   name: string;
@@ -8,19 +8,7 @@ export interface UpdateListData {
   public: boolean;
 }
 
-export async function updateList(data: UpdateListData): Promise<ListBase> {
+export const updateList = (data: UpdateListData): Promise<ListBase> => {
   const { id, ...updateData } = data;
-  const response = await fetch(`/api/lists/${id}`, {
-    method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(updateData),
-  });
-
-  if (!response.ok) {
-    const { error } = await response.json();
-    throw new Error(error);
-  }
-
-  const res = await response.json();
-  return listBaseSchema.parse(res);
-}
+  return mutateResource(`/api/lists/${id}`, 'PUT', updateData, listBaseSchema);
+};

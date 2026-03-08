@@ -1,13 +1,5 @@
-import { FollowStatus, followStatusSchema } from '@/app/(protected)/users/_types';
+import { type FollowStatus, followStatusSchema } from '@/app/(protected)/users/_types';
+import { fetchResource } from '@/lib/api/fetchResource';
 
-export async function fetchFollowStatus(userId: string): Promise<FollowStatus> {
-  const response = await fetch(`/api/users/${userId}/follow-status`);
-
-  if (!response.ok) {
-    const { error } = await response.json();
-    throw new Error(error);
-  }
-
-  const data = await response.json();
-  return followStatusSchema.parse(data);
-}
+export const fetchFollowStatus = (userId: string): Promise<FollowStatus> =>
+  fetchResource(`/api/users/${userId}/follow-status`, followStatusSchema);

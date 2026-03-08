@@ -1,17 +1,5 @@
-import { Tag, TagFormData, tagSchema } from '@/app/(protected)/tags/_types';
+import { type Tag, type TagFormData, tagSchema } from '@/app/(protected)/tags/_types';
+import { mutateResource } from '@/lib/api/mutateResource';
 
-export async function createTag(data: TagFormData): Promise<Tag> {
-  const response = await fetch('/api/tags', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(data),
-  });
-
-  if (!response.ok) {
-    const { error } = await response.json();
-    throw new Error(error);
-  }
-
-  const res = await response.json();
-  return tagSchema.parse(res);
-}
+export const createTag = (data: TagFormData): Promise<Tag> =>
+  mutateResource('/api/tags', 'POST', data, tagSchema);

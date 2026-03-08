@@ -1,11 +1,4 @@
-export async function deleteBook({ id }: { id: string }): Promise<void> {
-  const response = await fetch(`/api/books/${id}`, {
-    method: 'DELETE',
-    headers: { 'Content-Type': 'application/json' },
-  });
+import { mutateResource } from '@/lib/api/mutateResource';
 
-  if (!response.ok) {
-    const { error } = await response.json();
-    throw new Error(error);
-  }
-}
+export const deleteBook = ({ id }: { id: string }): Promise<void> =>
+  mutateResource(`/api/books/${id}`, 'DELETE');

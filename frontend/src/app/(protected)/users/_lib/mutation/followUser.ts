@@ -1,16 +1,7 @@
-interface FollowResponse {
-  message: string;
-}
+import { z } from 'zod';
+import { mutateResource } from '@/lib/api/mutateResource';
 
-export async function followUser(userId: string): Promise<FollowResponse> {
-  const response = await fetch(`/api/users/${userId}/follow`, {
-    method: 'POST',
-  });
+const followResponseSchema = z.object({ message: z.string() });
 
-  if (!response.ok) {
-    const { error } = await response.json();
-    throw new Error(error);
-  }
-
-  return response.json();
-}
+export const followUser = (userId: string) =>
+  mutateResource(`/api/users/${userId}/follow`, 'POST', undefined, followResponseSchema);
