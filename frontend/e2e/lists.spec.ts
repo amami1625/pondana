@@ -33,7 +33,10 @@ test.describe('リスト詳細ページ', () => {
   test('リスト一覧から詳細ページへ遷移できる', async ({ page }) => {
     // データ読み込み完了を待機（「詳細」リンクまたはEmptyStateが表示されるまで）
     await expect(
-      page.getByRole('link', { name: '詳細' }).first().or(page.getByText(/リストが登録されていません/i)),
+      page
+        .getByRole('link', { name: '詳細' })
+        .first()
+        .or(page.getByText(/リストが登録されていません/i)),
     ).toBeVisible();
 
     // リストカードの「詳細」リンクをクリック（最初のリスト）
@@ -59,7 +62,10 @@ test.describe('リスト詳細ページ', () => {
   test('リスト詳細ページで編集モーダルが開ける', async ({ page }) => {
     // データ読み込み完了を待機
     await expect(
-      page.getByRole('link', { name: '詳細' }).first().or(page.getByText(/リストが登録されていません/i)),
+      page
+        .getByRole('link', { name: '詳細' })
+        .first()
+        .or(page.getByText(/リストが登録されていません/i)),
     ).toBeVisible();
 
     // リストカードの「詳細」リンクをクリック（最初のリスト）
@@ -86,7 +92,10 @@ test.describe('リスト詳細ページ', () => {
   test('リスト詳細ページで「本を追加」モーダルが開ける', async ({ page }) => {
     // データ読み込み完了を待機
     await expect(
-      page.getByRole('link', { name: '詳細' }).first().or(page.getByText(/リストが登録されていません/i)),
+      page
+        .getByRole('link', { name: '詳細' })
+        .first()
+        .or(page.getByText(/リストが登録されていません/i)),
     ).toBeVisible();
 
     // リストカードの「詳細」リンクをクリック（最初のリスト）
@@ -119,7 +128,10 @@ test.describe('リストの編集フロー', () => {
   test('リストの詳細を変更できる', async ({ page }) => {
     // データ読み込み完了を待機
     await expect(
-      page.getByRole('link', { name: '詳細' }).first().or(page.getByText(/リストが登録されていません/i)),
+      page
+        .getByRole('link', { name: '詳細' })
+        .first()
+        .or(page.getByText(/リストが登録されていません/i)),
     ).toBeVisible();
 
     // リストカードの「詳細」リンクをクリック（最初のリスト）
