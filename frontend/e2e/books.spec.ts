@@ -74,6 +74,14 @@ test.describe('書籍詳細ページ', () => {
   });
 
   test('書籍一覧から詳細ページへ遷移できる', async ({ page }) => {
+    // データ読み込み完了を待機（「詳細」リンクまたはEmptyStateが表示されるまで）
+    await expect(
+      page
+        .getByRole('link', { name: '詳細' })
+        .first()
+        .or(page.getByText(/本が登録されていません/i)),
+    ).toBeVisible();
+
     // 書籍カードの「詳細」リンクをクリック（最初の書籍）
     const bookDetailLink = page.getByRole('link', { name: '詳細' }).first();
 
@@ -95,6 +103,14 @@ test.describe('書籍詳細ページ', () => {
   });
 
   test('書籍詳細ページで編集モーダルが開ける', async ({ page }) => {
+    // データ読み込み完了を待機
+    await expect(
+      page
+        .getByRole('link', { name: '詳細' })
+        .first()
+        .or(page.getByText(/本が登録されていません/i)),
+    ).toBeVisible();
+
     // 書籍カードの「詳細」リンクをクリック（最初の書籍）
     const bookDetailLink = page.getByRole('link', { name: '詳細' }).first();
 
@@ -117,6 +133,14 @@ test.describe('書籍詳細ページ', () => {
   });
 
   test('書籍詳細ページでタブ切り替えができる', async ({ page }) => {
+    // データ読み込み完了を待機
+    await expect(
+      page
+        .getByRole('link', { name: '詳細' })
+        .first()
+        .or(page.getByText(/本が登録されていません/i)),
+    ).toBeVisible();
+
     // 書籍カードの「詳細」リンクをクリック（最初の書籍）
     const bookDetailLink = page.getByRole('link', { name: '詳細' }).first();
 
@@ -147,6 +171,14 @@ test.describe('書籍の編集フロー', () => {
   test('書籍のステータスを変更できる', async ({ page }) => {
     // 書籍一覧ページへ遷移
     await page.goto('/books');
+
+    // データ読み込み完了を待機
+    await expect(
+      page
+        .getByRole('link', { name: '詳細' })
+        .first()
+        .or(page.getByText(/本が登録されていません/i)),
+    ).toBeVisible();
 
     // 書籍カードの「詳細」リンクをクリック（最初の書籍）
     const bookDetailLink = page.getByRole('link', { name: '詳細' }).first();

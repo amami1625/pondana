@@ -4,6 +4,7 @@ import { queryKeys } from '@/constants/queryKeys';
 import BookDetailClient from '@/app/(protected)/books/_components/clients/BookDetailClient';
 import { authenticatedRequest } from '@/supabase/dal';
 import { bookDetailSchema } from '@/app/(protected)/books/_types/';
+import { userSchema } from '@/schemas/user';
 
 type Props = {
   params: Promise<{ id: string }>;
@@ -14,13 +15,22 @@ export default async function BookPage({ params }: Props) {
 
   const queryClient = createServerQueryClient();
 
-  await queryClient.prefetchQuery({
-    queryKey: queryKeys.books.detail(id),
-    queryFn: async () => {
-      const data = await authenticatedRequest(`/books/${id}`);
-      return bookDetailSchema.parse(data);
-    },
-  });
+  await Promise.all([
+    queryClient.prefetchQuery({
+      queryKey: queryKeys.books.detail(id),
+      queryFn: async () => {
+        const data = await authenticatedRequest(`/books/${id}`);
+        return bookDetailSchema.parse(data);
+      },
+    }),
+    queryClient.prefetchQuery({
+      queryKey: queryKeys.profile.all,
+      queryFn: async () => {
+        const data = await authenticatedRequest('/profile');
+        return userSchema.parse(data);
+      },
+    }),
+  ]);
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>

@@ -1,13 +1,5 @@
-import { User, userSchema } from '@/app/(protected)/users/_types';
+import { type User, userSchema } from '@/app/(protected)/users/_types';
+import { fetchResource } from '@/lib/api/fetchResource';
 
-export async function fetchFollowing(userId: string): Promise<User[]> {
-  const response = await fetch(`/api/users/${userId}/following`);
-
-  if (!response.ok) {
-    const { error } = await response.json();
-    throw new Error(error);
-  }
-
-  const data = await response.json();
-  return userSchema.array().parse(data);
-}
+export const fetchFollowing = (userId: string): Promise<User[]> =>
+  fetchResource(`/api/users/${userId}/following`, userSchema.array());

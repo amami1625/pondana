@@ -1,11 +1,4 @@
-export async function deleteCategory(id: number): Promise<void> {
-  const response = await fetch(`/api/categories/${id}`, {
-    method: 'DELETE',
-    headers: { 'Content-Type': 'application/json' },
-  });
+import { mutateResource } from '@/lib/api/mutateResource';
 
-  if (!response.ok) {
-    const { error } = await response.json();
-    throw new Error(error);
-  }
-}
+export const deleteCategory = (id: number): Promise<void> =>
+  mutateResource(`/api/categories/${id}`, 'DELETE');

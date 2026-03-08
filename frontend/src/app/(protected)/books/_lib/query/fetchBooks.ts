@@ -1,17 +1,4 @@
 import { bookSchema, type Book } from '@/app/(protected)/books/_types';
+import { fetchResource } from '@/lib/api/fetchResource';
 
-/**
- * 書籍一覧を取得する
- * クライアントコンポーネント（useQuery）で使用
- */
-export async function fetchBooks(): Promise<Book[]> {
-  const response = await fetch('/api/books');
-
-  if (!response.ok) {
-    const { error } = await response.json();
-    throw new Error(error);
-  }
-
-  const data = await response.json();
-  return bookSchema.array().parse(data);
-}
+export const fetchBooks = (): Promise<Book[]> => fetchResource('/api/books', bookSchema.array());
