@@ -15,32 +15,29 @@ export default async function UserPage({ params }: UserPageProps) {
   const { id } = await params;
   const queryClient = createServerQueryClient();
 
-  // ユーザー情報をprefetch
-  await queryClient.prefetchQuery({
-    queryKey: queryKeys.users.detail(id),
-    queryFn: async () => {
-      const data = await authenticatedRequest(`/users/${id}`);
-      return userWithStatsSchema.parse(data);
-    },
-  });
-
-  // ユーザーの公開本一覧をprefetch
-  await queryClient.prefetchQuery({
-    queryKey: queryKeys.users.books(id),
-    queryFn: async () => {
-      const data = await authenticatedRequest(`/users/${id}/books`);
-      return bookSchema.array().parse(data);
-    },
-  });
-
-  // ユーザーの公開リスト一覧をprefetch
-  await queryClient.prefetchQuery({
-    queryKey: queryKeys.users.lists(id),
-    queryFn: async () => {
-      const data = await authenticatedRequest(`/users/${id}/lists`);
-      return listSchema.array().parse(data);
-    },
-  });
+  await Promise.all([
+    queryClient.prefetchQuery({
+      queryKey: queryKeys.users.detail(id),
+      queryFn: async () => {
+        const data = await authenticatedRequest(`/users/${id}`);
+        return userWithStatsSchema.parse(data);
+      },
+    }),
+    queryClient.prefetchQuery({
+      queryKey: queryKeys.users.books(id),
+      queryFn: async () => {
+        const data = await authenticatedRequest(`/users/${id}/books`);
+        return bookSchema.array().parse(data);
+      },
+    }),
+    queryClient.prefetchQuery({
+      queryKey: queryKeys.users.lists(id),
+      queryFn: async () => {
+        const data = await authenticatedRequest(`/users/${id}/lists`);
+        return listSchema.array().parse(data);
+      },
+    }),
+  ]);
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>

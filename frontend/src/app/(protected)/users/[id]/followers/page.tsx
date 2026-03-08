@@ -14,23 +14,22 @@ export default async function FollowersPage({ params }: FollowersPageProps) {
   const { id } = await params;
   const queryClient = createServerQueryClient();
 
-  // ユーザー情報をprefetch
-  await queryClient.prefetchQuery({
-    queryKey: queryKeys.users.detail(id),
-    queryFn: async () => {
-      const data = await authenticatedRequest(`/users/${id}`);
-      return userWithStatsSchema.parse(data);
-    },
-  });
-
-  // フォロワー一覧をprefetch
-  await queryClient.prefetchQuery({
-    queryKey: queryKeys.users.followers(id),
-    queryFn: async () => {
-      const data = await authenticatedRequest(`/users/${id}/followers`);
-      return userSchema.array().parse(data);
-    },
-  });
+  await Promise.all([
+    queryClient.prefetchQuery({
+      queryKey: queryKeys.users.detail(id),
+      queryFn: async () => {
+        const data = await authenticatedRequest(`/users/${id}`);
+        return userWithStatsSchema.parse(data);
+      },
+    }),
+    queryClient.prefetchQuery({
+      queryKey: queryKeys.users.followers(id),
+      queryFn: async () => {
+        const data = await authenticatedRequest(`/users/${id}/followers`);
+        return userSchema.array().parse(data);
+      },
+    }),
+  ]);
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
